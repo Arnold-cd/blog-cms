@@ -5,6 +5,7 @@ import {
   generateMarkdownWithFrontmatter,
 } from '../services/cmsService';
 import { createDownloadPackage, publishToGitHub } from '../services/exportService';
+import { convertPdfToImages } from '../services/pdfService';
 import {
   Download,
   Copy,
@@ -16,12 +17,12 @@ import {
   CheckCircle2,
   Upload,
   FileUp,
-  
   Trash2,
   Package,
   Send,
   Key,
   Paperclip,
+  Loader2,
 } from 'lucide-react';
 import { marked } from 'marked';
 
@@ -76,6 +77,7 @@ Support for **bold**, *italics*, quotes, and tables:
   });
 
   const [copied, setCopied] = useState<boolean>(false);
+  const [isProcessingPdf, setIsProcessingPdf] = useState<boolean>(false);
   const [showGitHubModal, setShowGitHubModal] = useState<boolean>(false);
   const [githubToken, setGithubToken] = useState<string>(() => localStorage.getItem('github_cms_token') || '');
   const [githubRepo, setGithubRepo] = useState<string>('Arnold-cd/blog-cms');
@@ -166,10 +168,39 @@ Support for **bold**, *italics*, quotes, and tables:
     }, 50);
   };
 
-  // Handle Banner Image Upload (JPG, PNG, SVG)
-  const handleBannerUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Handle Banner Upload (JPG, PNG, SVG, or PDF page 1)
+  const handleBannerUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) {
+      setIsProcessingPdf(true);
+      try {
+        const pages = await convertPdfToImages(file, 1);
+        if (pages.length > 0) {
+          const firstPage = pages[0];
+          const asset: UploadedAsset = {
+            name: firstPage.name,
+            size: firstPage.file.size,
+            type: 'image',
+            file: firstPage.file,
+            previewUrl: firstPage.previewUrl,
+            cmsPath: `images/${firstPage.name}`,
+          };
+          setDraft((prev) => ({
+            ...prev,
+            thumbnail: `images/${firstPage.name}`,
+            thumbnailPreviewUrl: firstPage.previewUrl,
+            assets: [...prev.assets.filter((a) => a.name !== firstPage.name), asset],
+          }));
+        }
+      } catch (err: any) {
+        alert(`Failed to extract banner image from PDF: ${err.message}`);
+      } finally {
+        setIsProcessingPdf(false);
+      }
+      return;
+    }
 
     const cleanName = file.name.toLowerCase().replace(/[^a-z0-9.-]/g, '-');
     const previewUrl = URL.createObjectURL(file);
@@ -192,42 +223,60 @@ Support for **bold**, *italics*, quotes, and tables:
   };
 
   // Handle General Media & Document Upload (PDF, JPG, PNG)
-  const handleAssetUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAssetUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
+    setIsProcessingPdf(true);
     const newAssets: UploadedAsset[] = [];
     let appendMarkdown = '';
 
-    Array.from(files).forEach((file) => {
-      const cleanName = file.name.toLowerCase().replace(/[^a-z0-9.-]/g, '-');
-      const previewUrl = URL.createObjectURL(file);
-      const isPdf = file.type === 'application/pdf' || cleanName.endsWith('.pdf');
+    try {
+      for (const file of Array.from(files)) {
+        const cleanName = file.name.toLowerCase().replace(/[^a-z0-9.-]/g, '-');
+        const isPdf = file.type === 'application/pdf' || cleanName.endsWith('.pdf');
 
-      const asset: UploadedAsset = {
-        name: cleanName,
-        size: file.size,
-        type: isPdf ? 'pdf' : 'image',
-        file,
-        previewUrl,
-        cmsPath: `images/${cleanName}`,
-      };
-
-      newAssets.push(asset);
-
-      // Generate markdown snippet
-      if (isPdf) {
-        appendMarkdown += `\n\n[📄 Download ${cleanName} (PDF)](images/${cleanName})\n`;
-      } else {
-        appendMarkdown += `\n\n![${cleanName.replace(/\.[^/.]+$/, '')}](images/${cleanName})\n`;
+        if (isPdf) {
+          // Render each PDF page as a high-resolution PNG picture (no download link!)
+          const pages = await convertPdfToImages(file, 10);
+          pages.forEach((page) => {
+            const asset: UploadedAsset = {
+              name: page.name,
+              size: page.file.size,
+              type: 'image',
+              file: page.file,
+              previewUrl: page.previewUrl,
+              cmsPath: `images/${page.name}`,
+            };
+            newAssets.push(asset);
+            appendMarkdown += `\n\n![${file.name} - Page ${page.pageNumber}](images/${page.name})\n`;
+          });
+        } else {
+          // Standard Image (JPG, PNG, SVG)
+          const previewUrl = URL.createObjectURL(file);
+          const asset: UploadedAsset = {
+            name: cleanName,
+            size: file.size,
+            type: 'image',
+            file,
+            previewUrl,
+            cmsPath: `images/${cleanName}`,
+          };
+          newAssets.push(asset);
+          appendMarkdown += `\n\n![${cleanName.replace(/\.[^/.]+$/, '')}](images/${cleanName})\n`;
+        }
       }
-    });
 
-    setDraft((prev) => ({
-      ...prev,
-      assets: [...prev.assets, ...newAssets],
-      content: prev.content + appendMarkdown,
-    }));
+      setDraft((prev) => ({
+        ...prev,
+        assets: [...prev.assets, ...newAssets],
+        content: prev.content + appendMarkdown,
+      }));
+    } catch (err: any) {
+      alert(`Error rendering uploaded file: ${err.message}`);
+    } finally {
+      setIsProcessingPdf(false);
+    }
   };
 
   // Remove uploaded asset
@@ -325,7 +374,7 @@ Support for **bold**, *italics*, quotes, and tables:
         type="file"
         ref={bannerInputRef}
         onChange={handleBannerUpload}
-        accept="image/png, image/jpeg, image/svg+xml, image/webp"
+        accept="image/png, image/jpeg, image/svg+xml, image/webp, application/pdf"
         style={{ display: 'none' }}
       />
       <input
@@ -341,7 +390,7 @@ Support for **bold**, *italics*, quotes, and tables:
       <div className="editor-header-bar">
         <div className="editor-title-group">
           <h2>Markdown CMS Studio</h2>
-          <p>Compose articles, upload media (JPG, PNG, PDF), and publish directly to Git</p>
+          <p>Compose articles &bull; PDFs automatically render as picture pages &bull; Publish to Git</p>
         </div>
 
         <div className="editor-actions-group">
@@ -507,7 +556,7 @@ Support for **bold**, *italics*, quotes, and tables:
                   style={{ padding: '0.25rem 0.65rem', fontSize: '0.75rem', gap: '0.35rem' }}
                 >
                   <Upload size={13} />
-                  <span>Upload JPG / PNG / SVG</span>
+                  <span>Upload JPG / PNG / PDF</span>
                 </button>
               </div>
             </div>
@@ -523,7 +572,7 @@ Support for **bold**, *italics*, quotes, and tables:
                 id="input-cms-thumbnail"
               />
               {draft.thumbnailPreviewUrl && (
-                <div style={{ width: '48px', height: '36px', borderRadius: '6px', overflow: 'hidden', border: '1px solid var(--border-active)' }}>
+                <div style={{ width: '56px', height: '40px', borderRadius: '6px', overflow: 'hidden', border: '1px solid var(--border-active)' }}>
                   <img src={draft.thumbnailPreviewUrl} alt="Thumbnail preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 </div>
               )}
@@ -565,24 +614,41 @@ Support for **bold**, *italics*, quotes, and tables:
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <Paperclip size={18} color="var(--accent-indigo)" />
             <h3 style={{ fontSize: '0.95rem', fontWeight: 700, color: '#fff' }}>
-              Attached Media & Documents ({draft.assets.length})
+              Attached Media &amp; Rendered PDF Pictures ({draft.assets.length})
             </h3>
-            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-              (Supports JPG, PNG, WEBP, SVG, and PDF)
+            <span style={{ fontSize: '0.75rem', color: 'var(--accent-cyan)' }}>
+              (PDFs are automatically rendered into pictures)
             </span>
           </div>
 
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
+            disabled={isProcessingPdf}
             className="btn-secondary"
             style={{ padding: '0.4rem 0.85rem', fontSize: '0.8rem', gap: '0.4rem' }}
             id="btn-upload-media"
           >
-            <FileUp size={15} color="var(--accent-cyan)" />
-            <span>Upload Image or PDF</span>
+            {isProcessingPdf ? (
+              <>
+                <Loader2 size={15} style={{ animation: 'spin 1s linear infinite' }} />
+                <span>Rendering PDF to Pictures...</span>
+              </>
+            ) : (
+              <>
+                <FileUp size={15} color="var(--accent-cyan)" />
+                <span>Upload PDF or Image</span>
+              </>
+            )}
           </button>
         </div>
+
+        {isProcessingPdf && (
+          <div style={{ padding: '1rem', background: 'rgba(56, 189, 248, 0.1)', border: '1px solid var(--border-active)', borderRadius: 'var(--radius-sm)', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.75rem', color: 'var(--accent-cyan)' }}>
+            <Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} />
+            <span>Processing document &bull; Rendering PDF pages into high-resolution pictures...</span>
+          </div>
+        )}
 
         {draft.assets.length === 0 ? (
           <div
@@ -598,10 +664,10 @@ Support for **bold**, *italics*, quotes, and tables:
             }}
           >
             <Upload size={20} style={{ margin: '0 auto 0.5rem', opacity: 0.7 }} />
-            <p>Click here or drag & drop <strong>JPG, PNG, or PDF</strong> files to attach to this article</p>
+            <p>Click here or drag &amp; drop <strong>PDF, JPG, or PNG</strong> files. PDFs will render as pictures!</p>
           </div>
         ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '0.75rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '0.75rem' }}>
             {draft.assets.map((asset) => (
               <div
                 key={asset.name}
@@ -615,22 +681,16 @@ Support for **bold**, *italics*, quotes, and tables:
                   borderRadius: 'var(--radius-sm)',
                 }}
               >
-                {asset.type === 'image' ? (
-                  <div style={{ width: '36px', height: '36px', borderRadius: '4px', overflow: 'hidden', flexShrink: 0 }}>
-                    <img src={asset.previewUrl} alt={asset.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  </div>
-                ) : (
-                  <div style={{ width: '36px', height: '36px', borderRadius: '4px', background: 'rgba(244, 63, 94, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-rose)', flexShrink: 0 }}>
-                    <FileText size={18} />
-                  </div>
-                )}
+                <div style={{ width: '42px', height: '42px', borderRadius: '4px', overflow: 'hidden', flexShrink: 0, border: '1px solid var(--border-subtle)' }}>
+                  <img src={asset.previewUrl} alt={asset.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                </div>
 
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <p style={{ fontSize: '0.8rem', color: '#fff', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                     {asset.name}
                   </p>
                   <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
-                    {(asset.size / 1024).toFixed(1)} KB &bull; {asset.type.toUpperCase()}
+                    {(asset.size / 1024).toFixed(1)} KB &bull; PICTURE
                   </p>
                 </div>
 
@@ -638,7 +698,7 @@ Support for **bold**, *italics*, quotes, and tables:
                   type="button"
                   onClick={() => handleRemoveAsset(asset.name)}
                   style={{ color: 'var(--text-muted)', padding: '0.25rem' }}
-                  title="Remove asset"
+                  title="Remove picture"
                 >
                   <Trash2 size={15} />
                 </button>
@@ -724,7 +784,7 @@ Support for **bold**, *italics*, quotes, and tables:
             </div>
 
             <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1.25rem' }}>
-              This will commit your article and all uploaded images/PDFs directly to <strong>{githubRepo}</strong> via the GitHub API, automatically triggering GitHub Actions to build and deploy!
+              This will commit your article and all rendered images directly to <strong>{githubRepo}</strong> via the GitHub API, automatically triggering GitHub Actions to build and deploy!
             </p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '1.5rem' }}>
