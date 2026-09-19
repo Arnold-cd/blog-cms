@@ -11,6 +11,16 @@ export interface BlogPost {
   language: string;
   featured: boolean;
   content?: string; // Optional embedded content for CMS Studio drafts & offline cache
+  isDraft?: boolean;
+}
+
+export interface UploadedAsset {
+  name: string;
+  size: number;
+  type: 'image' | 'pdf';
+  file: File;
+  previewUrl: string;
+  cmsPath: string; // e.g. "images/filename.png"
 }
 
 export interface PostDraft {
@@ -21,7 +31,9 @@ export interface PostDraft {
   author: string;
   category: string;
   thumbnail: string;
+  thumbnailPreviewUrl?: string;
   language: string;
   featured: boolean;
   content: string;
+  assets: UploadedAsset[];
 }

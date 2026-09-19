@@ -1,9 +1,10 @@
-import React, { useState, useMemo } from 'react';
-import type { BlogPost, PostDraft } from '../types';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
+import type { BlogPost, PostDraft, UploadedAsset } from '../types';
 import {
   calculateReadingTime,
   generateMarkdownWithFrontmatter,
 } from '../services/cmsService';
+import { createDownloadPackage, publishToGitHub } from '../services/exportService';
 import {
   Download,
   Copy,
@@ -13,6 +14,14 @@ import {
   Clock,
   AlertCircle,
   CheckCircle2,
+  Upload,
+  FileUp,
+  
+  Trash2,
+  Package,
+  Send,
+  Key,
+  Paperclip,
 } from 'lucide-react';
 import { marked } from 'marked';
 
@@ -22,18 +31,33 @@ interface CmsEditorProps {
 
 export const CmsEditor: React.FC<CmsEditorProps> = ({ onPreviewInFeed }) => {
   const todayStr = new Date().toISOString().split('T')[0];
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const bannerInputRef = useRef<HTMLInputElement>(null);
 
-  const [draft, setDraft] = useState<PostDraft>({
-    id: 'my-new-article',
-    title: '',
-    summary: '',
-    date: todayStr,
-    author: 'Arnold CD',
-    category: 'Philosophy',
-    thumbnail: 'images/banner-philosophy.svg',
-    language: 'en',
-    featured: false,
-    content: `# Introduction
+  const [draft, setDraft] = useState<PostDraft>(() => {
+    // Try restoring draft from localStorage if available
+    const saved = localStorage.getItem('blog_cms_current_draft');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        return { ...parsed, assets: [] };
+      } catch {
+        // fallback
+      }
+    }
+    return {
+      id: 'my-new-article',
+      title: '',
+      summary: '',
+      date: todayStr,
+      author: 'Arnold CD',
+      category: 'Philosophy',
+      thumbnail: 'images/banner-philosophy.svg',
+      thumbnailPreviewUrl: '',
+      language: 'en',
+      featured: false,
+      assets: [],
+      content: `# Introduction
 
 Write your Markdown article here. Changes update live in the right preview panel.
 
@@ -48,11 +72,25 @@ Support for **bold**, *italics*, quotes, and tables:
 
 > "Simplicity is prerequisite for reliability." — Edsger W. Dijkstra
 `,
+    };
   });
 
   const [copied, setCopied] = useState<boolean>(false);
+  const [showGitHubModal, setShowGitHubModal] = useState<boolean>(false);
+  const [githubToken, setGithubToken] = useState<string>(() => localStorage.getItem('github_cms_token') || '');
+  const [githubRepo, setGithubRepo] = useState<string>('Arnold-cd/blog-cms');
+  const [publishStatus, setPublishStatus] = useState<{ loading: boolean; message: string; success?: boolean }>({
+    loading: false,
+    message: '',
+  });
 
-  // Auto-generate slug from title if user hasn't customized it heavily
+  // Persist draft text in localStorage
+  useEffect(() => {
+    const toSave = { ...draft, assets: [] };
+    localStorage.setItem('blog_cms_current_draft', JSON.stringify(toSave));
+  }, [draft]);
+
+  // Auto-generate slug from title
   const handleTitleChange = (val: string) => {
     const slug = val
       .toLowerCase()
@@ -72,14 +110,26 @@ Support for **bold**, *italics*, quotes, and tables:
     return calculateReadingTime(draft.content);
   }, [draft.content]);
 
+  // Replace internal asset URLs with local blob URLs for live preview
+  const livePreviewMarkdown = useMemo(() => {
+    let content = draft.content;
+    if (draft.assets) {
+      draft.assets.forEach((asset) => {
+        // replace occurrences of images/asset.name with local previewUrl
+        content = content.split(`images/${asset.name}`).join(asset.previewUrl);
+      });
+    }
+    return content;
+  }, [draft.content, draft.assets]);
+
   // Live HTML preview
   const previewHtml = useMemo(() => {
     try {
-      return marked.parse(draft.content, { gfm: true, breaks: true }) as string;
+      return marked.parse(livePreviewMarkdown, { gfm: true, breaks: true }) as string;
     } catch {
       return '<p>Error rendering preview</p>';
     }
-  }, [draft.content]);
+  }, [livePreviewMarkdown]);
 
   // Validation checks
   const validationErrors = useMemo(() => {
@@ -116,6 +166,94 @@ Support for **bold**, *italics*, quotes, and tables:
     }, 50);
   };
 
+  // Handle Banner Image Upload (JPG, PNG, SVG)
+  const handleBannerUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const cleanName = file.name.toLowerCase().replace(/[^a-z0-9.-]/g, '-');
+    const previewUrl = URL.createObjectURL(file);
+
+    const asset: UploadedAsset = {
+      name: cleanName,
+      size: file.size,
+      type: 'image',
+      file,
+      previewUrl,
+      cmsPath: `images/${cleanName}`,
+    };
+
+    setDraft((prev) => ({
+      ...prev,
+      thumbnail: `images/${cleanName}`,
+      thumbnailPreviewUrl: previewUrl,
+      assets: [...prev.assets.filter((a) => a.name !== cleanName), asset],
+    }));
+  };
+
+  // Handle General Media & Document Upload (PDF, JPG, PNG)
+  const handleAssetUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    const newAssets: UploadedAsset[] = [];
+    let appendMarkdown = '';
+
+    Array.from(files).forEach((file) => {
+      const cleanName = file.name.toLowerCase().replace(/[^a-z0-9.-]/g, '-');
+      const previewUrl = URL.createObjectURL(file);
+      const isPdf = file.type === 'application/pdf' || cleanName.endsWith('.pdf');
+
+      const asset: UploadedAsset = {
+        name: cleanName,
+        size: file.size,
+        type: isPdf ? 'pdf' : 'image',
+        file,
+        previewUrl,
+        cmsPath: `images/${cleanName}`,
+      };
+
+      newAssets.push(asset);
+
+      // Generate markdown snippet
+      if (isPdf) {
+        appendMarkdown += `\n\n[📄 Download ${cleanName} (PDF)](images/${cleanName})\n`;
+      } else {
+        appendMarkdown += `\n\n![${cleanName.replace(/\.[^/.]+$/, '')}](images/${cleanName})\n`;
+      }
+    });
+
+    setDraft((prev) => ({
+      ...prev,
+      assets: [...prev.assets, ...newAssets],
+      content: prev.content + appendMarkdown,
+    }));
+  };
+
+  // Remove uploaded asset
+  const handleRemoveAsset = (name: string) => {
+    setDraft((prev) => ({
+      ...prev,
+      assets: prev.assets.filter((a) => a.name !== name),
+      thumbnailPreviewUrl: prev.thumbnail === `images/${name}` ? '' : prev.thumbnailPreviewUrl,
+    }));
+  };
+
+  // Download complete .zip package
+  const handleDownloadZip = async () => {
+    try {
+      const zipBlob = await createDownloadPackage(draft);
+      const url = URL.createObjectURL(zipBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${draft.id || 'article'}-package.zip`;
+      link.click();
+      URL.revokeObjectURL(url);
+    } catch (err: any) {
+      alert(`Error creating zip package: ${err.message}`);
+    }
+  };
+
   // Download .md file
   const handleDownloadMd = () => {
     const fullMarkdown = generateMarkdownWithFrontmatter(draft);
@@ -138,33 +276,86 @@ Support for **bold**, *italics*, quotes, and tables:
 
   // Preview in Reader Feed
   const handlePreviewInFeed = () => {
+    const effectiveThumbnail =
+      draft.thumbnailPreviewUrl ||
+      draft.thumbnail ||
+      'images/banner-philosophy.svg';
+
     const postObj: BlogPost = {
       id: draft.id || 'draft-article',
-      title: draft.title || 'Untitled Article',
-      summary: draft.summary || 'No summary provided',
-      date: draft.date,
-      author: draft.author,
-      category: draft.category,
-      thumbnail_url: draft.thumbnail,
+      title: draft.title.trim() || 'Untitled Draft Article',
+      summary: draft.summary.trim() || 'No summary provided for this draft article.',
+      date: draft.date || todayStr,
+      author: draft.author.trim() || 'Anonymous Author',
+      category: draft.category || 'General',
+      thumbnail_url: effectiveThumbnail,
       content_url: `posts/${draft.id || 'draft-article'}.md`,
       reading_time_min: minutes,
-      language: draft.language,
+      language: draft.language || 'en',
       featured: draft.featured,
-      content: draft.content, // Provide direct content for instant reader preview!
+      content: livePreviewMarkdown, // Pass live rendered markdown directly!
+      isDraft: true,
     };
+
     onPreviewInFeed(postObj);
+  };
+
+  // Direct GitHub Publish handler
+  const handlePublishToGitHub = async () => {
+    if (!githubToken.trim()) {
+      alert('Please enter a GitHub Personal Access Token.');
+      return;
+    }
+
+    setPublishStatus({ loading: true, message: 'Publishing article and assets to GitHub...' });
+    localStorage.setItem('github_cms_token', githubToken.trim());
+
+    const res = await publishToGitHub(githubToken, githubRepo, draft);
+    setPublishStatus({
+      loading: false,
+      message: res.message,
+      success: res.success,
+    });
   };
 
   return (
     <div className="editor-container">
+      {/* Hidden File Inputs */}
+      <input
+        type="file"
+        ref={bannerInputRef}
+        onChange={handleBannerUpload}
+        accept="image/png, image/jpeg, image/svg+xml, image/webp"
+        style={{ display: 'none' }}
+      />
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleAssetUpload}
+        multiple
+        accept="image/png, image/jpeg, image/svg+xml, image/webp, application/pdf"
+        style={{ display: 'none' }}
+      />
+
       {/* Editor Header Bar */}
       <div className="editor-header-bar">
         <div className="editor-title-group">
           <h2>Markdown CMS Studio</h2>
-          <p>Compose articles, configure frontmatter, and export ready-to-push .md files</p>
+          <p>Compose articles, upload media (JPG, PNG, PDF), and publish directly to Git</p>
         </div>
 
         <div className="editor-actions-group">
+          <button
+            onClick={() => setShowGitHubModal(true)}
+            className="btn-secondary"
+            title="Publish directly to GitHub via API"
+            id="btn-publish-github"
+            style={{ color: 'var(--accent-cyan)' }}
+          >
+            <Send size={15} />
+            <span>Publish to Git</span>
+          </button>
+
           <button
             onClick={handleCopyMd}
             className="btn-secondary"
@@ -176,8 +367,18 @@ Support for **bold**, *italics*, quotes, and tables:
           </button>
 
           <button
+            onClick={handleDownloadZip}
+            className="btn-secondary"
+            title="Download ZIP with .md and all uploaded assets ready for repo"
+            id="btn-download-zip"
+          >
+            <Package size={15} />
+            <span>Package (.zip)</span>
+          </button>
+
+          <button
             onClick={handleDownloadMd}
-            className="btn-primary"
+            className="btn-secondary"
             title="Download .md file ready for posts/ directory"
             id="btn-download-md"
           >
@@ -187,7 +388,8 @@ Support for **bold**, *italics*, quotes, and tables:
 
           <button
             onClick={handlePreviewInFeed}
-            className="btn-secondary"
+            className="btn-primary"
+            title="Preview article formatted live in the Reader"
             id="btn-preview-feed"
           >
             <Eye size={15} />
@@ -293,19 +495,43 @@ Support for **bold**, *italics*, quotes, and tables:
             </select>
           </div>
 
-          <div className="form-field">
-            <label className="form-label">Thumbnail Path or URL *</label>
-            <input
-              type="text"
-              className="form-input"
-              value={draft.thumbnail}
-              onChange={(e) => setDraft({ ...draft, thumbnail: e.target.value })}
-              id="input-cms-thumbnail"
-            />
+          {/* Banner Image Uploader */}
+          <div className="form-field col-span-full">
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.25rem' }}>
+              <label className="form-label">Thumbnail Banner Image *</label>
+              <div style={{ display: 'flex', gap: '0.5rem' }}>
+                <button
+                  type="button"
+                  onClick={() => bannerInputRef.current?.click()}
+                  className="btn-secondary"
+                  style={{ padding: '0.25rem 0.65rem', fontSize: '0.75rem', gap: '0.35rem' }}
+                >
+                  <Upload size={13} />
+                  <span>Upload JPG / PNG / SVG</span>
+                </button>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+              <input
+                type="text"
+                className="form-input"
+                style={{ flex: 1 }}
+                placeholder="images/banner-philosophy.svg or custom upload"
+                value={draft.thumbnail}
+                onChange={(e) => setDraft({ ...draft, thumbnail: e.target.value, thumbnailPreviewUrl: '' })}
+                id="input-cms-thumbnail"
+              />
+              {draft.thumbnailPreviewUrl && (
+                <div style={{ width: '48px', height: '36px', borderRadius: '6px', overflow: 'hidden', border: '1px solid var(--border-active)' }}>
+                  <img src={draft.thumbnailPreviewUrl} alt="Thumbnail preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="form-field" style={{ justifyContent: 'center' }}>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', cursor: 'pointer', marginTop: '1.2rem' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', cursor: 'pointer', marginTop: '0.5rem' }}>
               <input
                 type="checkbox"
                 checked={draft.featured}
@@ -320,7 +546,7 @@ Support for **bold**, *italics*, quotes, and tables:
           </div>
 
           <div className="form-field col-span-full">
-            <label className="form-label">Summary (Brief 2-line description) *</label>
+            <label className="form-label">Summary (Brief description for mobile feed cards) *</label>
             <textarea
               rows={2}
               className="form-textarea"
@@ -331,6 +557,95 @@ Support for **bold**, *italics*, quotes, and tables:
             />
           </div>
         </div>
+      </section>
+
+      {/* Asset Upload & Media Management Panel */}
+      <section style={{ background: 'var(--bg-card)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-md)', padding: '1.25rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '0.75rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Paperclip size={18} color="var(--accent-indigo)" />
+            <h3 style={{ fontSize: '0.95rem', fontWeight: 700, color: '#fff' }}>
+              Attached Media & Documents ({draft.assets.length})
+            </h3>
+            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+              (Supports JPG, PNG, WEBP, SVG, and PDF)
+            </span>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            className="btn-secondary"
+            style={{ padding: '0.4rem 0.85rem', fontSize: '0.8rem', gap: '0.4rem' }}
+            id="btn-upload-media"
+          >
+            <FileUp size={15} color="var(--accent-cyan)" />
+            <span>Upload Image or PDF</span>
+          </button>
+        </div>
+
+        {draft.assets.length === 0 ? (
+          <div
+            onClick={() => fileInputRef.current?.click()}
+            style={{
+              padding: '1.5rem',
+              border: '1px dashed var(--border-subtle)',
+              borderRadius: 'var(--radius-sm)',
+              textAlign: 'center',
+              color: 'var(--text-muted)',
+              cursor: 'pointer',
+              fontSize: '0.85rem',
+            }}
+          >
+            <Upload size={20} style={{ margin: '0 auto 0.5rem', opacity: 0.7 }} />
+            <p>Click here or drag & drop <strong>JPG, PNG, or PDF</strong> files to attach to this article</p>
+          </div>
+        ) : (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '0.75rem' }}>
+            {draft.assets.map((asset) => (
+              <div
+                key={asset.name}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.75rem',
+                  padding: '0.5rem 0.75rem',
+                  background: 'var(--bg-surface)',
+                  border: '1px solid var(--border-subtle)',
+                  borderRadius: 'var(--radius-sm)',
+                }}
+              >
+                {asset.type === 'image' ? (
+                  <div style={{ width: '36px', height: '36px', borderRadius: '4px', overflow: 'hidden', flexShrink: 0 }}>
+                    <img src={asset.previewUrl} alt={asset.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  </div>
+                ) : (
+                  <div style={{ width: '36px', height: '36px', borderRadius: '4px', background: 'rgba(244, 63, 94, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-rose)', flexShrink: 0 }}>
+                    <FileText size={18} />
+                  </div>
+                )}
+
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <p style={{ fontSize: '0.8rem', color: '#fff', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {asset.name}
+                  </p>
+                  <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
+                    {(asset.size / 1024).toFixed(1)} KB &bull; {asset.type.toUpperCase()}
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => handleRemoveAsset(asset.name)}
+                  style={{ color: 'var(--text-muted)', padding: '0.25rem' }}
+                  title="Remove asset"
+                >
+                  <Trash2 size={15} />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
       </section>
 
       {/* Editor & Live Preview Split Workspace */}
@@ -348,6 +663,9 @@ Support for **bold**, *italics*, quotes, and tables:
               <button onClick={() => insertMarkdown('`', '`')} className="toolbar-btn" title="Inline Code">Code</button>
               <button onClick={() => insertMarkdown('```\n', '\n```')} className="toolbar-btn" title="Code Block">Block</button>
               <button onClick={() => insertMarkdown('- ')} className="toolbar-btn" title="List">• List</button>
+              <button onClick={() => fileInputRef.current?.click()} className="toolbar-btn" title="Upload Media/PDF">
+                <Paperclip size={13} />
+              </button>
             </div>
           </div>
 
@@ -377,6 +695,106 @@ Support for **bold**, *italics*, quotes, and tables:
           <div className="preview-body markdown-body" dangerouslySetInnerHTML={{ __html: previewHtml }} />
         </div>
       </div>
+
+      {/* Direct GitHub Publish Modal */}
+      {showGitHubModal && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'rgba(0,0,0,0.75)',
+          backdropFilter: 'blur(10px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 100,
+          padding: '1rem',
+        }}>
+          <div style={{
+            background: 'var(--bg-surface)',
+            border: '1px solid var(--border-active)',
+            borderRadius: 'var(--radius-md)',
+            maxWidth: '520px',
+            width: '100%',
+            padding: '2rem',
+            boxShadow: '0 20px 50px rgba(0,0,0,0.8)',
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1rem' }}>
+              <Send size={20} color="var(--accent-cyan)" />
+              <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#fff' }}>Publish Directly to GitHub</h3>
+            </div>
+
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1.25rem' }}>
+              This will commit your article and all uploaded images/PDFs directly to <strong>{githubRepo}</strong> via the GitHub API, automatically triggering GitHub Actions to build and deploy!
+            </p>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '1.5rem' }}>
+              <div>
+                <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.35rem' }}>
+                  <Key size={13} />
+                  <span>GitHub Personal Access Token (repo scope)</span>
+                </label>
+                <input
+                  type="password"
+                  className="form-input"
+                  style={{ width: '100%' }}
+                  placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
+                  value={githubToken}
+                  onChange={(e) => setGithubToken(e.target.value)}
+                />
+                <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', marginTop: '0.25rem' }}>
+                  Token is saved in your local browser only. Never shared or sent to any third-party server.
+                </span>
+              </div>
+
+              <div>
+                <label className="form-label" style={{ marginBottom: '0.35rem' }}>Repository (owner/repo)</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  style={{ width: '100%' }}
+                  value={githubRepo}
+                  onChange={(e) => setGithubRepo(e.target.value)}
+                />
+              </div>
+            </div>
+
+            {publishStatus.message && (
+              <div style={{
+                padding: '0.75rem 1rem',
+                borderRadius: 'var(--radius-sm)',
+                fontSize: '0.85rem',
+                marginBottom: '1.25rem',
+                background: publishStatus.success ? 'rgba(16, 185, 129, 0.15)' : 'rgba(244, 63, 94, 0.15)',
+                color: publishStatus.success ? 'var(--accent-emerald)' : 'var(--accent-rose)',
+                border: `1px solid ${publishStatus.success ? 'var(--accent-emerald)' : 'var(--accent-rose)'}`,
+              }}>
+                {publishStatus.message}
+              </div>
+            )}
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem' }}>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowGitHubModal(false);
+                  setPublishStatus({ loading: false, message: '' });
+                }}
+                className="btn-secondary"
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                onClick={handlePublishToGitHub}
+                disabled={publishStatus.loading}
+                className="btn-primary"
+              >
+                {publishStatus.loading ? 'Committing to Git...' : 'Publish to GitHub'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

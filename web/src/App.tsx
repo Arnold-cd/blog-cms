@@ -41,10 +41,16 @@ export function App() {
   };
 
   const handlePreviewInFeed = (draftPost: BlogPost) => {
-    // Temporarily prepend draft into posts list and switch to article reader
-    setPosts((prev) => [draftPost, ...prev.filter((p) => p.id !== draftPost.id)]);
+    // Set draft as selected post and switch view directly to article reader
     setSelectedPost(draftPost);
     setActiveTab('feed');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleEditDraft = () => {
+    setSelectedPost(null);
+    setActiveTab('editor');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
@@ -76,7 +82,11 @@ export function App() {
         ) : activeTab === 'editor' ? (
           <CmsEditor onPreviewInFeed={handlePreviewInFeed} />
         ) : selectedPost ? (
-          <ArticleView post={selectedPost} onBack={handleBackToFeed} />
+          <ArticleView
+            post={selectedPost}
+            onBack={handleBackToFeed}
+            onEditDraft={handleEditDraft}
+          />
         ) : (
           <PostList
             posts={posts}
