@@ -8,6 +8,12 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Meetei+Mayek:wght@400;600;700&family=Outfit:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script>
+      // If someone visits /web on static hosting, redirect to the root web app
+      if (!window.location.port && window.location.pathname.includes('/web')) {
+        window.location.replace('../');
+      }
+    </script>
     <script type="module" crossorigin src="./assets/index-C303WJ09.js"></script>
     <link rel="stylesheet" crossorigin href="./assets/index-DVuKJqv0.css">
   </head>
