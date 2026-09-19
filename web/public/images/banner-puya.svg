@@ -1,46 +1,61 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="100%" height="100%">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="100%" height="100%">
   <defs>
-    <linearGradient id="grad-bg-puya" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#18181b" />
-      <stop offset="60%" stop-color="#27272a" />
-      <stop offset="100%" stop-color="#3f3f46" />
+    <radialGradient id="puya-bg" cx="50%" cy="50%" r="65%">
+      <stop offset="0%" stop-color="#27272a" />
+      <stop offset="55%" stop-color="#18181b" />
+      <stop offset="100%" stop-color="#09090b" />
+    </radialGradient>
+    <linearGradient id="gold-flow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a" />
+      <stop offset="40%" stop-color="#fbbf24" />
+      <stop offset="80%" stop-color="#d97706" />
+      <stop offset="100%" stop-color="#b45309" />
     </linearGradient>
-    <linearGradient id="gold-accent" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#fbbf24" />
-      <stop offset="100%" stop-color="#f59e0b" />
-    </linearGradient>
-    <pattern id="manuscript-pattern" width="60" height="60" patternUnits="userSpaceOnUse">
-      <path d="M 0 30 L 60 30 M 30 0 L 30 60" fill="none" stroke="#ffffff" stroke-opacity="0.03" stroke-width="1"/>
-    </pattern>
+    <filter id="gold-glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="20" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
   </defs>
 
-  <!-- Background -->
-  <rect width="1200" height="630" fill="url(#grad-bg-puya)" />
-  <rect width="1200" height="630" fill="url(#manuscript-pattern)" />
+  <!-- Deep charcoal background -->
+  <rect width="800" height="600" fill="url(#puya-bg)" />
 
-  <!-- Stylized Decorative Scroll Graphic -->
-  <rect x="800" y="140" width="300" height="380" rx="16" fill="#2d2d30" stroke="#f59e0b" stroke-opacity="0.3" stroke-width="2" />
-  <rect x="830" y="180" width="240" height="12" rx="6" fill="#f59e0b" fill-opacity="0.5" />
-  <rect x="830" y="220" width="200" height="8" rx="4" fill="#71717a" />
-  <rect x="830" y="244" width="220" height="8" rx="4" fill="#71717a" />
-  <rect x="830" y="268" width="180" height="8" rx="4" fill="#71717a" />
-  <rect x="830" y="310" width="240" height="8" rx="4" fill="#71717a" />
-  <rect x="830" y="334" width="190" height="8" rx="4" fill="#71717a" />
-  <rect x="830" y="358" width="210" height="8" rx="4" fill="#71717a" />
-  <circle cx="950" cy="440" r="32" fill="#f59e0b" fill-opacity="0.2" stroke="#f59e0b" stroke-width="2" />
-  <text x="950" y="448" fill="#f59e0b" font-family="-apple-system, sans-serif" font-size="24" font-weight="bold" text-anchor="middle">ꯄꯨ</text>
+  <!-- Sacred Geometry Mandala -->
+  <g stroke="#fbbf24" stroke-opacity="0.15" stroke-width="1.2">
+    <circle cx="400" cy="300" r="240" fill="none" />
+    <circle cx="400" cy="300" r="180" fill="none" stroke-dasharray="8 8" />
+    <circle cx="400" cy="300" r="120" fill="none" />
+    
+    <!-- Octagram Sacred Geometry -->
+    <polygon points="400,100 470,230 600,300 470,370 400,500 330,370 200,300 330,230" fill="none" stroke-opacity="0.2" />
+    <polygon points="400,140 450,250 560,300 450,350 400,460 350,350 240,300 350,250" fill="none" stroke-opacity="0.15" />
+  </g>
 
-  <!-- Badge -->
-  <rect x="120" y="150" width="150" height="40" rx="20" fill="#f59e0b" fill-opacity="0.15" stroke="#f59e0b" stroke-opacity="0.4" />
-  <text x="195" y="176" fill="#fbbf24" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="16" font-weight="700" letter-spacing="2" text-anchor="middle">CULTURE</text>
+  <!-- Stylized Ancient Treated Bark Scroll -->
+  <rect x="250" y="160" width="300" height="280" rx="14" fill="#1c1917" stroke="url(#gold-flow)" stroke-width="2" stroke-opacity="0.4" />
+  
+  <!-- Inscribed Manuscript Lines (Simulated Ancient Writing) -->
+  <g fill="#78716c" opacity="0.7">
+    <rect x="290" y="210" width="220" height="8" rx="4" fill="#fbbf24" fill-opacity="0.6" />
+    <rect x="290" y="235" width="180" height="6" rx="3" />
+    <rect x="290" y="255" width="200" height="6" rx="3" />
+    <rect x="290" y="275" width="160" height="6" rx="3" />
+    <rect x="290" y="305" width="210" height="6" rx="3" />
+    <rect x="290" y="325" width="170" height="6" rx="3" />
+    <rect x="290" y="345" width="190" height="6" rx="3" />
+  </g>
 
-  <!-- Title (Meetei Mayek + English) -->
-  <text x="120" y="260" fill="url(#gold-accent)" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="46" font-weight="800">ꯄꯨꯌꯥꯒꯤ ꯋꯥꯈꯜꯂꯣꯟ</text>
-  <text x="120" y="330" fill="#f4f4f5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="48" font-weight="800">Ancient Puya Manuscripts</text>
+  <!-- Sacred Royal Seal -->
+  <circle cx="400" cy="390" r="28" fill="#d97706" fill-opacity="0.2" stroke="url(#gold-flow)" stroke-width="2" />
+  <circle cx="400" cy="390" r="18" fill="none" stroke="#fbbf24" stroke-width="1.5" stroke-opacity="0.6" stroke-dasharray="4 4" />
+  <circle cx="400" cy="390" r="6" fill="#fef08a" filter="url(#gold-glow)" />
 
-  <!-- Subtitle -->
-  <text x="120" y="405" fill="#a1a1aa" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="22" font-weight="400">Cosmology, herbal wisdom, and genealogical scrolls of Kangleipak</text>
-
-  <!-- Footer Info -->
-  <text x="120" y="490" fill="#71717a" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="16" font-weight="500">MEETEI MAYEK (mni)  •  HISTORICAL ARCHIVE</text>
+  <!-- Floating Sacred Sparks -->
+  <circle cx="220" cy="200" r="5" fill="#fbbf24" filter="url(#gold-glow)" />
+  <circle cx="580" cy="180" r="4" fill="#fef08a" />
+  <circle cx="590" cy="420" r="6" fill="#f59e0b" filter="url(#gold-glow)" />
+  <circle cx="210" cy="400" r="3.5" fill="#fbbf24" />
 </svg>

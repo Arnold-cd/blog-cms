@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import type { BlogPost } from '../types';
-import { Search, Clock, Calendar, User, Sparkles, Filter } from 'lucide-react';
+import { Search, Clock, Calendar, User, Sparkles, Filter, Globe } from 'lucide-react';
 
 interface PostListProps {
   posts: BlogPost[];
@@ -131,7 +131,8 @@ export const PostList: React.FC<PostListProps> = ({ posts, onSelectPost, onOpenE
 
         <div className="filter-row">
           <div className="filter-pills-group">
-            <Filter size={15} style={{ color: 'var(--text-muted)' }} />
+            <Filter size={15} style={{ color: 'var(--accent-cyan)' }} />
+            <span className="filter-label">Category:</span>
             {categories.map((cat) => (
               <button
                 key={cat}
@@ -145,7 +146,8 @@ export const PostList: React.FC<PostListProps> = ({ posts, onSelectPost, onOpenE
           </div>
 
           <div className="filter-pills-group">
-            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Language:</span>
+            <Globe size={15} style={{ color: 'var(--accent-indigo)' }} />
+            <span className="filter-label">Language:</span>
             {languages.map((lang) => (
               <button
                 key={lang}
@@ -190,10 +192,6 @@ export const PostList: React.FC<PostListProps> = ({ posts, onSelectPost, onOpenE
                   src={post.thumbnail_url}
                   alt={post.title}
                   loading="lazy"
-                  onError={(e) => {
-                    // Fallback to placeholder gradient if image fails
-                    (e.target as HTMLElement).style.display = 'none';
-                  }}
                 />
                 <span className="card-lang-badge">{post.language.toUpperCase()}</span>
               </div>
