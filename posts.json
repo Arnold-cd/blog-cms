@@ -1,0 +1,28 @@
+[
+  {
+    "id": "manipur-puya-ancient-wisdom",
+    "title": "ꯄꯨꯌꯥꯒꯤ ꯋꯥꯈꯜꯂꯣꯟ: Wisdom of Ancient Manipuri Puya Manuscripts",
+    "summary": "Exploring the indigenous historical manuscripts of Kangleipak, preserved in Meetei Mayek script, detailing cosmology, natural medicine, and ethics.",
+    "date": "2026-09-18",
+    "author": "Arnold CD",
+    "category": "Culture",
+    "thumbnail_url": "https://raw.githubusercontent.com/Arnold-cd/blog-cms/main/images/banner-puya.svg",
+    "content_url": "https://raw.githubusercontent.com/Arnold-cd/blog-cms/main/posts/manipur-puya-ancient-wisdom.md",
+    "reading_time_min": 2,
+    "language": "mni",
+    "featured": false
+  },
+  {
+    "id": "philosophy-of-time",
+    "title": "The Architecture of Subjective Time: Why Moments Stretch and Years Fly",
+    "summary": "An inquiry into chronological physics versus phenomenological duration, and how human consciousness constructs the illusion of temporal flow.",
+    "date": "2026-09-15",
+    "author": "Arnold CD",
+    "category": "Philosophy",
+    "thumbnail_url": "https://raw.githubusercontent.com/Arnold-cd/blog-cms/main/images/banner-philosophy.svg",
+    "content_url": "https://raw.githubusercontent.com/Arnold-cd/blog-cms/main/posts/philosophy-of-time.md",
+    "reading_time_min": 3,
+    "language": "en",
+    "featured": true
+  }
+]
