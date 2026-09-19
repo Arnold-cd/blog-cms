@@ -20,6 +20,21 @@ export const ArticleView: React.FC<ArticleViewProps> = ({ post, onBack }) => {
     setLoading(true);
     setError(null);
 
+    // If content is already available in the post object (e.g. previewing draft from CMS Studio)
+    if (post.content) {
+      try {
+        const parsed = marked.parse(post.content, { gfm: true, breaks: true }) as string;
+        setContentHtml(parsed);
+        setLoading(false);
+        return;
+      } catch (err: any) {
+        setError(err.message || 'Failed to parse draft markdown');
+        setLoading(false);
+        return;
+      }
+    }
+
+    // Otherwise, fetch from content_url
     fetchArticleMarkdown(post.content_url)
       .then((markdown) => {
         if (!isMounted) return;

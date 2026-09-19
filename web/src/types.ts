@@ -10,6 +10,7 @@ export interface BlogPost {
   reading_time_min: number;
   language: string;
   featured: boolean;
+  content?: string; // Optional embedded content for CMS Studio drafts & offline cache
 }
 
 export interface PostDraft {

@@ -27,24 +27,47 @@ export async function fetchPosts(): Promise<BlogPost[]> {
 }
 
 export async function fetchArticleMarkdown(contentUrl: string): Promise<string> {
-  // If contentUrl is relative or remote, handle fetching
+  // If it's a draft URL, handle gracefully
+  if (!contentUrl || contentUrl.startsWith('draft://')) {
+    return '# Draft Content\n\nNo content provided for this draft.';
+  }
+
+  // 1. Try local relative path first
+  const filename = contentUrl.split('/').pop();
+  if (filename) {
+    try {
+      const localRes = await fetch(`./posts/${filename}`);
+      if (localRes.ok) {
+        const text = await localRes.text();
+        return stripFrontmatter(text);
+      }
+    } catch {
+      // ignore and try next
+    }
+  }
+
+  // 2. Try direct contentUrl
   try {
     const res = await fetch(contentUrl);
     if (res.ok) {
       const text = await res.text();
       return stripFrontmatter(text);
     }
-  } catch (err) {
-    console.warn(`Direct fetch for ${contentUrl} failed, trying raw fallback`, err);
+  } catch {
+    // ignore and try next
   }
 
-  // Fallback if contentUrl was a local relative path
-  if (contentUrl.startsWith('posts/') || contentUrl.startsWith('./posts/')) {
-    const rawGithubUrl = `https://raw.githubusercontent.com/Arnold-cd/blog-cms/main/${contentUrl.replace(/^\.\//, '')}`;
-    const res = await fetch(rawGithubUrl);
-    if (res.ok) {
-      const text = await res.text();
-      return stripFrontmatter(text);
+  // 3. Fallback to GitHub raw
+  if (filename) {
+    try {
+      const rawGithubUrl = `https://raw.githubusercontent.com/Arnold-cd/blog-cms/main/posts/${filename}`;
+      const res = await fetch(rawGithubUrl);
+      if (res.ok) {
+        const text = await res.text();
+        return stripFrontmatter(text);
+      }
+    } catch {
+      // ignore
     }
   }
 

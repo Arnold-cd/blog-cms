@@ -139,17 +139,18 @@ Support for **bold**, *italics*, quotes, and tables:
   // Preview in Reader Feed
   const handlePreviewInFeed = () => {
     const postObj: BlogPost = {
-      id: draft.id,
+      id: draft.id || 'draft-article',
       title: draft.title || 'Untitled Article',
       summary: draft.summary || 'No summary provided',
       date: draft.date,
       author: draft.author,
       category: draft.category,
       thumbnail_url: draft.thumbnail,
-      content_url: 'draft://local',
+      content_url: `posts/${draft.id || 'draft-article'}.md`,
       reading_time_min: minutes,
       language: draft.language,
       featured: draft.featured,
+      content: draft.content, // Provide direct content for instant reader preview!
     };
     onPreviewInFeed(postObj);
   };
