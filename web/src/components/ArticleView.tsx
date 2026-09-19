@@ -124,7 +124,15 @@ export const ArticleView: React.FC<ArticleViewProps> = ({ post, onBack, onEditDr
       <header className="reader-header">
         {post.thumbnail_url && (
           <div className="reader-banner-wrap">
-            <img src={post.thumbnail_url} alt={post.title} />
+            <img
+              src={post.thumbnail_url}
+              alt={post.title}
+              onError={(e) => {
+                const target = e.currentTarget;
+                target.onerror = null;
+                target.src = 'images/banner-philosophy.svg';
+              }}
+            />
           </div>
         )}
 

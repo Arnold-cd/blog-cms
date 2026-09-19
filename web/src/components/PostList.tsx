@@ -109,6 +109,11 @@ export const PostList: React.FC<PostListProps> = ({ posts, onSelectPost, onOpenE
                 alt={featuredPost.title}
                 className="hero-banner-img"
                 loading="eager"
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  target.onerror = null;
+                  target.src = 'images/banner-philosophy.svg';
+                }}
               />
             </div>
           </div>
@@ -192,6 +197,11 @@ export const PostList: React.FC<PostListProps> = ({ posts, onSelectPost, onOpenE
                   src={post.thumbnail_url}
                   alt={post.title}
                   loading="lazy"
+                  onError={(e) => {
+                    const target = e.currentTarget;
+                    target.onerror = null;
+                    target.src = 'images/banner-philosophy.svg';
+                  }}
                 />
                 <span className="card-lang-badge">{post.language.toUpperCase()}</span>
               </div>

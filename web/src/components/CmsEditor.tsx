@@ -115,10 +115,12 @@ Support for **bold**, *italics*, quotes, and tables:
   // Replace internal asset URLs with local blob URLs for live preview
   const livePreviewMarkdown = useMemo(() => {
     let content = draft.content;
-    if (draft.assets) {
+    if (draft.assets && draft.assets.length > 0) {
       draft.assets.forEach((asset) => {
-        // replace occurrences of images/asset.name with local previewUrl
-        content = content.split(`images/${asset.name}`).join(asset.previewUrl);
+        // replace occurrences of images/asset.name, ./images/asset.name, or raw asset.name with local previewUrl
+        const escaped = asset.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const regex = new RegExp(`(?:\\.?\\/?images\\/)?${escaped}`, 'gi');
+        content = content.replace(regex, asset.previewUrl);
       });
     }
     return content;
@@ -325,8 +327,10 @@ Support for **bold**, *italics*, quotes, and tables:
 
   // Preview in Reader Feed
   const handlePreviewInFeed = () => {
+    const assetMatch = draft.assets?.find((a) => draft.thumbnail.toLowerCase().includes(a.name.toLowerCase()));
     const effectiveThumbnail =
       draft.thumbnailPreviewUrl ||
+      assetMatch?.previewUrl ||
       draft.thumbnail ||
       'images/banner-philosophy.svg';
 
@@ -571,11 +575,14 @@ Support for **bold**, *italics*, quotes, and tables:
                 onChange={(e) => setDraft({ ...draft, thumbnail: e.target.value, thumbnailPreviewUrl: '' })}
                 id="input-cms-thumbnail"
               />
-              {draft.thumbnailPreviewUrl && (
-                <div style={{ width: '56px', height: '40px', borderRadius: '6px', overflow: 'hidden', border: '1px solid var(--border-active)' }}>
-                  <img src={draft.thumbnailPreviewUrl} alt="Thumbnail preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                </div>
-              )}
+              {(() => {
+                const thumbSrc = draft.thumbnailPreviewUrl || draft.assets?.find(a => draft.thumbnail.toLowerCase().includes(a.name.toLowerCase()))?.previewUrl;
+                return thumbSrc ? (
+                  <div style={{ width: '56px', height: '40px', borderRadius: '6px', overflow: 'hidden', border: '1px solid var(--border-active)' }}>
+                    <img src={thumbSrc} alt="Thumbnail preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  </div>
+                ) : null;
+              })()}
             </div>
           </div>
 
