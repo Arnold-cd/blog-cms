@@ -275,3 +275,26 @@ python scripts/generate_index.py --strict
 2. Go to **Settings** > **Pages**.
 3. Under **Build and deployment** > **Source**, choose **GitHub Actions**.
 4. Push to `main` and the GitHub Actions workflow will automatically publish your CMS!
+
+---
+
+## 💻 Web App & Markdown CMS Studio
+
+The repository includes a modern React + Vite + TypeScript web application located in `web/`. It acts as both a public Blog Reader and an authoring CMS Studio with live preview.
+
+### Features
+- **Modern Obsidian Dark UI**: Glassmorphic cards, luminous gradients, and responsive layouts.
+- **Article Reader**: Clean Markdown rendering, reading time indicators, category and language filters (`en` and `mni` Meetei Mayek).
+- **Interactive CMS Studio**:
+  - Live frontmatter form with slug generator and instant validation.
+  - Live calculated reading time and word count.
+  - Side-by-side live Markdown preview.
+  - One-click "Download `.md`" and "Copy Markdown" to drop straight into `posts/`.
+
+### Running the Web App Locally
+```bash
+cd web
+npm install
+npm run dev
+```
+Open `http://localhost:5173` to explore the reader and CMS studio.
