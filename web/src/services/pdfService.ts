@@ -1,8 +1,33 @@
+// Ensure critical polyfills for PDF.js across all browser versions
+if (typeof Uint8Array !== 'undefined' && !(Uint8Array.prototype as any).toHex) {
+  (Uint8Array.prototype as any).toHex = function () {
+    return Array.from(this as Uint8Array)
+      .map((b) => b.toString(16).padStart(2, '0'))
+      .join('');
+  };
+}
+
+if (typeof (Promise as any).withResolvers === 'undefined') {
+  (Promise as any).withResolvers = function <T>() {
+    let resolve!: (value: T | PromiseLike<T>) => void;
+    let reject!: (reason?: any) => void;
+    const promise = new Promise<T>((res, rej) => {
+      resolve = res;
+      reject = rej;
+    });
+    return { promise, resolve, reject };
+  };
+}
+
 import * as pdfjsLib from 'pdfjs-dist';
 import pdfWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 
-// Set local bundled worker for 100% offline & fast rendering
-pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
+// Set bundled worker
+try {
+  pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
+} catch {
+  // fallback if worker cannot be set
+}
 
 export interface RenderedPdfPage {
   name: string;
@@ -12,16 +37,23 @@ export interface RenderedPdfPage {
 }
 
 /**
- * Converts a PDF file into crisp, screen-optimized PNG images.
- * Caps maximum pixel width at 1600px for crisp high-DPI retina display
- * without blowing out memory or layout containers.
+ * Converts a PDF file into crisp, high-resolution PNG images.
+ * Uses a clean rendering pipeline with local cMaps and fonts to guarantee
+ * all text, graphics, and forms render accurately as pictures.
  */
 export async function convertPdfToImages(
   file: File,
   maxPages: number = 10
 ): Promise<RenderedPdfPage[]> {
   const arrayBuffer = await file.arrayBuffer();
-  const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+
+  const loadingTask = pdfjsLib.getDocument({
+    data: new Uint8Array(arrayBuffer),
+    cMapUrl: './cmaps/',
+    cMapPacked: true,
+    standardFontDataUrl: './standard_fonts/',
+  });
+
   const pdf = await loadingTask.promise;
   const pageCount = Math.min(pdf.numPages, maxPages);
   const result: RenderedPdfPage[] = [];
@@ -35,30 +67,40 @@ export async function convertPdfToImages(
     const page = await pdf.getPage(i);
     const unscaledViewport = page.getViewport({ scale: 1.0 });
 
-    // Target a crisp 1600px width (or 2x if smaller) for retina sharpness
+    // Target a crisp 1600px width for retina sharpness while maintaining aspect ratio
     const maxTargetWidth = 1600;
-    const optimalScale = Math.min(2.0, Math.max(1.5, maxTargetWidth / unscaledViewport.width));
+    const optimalScale = Math.min(2.5, Math.max(1.5, maxTargetWidth / unscaledViewport.width));
     const viewport = page.getViewport({ scale: optimalScale });
 
-    const canvas = document.createElement('canvas');
-    canvas.width = Math.round(viewport.width);
-    canvas.height = Math.round(viewport.height);
-    const ctx = canvas.getContext('2d', { alpha: false });
+    // 1. Render PDF onto a dedicated clean canvas
+    const renderCanvas = document.createElement('canvas');
+    renderCanvas.width = Math.floor(viewport.width);
+    renderCanvas.height = Math.floor(viewport.height);
+    const renderCtx = renderCanvas.getContext('2d');
 
-    if (!ctx) continue;
-
-    // Fill white background for PDF page before rendering
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    if (!renderCtx) continue;
 
     await page.render({
-      canvas: canvas,
-      canvasContext: ctx,
+      canvas: renderCanvas,
+      canvasContext: renderCtx,
       viewport: viewport,
     }).promise;
 
+    // 2. Composite onto white background canvas to ensure transparent PDF pages have solid white paper
+    const finalCanvas = document.createElement('canvas');
+    finalCanvas.width = renderCanvas.width;
+    finalCanvas.height = renderCanvas.height;
+    const finalCtx = finalCanvas.getContext('2d');
+
+    if (!finalCtx) continue;
+
+    finalCtx.fillStyle = '#ffffff';
+    finalCtx.fillRect(0, 0, finalCanvas.width, finalCanvas.height);
+    finalCtx.drawImage(renderCanvas, 0, 0);
+
+    // 3. Export as PNG image blob
     const blob = await new Promise<Blob | null>((resolve) =>
-      canvas.toBlob(resolve, 'image/png', 0.95)
+      finalCanvas.toBlob(resolve, 'image/png', 0.95)
     );
 
     if (blob) {
