@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import {
   ALL_27_MAIN_LETTERS,
   LONSUM_8,
+  ALL_LETTERS_MAIN_AND_LONSUM,
   CHEITAP_8,
   INDEPENDENT_VOWELS_7,
   SPECIAL_MARKS_3,
@@ -28,6 +29,8 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
   const [copied, setCopied] = useState(false);
   const [activeTab, setActiveTab] = useState<'translate' | 'vowels' | 'main27' | 'lonsum' | 'cheitap' | 'extensions' | 'numerals'>('vowels');
   const [sampleConsonant, setSampleConsonant] = useState<string>('ꯀ');
+  const [showFullMatrix, setShowFullMatrix] = useState<boolean>(false);
+  const [matrixFilter, setMatrixFilter] = useState<'all' | 'main' | 'lonsum'>('all');
 
   const handleTranslate = () => {
     const result = translateToMeeteiMayekWithVocab(inputText);
@@ -370,31 +373,105 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
               </div>
             </div>
 
-            {/* Section 2: Vowel Diacritics (Cheitap Eeyek) */}
+            {/* Section 2: Vowel Diacritics (Cheitap Eeyek) applied to ALL 27 Main & 8 Lonsum */}
             <div>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.4rem', flexWrap: 'wrap', gap: '0.5rem' }}>
-                <h4 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
-                  Vowel Diacritics (Cheitap Eeyek &bull; ꯆꯩꯇꯥꯞ)
-                </h4>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.78rem' }}>
-                  <span style={{ color: 'var(--text-muted)' }}>Base consonant:</span>
+                <div>
+                  <h4 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
+                    Vowel Diacritics (Cheitap Eeyek &bull; ꯆꯩꯇꯥꯞ)
+                  </h4>
+                  <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
+                    Every Cheitap diacritic applies to <strong>all 27 Main Letters</strong> and <strong>all 8 Lonsum Letters</strong>
+                  </span>
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+                  <button
+                    type="button"
+                    onClick={() => setShowFullMatrix(!showFullMatrix)}
+                    className={`btn-secondary ${showFullMatrix ? 'active' : ''}`}
+                    style={{ fontSize: '0.76rem', padding: '0.25rem 0.65rem' }}
+                    id="btn-toggle-full-matrix"
+                  >
+                    <span>{showFullMatrix ? "Hide 35-Letter Matrix" : "View Full 35-Letter Matrix"}</span>
+                  </button>
+
                   <select
                     value={sampleConsonant}
                     onChange={(e) => setSampleConsonant(e.target.value)}
                     className="form-select"
-                    style={{ padding: '0.15rem 0.4rem', fontSize: '0.8rem', width: 'auto', fontFamily: 'var(--font-meetei)' }}
+                    style={{ padding: '0.2rem 0.5rem', fontSize: '0.82rem', width: 'auto', fontFamily: 'var(--font-meetei)' }}
+                    id="select-cheitap-base"
                   >
-                    {ALL_27_MAIN_LETTERS.map((l) => (
-                      <option key={l.char} value={l.char}>{l.char} ({l.name})</option>
-                    ))}
+                    <optgroup label="27 Main Letters (ꯀ-ꯚ)">
+                      {ALL_27_MAIN_LETTERS.map((l) => (
+                        <option key={l.char} value={l.char}>{l.char} ({l.name})</option>
+                      ))}
+                    </optgroup>
+                    <optgroup label="8 Lonsum Letters (ꯛ-ꯢ)">
+                      {LONSUM_8.map((l) => (
+                        <option key={l.char} value={l.char}>{l.char} ({l.name})</option>
+                      ))}
+                    </optgroup>
                   </select>
                 </div>
               </div>
-              <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.9rem' }}>
-                Syllables are formed by attaching these 8 vowel diacritics directly to consonants:
-              </p>
 
-              <div style={{ overflowX: 'auto' }}>
+              {/* Quick Select Buttons: Main Letters & Lonsum Letters */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', marginBottom: '0.8rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', flexWrap: 'wrap' }}>
+                  <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', minWidth: '75px' }}>27 Main:</span>
+                  {ALL_27_MAIN_LETTERS.map((l) => (
+                    <button
+                      key={l.char}
+                      type="button"
+                      onClick={() => setSampleConsonant(l.char)}
+                      className="btn-ghost"
+                      style={{
+                        padding: '0.15rem 0.35rem',
+                        fontSize: '0.9rem',
+                        fontFamily: 'var(--font-meetei)',
+                        color: sampleConsonant === l.char ? 'var(--accent-cyan)' : 'var(--text-secondary)',
+                        background: sampleConsonant === l.char ? 'rgba(56, 189, 248, 0.15)' : 'transparent',
+                        border: sampleConsonant === l.char ? '1px solid var(--accent-cyan)' : '1px solid transparent',
+                        borderRadius: 'var(--radius-xs)',
+                        lineHeight: 1,
+                      }}
+                      title={`${l.char} (${l.name})`}
+                    >
+                      {l.char}
+                    </button>
+                  ))}
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', flexWrap: 'wrap' }}>
+                  <span style={{ fontSize: '0.72rem', color: 'var(--accent-amber)', minWidth: '75px', fontWeight: 600 }}>8 Lonsum:</span>
+                  {LONSUM_8.map((l) => (
+                    <button
+                      key={l.char}
+                      type="button"
+                      onClick={() => setSampleConsonant(l.char)}
+                      className="btn-ghost"
+                      style={{
+                        padding: '0.15rem 0.35rem',
+                        fontSize: '0.9rem',
+                        fontFamily: 'var(--font-meetei)',
+                        color: sampleConsonant === l.char ? 'var(--accent-amber)' : 'var(--accent-amber)',
+                        background: sampleConsonant === l.char ? 'rgba(245, 158, 11, 0.15)' : 'rgba(245, 158, 11, 0.05)',
+                        border: sampleConsonant === l.char ? '1px solid var(--accent-amber)' : '1px solid var(--border-subtle)',
+                        borderRadius: 'var(--radius-xs)',
+                        lineHeight: 1,
+                      }}
+                      title={`Lonsum ${l.char} (${l.name})`}
+                    >
+                      {l.char}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Single Consonant Interactive Table (Active Selection) */}
+              <div style={{ overflowX: 'auto', marginBottom: '1rem' }}>
                 <table style={{
                   width: '100%',
                   borderCollapse: 'collapse',
@@ -432,7 +509,7 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
                         </td>
                       ))}
                     </tr>
-                    {/* Consonant plus diacritic */}
+                    {/* Consonant/Lonsum plus diacritic */}
                     <tr>
                       <td style={{ padding: '0.65rem 0.5rem', textAlign: 'left', color: 'var(--text-primary)', fontWeight: 600 }}>
                         <span style={{ fontFamily: 'var(--font-meetei)', fontSize: '1.2rem', color: 'var(--accent-cyan)' }}>{sampleConsonant}</span> + diacritic
@@ -451,6 +528,7 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
                                 color: 'var(--accent-cyan)',
                                 padding: '0.2rem 0.4rem',
                                 borderRadius: 'var(--radius-xs)',
+                                width: '100%',
                               }}
                               title={`Click to insert ${combo}`}
                             >
@@ -463,6 +541,97 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
                   </tbody>
                 </table>
               </div>
+
+              {/* Full 35-Letter Matrix (Collapsible Table) */}
+              {showFullMatrix && (
+                <div style={{ marginTop: '1rem', border: '1px solid var(--border-active)', borderRadius: 'var(--radius-sm)', padding: '1rem', background: 'var(--bg-elevated)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+                    <h5 style={{ margin: 0, fontSize: '0.92rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+                      Full Cheitap Matrix &mdash; All 35 Letters (27 Main + 8 Lonsum) &times; 8 Diacritics
+                    </h5>
+                    <div style={{ display: 'flex', gap: '0.35rem' }}>
+                      <button
+                        type="button"
+                        className={`category-chip ${matrixFilter === 'all' ? 'active' : ''}`}
+                        style={{ padding: '0.2rem 0.5rem', fontSize: '0.72rem' }}
+                        onClick={() => setMatrixFilter('all')}
+                      >
+                        All (35)
+                      </button>
+                      <button
+                        type="button"
+                        className={`category-chip ${matrixFilter === 'main' ? 'active' : ''}`}
+                        style={{ padding: '0.2rem 0.5rem', fontSize: '0.72rem' }}
+                        onClick={() => setMatrixFilter('main')}
+                      >
+                        27 Main Only
+                      </button>
+                      <button
+                        type="button"
+                        className={`category-chip ${matrixFilter === 'lonsum' ? 'active' : ''}`}
+                        style={{ padding: '0.2rem 0.5rem', fontSize: '0.72rem' }}
+                        onClick={() => setMatrixFilter('lonsum')}
+                      >
+                        8 Lonsum Only
+                      </button>
+                    </div>
+                  </div>
+
+                  <div style={{ overflowX: 'auto', maxHeight: '350px', overflowY: 'auto' }}>
+                    <table style={{
+                      width: '100%',
+                      borderCollapse: 'collapse',
+                      background: 'var(--bg-card)',
+                      fontSize: '0.82rem',
+                      textAlign: 'center',
+                    }}>
+                      <thead style={{ position: 'sticky', top: 0, background: 'var(--bg-elevated)', zIndex: 2 }}>
+                        <tr style={{ borderBottom: '2px solid var(--border-active)' }}>
+                          <th style={{ padding: '0.4rem 0.5rem', textAlign: 'left' }}>Base Letter</th>
+                          {CHEITAP_8.map((c) => (
+                            <th key={c.name} style={{ padding: '0.4rem 0.4rem', color: 'var(--text-primary)' }}>
+                              {c.name} ({c.char})
+                            </th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {(matrixFilter === 'all' ? ALL_LETTERS_MAIN_AND_LONSUM : matrixFilter === 'main' ? ALL_27_MAIN_LETTERS : LONSUM_8).map((letter) => (
+                          <tr key={letter.char} style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+                            <td style={{ padding: '0.35rem 0.5rem', textAlign: 'left', color: letter.category === 'lonsum' ? 'var(--accent-amber)' : 'var(--text-primary)', fontWeight: 600 }}>
+                              <span style={{ fontFamily: 'var(--font-meetei)', fontSize: '1.15rem', marginRight: '0.3rem' }}>{letter.char}</span>
+                              <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{letter.name}</span>
+                            </td>
+                            {CHEITAP_8.map((c) => {
+                              const combo = `${letter.char}${c.char}`;
+                              return (
+                                <td key={c.name} style={{ padding: '0.2rem 0.3rem' }}>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleInsert(combo)}
+                                    className="btn-ghost"
+                                    style={{
+                                      fontFamily: 'var(--font-meetei)',
+                                      fontSize: '1.3rem',
+                                      color: letter.category === 'lonsum' ? 'var(--accent-amber)' : 'var(--accent-cyan)',
+                                      padding: '0.15rem 0.3rem',
+                                      borderRadius: 'var(--radius-xs)',
+                                      width: '100%',
+                                    }}
+                                    title={`Click to insert ${combo}`}
+                                  >
+                                    {combo}
+                                  </button>
+                                </td>
+                              );
+                            })}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}

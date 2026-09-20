@@ -95,6 +95,9 @@ export const LONSUM_8: MeeteiUnicodeChar[] = [
   { codePoint: 'U+ABE2', char: 'ꯢ', name: 'I Lonsum', meaning: 'Final -i', category: 'lonsum', ipa: '[-i]', latin: '-i' },
 ];
 
+// All 35 Letters (27 Main Letters + 8 Lonsum Letters) capable of taking Cheitap diacritics
+export const ALL_LETTERS_MAIN_AND_LONSUM: MeeteiUnicodeChar[] = [...ALL_27_MAIN_LETTERS, ...LONSUM_8];
+
 // 4. 8 Dependent Vowel Diacritics (Cheitap Eeyek) - Official Unicode U+ABE3 to U+ABEA
 export const CHEITAP_8: MeeteiUnicodeChar[] = [
   { codePoint: 'U+ABE5', char: 'ꯥ', name: 'aa-tap', meaning: 'Vowel sign -aa (e.g. ꯀꯥ = ka)', category: 'cheitap', ipa: '/a/', latin: 'ā / aa' },
@@ -683,7 +686,7 @@ function transliterateLatinWord(token: string): string {
 
 function cleanupOrphanedVowels(text: string): string {
   let clean = text;
-  const pattern = /(^|[^ꯀ-ꯚꯎꯏꯑ])([ꯣ-ꯪ꯬])/g;
+  const pattern = /(^|[^ꯀ-ꯢꫠ-ꫪ])([ꯣ-ꯪ꯬])/g;
   while (pattern.test(clean)) {
     clean = clean.replace(pattern, '$1ꯑ$2');
   }
