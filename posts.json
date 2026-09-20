@@ -1,1 +1,16 @@
-[]
+[
+  {
+    "id": "new-article",
+    "title": "New Article",
+    "summary": "Pukninggi warol",
+    "date": "2026-09-20",
+    "author": "Arnold CD",
+    "category": "Philosophy",
+    "thumbnail_url": "https://raw.githubusercontent.com/Arnold-cd/blog-cms/main/images/banner-philosophy.svg",
+    "content_url": "https://raw.githubusercontent.com/Arnold-cd/blog-cms/main/posts/new-article.md",
+    "reading_time_min": 1,
+    "language": "en",
+    "featured": false,
+    "content": "---\nid: \"new-article\"\ntitle: \"New Article\"\nsummary: \"Pukninggi warol\"\ndate: \"2026-09-20\"\nauthor: \"Arnold CD\"\ncategory: \"Philosophy\"\nthumbnail: \"images/banner-philosophy.svg\"\nlanguage: \"en\"\nfeatured: false\n---\n\n![393483-final-2](images/393483-final-2.png)\n# pukninggi warol\n\nWrite your thoughts here...\nkmdwrige nungaiiribo\n"
+  }
+]
