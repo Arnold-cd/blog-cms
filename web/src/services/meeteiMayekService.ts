@@ -519,6 +519,19 @@ const EXTENDED_VOCABULARY: Record<string, string> = {
 const COMMON_PHONETIC_WORDS: Record<string, string> = {
   oina: 'ꯑꯣꯏꯅ',
   oja: 'ꯑꯣꯖꯥ',
+  kmdwrige: 'ꯀꯃꯗꯧꯔꯤꯒꯦ',
+  kamdwrige: 'ꯀꯃꯗꯧꯔꯤꯒꯦ',
+  kamdourige: 'ꯀꯃꯗꯧꯔꯤꯒꯦ',
+  kmdwba: 'ꯀꯃꯗꯧꯕ',
+  kamdwba: 'ꯀꯃꯗꯧꯕ',
+  kmdwre: 'ꯀꯃꯗꯧꯔꯦ',
+  kmdwri: 'ꯀꯃꯗꯧꯔꯤ',
+  twrige: 'ꯇꯧꯔꯤꯒꯦ',
+  tourige: 'ꯇꯧꯔꯤꯒꯦ',
+  twba: 'ꯇꯧꯕ',
+  touba: 'ꯇꯧꯕ',
+  dwge: 'ꯗꯧꯒꯦ',
+  douge: 'ꯗꯧꯒꯦ',
   kangleipak: 'ꯀꯪꯂꯩꯄꯥꯛ',
   manipur: 'ꯃꯅꯤꯄꯨꯔ',
   meetei: 'ꯃꯤꯇꯩ',
@@ -584,6 +597,11 @@ function transliterateLatinWord(token: string): string {
     word = word.split(grk).join(rep);
   }
   word = word.toLowerCase();
+
+  // Manipuri phonetic typing rule: consonant + 'w' represents sou-nap (ꯧ /ou/)
+  // e.g. dw -> d + sou-nap (ꯗꯧ), tw -> tou (ꯇꯧ), kmdwrige -> kamdourige -> ꯀꯃꯗꯧꯔꯤꯒꯦ
+  word = word.replace(/([b-df-hj-np-tv-z])w(?=[b-df-hj-np-tv-z]|$|[ie])/g, '$1ou');
+  word = word.replace(/([b-df-hj-np-tv-z])ow(?=[b-df-hj-np-tv-z]|$|[ie])/g, '$1ou');
 
   const clusters: [string, string][] = [
     ['sch', 'ꯁ꯭ꯀ'],
