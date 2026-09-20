@@ -206,3 +206,85 @@ export async function publishToGitHub(
     };
   }
 }
+
+
+/**
+ * Permanently deletes an article from GitHub and updates posts.json
+ */
+export async function deleteFromGitHub(
+  token: string,
+  repo: string,
+  postId: string
+): Promise<{ success: boolean; message: string }> {
+  if (!token.trim()) {
+    throw new Error("GitHub Personal Access Token is required to delete articles.");
+  }
+
+  const cleanRepo = repo.replace(/^https:\/\/github\.com\//, "").replace(/\.git$/, "");
+  const headers = {
+    Authorization: `Bearer ${token.trim()}`,
+    Accept: "application/vnd.github.v3+json",
+    "Content-Type": "application/json",
+  };
+
+  const postPath = `posts/${postId}.md`;
+
+  // 1. Get file SHA of posts/<postId>.md
+  const fileRes = await fetch(`https://api.github.com/repos/${cleanRepo}/contents/${postPath}`, { headers });
+  if (!fileRes.ok) {
+    const err = await fileRes.json().catch(() => ({}));
+    throw new Error(`Article not found on GitHub: ${err.message || fileRes.statusText}`);
+  }
+  const fileData = await fileRes.json();
+  const fileSha = fileData.sha;
+
+  // 2. Delete the markdown file from GitHub
+  const deleteRes = await fetch(`https://api.github.com/repos/${cleanRepo}/contents/${postPath}`, {
+    method: "DELETE",
+    headers,
+    body: JSON.stringify({
+      message: `chore(cms): delete article ${postId} via CMS Admin`,
+      sha: fileSha,
+    }),
+  });
+
+  if (!deleteRes.ok) {
+    const err = await deleteRes.json().catch(() => ({}));
+    throw new Error(`Failed to delete article: ${err.message || deleteRes.statusText}`);
+  }
+
+  // 3. Update posts.json manifest directly on GitHub
+  try {
+    const postsJsonPath = "posts.json";
+    const postsJsonRes = await fetch(`https://api.github.com/repos/${cleanRepo}/contents/${postsJsonPath}`, { headers });
+
+    if (postsJsonRes.ok) {
+      const data = await postsJsonRes.json();
+      const postsJsonSha = data.sha;
+      const decodedContent = decodeURIComponent(escape(atob(data.content.replace(/\s/g, ""))));
+      const currentPosts: BlogPost[] = JSON.parse(decodedContent);
+
+      const remainingPosts = currentPosts.filter((p) => p.id !== postId);
+      const encodedPostsJson = btoa(unescape(encodeURIComponent(JSON.stringify(remainingPosts, null, 2))));
+
+      const updatePayload: any = {
+        message: `chore(cms): remove ${postId} from posts.json manifest via CMS Admin`,
+        content: encodedPostsJson,
+        sha: postsJsonSha,
+      };
+
+      await fetch(`https://api.github.com/repos/${cleanRepo}/contents/${postsJsonPath}`, {
+        method: "PUT",
+        headers,
+        body: JSON.stringify(updatePayload),
+      });
+    }
+  } catch (manifestErr) {
+    console.warn("Could not update posts.json directly via GitHub API, GitHub Actions will handle it:", manifestErr);
+  }
+
+  return {
+    success: true,
+    message: `Article ${postId} deleted successfully from GitHub!`,
+  };
+}

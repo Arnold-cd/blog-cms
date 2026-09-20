@@ -2,21 +2,26 @@ import React, { useEffect, useState, useMemo } from 'react';
 import type { BlogPost } from '../types';
 import { fetchArticleMarkdown } from '../services/cmsService';
 import { translateMarkdownToMeeteiMayek, translateToMeeteiMayekWithVocab } from '../services/meeteiMayekService';
-import { ArrowLeft, Clock, Share2, Check, PenLine, Sparkles, Languages } from 'lucide-react';
+import { ArrowLeft, Clock, Share2, Check, PenLine, Sparkles, Languages, Trash2, AlertTriangle, Key, Loader2 } from 'lucide-react';
 import { marked } from 'marked';
 
 interface ArticleViewProps {
   post: BlogPost;
   onBack: () => void;
   onEditDraft?: () => void;
+  onDeletePost?: (post: BlogPost, token: string) => Promise<void>;
 }
 
-export const ArticleView: React.FC<ArticleViewProps> = ({ post, onBack, onEditDraft }) => {
+export const ArticleView: React.FC<ArticleViewProps> = ({ post, onBack, onEditDraft, onDeletePost }) => {
   const [rawMarkdown, setRawMarkdown] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState<boolean>(false);
   const [isTranslated, setIsTranslated] = useState<boolean>(post.language === 'mni');
+  const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
+  const [deleteToken, setDeleteToken] = useState<string>(() => localStorage.getItem('github_cms_token') || '');
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -125,10 +130,32 @@ export const ArticleView: React.FC<ArticleViewProps> = ({ post, onBack, onEditDr
           <span>Back to Articles</span>
         </button>
 
-        <button onClick={handleShare} className="btn-secondary" id="btn-share-article">
-          {copied ? <Check size={14} color="var(--accent-emerald)" /> : <Share2 size={14} />}
-          <span>{copied ? 'Link Copied' : 'Share'}</span>
-        </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <button onClick={handleShare} className="btn-secondary" id="btn-share-article">
+            {copied ? <Check size={14} color="var(--accent-emerald)" /> : <Share2 size={14} />}
+            <span>{copied ? 'Link Copied' : 'Share'}</span>
+          </button>
+
+          {!post.isDraft && onDeletePost && (
+            <button
+              onClick={() => setShowDeleteModal(true)}
+              className="btn-ghost"
+              style={{
+                color: 'var(--accent-rose)',
+                padding: '0.45rem 0.75rem',
+                fontSize: '0.82rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.35rem',
+              }}
+              title="Delete article from GitHub"
+              id="btn-delete-article"
+            >
+              <Trash2 size={14} />
+              <span>Delete</span>
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Meetei Mayek Translation Toggle Bar */}
@@ -240,6 +267,121 @@ export const ArticleView: React.FC<ArticleViewProps> = ({ post, onBack, onEditDr
           />
         )}
       </article>
+    
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'rgba(0,0,0,0.8)',
+          backdropFilter: 'blur(12px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000,
+          padding: '1rem',
+        }}>
+          <div style={{
+            background: 'var(--bg-elevated)',
+            border: '1px solid rgba(244, 63, 94, 0.4)',
+            borderRadius: 'var(--radius-lg)',
+            maxWidth: '480px',
+            width: '100%',
+            padding: '2rem',
+            boxShadow: 'var(--shadow-elevated)',
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.75rem', color: 'var(--accent-rose)' }}>
+              <AlertTriangle size={20} />
+              <h3 style={{ fontSize: '1.2rem', fontWeight: 700, margin: 0 }}>Delete Article from GitHub</h3>
+            </div>
+
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: '1.25rem' }}>
+              Are you sure you want to permanently delete <strong>"{post.title}"</strong> (<code>posts/{post.id}.md</code>)?
+              This will remove the file from your GitHub repository and update the article index.
+            </p>
+
+            <div style={{ marginBottom: '1.25rem' }}>
+              <label className="form-label" style={{ marginBottom: '0.35rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                <Key size={13} />
+                <span>GitHub Personal Access Token</span>
+              </label>
+              <input
+                type="password"
+                className="form-input"
+                style={{ width: '100%' }}
+                placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
+                value={deleteToken}
+                onChange={(e) => setDeleteToken(e.target.value)}
+                id="input-delete-token"
+              />
+              <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', marginTop: '0.25rem' }}>
+                Requires repo permissions to commit deletion to main branch.
+              </span>
+            </div>
+
+            {deleteError && (
+              <div style={{
+                padding: '0.65rem 0.85rem',
+                borderRadius: 'var(--radius-sm)',
+                fontSize: '0.8rem',
+                background: 'rgba(244, 63, 94, 0.12)',
+                color: 'var(--accent-rose)',
+                border: '1px solid var(--accent-rose)',
+                marginBottom: '1.25rem',
+              }}>
+                {deleteError}
+              </div>
+            )}
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem' }}>
+              <button
+                type="button"
+                className="btn-secondary"
+                onClick={() => {
+                  setShowDeleteModal(false);
+                  setDeleteError(null);
+                }}
+                disabled={isDeleting}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="btn-primary"
+                style={{ background: 'var(--accent-rose)', borderColor: 'var(--accent-rose)' }}
+                disabled={isDeleting || !deleteToken.trim()}
+                onClick={async () => {
+                  if (!deleteToken.trim()) return;
+                  localStorage.setItem('github_cms_token', deleteToken);
+                  setIsDeleting(true);
+                  setDeleteError(null);
+                  try {
+                    if (onDeletePost) {
+                      await onDeletePost(post, deleteToken);
+                    }
+                  } catch (err: any) {
+                    setDeleteError(err.message || 'Failed to delete article');
+                    setIsDeleting(false);
+                  }
+                }}
+                id="btn-confirm-delete"
+              >
+                {isDeleting ? (
+                  <>
+                    <Loader2 size={14} style={{ animation: 'spin 1s linear infinite' }} />
+                    <span>Deleting from Git...</span>
+                  </>
+                ) : (
+                  <>
+                    <Trash2 size={14} />
+                    <span>Confirm Delete</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

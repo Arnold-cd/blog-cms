@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { BlogPost } from './types';
 import { fetchPosts } from './services/cmsService';
+import { deleteFromGitHub } from './services/exportService';
 import { Navbar } from './components/Navbar';
 import { PostList } from './components/PostList';
 import { ArticleView } from './components/ArticleView';
@@ -75,6 +76,15 @@ export function App() {
     });
   };
 
+  const handleDeletePost = async (postToDelete: BlogPost, token: string) => {
+    const repo = "Arnold-cd/blog-cms";
+    await deleteFromGitHub(token, repo, postToDelete.id);
+    setPosts((prev) => prev.filter((p) => p.id !== postToDelete.id));
+    setSelectedPost(null);
+    setActiveTab("feed");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   const handleEditDraft = () => {
     setSelectedPost(null);
     setActiveTab('editor');
@@ -121,6 +131,7 @@ export function App() {
                 post={selectedPost}
                 onBack={handleBackToFeed}
                 onEditDraft={handleEditDraft}
+                onDeletePost={handleDeletePost}
               />
             ) : activeTab === 'feed' ? (
               <PostList
