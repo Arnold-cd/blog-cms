@@ -50,7 +50,7 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
   };
 
   return (
-    <div style={{
+    <div className="meetei-modal-overlay" style={{
       position: 'fixed',
       inset: 0,
       background: 'rgba(0, 0, 0, 0.85)',
@@ -61,7 +61,7 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
       zIndex: 1100,
       padding: '1rem',
     }}>
-      <div style={{
+      <div className="meetei-modal-dialog" style={{
         background: 'var(--bg-elevated)',
         border: '1px solid var(--border-active)',
         borderRadius: 'var(--radius-lg)',
@@ -76,7 +76,7 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
         gap: '1.25rem',
       }}>
         {/* Header with Official Unicode Specs */}
-        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem' }}>
+        <div className="meetei-modal-header" style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
               <Languages size={20} color="var(--accent-cyan)" />
@@ -142,7 +142,7 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
         </div>
 
         {/* Tab Switcher */}
-        <div style={{ display: 'flex', gap: '0.4rem', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.5rem', flexWrap: 'wrap' }}>
+        <div className="meetei-modal-tabs" style={{ display: 'flex', gap: '0.4rem', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.5rem', flexWrap: 'wrap' }}>
           <button
             className={`category-chip ${activeTab === 'vowels' ? 'active' : ''}`}
             onClick={() => setActiveTab('vowels')}

@@ -1015,7 +1015,7 @@ Support for **bold**, *italics*, quotes, and tables:
 
       {/* GitHub Direct Publish Modal */}
       {showGitHubModal && (
-        <div style={{
+        <div className="modal-backdrop" style={{
           position: 'fixed',
           inset: 0,
           background: 'rgba(0,0,0,0.8)',
@@ -1026,7 +1026,7 @@ Support for **bold**, *italics*, quotes, and tables:
           zIndex: 1000,
           padding: '1rem',
         }}>
-          <div style={{
+          <div className="modal-dialog" style={{
             background: 'var(--bg-elevated)',
             border: '1px solid var(--border-active)',
             borderRadius: 'var(--radius-lg)',

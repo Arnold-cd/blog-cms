@@ -159,41 +159,20 @@ export const ArticleView: React.FC<ArticleViewProps> = ({ post, onBack, onEditDr
       </div>
 
       {/* Meetei Mayek Translation Toggle Bar */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        flexWrap: 'wrap',
-        gap: '0.75rem',
-        padding: '0.65rem 1.15rem',
-        marginBottom: '2rem',
-        background: 'var(--bg-card)',
-        border: '1px solid var(--border-subtle)',
-        borderRadius: 'var(--radius-full)',
-        boxShadow: 'var(--shadow-subtle)',
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
+      <div className="reader-lang-bar">
+        <div className="reader-lang-bar-left">
           <Languages size={15} color="var(--accent-cyan)" />
-          <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>Language View:</span>
-          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+          <span className="reader-lang-title">Language View:</span>
+          <span className="reader-lang-subtitle">
             (Powered by Google Noto Sans Meetei Mayek)
           </span>
         </div>
 
-        <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
+        <div className="reader-lang-bar-actions">
           <a
             href="fonts/NotoSansMeeteiMayek-Regular.ttf"
             download="NotoSansMeeteiMayek-Regular.ttf"
-            className="btn-ghost"
-            style={{
-              textDecoration: "none",
-              fontSize: "0.75rem",
-              padding: "0.25rem 0.6rem",
-              color: "var(--text-muted)",
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "0.35rem",
-            }}
+            className="btn-ghost reader-download-ttf"
             title="Download Meetei Mayek TrueType Font (.ttf) to install in Word, Photoshop, Figma, or Android"
             id="link-download-ttf"
           >
@@ -202,24 +181,24 @@ export const ArticleView: React.FC<ArticleViewProps> = ({ post, onBack, onEditDr
           </a>
 
           <div className="studio-view-toggle">
-          <button
-            type="button"
-            className={`view-toggle-btn ${!isTranslated ? 'active' : ''}`}
-            onClick={() => setIsTranslated(false)}
-            id="btn-toggle-lang-en"
-          >
-            <span>English</span>
-          </button>
-          <button
-            type="button"
-            className={`view-toggle-btn ${isTranslated ? 'active' : ''}`}
-            onClick={() => setIsTranslated(true)}
-            id="btn-toggle-lang-mni"
-          >
-            <span style={{ fontFamily: 'var(--font-meetei)', fontSize: '0.95rem' }}>ꯃꯤꯇꯩ ꯃꯌꯦꯛ</span>
-            <span>(Meetei Mayek)</span>
-          </button>
-        </div>
+            <button
+              type="button"
+              className={`view-toggle-btn ${!isTranslated ? 'active' : ''}`}
+              onClick={() => setIsTranslated(false)}
+              id="btn-toggle-lang-en"
+            >
+              <span>English</span>
+            </button>
+            <button
+              type="button"
+              className={`view-toggle-btn ${isTranslated ? 'active' : ''}`}
+              onClick={() => setIsTranslated(true)}
+              id="btn-toggle-lang-mni"
+            >
+              <span style={{ fontFamily: 'var(--font-meetei)', fontSize: '0.95rem' }}>ꯃꯤꯇꯩ ꯃꯌꯦꯛ</span>
+              <span>(Meetei Mayek)</span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -292,7 +271,7 @@ export const ArticleView: React.FC<ArticleViewProps> = ({ post, onBack, onEditDr
     
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
-        <div style={{
+        <div className="modal-backdrop" style={{
           position: 'fixed',
           inset: 0,
           background: 'rgba(0,0,0,0.8)',
@@ -303,7 +282,7 @@ export const ArticleView: React.FC<ArticleViewProps> = ({ post, onBack, onEditDr
           zIndex: 1000,
           padding: '1rem',
         }}>
-          <div style={{
+          <div className="modal-dialog" style={{
             background: 'var(--bg-elevated)',
             border: '1px solid rgba(244, 63, 94, 0.4)',
             borderRadius: 'var(--radius-lg)',
