@@ -863,15 +863,7 @@ Support for **bold**, *italics*, quotes, and tables:
         {draft.assets.length === 0 ? (
           <div
             onClick={() => fileInputRef.current?.click()}
-            style={{
-              padding: '1.25rem',
-              border: '1px dashed var(--border-subtle)',
-              borderRadius: 'var(--radius-sm)',
-              textAlign: 'center',
-              color: 'var(--text-muted)',
-              cursor: 'pointer',
-              fontSize: '0.82rem',
-            }}
+            className="media-dropzone"
           >
             Drop PDF pages or images here, or click to upload. They will instantly appear as pictures.
           </div>
@@ -976,7 +968,7 @@ Support for **bold**, *italics*, quotes, and tables:
             <div className="pane-header">
               <span>Live Article Preview</span>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <div className="studio-view-toggle" style={{ background: 'rgba(9, 9, 11, 0.8)' }}>
+                <div className="studio-view-toggle">
                   <button
                     type="button"
                     className={`view-toggle-btn ${!isPreviewMeetei ? 'active' : ''}`}

@@ -140,7 +140,7 @@ export const ArticleView: React.FC<ArticleViewProps> = ({ post, onBack, onEditDr
         gap: '0.75rem',
         padding: '0.65rem 1.15rem',
         marginBottom: '2rem',
-        background: 'rgba(24, 24, 27, 0.65)',
+        background: 'var(--bg-card)',
         border: '1px solid var(--border-subtle)',
         borderRadius: 'var(--radius-full)',
         boxShadow: 'var(--shadow-subtle)',
@@ -153,7 +153,7 @@ export const ArticleView: React.FC<ArticleViewProps> = ({ post, onBack, onEditDr
           </span>
         </div>
 
-        <div className="studio-view-toggle" style={{ background: 'rgba(9, 9, 11, 0.8)' }}>
+        <div className="studio-view-toggle">
           <button
             type="button"
             className={`view-toggle-btn ${!isTranslated ? 'active' : ''}`}
