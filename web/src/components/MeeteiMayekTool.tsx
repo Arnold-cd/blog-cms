@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import {
-  IYEK_IPEE,
-  ADDITIONAL_IPEE,
-  LONSUM,
-  CHEITAP,
-  NUMERALS,
-  translateToMeeteiMayek,
+  ALL_27_MAIN_LETTERS,
+  LONSUM_8,
+  CHEITAP_8,
+  SPECIAL_MARKS_3,
+  NUMERALS_10,
+  EXTENSIONS_BLOCK,
+  translateToMeeteiMayekWithVocab,
 } from '../services/meeteiMayekService';
 import { Languages, Copy, Check, Plus, ExternalLink, X } from 'lucide-react';
 
@@ -15,14 +16,18 @@ interface MeeteiMayekToolProps {
   onTranslateFullDraft?: () => void;
 }
 
-export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({ onInsertText, onClose, onTranslateFullDraft }) => {
+export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
+  onInsertText,
+  onClose,
+  onTranslateFullDraft,
+}) => {
   const [inputText, setInputText] = useState('');
   const [convertedText, setConvertedText] = useState('');
   const [copied, setCopied] = useState(false);
-  const [activeTab, setActiveTab] = useState<'translate' | 'ipee' | 'lonsum' | 'cheitap' | 'numerals'>('translate');
+  const [activeTab, setActiveTab] = useState<'translate' | 'main27' | 'lonsum' | 'cheitap' | 'extensions' | 'numerals'>('translate');
 
   const handleTranslate = () => {
-    const result = translateToMeeteiMayek(inputText);
+    const result = translateToMeeteiMayekWithVocab(inputText);
     setConvertedText(result);
   };
 
@@ -42,8 +47,8 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({ onInsertText, 
     <div style={{
       position: 'fixed',
       inset: 0,
-      background: 'rgba(0, 0, 0, 0.8)',
-      backdropFilter: 'blur(12px)',
+      background: 'rgba(0, 0, 0, 0.85)',
+      backdropFilter: 'blur(14px)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -54,7 +59,7 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({ onInsertText, 
         background: 'var(--bg-elevated)',
         border: '1px solid var(--border-active)',
         borderRadius: 'var(--radius-lg)',
-        maxWidth: '680px',
+        maxWidth: '760px',
         width: '100%',
         maxHeight: '90vh',
         overflowY: 'auto',
@@ -64,25 +69,42 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({ onInsertText, 
         flexDirection: 'column',
         gap: '1.25rem',
       }}>
-        {/* Header */}
+        {/* Header with Official Unicode Specs */}
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-              <Languages size={18} color="var(--accent-cyan)" />
+              <Languages size={20} color="var(--accent-cyan)" />
               <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#fff', fontFamily: 'var(--font-heading)' }}>
-                Meetei Mayek Translation &amp; Script Tool
+                Meetei Mayek Unicode Suite
               </h3>
             </div>
-            <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '0.25rem' }}>
-              Powered by Google <strong>Noto Sans Meetei Mayek</strong> standard.{' '}
+            <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginTop: '0.25rem', lineHeight: 1.5 }}>
+              Official Standards: Standard Block (
               <a
-                href="https://notofonts.github.io/meetei-mayek/"
+                href="https://unicode.org/charts/PDF/UABC0.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{ color: 'var(--accent-cyan)', display: 'inline-flex', alignItems: 'center', gap: '0.2rem', textDecoration: 'none' }}
+                style={{ color: 'var(--accent-cyan)', textDecoration: 'none' }}
               >
-                <span>notofonts.github.io/meetei-mayek</span>
-                <ExternalLink size={11} />
+                U+ABC0..U+ABFF
+              </a>
+              ) &amp; Extensions Block (
+              <a
+                href="https://unicode.org/charts/PDF/UAAE0.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: 'var(--accent-cyan)', textDecoration: 'none' }}
+              >
+                U+AAE0..U+AAFF
+              </a>
+              ) &bull;{' '}
+              <a
+                href="https://en.wikipedia.org/wiki/Meitei_script"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: 'var(--text-muted)', textDecoration: 'none' }}
+              >
+                Wikipedia Spec <ExternalLink size={10} style={{ display: 'inline' }} />
               </a>
             </p>
           </div>
@@ -101,28 +123,34 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({ onInsertText, 
             Translate / Transliterate
           </button>
           <button
-            className={`category-chip ${activeTab === 'ipee' ? 'active' : ''}`}
-            onClick={() => setActiveTab('ipee')}
+            className={`category-chip ${activeTab === 'main27' ? 'active' : ''}`}
+            onClick={() => setActiveTab('main27')}
           >
-            Iyek Ipee (ꯀ-ꯑ)
+            27 Main Letters (ꯀ-ꯚ)
           </button>
           <button
             className={`category-chip ${activeTab === 'lonsum' ? 'active' : ''}`}
             onClick={() => setActiveTab('lonsum')}
           >
-            Lonsum (ꯛ-ꯢ)
+            8 Lonsum (ꯛ-ꯢ)
           </button>
           <button
             className={`category-chip ${activeTab === 'cheitap' ? 'active' : ''}`}
             onClick={() => setActiveTab('cheitap')}
           >
-            Cheitap &amp; Tone (ꯥ-꯫)
+            8 Cheitap &amp; Marks
+          </button>
+          <button
+            className={`category-chip ${activeTab === 'extensions' ? 'active' : ''}`}
+            onClick={() => setActiveTab('extensions')}
+          >
+            Extensions (U+AAE0)
           </button>
           <button
             className={`category-chip ${activeTab === 'numerals' ? 'active' : ''}`}
             onClick={() => setActiveTab('numerals')}
           >
-            Numerals (꯰-꯹)
+            10 Digits (꯰-꯹)
           </button>
         </div>
 
@@ -130,15 +158,15 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({ onInsertText, 
         {activeTab === 'translate' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             <div>
-              <label className="form-label">English / Latin Phonetics or Bengali Script Input</label>
+              <label className="form-label">Type English / Latin Phonetics or Bengali Script</label>
               <textarea
                 rows={3}
                 className="form-textarea"
-                placeholder="Type Latin words (e.g. kangleipak, meetei mayek, manipur, puya) or paste Bengali script text..."
+                placeholder="Type Latin words (e.g., 'kangleipak', 'meetei mayek', 'manipur', 'puya') or paste Bengali script text..."
                 value={inputText}
                 onChange={(e) => {
                   setInputText(e.target.value);
-                  setConvertedText(translateToMeeteiMayek(e.target.value));
+                  setConvertedText(translateToMeeteiMayekWithVocab(e.target.value));
                 }}
               />
             </div>
@@ -154,7 +182,7 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({ onInsertText, 
                   className="btn-secondary"
                   style={{ padding: '0.4rem 0.9rem', fontSize: '0.82rem' }}
                 >
-                  <span style={{ fontFamily: "var(--font-meetei)" }}>ꯃ</span>
+                  <span style={{ fontFamily: 'var(--font-meetei)' }}>ꯃ</span>
                   <span>Translate Entire Current Article</span>
                 </button>
               )}
@@ -169,7 +197,7 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({ onInsertText, 
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
                   <span className="form-label" style={{ color: 'var(--accent-cyan)' }}>
-                    Meetei Mayek Result (Noto Sans Meetei Mayek)
+                    Meetei Mayek Unicode Result
                   </span>
                   <div style={{ display: 'flex', gap: '0.4rem' }}>
                     <button
@@ -194,7 +222,7 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({ onInsertText, 
                 <div style={{
                   fontFamily: 'var(--font-meetei)',
                   fontSize: '1.4rem',
-                  lineHeight: 1.8,
+                  lineHeight: 1.85,
                   color: '#ffffff',
                   wordBreak: 'break-word',
                 }}>
@@ -205,160 +233,270 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({ onInsertText, 
           </div>
         )}
 
-        {/* Tab 2: Iyek Ipee (Core & Additional Consonants) */}
-        {activeTab === 'ipee' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        {/* Tab 2: 27 Main Letters (18 Core + 9 Additional) */}
+        {activeTab === 'main27' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
             <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-              Click any character to insert it into your article at the cursor:
+              The 27 Main Letters of Modern Meetei Mayek (U+ABC0 to U+ABDA) &bull; Click to insert at cursor:
             </span>
             <div style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(135px, 1fr))',
               gap: '0.6rem',
-              maxHeight: '360px',
+              maxHeight: '380px',
               overflowY: 'auto',
             }}>
-              {[...IYEK_IPEE, ...ADDITIONAL_IPEE].map((item) => (
+              {ALL_27_MAIN_LETTERS.map((item) => (
                 <button
-                  key={item.char}
+                  key={item.codePoint}
                   onClick={() => handleInsert(item.char)}
                   className="btn-secondary"
                   style={{
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
-                    padding: '0.65rem 0.5rem',
+                    padding: '0.6rem 0.4rem',
                     textAlign: 'center',
                     borderRadius: 'var(--radius-sm)',
                   }}
-                  title={`Insert ${item.char} (${item.name})`}
+                  title={`Insert ${item.char} (${item.name} - ${item.codePoint})`}
                 >
-                  <span style={{ fontFamily: 'var(--font-meetei)', fontSize: '1.6rem', color: '#fff', lineHeight: 1.2 }}>
+                  <span style={{ fontFamily: 'var(--font-meetei)', fontSize: '1.65rem', color: '#fff', lineHeight: 1.2 }}>
                     {item.char}
                   </span>
-                  <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-primary)', marginTop: '0.25rem' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-primary)', marginTop: '0.2rem' }}>
                     {item.name}
                   </span>
-                  <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>
-                    {item.meaning}
+                  <span style={{ fontSize: '0.66rem', color: 'var(--text-muted)' }}>
+                    {item.meaning || item.codePoint}
                   </span>
+                  <code style={{ fontSize: '0.62rem', color: 'var(--accent-cyan)', opacity: 0.8 }}>
+                    {item.codePoint}
+                  </code>
                 </button>
               ))}
             </div>
           </div>
         )}
 
-        {/* Tab 3: Lonsum */}
+        {/* Tab 3: 8 Lonsum Letters */}
         {activeTab === 'lonsum' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
             <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-              Dependent final consonants (Lonsum):
+              The 8 Dependent Final Consonants (Lonsum) &bull; U+ABDB to U+ABE2:
             </span>
             <div style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(135px, 1fr))',
               gap: '0.6rem',
             }}>
-              {LONSUM.map((item) => (
+              {LONSUM_8.map((item) => (
                 <button
-                  key={item.char}
+                  key={item.codePoint}
                   onClick={() => handleInsert(item.char)}
                   className="btn-secondary"
                   style={{
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
-                    padding: '0.65rem 0.5rem',
+                    padding: '0.6rem 0.4rem',
                     textAlign: 'center',
                   }}
-                  title={`Insert ${item.char} (${item.name})`}
+                  title={`Insert ${item.char} (${item.name} - ${item.codePoint})`}
                 >
-                  <span style={{ fontFamily: 'var(--font-meetei)', fontSize: '1.6rem', color: '#fff', lineHeight: 1.2 }}>
+                  <span style={{ fontFamily: 'var(--font-meetei)', fontSize: '1.65rem', color: '#fff', lineHeight: 1.2 }}>
                     {item.char}
                   </span>
-                  <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-primary)', marginTop: '0.25rem' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-primary)', marginTop: '0.2rem' }}>
                     {item.name}
                   </span>
-                  <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>
+                  <span style={{ fontSize: '0.66rem', color: 'var(--text-muted)' }}>
                     {item.meaning}
                   </span>
+                  <code style={{ fontSize: '0.62rem', color: 'var(--accent-cyan)', opacity: 0.8 }}>
+                    {item.codePoint}
+                  </code>
                 </button>
               ))}
             </div>
           </div>
         )}
 
-        {/* Tab 4: Cheitap & Punctuation */}
+        {/* Tab 4: 8 Cheitap & 3 Special Marks */}
         {activeTab === 'cheitap' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-              Vowel signs (Cheitap) and Punctuation (Cheikhei):
-            </span>
+            <div>
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                8 Dependent Vowel Diacritics (Cheitap) &bull; U+ABE3 to U+ABEA:
+              </span>
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))',
+                gap: '0.6rem',
+                marginTop: '0.4rem',
+              }}>
+                {CHEITAP_8.map((item) => (
+                  <button
+                    key={item.codePoint}
+                    onClick={() => handleInsert(item.char)}
+                    className="btn-secondary"
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      padding: '0.6rem 0.4rem',
+                      textAlign: 'center',
+                    }}
+                    title={`Insert ${item.char} (${item.name} - ${item.codePoint})`}
+                  >
+                    <span style={{ fontFamily: 'var(--font-meetei)', fontSize: '1.65rem', color: '#fff', lineHeight: 1.2 }}>
+                      {item.char}
+                    </span>
+                    <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-primary)', marginTop: '0.2rem' }}>
+                      {item.name}
+                    </span>
+                    <code style={{ fontSize: '0.62rem', color: 'var(--accent-cyan)', opacity: 0.8 }}>
+                      {item.codePoint}
+                    </code>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                3 Special Marks &amp; Punctuation &bull; U+ABEB to U+ABED:
+              </span>
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
+                gap: '0.6rem',
+                marginTop: '0.4rem',
+              }}>
+                {SPECIAL_MARKS_3.map((item) => (
+                  <button
+                    key={item.codePoint}
+                    onClick={() => handleInsert(item.char)}
+                    className="btn-secondary"
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      padding: '0.6rem 0.4rem',
+                      textAlign: 'center',
+                    }}
+                    title={`Insert ${item.char} (${item.name} - ${item.codePoint})`}
+                  >
+                    <span style={{ fontFamily: 'var(--font-meetei)', fontSize: '1.65rem', color: '#fff', lineHeight: 1.2 }}>
+                      {item.char}
+                    </span>
+                    <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-primary)', marginTop: '0.2rem' }}>
+                      {item.name}
+                    </span>
+                    <span style={{ fontSize: '0.66rem', color: 'var(--text-muted)' }}>
+                      {item.meaning}
+                    </span>
+                    <code style={{ fontSize: '0.62rem', color: 'var(--accent-cyan)', opacity: 0.8 }}>
+                      {item.codePoint}
+                    </code>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Tab 5: Extensions Block (U+AAE0 to U+AAFF) */}
+        {activeTab === 'extensions' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                Meetei Mayek Extensions Block (U+AAE0 to U+AAFF) from Unicode Chart UAAE0.pdf:
+              </span>
+              <a
+                href="https://unicode.org/charts/PDF/UAAE0.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ fontSize: '0.75rem', color: 'var(--accent-cyan)', display: 'inline-flex', alignItems: 'center', gap: '0.2rem', textDecoration: 'none' }}
+              >
+                <span>UAAE0.pdf</span>
+                <ExternalLink size={11} />
+              </a>
+            </div>
+
             <div style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(135px, 1fr))',
               gap: '0.6rem',
+              maxHeight: '380px',
+              overflowY: 'auto',
             }}>
-              {CHEITAP.map((item) => (
+              {EXTENSIONS_BLOCK.map((item) => (
                 <button
-                  key={item.char}
+                  key={item.codePoint}
                   onClick={() => handleInsert(item.char)}
                   className="btn-secondary"
                   style={{
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
-                    padding: '0.65rem 0.5rem',
+                    padding: '0.6rem 0.4rem',
                     textAlign: 'center',
                   }}
-                  title={`Insert ${item.char} (${item.name})`}
+                  title={`Insert ${item.char} (${item.name} - ${item.codePoint})`}
                 >
-                  <span style={{ fontFamily: 'var(--font-meetei)', fontSize: '1.6rem', color: '#fff', lineHeight: 1.2 }}>
+                  <span style={{ fontFamily: 'var(--font-meetei)', fontSize: '1.65rem', color: '#fff', lineHeight: 1.2 }}>
                     {item.char}
                   </span>
-                  <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-primary)', marginTop: '0.25rem' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-primary)', marginTop: '0.2rem' }}>
                     {item.name}
                   </span>
-                  <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>
+                  <span style={{ fontSize: '0.66rem', color: 'var(--text-muted)' }}>
                     {item.meaning}
                   </span>
+                  <code style={{ fontSize: '0.62rem', color: 'var(--accent-indigo)', opacity: 0.9 }}>
+                    {item.codePoint}
+                  </code>
                 </button>
               ))}
             </div>
           </div>
         )}
 
-        {/* Tab 5: Numerals */}
+        {/* Tab 6: 10 Digits */}
         {activeTab === 'numerals' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
             <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-              Meetei Mayek Digits (꯰ ꯱ ꯲ ꯳ ꯴ ꯵ ꯶ ꯷ ꯸ ꯹):
+              Meetei Mayek Numerals &bull; U+ABF0 to U+ABF9:
             </span>
             <div style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(90px, 1fr))',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(110px, 1fr))',
               gap: '0.6rem',
             }}>
-              {NUMERALS.map((item) => (
+              {NUMERALS_10.map((item) => (
                 <button
-                  key={item.char}
+                  key={item.codePoint}
                   onClick={() => handleInsert(item.char)}
                   className="btn-secondary"
                   style={{
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
-                    padding: '0.65rem 0.5rem',
+                    padding: '0.6rem 0.4rem',
                     textAlign: 'center',
                   }}
-                  title={`Insert ${item.char} (${item.name})`}
+                  title={`Insert ${item.char} (${item.name} - ${item.codePoint})`}
                 >
-                  <span style={{ fontFamily: 'var(--font-meetei)', fontSize: '1.6rem', color: '#fff', lineHeight: 1.2 }}>
+                  <span style={{ fontFamily: 'var(--font-meetei)', fontSize: '1.75rem', color: '#fff', lineHeight: 1.2 }}>
                     {item.char}
                   </span>
-                  <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-primary)', marginTop: '0.25rem' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-primary)', marginTop: '0.2rem' }}>
                     {item.name}
                   </span>
+                  <code style={{ fontSize: '0.62rem', color: 'var(--accent-cyan)', opacity: 0.8 }}>
+                    {item.codePoint}
+                  </code>
                 </button>
               ))}
             </div>
