@@ -29,6 +29,9 @@ import {
   Columns,
   PenLine,
   Plus,
+  CheckCircle,
+  ExternalLink,
+  BookOpen,
 } from 'lucide-react';
 import { marked } from 'marked';
 import { MeeteiMayekTool } from './MeeteiMayekTool';
@@ -36,9 +39,10 @@ import { translateMarkdownToMeeteiMayek, translateToMeeteiMayekWithVocab } from 
 
 interface CmsEditorProps {
   onPreviewInFeed: (draftPost: BlogPost) => void;
+  onPostPublished?: (newPost: BlogPost) => void;
 }
 
-export const CmsEditor: React.FC<CmsEditorProps> = ({ onPreviewInFeed }) => {
+export const CmsEditor: React.FC<CmsEditorProps> = ({ onPreviewInFeed, onPostPublished }) => {
   const todayStr = new Date().toISOString().split('T')[0];
   const fileInputRef = useRef<HTMLInputElement>(null);
   const bannerInputRef = useRef<HTMLInputElement>(null);
@@ -98,6 +102,7 @@ Support for **bold**, *italics*, quotes, and tables:
     loading: false,
     message: '',
   });
+  const [publishResult, setPublishResult] = useState<{ postUrl?: string; postObj?: BlogPost } | null>(null);
 
   // Persist draft text in localStorage
   useEffect(() => {
@@ -468,7 +473,8 @@ Support for **bold**, *italics*, quotes, and tables:
 
     localStorage.setItem('github_cms_token', githubToken);
 
-    setPublishStatus({ loading: true, message: 'Connecting to GitHub API...' });
+    setPublishStatus({ loading: true, message: 'Connecting to GitHub API and uploading...' });
+    setPublishResult(null);
 
     try {
       const result = await publishToGitHub(githubToken, githubRepo, draft);
@@ -478,11 +484,14 @@ Support for **bold**, *italics*, quotes, and tables:
         success: result.success,
       });
 
-      if (result.success) {
-        setTimeout(() => {
-          setShowGitHubModal(false);
-          setPublishStatus({ loading: false, message: '' });
-        }, 3000);
+      if (result.success && result.postObj) {
+        setPublishResult({
+          postUrl: result.postUrl,
+          postObj: result.postObj,
+        });
+        if (onPostPublished) {
+          onPostPublished(result.postObj);
+        }
       }
     } catch (err: any) {
       setPublishStatus({
@@ -1021,111 +1030,185 @@ Support for **bold**, *italics*, quotes, and tables:
             background: 'var(--bg-elevated)',
             border: '1px solid var(--border-active)',
             borderRadius: 'var(--radius-lg)',
-            maxWidth: '500px',
+            maxWidth: '520px',
             width: '100%',
             padding: '2rem',
             boxShadow: 'var(--shadow-elevated)',
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.75rem' }}>
-              <Send size={18} color="var(--accent-cyan)" />
-              <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text-primary)' }}>Publish Directly to GitHub</h3>
-            </div>
-
-            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1.25rem', lineHeight: 1.5 }}>
-              This will commit your article and all rendered images directly to <strong>{githubRepo}</strong> via the GitHub REST API, automatically triggering GitHub Actions to deploy.
-            </p>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '1.5rem' }}>
+            {publishStatus.success && publishResult?.postObj ? (
               <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.35rem' }}>
-                  <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', margin: 0 }}>
-                    <Key size={13} />
-                    <span>GitHub Personal Access Token (repo scope)</span>
-                  </label>
-                  <a
-                    href="https://github.com/settings/tokens/new?scopes=repo&description=Blog+CMS+Publish+Token"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{ fontSize: '0.75rem', color: 'var(--accent-cyan)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.25rem', fontWeight: 500 }}
-                    title="Create a new personal access token with repo scope pre-selected"
-                  >
-                    <span>Create Token ↗</span>
-                  </a>
+                <div style={{ textAlign: 'center', padding: '0.5rem 0 1rem' }}>
+                  <div style={{
+                    width: '52px',
+                    height: '52px',
+                    borderRadius: '50%',
+                    background: 'rgba(16, 185, 129, 0.15)',
+                    color: 'var(--accent-emerald)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    margin: '0 auto 1rem',
+                  }}>
+                    <CheckCircle size={32} />
+                  </div>
+                  <h3 style={{ fontSize: '1.3rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.4rem' }}>
+                    Published to GitHub Successfully!
+                  </h3>
+                  <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+                    Committed to <strong>posts/{draft.id || 'article'}.md</strong> in repository <strong>{githubRepo}</strong>.
+                  </p>
                 </div>
-                <input
-                  type="password"
-                  className="form-input"
-                  style={{ width: '100%' }}
-                  placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
-                  value={githubToken}
-                  onChange={(e) => setGithubToken(e.target.value)}
-                  id="input-github-token"
-                />
-                <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', marginTop: '0.25rem' }}>
-                  Token is stored only in your local browser storage.
-                </span>
+
+                <div style={{
+                  background: 'var(--bg-card)',
+                  border: '1px solid var(--border-subtle)',
+                  borderRadius: 'var(--radius-sm)',
+                  padding: '0.85rem 1rem',
+                  fontSize: '0.8rem',
+                  color: 'var(--text-secondary)',
+                  marginBottom: '1.5rem',
+                  lineHeight: 1.5,
+                }}>
+                  <div style={{ fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.25rem' }}>
+                    ℹ️ Console 404 explanation:
+                  </div>
+                  Any red <code>404 (Not Found)</code> seen in DevTools console was only GitHub checking if the article already existed before creating it. Your post has been published and added to the reader!
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem' }}>
+                  {publishResult.postUrl && (
+                    <a
+                      href={publishResult.postUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-secondary"
+                      style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem' }}
+                    >
+                      <span>View Commit ↗</span>
+                      <ExternalLink size={14} />
+                    </a>
+                  )}
+                  <button
+                    type="button"
+                    className="btn-primary"
+                    onClick={() => {
+                      setShowGitHubModal(false);
+                      setPublishStatus({ loading: false, message: '' });
+                      if (publishResult.postObj) {
+                        onPreviewInFeed(publishResult.postObj);
+                      }
+                    }}
+                    style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem' }}
+                  >
+                    <BookOpen size={14} />
+                    <span>View in Reader</span>
+                  </button>
+                </div>
               </div>
+            ) : (
+              <>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.75rem' }}>
+                  <Send size={18} color="var(--accent-cyan)" />
+                  <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text-primary)' }}>Publish Directly to GitHub</h3>
+                </div>
 
-              <div>
-                <label className="form-label" style={{ marginBottom: '0.35rem' }}>Repository (owner/repo)</label>
-                <input
-                  type="text"
-                  className="form-input"
-                  style={{ width: '100%' }}
-                  value={githubRepo}
-                  onChange={(e) => setGithubRepo(e.target.value)}
-                  id="input-github-repo"
-                />
-              </div>
-            </div>
+                <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1.25rem', lineHeight: 1.5 }}>
+                  This will commit your article and all rendered images directly to <strong>{githubRepo}</strong> via the GitHub REST API, automatically triggering GitHub Actions to deploy.
+                </p>
 
-            {publishStatus.message && (
-              <div style={{
-                padding: '0.75rem 1rem',
-                borderRadius: 'var(--radius-sm)',
-                fontSize: '0.82rem',
-                marginBottom: '1.25rem',
-                background: publishStatus.success ? 'rgba(16, 185, 129, 0.12)' : 'rgba(244, 63, 94, 0.12)',
-                color: publishStatus.success ? 'var(--accent-emerald)' : 'var(--accent-rose)',
-                border: `1px solid ${publishStatus.success ? 'var(--accent-emerald)' : 'var(--accent-rose)'}`,
-              }}>
-                {publishStatus.message}
-              </div>
-            )}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '1.5rem' }}>
+                  <div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.35rem' }}>
+                      <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', margin: 0 }}>
+                        <Key size={13} />
+                        <span>GitHub Personal Access Token (repo scope)</span>
+                      </label>
+                      <a
+                        href="https://github.com/settings/tokens/new?scopes=repo&description=Blog+CMS+Publish+Token"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ fontSize: '0.75rem', color: 'var(--accent-cyan)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.25rem', fontWeight: 500 }}
+                        title="Create a new personal access token with repo scope pre-selected"
+                      >
+                        <span>Create Token ↗</span>
+                      </a>
+                    </div>
+                    <input
+                      type="password"
+                      className="form-input"
+                      style={{ width: '100%' }}
+                      placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
+                      value={githubToken}
+                      onChange={(e) => setGithubToken(e.target.value)}
+                      id="input-github-token"
+                    />
+                    <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', marginTop: '0.25rem' }}>
+                      Token is stored only in your local browser storage.
+                    </span>
+                  </div>
 
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem' }}>
-              <button
-                type="button"
-                onClick={() => {
-                  setShowGitHubModal(false);
-                  setPublishStatus({ loading: false, message: '' });
-                }}
-                className="btn-secondary"
-                disabled={publishStatus.loading}
-              >
-                Cancel
-              </button>
+                  <div>
+                    <label className="form-label" style={{ marginBottom: '0.35rem' }}>Repository (owner/repo)</label>
+                    <input
+                      type="text"
+                      className="form-input"
+                      style={{ width: '100%' }}
+                      value={githubRepo}
+                      onChange={(e) => setGithubRepo(e.target.value)}
+                      id="input-github-repo"
+                    />
+                  </div>
+                </div>
 
-              <button
-                type="button"
-                onClick={handlePublishToGitHub}
-                className="btn-primary"
-                disabled={publishStatus.loading}
-                id="btn-confirm-github-publish"
-              >
-                {publishStatus.loading ? (
-                  <>
-                    <Loader2 size={14} style={{ animation: 'spin 1s linear infinite' }} />
-                    <span>Committing to Git...</span>
-                  </>
-                ) : (
-                  <>
-                    <Send size={14} />
-                    <span>Commit &amp; Publish</span>
-                  </>
+                {publishStatus.message && (
+                  <div style={{
+                    padding: '0.75rem 1rem',
+                    borderRadius: 'var(--radius-sm)',
+                    fontSize: '0.82rem',
+                    marginBottom: '1.25rem',
+                    background: publishStatus.success ? 'rgba(16, 185, 129, 0.12)' : 'rgba(244, 63, 94, 0.12)',
+                    color: publishStatus.success ? 'var(--accent-emerald)' : 'var(--accent-rose)',
+                    border: `1px solid ${publishStatus.success ? 'var(--accent-emerald)' : 'var(--accent-rose)'}`,
+                  }}>
+                    {publishStatus.message}
+                  </div>
                 )}
-              </button>
-            </div>
+
+                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem' }}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowGitHubModal(false);
+                      setPublishStatus({ loading: false, message: '' });
+                    }}
+                    className="btn-secondary"
+                    disabled={publishStatus.loading}
+                  >
+                    Cancel
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handlePublishToGitHub}
+                    className="btn-primary"
+                    disabled={publishStatus.loading}
+                    id="btn-confirm-github-publish"
+                  >
+                    {publishStatus.loading ? (
+                      <>
+                        <Loader2 size={14} style={{ animation: 'spin 1s linear infinite' }} />
+                        <span>Committing to Git...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Send size={14} />
+                        <span>Commit &amp; Publish</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}

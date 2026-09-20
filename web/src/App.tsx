@@ -65,6 +65,16 @@ export function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handlePostPublished = (publishedPost: BlogPost) => {
+    setPosts((prev) => {
+      const exists = prev.some((p) => p.id === publishedPost.id);
+      if (exists) {
+        return prev.map((p) => (p.id === publishedPost.id ? publishedPost : p));
+      }
+      return [publishedPost, ...prev];
+    });
+  };
+
   const handleEditDraft = () => {
     setSelectedPost(null);
     setActiveTab('editor');
@@ -103,7 +113,7 @@ export function App() {
           <>
             {/* Always keep CmsEditor mounted so in-memory state, uploaded assets, and cursor are preserved */}
             <div style={{ display: activeTab === 'editor' && !selectedPost ? 'block' : 'none' }}>
-              <CmsEditor onPreviewInFeed={handlePreviewInFeed} />
+              <CmsEditor onPreviewInFeed={handlePreviewInFeed} onPostPublished={handlePostPublished} />
             </div>
 
             {selectedPost ? (

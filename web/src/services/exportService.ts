@@ -1,6 +1,13 @@
-import JSZip from 'jszip';
-import type { PostDraft } from '../types';
-import { generateMarkdownWithFrontmatter } from './cmsService';
+import JSZip from "jszip";
+import type { PostDraft, BlogPost } from "../types";
+import { generateMarkdownWithFrontmatter } from "./cmsService";
+
+export interface PublishResult {
+  success: boolean;
+  message: string;
+  postUrl?: string;
+  postObj?: BlogPost;
+}
 
 /**
  * Creates a downloadable .zip package containing posts/<slug>.md
@@ -11,12 +18,12 @@ export async function createDownloadPackage(draft: PostDraft): Promise<Blob> {
 
   // 1. Generate full markdown content with YAML frontmatter
   const markdownText = generateMarkdownWithFrontmatter(draft);
-  const postFileName = `${draft.id || 'article'}.md`;
+  const postFileName = `${draft.id || "article"}.md`;
   zip.file(`posts/${postFileName}`, markdownText);
 
   // 2. Add all uploaded assets (images, PDFs)
   if (draft.assets && draft.assets.length > 0) {
-    const imagesFolder = zip.folder('images');
+    const imagesFolder = zip.folder("images");
     if (imagesFolder) {
       for (const asset of draft.assets) {
         imagesFolder.file(asset.name, asset.file);
@@ -25,7 +32,7 @@ export async function createDownloadPackage(draft: PostDraft): Promise<Blob> {
   }
 
   // 3. Generate ZIP blob
-  return await zip.generateAsync({ type: 'blob' });
+  return await zip.generateAsync({ type: "blob" });
 }
 
 /**
@@ -35,16 +42,16 @@ export async function publishToGitHub(
   token: string,
   repo: string,
   draft: PostDraft
-): Promise<{ success: boolean; message: string }> {
+): Promise<PublishResult> {
   if (!token.trim()) {
-    throw new Error('GitHub Personal Access Token is required to publish directly.');
+    throw new Error("GitHub Personal Access Token is required to publish directly.");
   }
 
-  const cleanRepo = repo.replace(/^https:\/\/github\.com\//, '').replace(/\.git$/, '');
+  const cleanRepo = repo.replace(/^https:\/\/github\.com\//, "").replace(/\.git$/, "");
   const headers = {
     Authorization: `Bearer ${token.trim()}`,
-    Accept: 'application/vnd.github.v3+json',
-    'Content-Type': 'application/json',
+    Accept: "application/vnd.github.v3+json",
+    "Content-Type": "application/json",
   };
 
   // Helper to get existing file SHA if updating
@@ -56,7 +63,7 @@ export async function publishToGitHub(
         return data.sha;
       }
     } catch {
-      // file might not exist
+      // file might not exist (returns 404 which is normal for new files)
     }
     return undefined;
   };
@@ -67,7 +74,7 @@ export async function publishToGitHub(
       const reader = new FileReader();
       reader.onload = () => {
         const result = reader.result as string;
-        const base64 = result.split(',')[1];
+        const base64 = result.split(",")[1];
         resolve(base64);
       };
       reader.onerror = reject;
@@ -91,7 +98,7 @@ export async function publishToGitHub(
       const uploadRes = await fetch(
         `https://api.github.com/repos/${cleanRepo}/contents/${path}`,
         {
-          method: 'PUT',
+          method: "PUT",
           headers,
           body: JSON.stringify(payload),
         }
@@ -107,7 +114,7 @@ export async function publishToGitHub(
     const mdContent = generateMarkdownWithFrontmatter(draft);
     // Base64 encode markdown string supporting Unicode (UTF-8)
     const encodedMd = btoa(unescape(encodeURIComponent(mdContent)));
-    const postPath = `posts/${draft.id || 'article'}.md`;
+    const postPath = `posts/${draft.id || "article"}.md`;
     const postSha = await getFileSha(postPath);
 
     const postPayload: any = {
@@ -119,7 +126,7 @@ export async function publishToGitHub(
     const postRes = await fetch(
       `https://api.github.com/repos/${cleanRepo}/contents/${postPath}`,
       {
-        method: 'PUT',
+        method: "PUT",
         headers,
         body: JSON.stringify(postPayload),
       }
@@ -130,14 +137,72 @@ export async function publishToGitHub(
       throw new Error(`Failed to publish article: ${errJson.message || postRes.statusText}`);
     }
 
+    // 3. Construct BlogPost object representation for in-app reader & manifest
+    const words = (draft.content || "").split(/\s+/).filter(Boolean).length;
+    const readingTime = Math.max(1, Math.round(words / 200));
+    const thumbnail = draft.thumbnail || "images/banner-philosophy.svg";
+    const cleanThumbnail = thumbnail.startsWith("http") || thumbnail.startsWith("/")
+      ? thumbnail
+      : `https://raw.githubusercontent.com/${cleanRepo}/main/${thumbnail.replace(/^\.?\//, "")}`;
+
+    const newPostObj: BlogPost = {
+      id: draft.id || "article",
+      title: draft.title || "Untitled Post",
+      summary: draft.summary || "",
+      date: draft.date || new Date().toISOString().split("T")[0],
+      author: draft.author || "Anonymous",
+      category: draft.category || "General",
+      thumbnail_url: cleanThumbnail,
+      content_url: `https://raw.githubusercontent.com/${cleanRepo}/main/${postPath}`,
+      reading_time_min: readingTime,
+      language: draft.language || "en",
+      featured: draft.featured || false,
+      content: mdContent,
+    };
+
+    // 4. Update posts.json on GitHub repository directly
+    try {
+      const postsJsonPath = "posts.json";
+      const postsJsonRes = await fetch(`https://api.github.com/repos/${cleanRepo}/contents/${postsJsonPath}`, { headers });
+      let currentPosts: BlogPost[] = [];
+      let postsJsonSha: string | undefined = undefined;
+
+      if (postsJsonRes.ok) {
+        const data = await postsJsonRes.json();
+        postsJsonSha = data.sha;
+        const decodedContent = decodeURIComponent(escape(atob(data.content.replace(/\s/g, ""))));
+        currentPosts = JSON.parse(decodedContent);
+      }
+
+      const filtered = currentPosts.filter((p) => p.id !== newPostObj.id);
+      const updatedPosts = [newPostObj, ...filtered];
+      const encodedPostsJson = btoa(unescape(encodeURIComponent(JSON.stringify(updatedPosts, null, 2))));
+
+      const updatePayload: any = {
+        message: `chore(cms): update posts.json manifest for ${draft.title || draft.id} via CMS Studio`,
+        content: encodedPostsJson,
+      };
+      if (postsJsonSha) updatePayload.sha = postsJsonSha;
+
+      await fetch(`https://api.github.com/repos/${cleanRepo}/contents/${postsJsonPath}`, {
+        method: "PUT",
+        headers,
+        body: JSON.stringify(updatePayload),
+      });
+    } catch (manifestErr) {
+      console.warn("Direct posts.json update skipped (GitHub Actions will also auto-update):", manifestErr);
+    }
+
     return {
       success: true,
-      message: `Published ${postPath} successfully! GitHub Actions is now building and deploying your article.`,
+      message: `Published ${postPath} successfully!`,
+      postUrl: `https://github.com/${cleanRepo}/blob/main/${postPath}`,
+      postObj: newPostObj,
     };
   } catch (err: any) {
     return {
       success: false,
-      message: err.message || 'Error publishing to GitHub',
+      message: err.message || "Error publishing to GitHub",
     };
   }
 }
