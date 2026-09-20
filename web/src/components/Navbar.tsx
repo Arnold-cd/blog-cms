@@ -1,13 +1,21 @@
 import React from 'react';
-import { BookOpen, PenLine } from 'lucide-react';
+import { BookOpen, PenLine, Sun, Moon } from 'lucide-react';
 
 interface NavbarProps {
   activeTab: 'feed' | 'editor';
   onSelectTab: (tab: 'feed' | 'editor') => void;
   postCount: number;
+  theme: 'dark' | 'light';
+  onToggleTheme: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ activeTab, onSelectTab, postCount }) => {
+export const Navbar: React.FC<NavbarProps> = ({
+  activeTab,
+  onSelectTab,
+  postCount,
+  theme,
+  onToggleTheme,
+}) => {
   return (
     <div className="navbar-wrap">
       <header className="navbar">
@@ -41,8 +49,29 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, onSelectTab, postCoun
           </button>
         </nav>
 
-        {/* GitHub Link */}
+        {/* Actions: Theme Toggle & GitHub Link */}
         <div className="nav-actions">
+          <button
+            type="button"
+            className="theme-toggle-btn"
+            onClick={onToggleTheme}
+            id="btn-theme-toggle"
+            title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            aria-label="Toggle light/dark theme"
+          >
+            {theme === 'dark' ? (
+              <>
+                <Sun size={14} />
+                <span className="theme-toggle-label">Light</span>
+              </>
+            ) : (
+              <>
+                <Moon size={14} />
+                <span className="theme-toggle-label">Dark</span>
+              </>
+            )}
+          </button>
+
           <a
             href="https://github.com/Arnold-cd/blog-cms"
             target="_blank"

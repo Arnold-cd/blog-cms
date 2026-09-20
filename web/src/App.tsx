@@ -14,6 +14,24 @@ export function App() {
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
   const [activeTab, setActiveTab] = useState<'feed' | 'editor'>('feed');
 
+  // Light / Dark Theme State
+  const [theme, setTheme] = useState<'dark' | 'light'>(() => {
+    const saved = localStorage.getItem('blog_cms_theme');
+    if (saved === 'dark' || saved === 'light') return saved;
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    return prefersDark ? 'dark' : 'dark';
+  });
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    document.documentElement.style.colorScheme = theme;
+    localStorage.setItem('blog_cms_theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+  };
+
   const loadPosts = async () => {
     setLoading(true);
     setError(null);
@@ -62,6 +80,8 @@ export function App() {
           setSelectedPost(null);
         }}
         postCount={posts.length}
+        theme={theme}
+        onToggleTheme={toggleTheme}
       />
 
       <main className="main-content">

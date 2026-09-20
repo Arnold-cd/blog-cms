@@ -75,7 +75,7 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
               <Languages size={20} color="var(--accent-cyan)" />
-              <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#fff', fontFamily: 'var(--font-heading)' }}>
+              <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)', fontFamily: 'var(--font-heading)' }}>
                 Meetei Mayek Unicode Suite
               </h3>
             </div>
@@ -224,7 +224,7 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
                   fontFamily: 'var(--font-meetei)',
                   fontSize: '1.4rem',
                   lineHeight: 1.85,
-                  color: '#ffffff',
+                  color: 'var(--text-primary)',
                   wordBreak: 'break-word',
                 }}>
                   {convertedText}
@@ -262,7 +262,7 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
                   }}
                   title={`Insert ${item.char} (${item.name} - ${item.codePoint})`}
                 >
-                  <span style={{ fontFamily: 'var(--font-meetei)', fontSize: '1.65rem', color: '#fff', lineHeight: 1.2 }}>
+                  <span style={{ fontFamily: 'var(--font-meetei)', fontSize: '1.65rem', color: 'var(--text-primary)', lineHeight: 1.2 }}>
                     {item.char}
                   </span>
                   <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-primary)', marginTop: '0.2rem' }}>
@@ -305,7 +305,7 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
                   }}
                   title={`Insert ${item.char} (${item.name} - ${item.codePoint})`}
                 >
-                  <span style={{ fontFamily: 'var(--font-meetei)', fontSize: '1.65rem', color: '#fff', lineHeight: 1.2 }}>
+                  <span style={{ fontFamily: 'var(--font-meetei)', fontSize: '1.65rem', color: 'var(--text-primary)', lineHeight: 1.2 }}>
                     {item.char}
                   </span>
                   <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-primary)', marginTop: '0.2rem' }}>
@@ -355,7 +355,7 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
                     }}
                     title={`Insert ${item.char} (${item.name} - ${item.codePoint})`}
                   >
-                    <span style={{ fontFamily: 'var(--font-meetei)', fontSize: '1.65rem', color: '#fff', lineHeight: 1.2 }}>
+                    <span style={{ fontFamily: 'var(--font-meetei)', fontSize: '1.65rem', color: 'var(--text-primary)', lineHeight: 1.2 }}>
                       {item.char}
                     </span>
                     <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-primary)', marginTop: '0.2rem' }}>
@@ -393,7 +393,7 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
                     }}
                     title={`Insert ${item.char} (${item.name} - ${item.codePoint})`}
                   >
-                    <span style={{ fontFamily: 'var(--font-meetei)', fontSize: '1.65rem', color: '#fff', lineHeight: 1.2 }}>
+                    <span style={{ fontFamily: 'var(--font-meetei)', fontSize: '1.65rem', color: 'var(--text-primary)', lineHeight: 1.2 }}>
                       {item.char}
                     </span>
                     <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-primary)', marginTop: '0.2rem' }}>
@@ -451,7 +451,7 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
                   }}
                   title={`Insert ${item.char} (${item.name} - ${item.codePoint})`}
                 >
-                  <span style={{ fontFamily: 'var(--font-meetei)', fontSize: '1.65rem', color: '#fff', lineHeight: 1.2 }}>
+                  <span style={{ fontFamily: 'var(--font-meetei)', fontSize: '1.65rem', color: 'var(--text-primary)', lineHeight: 1.2 }}>
                     {item.char}
                   </span>
                   <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-primary)', marginTop: '0.2rem' }}>
@@ -479,7 +479,7 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
             <div>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                <span style={{ fontSize: '0.82rem', fontWeight: 600, color: '#fff' }}>
+                <span style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-primary)' }}>
                   Cheising Eeyek (10 Digits &bull; U+ABF0 to U+ABF9)
                 </span>
                 <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
@@ -506,7 +506,7 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
                     }}
                     title={`Insert ${item.char} (${item.name} - ${item.codePoint})`}
                   >
-                    <span style={{ fontFamily: 'var(--font-meetei)', fontSize: '1.85rem', color: '#fff', lineHeight: 1.2 }}>
+                    <span style={{ fontFamily: 'var(--font-meetei)', fontSize: '1.85rem', color: 'var(--text-primary)', lineHeight: 1.2 }}>
                       {item.char}
                     </span>
                     <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-primary)', marginTop: '0.2rem' }}>
@@ -534,7 +534,7 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
             }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem', flexWrap: 'wrap', gap: '0.5rem' }}>
                 <div>
-                  <h4 style={{ margin: 0, fontSize: '0.92rem', color: '#fff', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <h4 style={{ margin: 0, fontSize: '0.92rem', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                     <span style={{ fontFamily: 'var(--font-meetei)', fontSize: '1.1rem', color: 'var(--accent-cyan)' }}>ꯆꯩꯁꯤꯡ ꯊꯤꯕ</span>
                     <span>(Cheishing - thiba &bull; Traditional Number System)</span>
                   </h4>
@@ -568,7 +568,7 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
                         <td style={{ padding: '0.5rem', fontFamily: 'var(--font-meetei)', fontSize: '1rem', color: 'var(--accent-cyan)', fontWeight: 600 }}>
                           {row.meeteiWord}
                         </td>
-                        <td style={{ padding: '0.5rem', fontFamily: 'var(--font-meetei)', fontSize: '0.95rem', color: '#fff' }}>
+                        <td style={{ padding: '0.5rem', fontFamily: 'var(--font-meetei)', fontSize: '0.95rem', color: 'var(--text-primary)' }}>
                           {row.digits}
                         </td>
                         <td style={{ padding: '0.5rem', fontWeight: 500, color: 'var(--text-primary)' }}>

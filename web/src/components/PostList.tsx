@@ -124,7 +124,7 @@ export const PostList: React.FC<PostListProps> = ({ posts, onSelectPost, onOpenE
               <div className="author-avatar-fallback" style={{ width: '28px', height: '28px', fontSize: '0.75rem' }}>
                 {featuredPost.author.charAt(0)}
               </div>
-              <span style={{ color: '#fff', fontWeight: 500 }}>{featuredPost.author}</span>
+              <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{featuredPost.author}</span>
               <span>&bull;</span>
               <span>{formatDate(featuredPost.date)}</span>
             </div>
@@ -149,7 +149,7 @@ export const PostList: React.FC<PostListProps> = ({ posts, onSelectPost, onOpenE
       {/* Grid of Articles */}
       {filteredPosts.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '5rem 1rem', background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-subtle)' }}>
-          <h3 style={{ color: '#fff', fontSize: '1.25rem', fontWeight: 600 }}>No stories found</h3>
+          <h3 style={{ color: 'var(--text-primary)', fontSize: '1.25rem', fontWeight: 600 }}>No stories found</h3>
           <p style={{ marginTop: '0.4rem', color: 'var(--text-muted)', fontSize: '0.9rem' }}>Try refining your search query or clear the selected filters.</p>
           <button onClick={onOpenEditor} className="btn-primary" style={{ marginTop: '1.5rem' }}>
             <Plus size={16} />

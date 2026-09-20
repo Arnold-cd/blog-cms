@@ -6,6 +6,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+Meetei+Mayek:wght@400;500;600;700&display=swap');
 
 :root {
+  /* Default Color Scheme (Dark Mode) */
+  color-scheme: dark;
+
   /* Surface & Background Hierarchy */
   --bg-base: #09090b;
   --bg-surface: #121215;
@@ -14,6 +17,12 @@
   --bg-card-hover: rgba(39, 39, 42, 0.85);
   --bg-glass: rgba(18, 18, 21, 0.8);
   --bg-glass-hover: rgba(255, 255, 255, 0.07);
+  --bg-subtle: rgba(255, 255, 255, 0.04);
+  --bg-subtle-hover: rgba(255, 255, 255, 0.08);
+  --bg-subtle-active: rgba(255, 255, 255, 0.12);
+  --bg-input: rgba(9, 9, 11, 0.75);
+  --code-bg: rgba(255, 255, 255, 0.06);
+  --body-radial: radial-gradient(circle at 50% 0%, #17171c 0%, var(--bg-base) 60%);
 
   /* Hairline Borders */
   --border-subtle: rgba(255, 255, 255, 0.08);
@@ -59,6 +68,51 @@
   --transition-smooth: 250ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+[data-theme="light"] {
+  /* Light Color Scheme */
+  color-scheme: light;
+
+  /* Surface & Background Hierarchy - Ultra clean, Notion/Linear minimalist style */
+  --bg-base: #f9fafb;
+  --bg-surface: #ffffff;
+  --bg-elevated: #f3f4f6;
+  --bg-card: rgba(255, 255, 255, 0.85);
+  --bg-card-hover: #ffffff;
+  --bg-glass: rgba(255, 255, 255, 0.88);
+  --bg-glass-hover: rgba(0, 0, 0, 0.04);
+  --bg-subtle: rgba(0, 0, 0, 0.04);
+  --bg-subtle-hover: rgba(0, 0, 0, 0.07);
+  --bg-subtle-active: rgba(0, 0, 0, 0.1);
+  --bg-input: #ffffff;
+  --code-bg: rgba(0, 0, 0, 0.06);
+  --body-radial: radial-gradient(circle at 50% 0%, #f3f4f6 0%, var(--bg-base) 70%);
+
+  /* Hairline Borders */
+  --border-subtle: rgba(0, 0, 0, 0.09);
+  --border-active: rgba(0, 0, 0, 0.18);
+  --border-focus: rgba(0, 0, 0, 0.38);
+
+  /* Typography Palette */
+  --text-primary: #111827;
+  --text-secondary: #4b5563;
+  --text-muted: #9ca3af;
+  --text-inverse: #ffffff;
+
+  /* Accents */
+  --accent-white: #111827;
+  --accent-indigo: #4f46e5;
+  --accent-cyan: #0284c7;
+  --accent-emerald: #059669;
+  --accent-amber: #d97706;
+  --accent-rose: #e11d48;
+
+  /* Shadows */
+  --shadow-subtle: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-card: 0 4px 20px -2px rgba(0, 0, 0, 0.06), 0 2px 6px -1px rgba(0, 0, 0, 0.04);
+  --shadow-elevated: 0 20px 40px -8px rgba(0, 0, 0, 0.1), 0 8px 16px -4px rgba(0, 0, 0, 0.06);
+  --shadow-glow: 0 0 25px rgba(0, 0, 0, 0.04);
+}
+
 /* Base Reset */
 *, *::before, *::after {
   box-sizing: border-box;
@@ -81,7 +135,8 @@ html {
 
 body {
   min-height: 100vh;
-  background: radial-gradient(circle at 50% 0%, #17171c 0%, var(--bg-base) 60%);
+  background: var(--body-radial);
+  color: var(--text-primary);
   background-attachment: fixed;
   overflow-x: hidden;
 }
@@ -95,11 +150,11 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--border-active);
   border-radius: var(--radius-full);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.22);
+  background: var(--border-focus);
 }
 
 /* App Container */
@@ -166,7 +221,7 @@ button {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--bg-subtle);
   color: var(--text-primary);
   font-weight: 500;
   font-size: 0.85rem;
@@ -179,7 +234,7 @@ button {
 .btn-secondary:hover {
   background: rgba(255, 255, 255, 0.08);
   border-color: var(--border-active);
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 .btn-ghost {
@@ -220,7 +275,7 @@ button {
   align-items: center;
   justify-content: space-between;
   padding: 0.5rem 0.85rem;
-  background: rgba(18, 18, 21, 0.75);
+  background: var(--bg-glass);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--border-subtle);
@@ -241,19 +296,19 @@ button {
   width: 28px;
   height: 28px;
   border-radius: var(--radius-xs);
-  background: linear-gradient(135deg, #27272a, #09090b);
+  background: var(--text-primary);
   border: 1px solid var(--border-active);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
+  color: var(--text-inverse);
 }
 
 .nav-brand-title {
   font-weight: 700;
   font-size: 0.95rem;
   letter-spacing: -0.02em;
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 .nav-brand-pill {
@@ -269,10 +324,10 @@ button {
 .nav-segmented-tabs {
   display: flex;
   align-items: center;
-  background: rgba(0, 0, 0, 0.4);
+  background: var(--bg-subtle);
   padding: 0.2rem;
   border-radius: var(--radius-full);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-subtle);
 }
 
 .nav-tab-btn {
@@ -292,7 +347,7 @@ button {
 }
 
 .nav-tab-btn.active {
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--border-active);
   color: #ffffff;
   font-weight: 600;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
@@ -303,6 +358,33 @@ button {
   background: rgba(255, 255, 255, 0.1);
   padding: 0.05rem 0.4rem;
   border-radius: var(--radius-full);
+}
+
+
+.theme-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  padding: 0.4rem 0.8rem;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-subtle);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.theme-toggle-btn:hover {
+  color: var(--text-primary);
+  border-color: var(--border-active);
+  background: var(--bg-subtle-hover);
+}
+
+.theme-toggle-label {
+  font-size: 0.76rem;
+  font-weight: 600;
 }
 
 .nav-github-link {
@@ -350,7 +432,7 @@ button {
   font-size: 2.25rem;
   font-weight: 800;
   letter-spacing: -0.035em;
-  color: #ffffff;
+  color: var(--text-primary);
   line-height: 1.15;
 }
 
@@ -422,13 +504,13 @@ button {
 }
 
 .category-chip:hover {
-  color: #fff;
-  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+  background: var(--bg-subtle-hover);
 }
 
 .category-chip.active {
-  color: #000;
-  background: #ffffff;
+  color: var(--text-inverse);
+  background: var(--text-primary);
   font-weight: 600;
 }
 
@@ -475,7 +557,7 @@ button {
   font-size: 0.7rem;
   font-weight: 600;
   color: #fff;
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--border-active);
   border: 1px solid var(--border-subtle);
   padding: 0.15rem 0.5rem;
   border-radius: var(--radius-full);
@@ -487,7 +569,7 @@ button {
   font-size: 1.85rem;
   font-weight: 700;
   letter-spacing: -0.03em;
-  color: #ffffff;
+  color: var(--text-primary);
   line-height: 1.25;
   margin-bottom: 0.85rem;
 }
@@ -511,7 +593,7 @@ button {
   width: 100%;
   height: 100%;
   min-height: 280px;
-  background: #121215;
+  background: var(--bg-surface);
   overflow: hidden;
 }
 
@@ -608,7 +690,7 @@ button {
   font-size: 1.15rem;
   font-weight: 600;
   letter-spacing: -0.02em;
-  color: #ffffff;
+  color: var(--text-primary);
   line-height: 1.35;
   margin-bottom: 0.5rem;
 }
@@ -632,7 +714,7 @@ button {
   font-size: 0.78rem;
   color: var(--text-muted);
   padding-top: 0.75rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  border-top: 1px solid var(--border-subtle);
 }
 
 /* ==========================================================================
@@ -697,11 +779,11 @@ button {
 }
 
 .view-toggle-btn:hover {
-  color: #fff;
+  color: var(--text-inverse);
 }
 
 .view-toggle-btn.active {
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--border-active);
   color: #fff;
   font-weight: 600;
 }
@@ -729,7 +811,7 @@ button {
   font-size: 1.95rem;
   font-weight: 700;
   letter-spacing: -0.03em;
-  color: #ffffff;
+  color: var(--text-primary);
   outline: none;
 }
 
@@ -780,7 +862,7 @@ button {
 
 .form-input, .form-select, .form-textarea {
   width: 100%;
-  background: rgba(9, 9, 11, 0.7);
+  background: var(--bg-input);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
   padding: 0.45rem 0.75rem;
@@ -877,7 +959,7 @@ button {
   align-items: center;
   justify-content: space-between;
   padding: 0.5rem 0.85rem;
-  background: rgba(18, 18, 21, 0.6);
+  background: var(--bg-surface);
   border-bottom: 1px solid var(--border-subtle);
   font-size: 0.78rem;
   font-weight: 600;
@@ -913,7 +995,7 @@ button {
   font-family: var(--font-mono);
   font-size: 0.92rem;
   line-height: 1.65;
-  color: #f4f4f5;
+  color: var(--text-primary);
   resize: vertical;
 }
 
@@ -933,7 +1015,7 @@ button {
 
 .markdown-body {
   font-family: var(--font-sans);
-  color: #e4e4e7;
+  color: var(--text-primary);
   font-size: 1rem;
   line-height: 1.75;
 }
@@ -942,7 +1024,7 @@ button {
   font-size: 1.85rem;
   font-weight: 800;
   letter-spacing: -0.03em;
-  color: #ffffff;
+  color: var(--text-primary);
   margin: 1.75rem 0 0.75rem;
   line-height: 1.2;
 }
@@ -951,7 +1033,7 @@ button {
   font-size: 1.4rem;
   font-weight: 700;
   letter-spacing: -0.025em;
-  color: #ffffff;
+  color: var(--text-primary);
   margin: 1.5rem 0 0.65rem;
   line-height: 1.3;
 }
@@ -959,18 +1041,18 @@ button {
 .markdown-body h3 {
   font-size: 1.15rem;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--text-primary);
   margin: 1.25rem 0 0.5rem;
 }
 
 .markdown-body p {
   margin-bottom: 1.2rem;
-  color: #d4d4d8;
+  color: var(--text-secondary);
 }
 
 .markdown-body strong {
   font-weight: 600;
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 .markdown-body a {
@@ -987,10 +1069,10 @@ button {
   border-left: 2px solid rgba(255, 255, 255, 0.3);
   padding: 0.65rem 1.25rem;
   margin: 1.5rem 0;
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--bg-subtle);
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
   font-style: italic;
-  color: #a1a1aa;
+  color: var(--text-secondary);
 }
 
 .markdown-body ul, .markdown-body ol {
@@ -1000,16 +1082,16 @@ button {
 
 .markdown-body li {
   margin-bottom: 0.35rem;
-  color: #d4d4d8;
+  color: var(--text-secondary);
 }
 
 .markdown-body code {
   font-family: var(--font-mono);
   font-size: 0.85em;
-  background: rgba(255, 255, 255, 0.07);
+  background: var(--code-bg);
   padding: 0.15rem 0.4rem;
   border-radius: var(--radius-xs);
-  color: #e2e8f0;
+  color: var(--text-primary);
 }
 
 .markdown-body pre {
@@ -1043,9 +1125,9 @@ button {
 }
 
 .markdown-body th {
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--bg-subtle);
   font-weight: 600;
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 .markdown-body img {
@@ -1107,7 +1189,7 @@ button {
   font-size: 2.5rem;
   font-weight: 800;
   letter-spacing: -0.035em;
-  color: #ffffff;
+  color: var(--text-primary);
   line-height: 1.15;
   margin-bottom: 1.25rem;
 }
@@ -1133,19 +1215,19 @@ button {
   width: 38px;
   height: 38px;
   border-radius: var(--radius-full);
-  background: #27272a;
+  background: var(--bg-elevated);
   border: 1px solid var(--border-subtle);
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 600;
-  color: #fff;
+  color: var(--text-primary);
   font-size: 0.9rem;
 }
 
 .author-name {
   font-weight: 600;
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 0.92rem;
 }
 

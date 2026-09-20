@@ -3,19 +3,31 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark light" />
     <title>Blog CMS - Reader & Markdown Studio</title>
     <meta name="description" content="Serverless Git-based Headless CMS and Reader with interactive live Markdown Studio." />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Meetei+Mayek:wght@400;600;700&family=Outfit:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <script>
+      // Zero-FOUC immediate theme initialization
+      (function() {
+        try {
+          const savedTheme = localStorage.getItem('blog_cms_theme');
+          const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          const theme = savedTheme || (prefersDark ? 'dark' : 'dark');
+          document.documentElement.setAttribute('data-theme', theme);
+          document.documentElement.style.colorScheme = theme;
+        } catch (e) {}
+      })();
+
       // If someone visits /web on static hosting, redirect to the root web app
       if (!window.location.port && window.location.pathname.includes('/web')) {
         window.location.replace('../');
       }
     </script>
-    <script type="module" crossorigin src="./assets/index-CkRIyauU.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-BabGSV2a.css">
+    <script type="module" crossorigin src="./assets/index-DCxjnosg.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-Di8V_TRC.css">
   </head>
   <body>
     <div id="root"></div>

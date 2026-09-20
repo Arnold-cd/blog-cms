@@ -99,7 +99,7 @@ export const ArticleView: React.FC<ArticleViewProps> = ({ post, onBack, onEditDr
           border: '1px solid var(--border-active)',
           borderRadius: 'var(--radius-sm)',
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#fff', fontSize: '0.82rem', fontWeight: 500 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-primary)', fontSize: '0.82rem', fontWeight: 500 }}>
             <Sparkles size={15} color="var(--accent-cyan)" />
             <span>Draft Preview Mode &bull; Live in-memory render</span>
           </div>
@@ -147,7 +147,7 @@ export const ArticleView: React.FC<ArticleViewProps> = ({ post, onBack, onEditDr
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
           <Languages size={15} color="var(--accent-cyan)" />
-          <span style={{ fontWeight: 600, color: '#fff' }}>Language View:</span>
+          <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>Language View:</span>
           <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
             (Powered by Google Noto Sans Meetei Mayek)
           </span>
@@ -177,7 +177,7 @@ export const ArticleView: React.FC<ArticleViewProps> = ({ post, onBack, onEditDr
       {/* Article Header */}
       <header>
         <div className="reader-header-meta">
-          <span style={{ color: '#fff', fontWeight: 600 }}>{effectiveCategory}</span>
+          <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{effectiveCategory}</span>
           <span>&bull;</span>
           <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
             <Clock size={13} />

@@ -823,7 +823,7 @@ Support for **bold**, *italics*, quotes, and tables:
         <div className="media-strip-header">
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <Paperclip size={14} color="var(--accent-indigo)" />
-            <span style={{ fontSize: '0.82rem', fontWeight: 600, color: '#fff' }}>
+            <span style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-primary)' }}>
               Attached Pictures &amp; PDF Pages ({draft.assets.length})
             </span>
             <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
@@ -881,7 +881,7 @@ Support for **bold**, *italics*, quotes, and tables:
               <div key={asset.name} className="media-pill-item">
                 <img src={asset.previewUrl} alt={asset.name} className="media-pill-thumb" />
                 <div style={{ minWidth: 0, maxWidth: '180px' }}>
-                  <div style={{ color: '#fff', fontSize: '0.78rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  <div style={{ color: 'var(--text-primary)', fontSize: '0.78rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                     {asset.name}
                   </div>
                   <div style={{ color: 'var(--text-muted)', fontSize: '0.68rem' }}>
@@ -1036,7 +1036,7 @@ Support for **bold**, *italics*, quotes, and tables:
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.75rem' }}>
               <Send size={18} color="var(--accent-cyan)" />
-              <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#fff' }}>Publish Directly to GitHub</h3>
+              <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text-primary)' }}>Publish Directly to GitHub</h3>
             </div>
 
             <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1.25rem', lineHeight: 1.5 }}>
