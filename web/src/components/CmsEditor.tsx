@@ -208,7 +208,7 @@ Support for **bold**, *italics*, quotes, and tables:
     } catch {
       return '<p>Error rendering preview</p>';
     }
-  }, [livePreviewMarkdown]);
+  }, [livePreviewMarkdown, isPreviewMeetei]);
 
   // Validation checks
   const validationErrors = useMemo(() => {
@@ -871,27 +871,26 @@ Support for **bold**, *italics*, quotes, and tables:
             <div className="pane-header">
               <span>Live Article Preview</span>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <button
-                  type="button"
-                  onClick={() => setIsPreviewMeetei(!isPreviewMeetei)}
-                  className="btn-ghost"
-                  style={{
-                    padding: '0.2rem 0.6rem',
-                    fontSize: '0.72rem',
-                    borderRadius: 'var(--radius-full)',
-                    background: isPreviewMeetei ? 'rgba(56, 189, 248, 0.15)' : 'rgba(255, 255, 255, 0.05)',
-                    color: isPreviewMeetei ? 'var(--accent-cyan)' : 'var(--text-secondary)',
-                    border: '1px solid var(--border-subtle)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.35rem',
-                  }}
-                  title="Toggle live preview in Meetei Mayek"
-                  id="btn-toggle-preview-meetei"
-                >
-                  <span style={{ fontFamily: 'var(--font-meetei)', fontSize: '0.9rem' }}>ꯃ</span>
-                  <span>{isPreviewMeetei ? 'Meetei Mayek Preview' : 'English Preview'}</span>
-                </button>
+                <div className="studio-view-toggle" style={{ background: 'rgba(9, 9, 11, 0.8)' }}>
+                  <button
+                    type="button"
+                    className={`view-toggle-btn ${!isPreviewMeetei ? 'active' : ''}`}
+                    onClick={() => setIsPreviewMeetei(false)}
+                    style={{ padding: '0.2rem 0.55rem', fontSize: '0.72rem' }}
+                    id="btn-preview-lang-en"
+                  >
+                    <span>English</span>
+                  </button>
+                  <button
+                    type="button"
+                    className={`view-toggle-btn ${isPreviewMeetei ? 'active' : ''}`}
+                    onClick={() => setIsPreviewMeetei(true)}
+                    style={{ padding: '0.2rem 0.55rem', fontSize: '0.72rem' }}
+                    id="btn-preview-lang-mni"
+                  >
+                    <span style={{ fontFamily: 'var(--font-meetei)' }}>ꯃꯤꯇꯩ ꯃꯌꯦꯛ</span>
+                  </button>
+                </div>
                 <span style={{ color: 'var(--accent-emerald)', fontSize: '0.72rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
                   <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: 'var(--accent-emerald)' }} />
                   <span>Auto-synced</span>
@@ -900,7 +899,7 @@ Support for **bold**, *italics*, quotes, and tables:
             </div>
 
             <div
-              className="studio-preview-pane markdown-body"
+              className={`studio-preview-pane markdown-body ${isPreviewMeetei ? 'lang-mni' : ''}`}
               dangerouslySetInnerHTML={{ __html: previewHtml }}
               id="cms-live-preview-container"
             />
