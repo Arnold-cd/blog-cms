@@ -3,6 +3,7 @@ import {
   ALL_27_MAIN_LETTERS,
   LONSUM_8,
   CHEITAP_8,
+  INDEPENDENT_VOWELS_7,
   SPECIAL_MARKS_3,
   NUMERALS_10,
   CHEISHING_THIBA,
@@ -25,7 +26,8 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
   const [inputText, setInputText] = useState('');
   const [convertedText, setConvertedText] = useState('');
   const [copied, setCopied] = useState(false);
-  const [activeTab, setActiveTab] = useState<'translate' | 'main27' | 'lonsum' | 'cheitap' | 'extensions' | 'numerals'>('translate');
+  const [activeTab, setActiveTab] = useState<'translate' | 'vowels' | 'main27' | 'lonsum' | 'cheitap' | 'extensions' | 'numerals'>('vowels');
+  const [sampleConsonant, setSampleConsonant] = useState<string>('ꯀ');
 
   const handleTranslate = () => {
     const result = translateToMeeteiMayekWithVocab(inputText);
@@ -138,6 +140,13 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
 
         {/* Tab Switcher */}
         <div style={{ display: 'flex', gap: '0.4rem', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.5rem', flexWrap: 'wrap' }}>
+          <button
+            className={`category-chip ${activeTab === 'vowels' ? 'active' : ''}`}
+            onClick={() => setActiveTab('vowels')}
+            id="tab-vowels-suite"
+          >
+            Vowels (7 Independent &amp; 8 Diacritics)
+          </button>
           <button
             className={`category-chip ${activeTab === 'translate' ? 'active' : ''}`}
             onClick={() => setActiveTab('translate')}
@@ -252,6 +261,209 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
                 </div>
               </div>
             )}
+          </div>
+        )}
+
+        {/* Tab: Seven Independent Vowels & Vowel Diacritics (Cheitap Eeyek) */}
+        {activeTab === 'vowels' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', maxHeight: '550px', overflowY: 'auto' }}>
+            {/* Section 1: Seven Independent Vowels */}
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.4rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+                <h4 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
+                  Seven Independent Vowels (ꯃꯌꯦꯛ ꯑꯃꯥꯡꯁꯤꯡ)
+                </h4>
+                <span style={{ fontSize: '0.75rem', color: 'var(--accent-cyan)', background: 'rgba(56, 189, 248, 0.1)', padding: '0.15rem 0.5rem', borderRadius: 'var(--radius-full)' }}>
+                  〈ꯑ〉 is the default vowel carrier
+                </span>
+              </div>
+              <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.9rem', lineHeight: 1.5 }}>
+                Used only when a word starts with a vowel or in vowel hiatus (e.g. <code>ꯑꯣꯏꯅ</code> oina, <code>ꯑꯣꯖꯥ</code> oja). Otherwise, vowels attach as diacritics to consonants.
+              </p>
+
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))',
+                gap: '0.65rem',
+              }}>
+                {INDEPENDENT_VOWELS_7.map((v) => (
+                  <div
+                    key={v.char}
+                    style={{
+                      background: 'var(--bg-card)',
+                      border: '1px solid var(--border-subtle)',
+                      borderRadius: 'var(--radius-sm)',
+                      padding: '0.75rem 0.5rem',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      textAlign: 'center',
+                      position: 'relative',
+                    }}
+                  >
+                    <div style={{
+                      fontFamily: 'var(--font-meetei)',
+                      fontSize: '2.1rem',
+                      color: 'var(--accent-rose)',
+                      lineHeight: 1.2,
+                      marginBottom: '0.2rem',
+                    }}>
+                      {v.char}
+                    </div>
+                    <span style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+                      IPA: {v.ipa}
+                    </span>
+                    <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.1rem' }}>
+                      {v.name}
+                    </span>
+                    <span style={{ fontSize: '0.68rem', color: 'var(--text-secondary)', marginTop: '0.25rem', background: 'var(--bg-subtle)', padding: '0.1rem 0.35rem', borderRadius: 'var(--radius-xs)' }}>
+                      {v.example}
+                    </span>
+                    <div style={{ display: 'flex', gap: '0.25rem', marginTop: '0.5rem' }}>
+                      <button
+                        type="button"
+                        onClick={() => handleCopy(v.char)}
+                        className="btn-ghost"
+                        style={{ padding: '0.2rem 0.35rem', fontSize: '0.7rem' }}
+                        title="Copy vowel"
+                      >
+                        <Copy size={11} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleInsert(v.char)}
+                        className="btn-primary"
+                        style={{ padding: '0.2rem 0.45rem', fontSize: '0.7rem' }}
+                        title="Insert at cursor"
+                      >
+                        <Plus size={11} />
+                        <span>Insert</span>
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Examples Bar */}
+              <div style={{
+                marginTop: '0.8rem',
+                background: 'var(--bg-subtle)',
+                border: '1px solid var(--border-subtle)',
+                borderRadius: 'var(--radius-sm)',
+                padding: '0.6rem 0.85rem',
+                fontSize: '0.8rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '1.25rem',
+                flexWrap: 'wrap',
+              }}>
+                <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>Examples:</span>
+                <span>
+                  <strong style={{ fontFamily: 'var(--font-meetei)', fontSize: '1.05rem', color: 'var(--accent-cyan)' }}>ꯑꯣꯏꯅ</strong> (oina) &ndash; 'like / left'
+                </span>
+                <span>
+                  <strong style={{ fontFamily: 'var(--font-meetei)', fontSize: '1.05rem', color: 'var(--accent-cyan)' }}>ꯑꯣꯖꯥ</strong> (oja) &ndash; 'teacher'
+                </span>
+                <span>
+                  <strong style={{ fontFamily: 'var(--font-meetei)', fontSize: '1.05rem', color: 'var(--accent-cyan)' }}>ꯑꯩꯈꯣꯏ</strong> (eikhoi) &ndash; 'we / us'
+                </span>
+              </div>
+            </div>
+
+            {/* Section 2: Vowel Diacritics (Cheitap Eeyek) */}
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.4rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+                <h4 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
+                  Vowel Diacritics (Cheitap Eeyek &bull; ꯆꯩꯇꯥꯞ)
+                </h4>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.78rem' }}>
+                  <span style={{ color: 'var(--text-muted)' }}>Base consonant:</span>
+                  <select
+                    value={sampleConsonant}
+                    onChange={(e) => setSampleConsonant(e.target.value)}
+                    className="form-select"
+                    style={{ padding: '0.15rem 0.4rem', fontSize: '0.8rem', width: 'auto', fontFamily: 'var(--font-meetei)' }}
+                  >
+                    {ALL_27_MAIN_LETTERS.map((l) => (
+                      <option key={l.char} value={l.char}>{l.char} ({l.name})</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.9rem' }}>
+                Syllables are formed by attaching these 8 vowel diacritics directly to consonants:
+              </p>
+
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{
+                  width: '100%',
+                  borderCollapse: 'collapse',
+                  background: 'var(--bg-card)',
+                  border: '1px solid var(--border-subtle)',
+                  borderRadius: 'var(--radius-sm)',
+                  fontSize: '0.82rem',
+                  textAlign: 'center',
+                }}>
+                  <thead>
+                    <tr style={{ background: 'var(--bg-subtle)', borderBottom: '1px solid var(--border-active)' }}>
+                      <th style={{ padding: '0.6rem 0.5rem', textAlign: 'left', fontWeight: 600, color: 'var(--text-secondary)' }}>Row</th>
+                      {CHEITAP_8.map((c) => (
+                        <th key={c.name} style={{ padding: '0.6rem 0.5rem', fontWeight: 600, color: 'var(--text-primary)' }}>
+                          <div>{c.name}</div>
+                          <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 400 }}>{c.ipa}</div>
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {/* Diacritic only */}
+                    <tr style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+                      <td style={{ padding: '0.65rem 0.5rem', textAlign: 'left', color: 'var(--text-muted)', fontWeight: 500 }}>diacritic</td>
+                      {CHEITAP_8.map((c) => (
+                        <td key={c.name} style={{ padding: '0.65rem 0.5rem' }}>
+                          <span style={{
+                            fontFamily: 'var(--font-meetei)',
+                            fontSize: '1.6rem',
+                            color: 'var(--accent-rose)',
+                            lineHeight: 1,
+                          }}>
+                            {c.char}
+                          </span>
+                        </td>
+                      ))}
+                    </tr>
+                    {/* Consonant plus diacritic */}
+                    <tr>
+                      <td style={{ padding: '0.65rem 0.5rem', textAlign: 'left', color: 'var(--text-primary)', fontWeight: 600 }}>
+                        <span style={{ fontFamily: 'var(--font-meetei)', fontSize: '1.2rem', color: 'var(--accent-cyan)' }}>{sampleConsonant}</span> + diacritic
+                      </td>
+                      {CHEITAP_8.map((c) => {
+                        const combo = `${sampleConsonant}${c.char}`;
+                        return (
+                          <td key={c.name} style={{ padding: '0.65rem 0.5rem' }}>
+                            <button
+                              type="button"
+                              onClick={() => handleInsert(combo)}
+                              className="btn-ghost"
+                              style={{
+                                fontFamily: 'var(--font-meetei)',
+                                fontSize: '1.65rem',
+                                color: 'var(--accent-cyan)',
+                                padding: '0.2rem 0.4rem',
+                                borderRadius: 'var(--radius-xs)',
+                              }}
+                              title={`Click to insert ${combo}`}
+                            >
+                              {combo}
+                            </button>
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
         )}
 

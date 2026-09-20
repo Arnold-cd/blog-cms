@@ -95,16 +95,113 @@ export const LONSUM_8: MeeteiUnicodeChar[] = [
   { codePoint: 'U+ABE2', char: 'ꯢ', name: 'I Lonsum', meaning: 'Final -i', category: 'lonsum', ipa: '[-i]', latin: '-i' },
 ];
 
-// 4. 8 Dependent Vowel Diacritics (Cheitap) - U+ABE3 to U+ABEA
+// 4. 8 Dependent Vowel Diacritics (Cheitap Eeyek) - Official Unicode U+ABE3 to U+ABEA
 export const CHEITAP_8: MeeteiUnicodeChar[] = [
-  { codePoint: 'U+ABE5', char: 'ꯥ', name: 'Anap (kā)', meaning: 'Vowel sign -aa', category: 'cheitap', ipa: '[ka]', latin: 'ā / aa' },
-  { codePoint: 'U+ABE4', char: 'ꯤ', name: 'Inap (ki)', meaning: 'Vowel sign -i', category: 'cheitap', ipa: '[ki]', latin: 'i' },
-  { codePoint: 'U+ABE8', char: 'ꯨ', name: 'Unap (ku)', meaning: 'Vowel sign -u', category: 'cheitap', ipa: '[ku]', latin: 'u' },
-  { codePoint: 'U+ABE6', char: 'ꯦ', name: 'Yenap (ke)', meaning: 'Vowel sign -e', category: 'cheitap', ipa: '[ke]', latin: 'e' },
-  { codePoint: 'U+ABE9', char: 'ꯩ', name: 'Cheinap (kei)', meaning: 'Vowel sign -ei', category: 'cheitap', ipa: '[kej]', latin: 'ei' },
-  { codePoint: 'U+ABE3', char: 'ꯣ', name: 'Onap (ko)', meaning: 'Vowel sign -o', category: 'cheitap', ipa: '[ko]', latin: 'o' },
-  { codePoint: 'U+ABE7', char: 'ꯧ', name: 'Sounap (kou)', meaning: 'Vowel sign -ou', category: 'cheitap', ipa: '[kəw]', latin: 'ou' },
-  { codePoint: 'U+ABEA', char: 'ꯪ', name: 'Nung (kang)', meaning: 'Anusvara nasal sign -ng', category: 'cheitap', ipa: '[kəŋ]', latin: 'ng' },
+  { codePoint: 'U+ABE5', char: 'ꯥ', name: 'aa-tap', meaning: 'Vowel sign -aa (e.g. ꯀꯥ = ka)', category: 'cheitap', ipa: '/a/', latin: 'ā / aa' },
+  { codePoint: 'U+ABE4', char: 'ꯤ', name: 'ee-nap', meaning: 'Vowel sign -i / -ee (e.g. ꯀꯤ = ki)', category: 'cheitap', ipa: '/i/', latin: 'i / ee' },
+  { codePoint: 'U+ABE8', char: 'ꯨ', name: "uu-nap", meaning: 'Vowel sign -u / -uu (e.g. ꯀꯨ = ku)', category: 'cheitap', ipa: '/u/', latin: 'u / uu' },
+  { codePoint: 'U+ABE6', char: 'ꯦ', name: 'yet-nap', meaning: 'Vowel sign -e (e.g. ꯀꯦ = ke)', category: 'cheitap', ipa: '/e/', latin: 'e' },
+  { codePoint: 'U+ABE3', char: 'ꯣ', name: 'ot-nap', meaning: 'Vowel sign -o (e.g. ꯀꯣ = ko)', category: 'cheitap', ipa: '/o/', latin: 'o' },
+  { codePoint: 'U+ABE9', char: 'ꯩ', name: 'chei-nap', meaning: 'Vowel sign -ei / -ai (e.g. ꯀꯩ = kei)', category: 'cheitap', ipa: '/ej/ or /ai/', latin: 'ei / ai' },
+  { codePoint: 'U+ABE7', char: 'ꯧ', name: 'sou-nap', meaning: 'Vowel sign -ou / -au (e.g. ꯀꯧ = kou)', category: 'cheitap', ipa: '/ew/ or /ou/', latin: 'ou / au' },
+  { codePoint: 'U+ABEA', char: 'ꯪ', name: 'nung', meaning: 'Anusvara nasal sign -ng (e.g. ꯀꯪ = kang)', category: 'cheitap', ipa: '/əŋ/', latin: 'ng' },
+];
+
+/**
+ * Seven Independent Vowel Letters of Meitei Mayek
+ * Based on official Unicode and Meitei orthography standard:
+ * Includes 〈ꯑ〉 which is used as the default vowel carrier.
+ */
+export interface IndependentVowel {
+  char: string;
+  name: string;
+  carrier: string;
+  ipa: string;
+  latin: string;
+  description: string;
+  components: string;
+  example: string;
+  exampleMeaning: string;
+}
+
+export const INDEPENDENT_VOWELS_7: IndependentVowel[] = [
+  {
+    char: 'ꯑ',
+    name: 'Atiya (Carrier)',
+    carrier: 'Default Vowel Carrier',
+    ipa: '/ə/',
+    latin: 'a / ə',
+    description: 'Base vowel /ə/ and universal carrier for compound vowels',
+    components: 'Letter Atiya (U+ABCE)',
+    example: 'ꯑꯃ (ama)',
+    exampleMeaning: 'one',
+  },
+  {
+    char: 'ꯏ',
+    name: 'I',
+    carrier: 'Independent letter',
+    ipa: '/i/',
+    latin: 'i',
+    description: 'Independent vowel I (used word-initially or in vowel hiatus)',
+    components: 'Letter I (U+ABCF)',
+    example: 'ꯏꯃꯥ (ima)',
+    exampleMeaning: 'mother',
+  },
+  {
+    char: 'ꯎ',
+    name: 'U',
+    carrier: 'Independent letter',
+    ipa: '/u/',
+    latin: 'u',
+    description: 'Independent vowel U (used word-initially or in vowel hiatus)',
+    components: 'Letter U (U+ABD0)',
+    example: 'ꯎꯆꯦꯛ (uchek)',
+    exampleMeaning: 'bird',
+  },
+  {
+    char: 'ꯑꯣ',
+    name: 'O',
+    carrier: 'Carrier + Ot-nap',
+    ipa: '/o/',
+    latin: 'o',
+    description: 'Independent vowel O formed with carrier Atiya + Ot-nap',
+    components: 'ꯑ (U+ABCE) + ꯣ (U+ABE3)',
+    example: 'ꯑꯣꯏꯅ (oina) / ꯑꯣꯖꯥ (oja)',
+    exampleMeaning: 'like, left / teacher',
+  },
+  {
+    char: 'ꯑꯦ',
+    name: 'E',
+    carrier: 'Carrier + Yet-nap',
+    ipa: '/e/',
+    latin: 'e',
+    description: 'Independent vowel E formed with carrier Atiya + Yet-nap',
+    components: 'ꯑ (U+ABCE) + ꯦ (U+ABE6)',
+    example: 'ꯑꯦꯞꯔꯤꯜ (april)',
+    exampleMeaning: 'April',
+  },
+  {
+    char: 'ꯑꯧ',
+    name: 'OU / AU',
+    carrier: 'Carrier + Sou-nap',
+    ipa: '/ou/ or /ew/',
+    latin: 'ou / au',
+    description: 'Independent diphthong OU/AU formed with carrier Atiya + Sou-nap',
+    components: 'ꯑ (U+ABCE) + ꯧ (U+ABE7)',
+    example: 'ꯑꯧꯔꯥꯡꯕ (aurangba)',
+    exampleMeaning: 'bright',
+  },
+  {
+    char: 'ꯑꯩ',
+    name: 'AI / EI',
+    carrier: 'Carrier + Chei-nap',
+    ipa: '/ai/ or /ej/',
+    latin: 'ai / ei',
+    description: 'Independent diphthong AI/EI formed with carrier Atiya + Chei-nap',
+    components: 'ꯑ (U+ABCE) + ꯩ (U+ABE9)',
+    example: 'ꯑꯩꯈꯣꯏ (eikhoi)',
+    exampleMeaning: 'we / us',
+  },
 ];
 
 // 5. 3 Special Marks & Punctuation - U+ABEB to U+ABED
@@ -420,6 +517,8 @@ const EXTENDED_VOCABULARY: Record<string, string> = {
 };
 
 const COMMON_PHONETIC_WORDS: Record<string, string> = {
+  oina: 'ꯑꯣꯏꯅ',
+  oja: 'ꯑꯣꯖꯥ',
   kangleipak: 'ꯀꯪꯂꯩꯄꯥꯛ',
   manipur: 'ꯃꯅꯤꯄꯨꯔ',
   meetei: 'ꯃꯤꯇꯩ',
