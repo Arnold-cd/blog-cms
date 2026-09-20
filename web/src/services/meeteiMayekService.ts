@@ -12,41 +12,72 @@ export interface MeeteiUnicodeChar {
   name: string;
   meaning?: string;
   category: 'core18' | 'consonant9' | 'lonsum' | 'cheitap' | 'special' | 'numeral' | 'extension';
+  ipa?: string;
+  latin?: string;
 }
+
+export interface CheishingEntry {
+  meeteiWord: string;
+  digits: string;
+  romanName: string;
+  value: string;
+  meaning: string;
+}
+
+/**
+ * Traditional Meetei Mayek Counting & Large Number System (Cheishing Thiba)
+ * Preserved in indigenous Manipuri Puya manuscripts
+ */
+export const CHEISHING_THIBA: CheishingEntry[] = [
+  { meeteiWord: 'ꯑꯃ', digits: '꯱', romanName: 'Ama', value: '1', meaning: 'One (Units)' },
+  { meeteiWord: 'ꯇꯔꯥ', digits: '꯱꯰', romanName: 'Tara', value: '10', meaning: 'Ten (Tens)' },
+  { meeteiWord: 'ꯆꯥ', digits: '꯱꯰꯰', romanName: 'Cha', value: '100', meaning: 'Hundred' },
+  { meeteiWord: 'ꯂꯤꯁꯤꯡ', digits: '꯱꯰꯰꯰', romanName: 'Leeshing', value: '1,000', meaning: 'Thousand' },
+  { meeteiWord: 'ꯂꯤꯁꯤꯡ ꯇꯔꯥ', digits: '꯱꯰꯰꯰꯰', romanName: 'Leeshing Tara', value: '10,000', meaning: 'Ten Thousand' },
+  { meeteiWord: 'ꯂꯤꯆꯥ', digits: '꯱꯰꯰꯰꯰꯰', romanName: 'Leecha', value: '100,000', meaning: 'One Lakh (Hundred Thousand)' },
+  { meeteiWord: 'ꯂꯤꯆꯥ ꯇꯔꯥ', digits: '꯱꯰꯰꯰꯰꯰꯰', romanName: 'Leecha Tara', value: '1,000,000', meaning: 'Ten Lakhs (One Million)' },
+  { meeteiWord: 'ꯂꯤꯄꯨꯟ', digits: '꯱꯰꯰꯰꯰꯰꯰꯰', romanName: 'Leepun', value: '10,000,000', meaning: 'One Crore (Ten Million)' },
+  { meeteiWord: 'ꯂꯤꯄꯨꯟ ꯇꯔꯥ', digits: '꯱꯰꯰꯰꯰꯰꯰꯰꯰', romanName: 'Leepun Tara', value: '100,000,000', meaning: 'Ten Crores (Hundred Million)' },
+  { meeteiWord: 'ꯂꯤꯄꯣꯠ', digits: '꯱꯰꯰꯰꯰꯰꯰꯰꯰꯰', romanName: 'Leepot', value: '1,000,000,000', meaning: 'One Billion (Arab)' },
+  { meeteiWord: 'ꯂꯤꯄꯣꯠ ꯇꯔꯥ', digits: '꯱꯰꯰꯰꯰꯰꯰꯰꯰꯰꯰', romanName: 'Leepot Tara', value: '10,000,000,000', meaning: 'Ten Billions' },
+  { meeteiWord: 'ꯂꯤꯀꯩ', digits: '꯱꯰꯰꯰꯰꯰꯰꯰꯰꯰꯰꯰', romanName: 'Leekei', value: '100,000,000,000', meaning: 'Hundred Billions' },
+  { meeteiWord: 'ꯂꯤꯀꯩ ꯇꯔꯥ', digits: '꯱꯰꯰꯰꯰꯰꯰꯰꯰꯰꯰꯰꯰', romanName: 'Leekei Tara', value: '1,000,000,000,000', meaning: 'One Trillion' },
+  { meeteiWord: 'ꯄꯨ ꯑꯃ', digits: '꯱꯰꯰꯰꯰꯰꯰꯰꯰꯰꯰꯰꯰꯰', romanName: 'Puu Ama', value: '10,000,000,000,000', meaning: 'Ten Trillions' },
+];
 
 // 1. Core 18 Anatomical Letters (Iyek Ipee) - U+ABC0 to U+ABD1
 export const CORE_18_IPEE: MeeteiUnicodeChar[] = [
-  { codePoint: 'U+ABC0', char: 'ꯀ', name: 'Kok', meaning: 'Head (ꯀꯣꯛ)', category: 'core18' },
-  { codePoint: 'U+ABC1', char: 'ꯁ', name: 'Sam', meaning: 'Hair (ꯁꯝ)', category: 'core18' },
-  { codePoint: 'U+ABC2', char: 'ꯂ', name: 'Lai', meaning: 'Forehead (ꯂꯥꯢ)', category: 'core18' },
-  { codePoint: 'U+ABC3', char: 'ꯃ', name: 'Mit', meaning: 'Eye (ꯃꯤꯠ)', category: 'core18' },
-  { codePoint: 'U+ABC4', char: 'ꯄ', name: 'Pa', meaning: 'Eyebrow / Eyelash (ꯄꯥ)', category: 'core18' },
-  { codePoint: 'U+ABC5', char: 'ꯅ', name: 'Na', meaning: 'Ear (ꯅꯥ)', category: 'core18' },
-  { codePoint: 'U+ABC6', char: 'ꯆ', name: 'Chil', meaning: 'Lips (ꯆꯤꯜ)', category: 'core18' },
-  { codePoint: 'U+ABC7', char: 'ꯇ', name: 'Til', meaning: 'Saliva / Tongue (ꯇꯤꯜ)', category: 'core18' },
-  { codePoint: 'U+ABC8', char: 'ꯈ', name: 'Khou', meaning: 'Throat (ꯈꯧ)', category: 'core18' },
-  { codePoint: 'U+ABC9', char: 'ꯉ', name: 'Ngou', meaning: 'Uvula / Neck (ꯉꯧ)', category: 'core18' },
-  { codePoint: 'U+ABCA', char: 'ꯊ', name: 'Thou', meaning: 'Chest / Breast (ꯊꯧ)', category: 'core18' },
-  { codePoint: 'U+ABCB', char: 'ꯋ', name: 'Wai', meaning: 'Navel (ꯋꯥꯢ)', category: 'core18' },
-  { codePoint: 'U+ABCC', char: 'ꯌ', name: 'Yang', meaning: 'Spine (ꯌꯥꯡ)', category: 'core18' },
-  { codePoint: 'U+ABCD', char: 'ꯍ', name: 'Huk', meaning: 'Pelvis / Spine base (ꯍꯨꯛ)', category: 'core18' },
-  { codePoint: 'U+ABCE', char: 'ꯎ', name: 'Un', meaning: 'Skin (ꯎꯟ)', category: 'core18' },
-  { codePoint: 'U+ABCF', char: 'ꯏ', name: 'I', meaning: 'Blood (ꯏ)', category: 'core18' },
-  { codePoint: 'U+ABD0', char: 'ꯐ', name: 'Pham', meaning: 'Anus / Reproductive (ꯐꝝ)', category: 'core18' },
-  { codePoint: 'U+ABD1', char: 'ꯑ', name: 'Atiya', meaning: 'Sky / Cosmos (ꯑꯇꯤꯌꯥ)', category: 'core18' },
+  { codePoint: 'U+ABC0', char: 'ꯀ', name: 'Kok', meaning: 'Head (ꯀꯣꯛ)', category: 'core18', ipa: '[kɔk]', latin: 'k' },
+  { codePoint: 'U+ABC1', char: 'ꯁ', name: 'Sam', meaning: 'Hair (ꯁꯝ)', category: 'core18', ipa: '[səm]', latin: 's' },
+  { codePoint: 'U+ABC2', char: 'ꯂ', name: 'Lai', meaning: 'Forehead (ꯂꯥꯢ)', category: 'core18', ipa: '[lai]', latin: 'l' },
+  { codePoint: 'U+ABC3', char: 'ꯃ', name: 'Mit', meaning: 'Eye (ꯃꯤꯠ)', category: 'core18', ipa: '[mit]', latin: 'm' },
+  { codePoint: 'U+ABC4', char: 'ꯄ', name: 'Pa', meaning: 'Eyebrow / Eyelash (ꯄꯥ)', category: 'core18', ipa: '[pa]', latin: 'p' },
+  { codePoint: 'U+ABC5', char: 'ꯅ', name: 'Na', meaning: 'Ear (ꯅꯥ)', category: 'core18', ipa: '[na]', latin: 'n' },
+  { codePoint: 'U+ABC6', char: 'ꯆ', name: 'Chil', meaning: 'Lips (ꯆꯤꯜ)', category: 'core18', ipa: '[tʃil]', latin: 'ch' },
+  { codePoint: 'U+ABC7', char: 'ꯇ', name: 'Til', meaning: 'Saliva / Tongue (ꯇꯤꯜ)', category: 'core18', ipa: '[til]', latin: 't' },
+  { codePoint: 'U+ABC8', char: 'ꯈ', name: 'Khou', meaning: 'Throat (ꯈꯧ)', category: 'core18', ipa: '[kʰəw]', latin: 'kh' },
+  { codePoint: 'U+ABC9', char: 'ꯉ', name: 'Ngou', meaning: 'Uvula / Neck (ꯉꯧ)', category: 'core18', ipa: '[ŋəw]', latin: 'ng' },
+  { codePoint: 'U+ABCA', char: 'ꯊ', name: 'Thou', meaning: 'Chest / Breast (ꯊꯧ)', category: 'core18', ipa: '[tʰəw]', latin: 'th' },
+  { codePoint: 'U+ABCB', char: 'ꯋ', name: 'Wai', meaning: 'Navel (ꯋꯥꯢ)', category: 'core18', ipa: '[wai]', latin: 'w / v' },
+  { codePoint: 'U+ABCC', char: 'ꯌ', name: 'Yang', meaning: 'Spine (ꯌꯥꯡ)', category: 'core18', ipa: '[jaŋ]', latin: 'y' },
+  { codePoint: 'U+ABCD', char: 'ꯍ', name: 'Huk', meaning: 'Pelvis / Spine base (ꯍꯨꯛ)', category: 'core18', ipa: '[huk]', latin: 'h' },
+  { codePoint: 'U+ABCE', char: 'ꯎ', name: 'Un', meaning: 'Skin (ꯎꯟ)', category: 'core18', ipa: '[un]', latin: 'u / u:' },
+  { codePoint: 'U+ABCF', char: 'ꯏ', name: 'I', meaning: 'Blood (ꯏ)', category: 'core18', ipa: '[i]', latin: 'i / i:' },
+  { codePoint: 'U+ABD0', char: 'ꯐ', name: 'Pham', meaning: 'Anus / Reproductive (ꯐꝝ)', category: 'core18', ipa: '[pʰəm]', latin: 'ph / f' },
+  { codePoint: 'U+ABD1', char: 'ꯑ', name: 'Atiya', meaning: 'Sky / Cosmos (ꯑꯇꯤꯌꯥ)', category: 'core18', ipa: '[ətija]', latin: 'a' },
 ];
 
 // 2. Additional 9 Consonants - U+ABD2 to U+ABDA
 export const ADDITIONAL_9_CONSONANTS: MeeteiUnicodeChar[] = [
-  { codePoint: 'U+ABD2', char: 'ꯒ', name: 'Gok', meaning: 'Voiced velar /g/', category: 'consonant9' },
-  { codePoint: 'U+ABD3', char: 'ꯓ', name: 'Jham', meaning: 'Voiced aspirate /jh/', category: 'consonant9' },
-  { codePoint: 'U+ABD4', char: 'ꯔ', name: 'Rai', meaning: 'Alveolar liquid /r/', category: 'consonant9' },
-  { codePoint: 'U+ABD5', char: 'ꯕ', name: 'Ba', meaning: 'Voiced bilabial /b/', category: 'consonant9' },
-  { codePoint: 'U+ABD6', char: 'ꯖ', name: 'Jil', meaning: 'Voiced palatal /j/', category: 'consonant9' },
-  { codePoint: 'U+ABD7', char: 'ꯗ', name: 'Dil', meaning: 'Voiced dental /d/', category: 'consonant9' },
-  { codePoint: 'U+ABD8', char: 'ꯘ', name: 'Ghou', meaning: 'Voiced aspirate /gh/', category: 'consonant9' },
-  { codePoint: 'U+ABD9', char: 'ꯙ', name: 'Dhou', meaning: 'Voiced aspirate /dh/', category: 'consonant9' },
-  { codePoint: 'U+ABDA', char: 'ꯚ', name: 'Bham', meaning: 'Voiced aspirate /bh/', category: 'consonant9' },
+  { codePoint: 'U+ABD2', char: 'ꯒ', name: 'Gok', meaning: 'Voiced velar /g/', category: 'consonant9', ipa: '[gɔk]', latin: 'g' },
+  { codePoint: 'U+ABD3', char: 'ꯓ', name: 'Jham', meaning: 'Voiced aspirate /jh/', category: 'consonant9', ipa: '[dʒʱəm]', latin: 'jh' },
+  { codePoint: 'U+ABD4', char: 'ꯔ', name: 'Rai', meaning: 'Alveolar liquid /r/', category: 'consonant9', ipa: '[rai]', latin: 'r' },
+  { codePoint: 'U+ABD5', char: 'ꯕ', name: 'Ba', meaning: 'Voiced bilabial /b/', category: 'consonant9', ipa: '[ba]', latin: 'b' },
+  { codePoint: 'U+ABD6', char: 'ꯖ', name: 'Jil', meaning: 'Voiced palatal /j/', category: 'consonant9', ipa: '[dʒil]', latin: 'j / z' },
+  { codePoint: 'U+ABD7', char: 'ꯗ', name: 'Dil', meaning: 'Voiced dental /d/', category: 'consonant9', ipa: '[dil]', latin: 'd' },
+  { codePoint: 'U+ABD8', char: 'ꯘ', name: 'Ghou', meaning: 'Voiced aspirate /gh/', category: 'consonant9', ipa: '[gʱəw]', latin: 'gh' },
+  { codePoint: 'U+ABD9', char: 'ꯙ', name: 'Dhou', meaning: 'Voiced aspirate /dh/', category: 'consonant9', ipa: '[dʱəw]', latin: 'dh' },
+  { codePoint: 'U+ABDA', char: 'ꯚ', name: 'Bham', meaning: 'Voiced aspirate /bh/', category: 'consonant9', ipa: '[bʱəm]', latin: 'bh / v' },
 ];
 
 // All 27 Modern Alphabets (18 Core + 9 Additional)
@@ -54,26 +85,26 @@ export const ALL_27_MAIN_LETTERS = [...CORE_18_IPEE, ...ADDITIONAL_9_CONSONANTS]
 
 // 3. 8 Dependent Final Consonants (Lonsum) - U+ABDB to U+ABE2
 export const LONSUM_8: MeeteiUnicodeChar[] = [
-  { codePoint: 'U+ABDB', char: 'ꯛ', name: 'Kok Lonsum', meaning: 'Final -k', category: 'lonsum' },
-  { codePoint: 'U+ABDC', char: 'ꯜ', name: 'Lai Lonsum', meaning: 'Final -l', category: 'lonsum' },
-  { codePoint: 'U+ABDD', char: 'ꯝ', name: 'Mit Lonsum', meaning: 'Final -m', category: 'lonsum' },
-  { codePoint: 'U+ABDE', char: 'ꯞ', name: 'Pa Lonsum', meaning: 'Final -p', category: 'lonsum' },
-  { codePoint: 'U+ABDF', char: 'ꯟ', name: 'Na Lonsum', meaning: 'Final -n', category: 'lonsum' },
-  { codePoint: 'U+ABE0', char: 'ꯠ', name: 'Til Lonsum', meaning: 'Final -t', category: 'lonsum' },
-  { codePoint: 'U+ABE1', char: 'ꯡ', name: 'Ngou Lonsum', meaning: 'Final -ng', category: 'lonsum' },
-  { codePoint: 'U+ABE2', char: 'ꯢ', name: 'I Lonsum', meaning: 'Final -i', category: 'lonsum' },
+  { codePoint: 'U+ABDB', char: 'ꯛ', name: 'Kok Lonsum', meaning: 'Final -k', category: 'lonsum', ipa: '[-k]', latin: '-k' },
+  { codePoint: 'U+ABDC', char: 'ꯜ', name: 'Lai Lonsum', meaning: 'Final -l', category: 'lonsum', ipa: '[-l]', latin: '-l' },
+  { codePoint: 'U+ABDD', char: 'ꯝ', name: 'Mit Lonsum', meaning: 'Final -m', category: 'lonsum', ipa: '[-m]', latin: '-m' },
+  { codePoint: 'U+ABDE', char: 'ꯞ', name: 'Pa Lonsum', meaning: 'Final -p', category: 'lonsum', ipa: '[-p]', latin: '-p' },
+  { codePoint: 'U+ABDF', char: 'ꯟ', name: 'Na Lonsum', meaning: 'Final -n', category: 'lonsum', ipa: '[-n]', latin: '-n' },
+  { codePoint: 'U+ABE0', char: 'ꯠ', name: 'Til Lonsum', meaning: 'Final -t', category: 'lonsum', ipa: '[-t]', latin: '-t' },
+  { codePoint: 'U+ABE1', char: 'ꯡ', name: 'Ngou Lonsum', meaning: 'Final -ng', category: 'lonsum', ipa: '[-ŋ]', latin: '-ng' },
+  { codePoint: 'U+ABE2', char: 'ꯢ', name: 'I Lonsum', meaning: 'Final -i', category: 'lonsum', ipa: '[-i]', latin: '-i' },
 ];
 
 // 4. 8 Dependent Vowel Diacritics (Cheitap) - U+ABE3 to U+ABEA
 export const CHEITAP_8: MeeteiUnicodeChar[] = [
-  { codePoint: 'U+ABE3', char: 'ꯣ', name: 'Onap', meaning: 'Vowel sign -o', category: 'cheitap' },
-  { codePoint: 'U+ABE4', char: 'ꯤ', name: 'Inap', meaning: 'Vowel sign -i', category: 'cheitap' },
-  { codePoint: 'U+ABE5', char: 'ꯥ', name: 'Anap', meaning: 'Vowel sign -aa', category: 'cheitap' },
-  { codePoint: 'U+ABE6', char: 'ꯦ', name: 'Yenap', meaning: 'Vowel sign -e', category: 'cheitap' },
-  { codePoint: 'U+ABE7', char: 'ꯧ', name: 'Sounap', meaning: 'Vowel sign -ou', category: 'cheitap' },
-  { codePoint: 'U+ABE8', char: 'ꯨ', name: 'Unap', meaning: 'Vowel sign -u', category: 'cheitap' },
-  { codePoint: 'U+ABE9', char: 'ꯩ', name: 'Cheinap', meaning: 'Vowel sign -ei', category: 'cheitap' },
-  { codePoint: 'U+ABEA', char: 'ꯪ', name: 'Nung', meaning: 'Anusvara nasal sign', category: 'cheitap' },
+  { codePoint: 'U+ABE5', char: 'ꯥ', name: 'Anap (kā)', meaning: 'Vowel sign -aa', category: 'cheitap', ipa: '[ka]', latin: 'ā / aa' },
+  { codePoint: 'U+ABE4', char: 'ꯤ', name: 'Inap (ki)', meaning: 'Vowel sign -i', category: 'cheitap', ipa: '[ki]', latin: 'i' },
+  { codePoint: 'U+ABE8', char: 'ꯨ', name: 'Unap (ku)', meaning: 'Vowel sign -u', category: 'cheitap', ipa: '[ku]', latin: 'u' },
+  { codePoint: 'U+ABE6', char: 'ꯦ', name: 'Yenap (ke)', meaning: 'Vowel sign -e', category: 'cheitap', ipa: '[ke]', latin: 'e' },
+  { codePoint: 'U+ABE9', char: 'ꯩ', name: 'Cheinap (kei)', meaning: 'Vowel sign -ei', category: 'cheitap', ipa: '[kej]', latin: 'ei' },
+  { codePoint: 'U+ABE3', char: 'ꯣ', name: 'Onap (ko)', meaning: 'Vowel sign -o', category: 'cheitap', ipa: '[ko]', latin: 'o' },
+  { codePoint: 'U+ABE7', char: 'ꯧ', name: 'Sounap (kou)', meaning: 'Vowel sign -ou', category: 'cheitap', ipa: '[kəw]', latin: 'ou' },
+  { codePoint: 'U+ABEA', char: 'ꯪ', name: 'Nung (kang)', meaning: 'Anusvara nasal sign -ng', category: 'cheitap', ipa: '[kəŋ]', latin: 'ng' },
 ];
 
 // 5. 3 Special Marks & Punctuation - U+ABEB to U+ABED
@@ -85,16 +116,16 @@ export const SPECIAL_MARKS_3: MeeteiUnicodeChar[] = [
 
 // 6. 10 Digits - U+ABF0 to U+ABF9
 export const NUMERALS_10: MeeteiUnicodeChar[] = [
-  { codePoint: 'U+ABF0', char: '꯰', name: 'Phun (0)', meaning: 'Zero', category: 'numeral' },
-  { codePoint: 'U+ABF1', char: '꯱', name: 'Ama (1)', meaning: 'One', category: 'numeral' },
-  { codePoint: 'U+ABF2', char: '꯲', name: 'Ani (2)', meaning: 'Two', category: 'numeral' },
-  { codePoint: 'U+ABF3', char: '꯳', name: 'Ahum (3)', meaning: 'Three', category: 'numeral' },
-  { codePoint: 'U+ABF4', char: '꯴', name: 'Mari (4)', meaning: 'Four', category: 'numeral' },
-  { codePoint: 'U+ABF5', char: '꯵', name: 'Manga (5)', meaning: 'Five', category: 'numeral' },
-  { codePoint: 'U+ABF6', char: '꯶', name: 'Taruk (6)', meaning: 'Six', category: 'numeral' },
-  { codePoint: 'U+ABF7', char: '꯷', name: 'Taret (7)', meaning: 'Seven', category: 'numeral' },
-  { codePoint: 'U+ABF8', char: '꯸', name: 'Nipan (8)', meaning: 'Eight', category: 'numeral' },
-  { codePoint: 'U+ABF9', char: '꯹', name: 'Mapan (9)', meaning: 'Nine', category: 'numeral' },
+  { codePoint: 'U+ABF0', char: '꯰', name: 'Phun (0)', meaning: 'Zero', category: 'numeral', ipa: '[pʰun]', latin: '0' },
+  { codePoint: 'U+ABF1', char: '꯱', name: 'Ama (1)', meaning: 'One', category: 'numeral', ipa: '[əma]', latin: '1' },
+  { codePoint: 'U+ABF2', char: '꯲', name: 'Ani (2)', meaning: 'Two', category: 'numeral', ipa: '[əni]', latin: '2' },
+  { codePoint: 'U+ABF3', char: '꯳', name: 'Ahum (3)', meaning: 'Three', category: 'numeral', ipa: '[əhum]', latin: '3' },
+  { codePoint: 'U+ABF4', char: '꯴', name: 'Mari (4)', meaning: 'Four', category: 'numeral', ipa: '[məri]', latin: '4' },
+  { codePoint: 'U+ABF5', char: '꯵', name: 'Manga (5)', meaning: 'Five', category: 'numeral', ipa: '[maŋa]', latin: '5' },
+  { codePoint: 'U+ABF6', char: '꯶', name: 'Taruk (6)', meaning: 'Six', category: 'numeral', ipa: '[taruk]', latin: '6' },
+  { codePoint: 'U+ABF7', char: '꯷', name: 'Taret (7)', meaning: 'Seven', category: 'numeral', ipa: '[təret]', latin: '7' },
+  { codePoint: 'U+ABF8', char: '꯸', name: 'Nipal (8)', meaning: 'Eight', category: 'numeral', ipa: '[nipal]', latin: '8' },
+  { codePoint: 'U+ABF9', char: '꯹', name: 'Mapal (9)', meaning: 'Nine', category: 'numeral', ipa: '[mapəl]', latin: '9' },
 ];
 
 // 7. Meetei Mayek Extensions (U+AAE0 to U+AAFF) from Unicode PDF UAAE0.pdf
@@ -335,6 +366,36 @@ const EXTENDED_VOCABULARY: Record<string, string> = {
   eight: 'ꯅꯤꯄꯥꯟ',
   nine: 'ꯃꯄꯥꯟ',
   ten: 'ꯇꯔꯥ',
+  // Cheishing (Traditional Number System & Counting Scale)
+  cheishing: 'ꯆꯩꯁꯤꯡ',
+  thiba: 'ꯊꯤꯕ',
+  ama: 'ꯑꯃ',
+  ani: 'ꯑꯅꯤ',
+  ahum: 'ꯑꯍꯨꯝ',
+  mari: 'ꯃꯔꯤ',
+  manga: 'ꯃꯉꯥ',
+  taruk: 'ꯇꯔꯨꯛ',
+  taret: 'ꯇꯔꯦꯠ',
+  nipal: 'ꯅꯤꯄꯥꯜ',
+  nipan: 'ꯅꯤꯄꯥꯟ',
+  mapal: 'ꯃꯄꯥꯜ',
+  mapan: 'ꯃꯄꯥꯟ',
+  tara: 'ꯇꯔꯥ',
+  cha: 'ꯆꯥ',
+  hundred: 'ꯆꯥ',
+  leeshing: 'ꯂꯤꯁꯤꯡ',
+  thousand: 'ꯂꯤꯁꯤꯡ',
+  leecha: 'ꯂꯤꯆꯥ',
+  lakh: 'ꯂꯤꯆꯥ',
+  leepun: 'ꯂꯤꯄꯨꯟ',
+  crore: 'ꯂꯤꯄꯨꯟ',
+  leepot: 'ꯂꯤꯄꯣꯠ',
+  billion: 'ꯂꯤꯄꯣꯠ',
+  leekei: 'ꯂꯤꯀꯩ',
+  trillion: 'ꯂꯤꯀꯩ ꯇꯔꯥ',
+  puu: 'ꯄꯨ',
+  'puu ama': 'ꯄꯨ ꯑꯃ',
+
   // Months
   january: 'ꯖꯥꯅꯨꯋꯥꯔꯤ',
   february: 'ꯐꯦꯕ꯭ꯔꯨꯋꯥꯔꯤ',
