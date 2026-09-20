@@ -60,7 +60,7 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
         background: 'var(--bg-elevated)',
         border: '1px solid var(--border-active)',
         borderRadius: 'var(--radius-lg)',
-        maxWidth: '760px',
+        maxWidth: '860px',
         width: '100%',
         maxHeight: '90vh',
         overflowY: 'auto',
@@ -311,6 +311,11 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
                   <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-primary)', marginTop: '0.2rem' }}>
                     {item.name}
                   </span>
+                  {item.ipa && (
+                    <span style={{ fontSize: '0.68rem', color: 'var(--accent-amber)', fontFamily: 'monospace' }}>
+                      {item.ipa}
+                    </span>
+                  )}
                   <span style={{ fontSize: '0.66rem', color: 'var(--text-muted)' }}>
                     {item.meaning}
                   </span>
@@ -452,6 +457,11 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
                   <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-primary)', marginTop: '0.2rem' }}>
                     {item.name}
                   </span>
+                  {item.ipa && (
+                    <span style={{ fontSize: '0.68rem', color: 'var(--accent-amber)', fontFamily: 'monospace' }}>
+                      {item.ipa}
+                    </span>
+                  )}
                   <span style={{ fontSize: '0.66rem', color: 'var(--text-muted)' }}>
                     {item.meaning}
                   </span>
