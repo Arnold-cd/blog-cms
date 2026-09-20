@@ -7,7 +7,7 @@ author: "Arnold CD"
 category: "Culture"
 thumbnail: "images/banner-puya.svg"
 language: "mni"
-featured: false
+featured: true
 ---
 
 # ꯄꯨꯌꯥꯒꯤ ꯋꯥꯈꯜꯂꯣꯟ (Wisdom of the Puyas)
