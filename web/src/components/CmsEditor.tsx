@@ -6,25 +6,29 @@ import {
 } from '../services/cmsService';
 import { createDownloadPackage, publishToGitHub } from '../services/exportService';
 import { convertPdfToImages } from '../services/pdfService';
-import { saveStoredAssets, getAllStoredAssets, removeStoredAsset, clearAllStoredAssets } from '../services/draftStorage';
+import {
+  saveStoredAssets,
+  getAllStoredAssets,
+  removeStoredAsset,
+  clearAllStoredAssets,
+} from '../services/draftStorage';
 import {
   Download,
   Copy,
   Check,
   Eye,
-  FileText,
-  Clock,
   AlertCircle,
-  CheckCircle2,
-  Upload,
   FileUp,
   Trash2,
-  Package,
   Send,
   Key,
   Paperclip,
   Loader2,
   RotateCcw,
+  SlidersHorizontal,
+  Columns,
+  PenLine,
+  Plus,
 } from 'lucide-react';
 import { marked } from 'marked';
 
@@ -36,9 +40,12 @@ export const CmsEditor: React.FC<CmsEditorProps> = ({ onPreviewInFeed }) => {
   const todayStr = new Date().toISOString().split('T')[0];
   const fileInputRef = useRef<HTMLInputElement>(null);
   const bannerInputRef = useRef<HTMLInputElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const [viewMode, setViewMode] = useState<'split' | 'write' | 'preview'>('split');
+  const [showSettings, setShowSettings] = useState<boolean>(false);
 
   const [draft, setDraft] = useState<PostDraft>(() => {
-    // Try restoring draft from localStorage if available
     const saved = localStorage.getItem('blog_cms_current_draft');
     if (saved) {
       try {
@@ -111,6 +118,28 @@ Support for **bold**, *italics*, quotes, and tables:
     });
   }, []);
 
+  // Reset draft to blank state
+  const handleResetDraft = async () => {
+    if (window.confirm('Start a new blank draft? This will clear current editor text and uploaded pictures.')) {
+      await clearAllStoredAssets();
+      localStorage.removeItem('blog_cms_current_draft');
+      setDraft({
+        id: 'new-article',
+        title: '',
+        summary: '',
+        date: todayStr,
+        author: 'Arnold CD',
+        category: 'Philosophy',
+        thumbnail: 'images/banner-philosophy.svg',
+        thumbnailPreviewUrl: '',
+        language: 'en',
+        featured: false,
+        assets: [],
+        content: '# New Article\n\nWrite your thoughts here...',
+      });
+    }
+  };
+
   // Auto-generate slug from title
   const handleTitleChange = (val: string) => {
     const slug = val
@@ -126,28 +155,6 @@ Support for **bold**, *italics*, quotes, and tables:
     }));
   };
 
-  // Reset draft to a blank state
-  const handleResetDraft = async () => {
-    if (window.confirm('Start a new blank draft? This will clear current editor text and uploaded pictures.')) {
-      await clearAllStoredAssets();
-      localStorage.removeItem('blog_cms_current_draft');
-      setDraft({
-        id: 'my-new-article',
-        title: '',
-        summary: '',
-        date: todayStr,
-        author: 'Arnold CD',
-        category: 'Philosophy',
-        thumbnail: 'images/banner-philosophy.svg',
-        thumbnailPreviewUrl: '',
-        language: 'en',
-        featured: false,
-        assets: [],
-        content: `# Introduction\n\nWrite your Markdown article here. Changes update live in the right preview panel.\n\n## Section 1: The Core Idea\n\nSupport for **bold**, *italics*, quotes, and tables:\n\n| Key | Description |\n| --- | --- |\n| Fast | Serverless Git Headless CMS |\n| Portable | Standard Markdown + YAML |\n\n> "Simplicity is prerequisite for reliability." — Edsger W. Dijkstra\n`,
-      });
-    }
-  };
-
   // Live stats
   const { words, minutes } = useMemo(() => {
     return calculateReadingTime(draft.content);
@@ -158,7 +165,6 @@ Support for **bold**, *italics*, quotes, and tables:
     let content = draft.content;
     if (draft.assets && draft.assets.length > 0) {
       draft.assets.forEach((asset) => {
-        // replace occurrences of images/asset.name, ./images/asset.name, or raw asset.name with local previewUrl
         const escaped = asset.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         const regex = new RegExp(`(?:\\.?\\/?images\\/)?${escaped}`, 'gi');
         content = content.replace(regex, asset.previewUrl);
@@ -167,7 +173,7 @@ Support for **bold**, *italics*, quotes, and tables:
     return content;
   }, [draft.content, draft.assets]);
 
-  // Live HTML preview
+  // Live HTML preview with custom image renderer
   const previewHtml = useMemo(() => {
     try {
       const renderer = new marked.Renderer();
@@ -211,33 +217,34 @@ Support for **bold**, *italics*, quotes, and tables:
 
   const isValid = validationErrors.length === 0;
 
-  // Insert markdown helper
-  const insertMarkdown = (prefix: string, suffix: string = '') => {
-    const textarea = document.getElementById('cms-markdown-input') as HTMLTextAreaElement;
-    if (!textarea) return;
+  // Insert markdown helper at cursor
+  const insertMarkdownSyntax = (prefix: string, suffix: string = '') => {
+    const el = textareaRef.current;
+    if (!el) return;
 
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const selected = textarea.value.substring(start, end);
-    const replacement = `${prefix}${selected || 'text'}${suffix}`;
+    const start = el.selectionStart;
+    const end = el.selectionEnd;
+    const text = el.value;
+    const selected = text.substring(start, end);
+    const replacement = `${prefix}${selected}${suffix}`;
 
-    const updated =
-      textarea.value.substring(0, start) + replacement + textarea.value.substring(end);
-
-    setDraft((prev) => ({ ...prev, content: updated }));
+    const newContent = text.substring(0, start) + replacement + text.substring(end);
+    setDraft({ ...draft, content: newContent });
 
     setTimeout(() => {
-      textarea.focus();
-      textarea.setSelectionRange(start + prefix.length, start + prefix.length + (selected.length || 4));
-    }, 50);
+      el.focus();
+      el.setSelectionRange(start + prefix.length, end + prefix.length);
+    }, 0);
   };
 
-  // Handle Banner Upload (JPG, PNG, SVG, or PDF page 1)
+  // Upload custom thumbnail
   const handleBannerUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) {
+    const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+
+    if (isPdf) {
       setIsProcessingPdf(true);
       try {
         const pages = await convertPdfToImages(file, 1);
@@ -303,7 +310,6 @@ Support for **bold**, *italics*, quotes, and tables:
         const isPdf = file.type === 'application/pdf' || cleanName.endsWith('.pdf');
 
         if (isPdf) {
-          // Render each PDF page as a high-resolution PNG picture (no download link!)
           const pages = await convertPdfToImages(file, 10);
           pages.forEach((page) => {
             const asset: UploadedAsset = {
@@ -318,7 +324,6 @@ Support for **bold**, *italics*, quotes, and tables:
             appendMarkdown += `\n\n![${file.name} - Page ${page.pageNumber}](images/${page.name})\n`;
           });
         } else {
-          // Standard Image (JPG, PNG, SVG)
           const previewUrl = URL.createObjectURL(file);
           const asset: UploadedAsset = {
             name: cleanName,
@@ -346,7 +351,7 @@ Support for **bold**, *italics*, quotes, and tables:
     }
   };
 
-  // Remove uploaded asset
+  // Remove asset
   const handleRemoveAsset = (name: string) => {
     setDraft((prev) => ({
       ...prev,
@@ -354,6 +359,20 @@ Support for **bold**, *italics*, quotes, and tables:
       thumbnailPreviewUrl: prev.thumbnail === `images/${name}` ? '' : prev.thumbnailPreviewUrl,
     }));
     removeStoredAsset(name);
+  };
+
+  // Insert asset markdown at cursor
+  const handleInsertAsset = (asset: UploadedAsset) => {
+    const md = `![${asset.name}](images/${asset.name})`;
+    insertMarkdownSyntax(md);
+  };
+
+  // Copy Markdown with frontmatter
+  const handleCopyMd = () => {
+    const fullText = generateMarkdownWithFrontmatter(draft);
+    navigator.clipboard.writeText(fullText);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   // Download complete .zip package
@@ -364,31 +383,13 @@ Support for **bold**, *italics*, quotes, and tables:
       const link = document.createElement('a');
       link.href = url;
       link.download = `${draft.id || 'article'}-package.zip`;
+      document.body.appendChild(link);
       link.click();
+      document.body.removeChild(link);
       URL.revokeObjectURL(url);
     } catch (err: any) {
-      alert(`Error creating zip package: ${err.message}`);
+      alert(`Failed to create .zip export: ${err.message}`);
     }
-  };
-
-  // Download .md file
-  const handleDownloadMd = () => {
-    const fullMarkdown = generateMarkdownWithFrontmatter(draft);
-    const blob = new Blob([fullMarkdown], { type: 'text/markdown;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `${draft.id || 'article'}.md`;
-    link.click();
-    URL.revokeObjectURL(url);
-  };
-
-  // Copy to clipboard
-  const handleCopyMd = () => {
-    const fullMarkdown = generateMarkdownWithFrontmatter(draft);
-    navigator.clipboard.writeText(fullMarkdown);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
   };
 
   // Preview in Reader Feed
@@ -412,7 +413,7 @@ Support for **bold**, *italics*, quotes, and tables:
       reading_time_min: minutes,
       language: draft.language || 'en',
       featured: draft.featured,
-      content: livePreviewMarkdown, // Pass live rendered markdown directly!
+      content: livePreviewMarkdown,
       isDraft: true,
     };
 
@@ -426,20 +427,41 @@ Support for **bold**, *italics*, quotes, and tables:
       return;
     }
 
-    setPublishStatus({ loading: true, message: 'Publishing article and assets to GitHub...' });
-    localStorage.setItem('github_cms_token', githubToken.trim());
+    if (!githubRepo.trim() || !githubRepo.includes('/')) {
+      alert('Please enter a valid GitHub repository in "owner/repo" format.');
+      return;
+    }
 
-    const res = await publishToGitHub(githubToken, githubRepo, draft);
-    setPublishStatus({
-      loading: false,
-      message: res.message,
-      success: res.success,
-    });
+    localStorage.setItem('github_cms_token', githubToken);
+
+    setPublishStatus({ loading: true, message: 'Connecting to GitHub API...' });
+
+    try {
+      const result = await publishToGitHub(githubToken, githubRepo, draft);
+      setPublishStatus({
+        loading: false,
+        message: result.message,
+        success: result.success,
+      });
+
+      if (result.success) {
+        setTimeout(() => {
+          setShowGitHubModal(false);
+          setPublishStatus({ loading: false, message: '' });
+        }, 3000);
+      }
+    } catch (err: any) {
+      setPublishStatus({
+        loading: false,
+        message: err.message || 'Failed to publish to GitHub',
+        success: false,
+      });
+    }
   };
 
   return (
-    <div className="editor-container">
-      {/* Hidden File Inputs */}
+    <div className="studio-container">
+      {/* Hidden file inputs */}
       <input
         type="file"
         ref={bannerInputRef}
@@ -456,33 +478,70 @@ Support for **bold**, *italics*, quotes, and tables:
         style={{ display: 'none' }}
       />
 
-      {/* Editor Header Bar */}
-      <div className="editor-header-bar">
-        <div className="editor-title-group">
-          <h2>Markdown CMS Studio</h2>
-          <p>Compose articles &bull; PDFs automatically render as picture pages &bull; Publish to Git</p>
+      {/* Top Utility & Mode Bar */}
+      <div className="studio-top-bar">
+        <div className="studio-title-group">
+          <span className="studio-status-pill">
+            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--accent-emerald)' }} />
+            <span>Auto-saved locally</span>
+          </span>
+
+          {/* View Mode Toggle */}
+          <div className="studio-view-toggle">
+            <button
+              className={`view-toggle-btn ${viewMode === 'split' ? 'active' : ''}`}
+              onClick={() => setViewMode('split')}
+              title="Side-by-side Editor & Preview"
+              id="btn-view-split"
+            >
+              <Columns size={13} />
+              <span>Split</span>
+            </button>
+            <button
+              className={`view-toggle-btn ${viewMode === 'write' ? 'active' : ''}`}
+              onClick={() => setViewMode('write')}
+              title="Distraction-Free Writing"
+              id="btn-view-write"
+            >
+              <PenLine size={13} />
+              <span>Write</span>
+            </button>
+            <button
+              className={`view-toggle-btn ${viewMode === 'preview' ? 'active' : ''}`}
+              onClick={() => setViewMode('preview')}
+              title="Full Article Preview"
+              id="btn-view-preview"
+            >
+              <Eye size={13} />
+              <span>Preview</span>
+            </button>
+          </div>
         </div>
 
-        <div className="editor-actions-group">
+        {/* Action Controls */}
+        <div className="studio-actions-group">
           <button
-            onClick={() => setShowGitHubModal(true)}
+            onClick={() => setShowSettings(!showSettings)}
             className="btn-secondary"
-            title="Publish directly to GitHub via API"
-            id="btn-publish-github"
-            style={{ color: 'var(--accent-cyan)' }}
+            title="Configure category, author, summary, and banner"
+            id="btn-toggle-settings"
+            style={{
+              background: showSettings ? 'rgba(255, 255, 255, 0.12)' : undefined,
+              borderColor: showSettings ? 'var(--border-active)' : undefined,
+            }}
           >
-            <Send size={15} />
-            <span>Publish to Git</span>
+            <SlidersHorizontal size={14} />
+            <span>Settings</span>
+            {!isValid && <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--accent-rose)' }} />}
           </button>
 
           <button
             onClick={handleResetDraft}
             className="btn-secondary"
-            title="Start a new blank draft"
+            title="Start a blank draft"
             id="btn-reset-draft"
-            style={{ color: "var(--text-muted)" }}
           >
-            <RotateCcw size={15} />
+            <RotateCcw size={14} />
             <span>New Draft</span>
           </button>
 
@@ -492,88 +551,71 @@ Support for **bold**, *italics*, quotes, and tables:
             title="Copy entire markdown with YAML frontmatter"
             id="btn-copy-md"
           >
-            {copied ? <Check size={15} color="var(--accent-emerald)" /> : <Copy size={15} />}
-            <span>{copied ? 'Copied!' : 'Copy Markdown'}</span>
+            {copied ? <Check size={14} color="var(--accent-emerald)" /> : <Copy size={14} />}
+            <span>{copied ? 'Copied' : 'Copy'}</span>
           </button>
 
           <button
             onClick={handleDownloadZip}
             className="btn-secondary"
-            title="Download ZIP with .md and all uploaded assets ready for repo"
+            title="Download .zip package with Markdown and all pictures"
             id="btn-download-zip"
           >
-            <Package size={15} />
-            <span>Package (.zip)</span>
-          </button>
-
-          <button
-            onClick={handleDownloadMd}
-            className="btn-secondary"
-            title="Download .md file ready for posts/ directory"
-            id="btn-download-md"
-          >
-            <Download size={15} />
-            <span>Download .md</span>
+            <Download size={14} />
+            <span>Export Zip</span>
           </button>
 
           <button
             onClick={handlePreviewInFeed}
-            className="btn-primary"
-            title="Preview article formatted live in the Reader"
+            className="btn-secondary"
+            title="Open in reader mode"
             id="btn-preview-feed"
           >
-            <Eye size={15} />
-            <span>Preview in Reader</span>
+            <Eye size={14} />
+            <span>Reader View</span>
+          </button>
+
+          <button
+            onClick={() => setShowGitHubModal(true)}
+            className="btn-primary"
+            title="Commit and deploy directly to GitHub"
+            id="btn-publish-github"
+          >
+            <Send size={14} />
+            <span>Publish to Git</span>
           </button>
         </div>
       </div>
 
-      {/* Frontmatter Configuration Panel */}
-      <section className="frontmatter-panel">
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <FileText size={18} color="var(--accent-cyan)" />
-            <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#fff' }}>YAML Frontmatter Metadata</h3>
-          </div>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8rem' }}>
-            {isValid ? (
-              <span style={{ color: 'var(--accent-emerald)', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                <CheckCircle2 size={15} /> Valid Frontmatter
-              </span>
-            ) : (
-              <span style={{ color: 'var(--accent-amber)', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                <AlertCircle size={15} /> Missing required fields
-              </span>
-            )}
-          </div>
+      {/* Inline Large Title & Permalink */}
+      <div className="studio-headline-bar">
+        <input
+          type="text"
+          className="inline-title-input"
+          placeholder="Untitled Article..."
+          value={draft.title}
+          onChange={(e) => handleTitleChange(e.target.value)}
+          id="input-inline-title"
+        />
+        <div className="inline-slug-bar">
+          <span>Permalink:</span>
+          <code>posts/{draft.id || 'article'}.md</code>
+          <span>&bull;</span>
+          <span>{words} words</span>
+          <span>&bull;</span>
+          <span>{minutes} min read</span>
+          {!isValid && (
+            <span style={{ color: 'var(--accent-amber)', display: 'flex', alignItems: 'center', gap: '0.25rem', marginLeft: '0.5rem' }}>
+              <AlertCircle size={13} />
+              <span>Missing required metadata in Settings</span>
+            </span>
+          )}
         </div>
+      </div>
 
-        <div className="form-grid">
-          <div className="form-field">
-            <label className="form-label">Article Title *</label>
-            <input
-              type="text"
-              className="form-input"
-              placeholder="e.g. The Architecture of Subjective Time"
-              value={draft.title}
-              onChange={(e) => handleTitleChange(e.target.value)}
-              id="input-cms-title"
-            />
-          </div>
-
-          <div className="form-field">
-            <label className="form-label">Slug ID (Filename) *</label>
-            <input
-              type="text"
-              className="form-input"
-              placeholder="e.g. architecture-of-time"
-              value={draft.id}
-              onChange={(e) => setDraft({ ...draft, id: e.target.value })}
-              id="input-cms-id"
-            />
-          </div>
-
+      {/* Collapsible Article Settings Drawer */}
+      {showSettings && (
+        <section className="settings-drawer" id="panel-article-settings">
           <div className="form-field">
             <label className="form-label">Category *</label>
             <select
@@ -583,26 +625,16 @@ Support for **bold**, *italics*, quotes, and tables:
               id="select-cms-category"
             >
               <option value="Philosophy">Philosophy</option>
-              <option value="Culture">Culture</option>
-              <option value="History">History</option>
-              <option value="Science">Science</option>
-              <option value="Technology">Technology</option>
+              <option value="Architecture">Architecture</option>
+              <option value="Engineering">Engineering</option>
+              <option value="DevOps">DevOps</option>
+              <option value="Tutorials">Tutorials</option>
+              <option value="General">General</option>
             </select>
           </div>
 
           <div className="form-field">
-            <label className="form-label">Date (YYYY-MM-DD) *</label>
-            <input
-              type="date"
-              className="form-input"
-              value={draft.date}
-              onChange={(e) => setDraft({ ...draft, date: e.target.value })}
-              id="input-cms-date"
-            />
-          </div>
-
-          <div className="form-field">
-            <label className="form-label">Author Name *</label>
+            <label className="form-label">Author *</label>
             <input
               type="text"
               className="form-input"
@@ -613,7 +645,18 @@ Support for **bold**, *italics*, quotes, and tables:
           </div>
 
           <div className="form-field">
-            <label className="form-label">Language *</label>
+            <label className="form-label">Date</label>
+            <input
+              type="date"
+              className="form-input"
+              value={draft.date}
+              onChange={(e) => setDraft({ ...draft, date: e.target.value })}
+              id="input-cms-date"
+            />
+          </div>
+
+          <div className="form-field">
+            <label className="form-label">Language</label>
             <select
               className="form-select"
               value={draft.language}
@@ -622,86 +665,71 @@ Support for **bold**, *italics*, quotes, and tables:
             >
               <option value="en">English (en)</option>
               <option value="mni">Meetei Mayek (mni)</option>
+              <option value="fr">French (fr)</option>
+              <option value="es">Spanish (es)</option>
             </select>
           </div>
 
-          {/* Banner Image Uploader */}
-          <div className="form-field col-span-full">
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.25rem' }}>
-              <label className="form-label">Thumbnail Banner Image *</label>
-              <div style={{ display: 'flex', gap: '0.5rem' }}>
-                <button
-                  type="button"
-                  onClick={() => bannerInputRef.current?.click()}
-                  className="btn-secondary"
-                  style={{ padding: '0.25rem 0.65rem', fontSize: '0.75rem', gap: '0.35rem' }}
-                >
-                  <Upload size={13} />
-                  <span>Upload JPG / PNG / PDF</span>
-                </button>
-              </div>
-            </div>
-
-            <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+          <div className="form-field">
+            <label className="form-label">Banner Image *</label>
+            <div style={{ display: 'flex', gap: '0.4rem' }}>
               <input
                 type="text"
                 className="form-input"
                 style={{ flex: 1 }}
-                placeholder="images/banner-philosophy.svg or custom upload"
+                placeholder="images/banner.png"
                 value={draft.thumbnail}
                 onChange={(e) => setDraft({ ...draft, thumbnail: e.target.value, thumbnailPreviewUrl: '' })}
                 id="input-cms-thumbnail"
               />
-              {(() => {
-                const thumbSrc = draft.thumbnailPreviewUrl || draft.assets?.find(a => draft.thumbnail.toLowerCase().includes(a.name.toLowerCase()))?.previewUrl;
-                return thumbSrc ? (
-                  <div style={{ width: '56px', height: '40px', borderRadius: '6px', overflow: 'hidden', border: '1px solid var(--border-active)' }}>
-                    <img src={thumbSrc} alt="Thumbnail preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  </div>
-                ) : null;
-              })()}
+              <button
+                type="button"
+                onClick={() => bannerInputRef.current?.click()}
+                className="btn-secondary"
+                style={{ padding: '0 0.75rem', fontSize: '0.78rem' }}
+                title="Browse Image or PDF for Banner"
+              >
+                Browse
+              </button>
             </div>
           </div>
 
           <div className="form-field" style={{ justifyContent: 'center' }}>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', cursor: 'pointer', marginTop: '0.5rem' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', marginTop: '1rem', fontSize: '0.85rem' }}>
               <input
                 type="checkbox"
                 checked={draft.featured}
                 onChange={(e) => setDraft({ ...draft, featured: e.target.checked })}
-                style={{ width: '18px', height: '18px', accentColor: 'var(--accent-cyan)' }}
                 id="checkbox-cms-featured"
               />
-              <span style={{ fontSize: '0.9rem', fontWeight: 600, color: draft.featured ? 'var(--accent-cyan)' : 'var(--text-secondary)' }}>
-                Featured Article (Hero display)
-              </span>
+              <span>Feature on publication hero</span>
             </label>
           </div>
 
-          <div className="form-field col-span-full">
-            <label className="form-label">Summary (Brief description for mobile feed cards) *</label>
+          <div className="form-field" style={{ gridColumn: '1 / -1' }}>
+            <label className="form-label">Summary (Card snippet for readers) *</label>
             <textarea
               rows={2}
               className="form-textarea"
-              placeholder="Short 2-line summary for card previews..."
+              placeholder="Short 2-line overview of the article..."
               value={draft.summary}
               onChange={(e) => setDraft({ ...draft, summary: e.target.value })}
               id="textarea-cms-summary"
             />
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
-      {/* Asset Upload & Media Management Panel */}
-      <section style={{ background: 'var(--bg-card)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-md)', padding: '1.25rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '0.75rem' }}>
+      {/* Attached Media Strip */}
+      <section className="media-strip">
+        <div className="media-strip-header">
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <Paperclip size={18} color="var(--accent-indigo)" />
-            <h3 style={{ fontSize: '0.95rem', fontWeight: 700, color: '#fff' }}>
-              Attached Media &amp; Rendered PDF Pictures ({draft.assets.length})
-            </h3>
-            <span style={{ fontSize: '0.75rem', color: 'var(--accent-cyan)' }}>
-              (PDFs are automatically rendered into pictures)
+            <Paperclip size={14} color="var(--accent-indigo)" />
+            <span style={{ fontSize: '0.82rem', fontWeight: 600, color: '#fff' }}>
+              Attached Pictures &amp; PDF Pages ({draft.assets.length})
+            </span>
+            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+              (PDFs automatically rasterize to pictures)
             </span>
           </div>
 
@@ -710,17 +738,17 @@ Support for **bold**, *italics*, quotes, and tables:
             onClick={() => fileInputRef.current?.click()}
             disabled={isProcessingPdf}
             className="btn-secondary"
-            style={{ padding: '0.4rem 0.85rem', fontSize: '0.8rem', gap: '0.4rem' }}
+            style={{ padding: '0.35rem 0.75rem', fontSize: '0.78rem', gap: '0.35rem' }}
             id="btn-upload-media"
           >
             {isProcessingPdf ? (
               <>
-                <Loader2 size={15} style={{ animation: 'spin 1s linear infinite' }} />
-                <span>Rendering PDF to Pictures...</span>
+                <Loader2 size={13} style={{ animation: 'spin 1s linear infinite' }} />
+                <span>Rasterizing PDF Pages...</span>
               </>
             ) : (
               <>
-                <FileUp size={15} color="var(--accent-cyan)" />
+                <FileUp size={13} />
                 <span>Upload PDF or Image</span>
               </>
             )}
@@ -728,9 +756,9 @@ Support for **bold**, *italics*, quotes, and tables:
         </div>
 
         {isProcessingPdf && (
-          <div style={{ padding: '1rem', background: 'rgba(56, 189, 248, 0.1)', border: '1px solid var(--border-active)', borderRadius: 'var(--radius-sm)', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.75rem', color: 'var(--accent-cyan)' }}>
-            <Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} />
-            <span>Processing document &bull; Rendering PDF pages into high-resolution pictures...</span>
+          <div style={{ padding: '0.75rem 1rem', background: 'rgba(56, 189, 248, 0.08)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-sm)', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.6rem', color: 'var(--accent-cyan)', fontSize: '0.82rem' }}>
+            <Loader2 size={15} style={{ animation: 'spin 1s linear infinite' }} />
+            <span>Processing document &bull; Rendering PDF pages into crisp pictures...</span>
           </div>
         )}
 
@@ -738,53 +766,50 @@ Support for **bold**, *italics*, quotes, and tables:
           <div
             onClick={() => fileInputRef.current?.click()}
             style={{
-              padding: '1.5rem',
+              padding: '1.25rem',
               border: '1px dashed var(--border-subtle)',
               borderRadius: 'var(--radius-sm)',
               textAlign: 'center',
               color: 'var(--text-muted)',
               cursor: 'pointer',
-              fontSize: '0.85rem',
+              fontSize: '0.82rem',
             }}
           >
-            <Upload size={20} style={{ margin: '0 auto 0.5rem', opacity: 0.7 }} />
-            <p>Click here or drag &amp; drop <strong>PDF, JPG, or PNG</strong> files. PDFs will render as pictures!</p>
+            Drop PDF pages or images here, or click to upload. They will instantly appear as pictures.
           </div>
         ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '0.75rem' }}>
+          <div className="media-pill-list">
             {draft.assets.map((asset) => (
-              <div
-                key={asset.name}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.75rem',
-                  padding: '0.5rem 0.75rem',
-                  background: 'var(--bg-surface)',
-                  border: '1px solid var(--border-subtle)',
-                  borderRadius: 'var(--radius-sm)',
-                }}
-              >
-                <div style={{ width: '42px', height: '42px', borderRadius: '4px', overflow: 'hidden', flexShrink: 0, border: '1px solid var(--border-subtle)' }}>
-                  <img src={asset.previewUrl} alt={asset.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                </div>
-
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <p style={{ fontSize: '0.8rem', color: '#fff', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              <div key={asset.name} className="media-pill-item">
+                <img src={asset.previewUrl} alt={asset.name} className="media-pill-thumb" />
+                <div style={{ minWidth: 0, maxWidth: '180px' }}>
+                  <div style={{ color: '#fff', fontSize: '0.78rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                     {asset.name}
-                  </p>
-                  <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
-                    {(asset.size / 1024).toFixed(1)} KB &bull; PICTURE
-                  </p>
+                  </div>
+                  <div style={{ color: 'var(--text-muted)', fontSize: '0.68rem' }}>
+                    {(asset.size / 1024).toFixed(1)} KB
+                  </div>
                 </div>
 
                 <button
                   type="button"
-                  onClick={() => handleRemoveAsset(asset.name)}
-                  style={{ color: 'var(--text-muted)', padding: '0.25rem' }}
-                  title="Remove picture"
+                  onClick={() => handleInsertAsset(asset)}
+                  className="btn-ghost"
+                  style={{ padding: '0.2rem 0.4rem', fontSize: '0.72rem' }}
+                  title="Insert markdown link at cursor"
                 >
-                  <Trash2 size={15} />
+                  <Plus size={12} />
+                  <span>Insert</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleRemoveAsset(asset.name)}
+                  className="btn-ghost"
+                  style={{ padding: '0.2rem 0.35rem', color: 'var(--text-muted)' }}
+                  title="Delete asset"
+                >
+                  <Trash2 size={12} />
                 </button>
               </div>
             ))}
@@ -792,83 +817,86 @@ Support for **bold**, *italics*, quotes, and tables:
         )}
       </section>
 
-      {/* Editor & Live Preview Split Workspace */}
-      <div className="editor-workspace">
-        {/* Left: Markdown Input */}
-        <div className="editor-pane">
-          <div className="editor-pane-header">
-            <span>Markdown Source</span>
-            <div className="editor-toolbar">
-              <button onClick={() => insertMarkdown('# ')} className="toolbar-btn" title="Heading 1">H1</button>
-              <button onClick={() => insertMarkdown('## ')} className="toolbar-btn" title="Heading 2">H2</button>
-              <button onClick={() => insertMarkdown('**', '**')} className="toolbar-btn" title="Bold">B</button>
-              <button onClick={() => insertMarkdown('*', '*')} className="toolbar-btn" title="Italic">I</button>
-              <button onClick={() => insertMarkdown('> ')} className="toolbar-btn" title="Blockquote">Quote</button>
-              <button onClick={() => insertMarkdown('`', '`')} className="toolbar-btn" title="Inline Code">Code</button>
-              <button onClick={() => insertMarkdown('```\n', '\n```')} className="toolbar-btn" title="Code Block">Block</button>
-              <button onClick={() => insertMarkdown('- ')} className="toolbar-btn" title="List">• List</button>
-              <button onClick={() => fileInputRef.current?.click()} className="toolbar-btn" title="Upload Media/PDF">
-                <Paperclip size={13} />
-              </button>
+      {/* Main Studio Workspace Grid */}
+      <div className={`studio-workspace mode-${viewMode}`}>
+        {/* Editor Pane (Hidden in preview mode) */}
+        {viewMode !== 'preview' && (
+          <div className="studio-pane">
+            <div className="pane-header">
+              <span>Markdown Source</span>
+              <div className="pane-toolbar">
+                <button type="button" onClick={() => insertMarkdownSyntax('# ')} className="pane-tool-btn" title="H1 Heading">H1</button>
+                <button type="button" onClick={() => insertMarkdownSyntax('## ')} className="pane-tool-btn" title="H2 Heading">H2</button>
+                <button type="button" onClick={() => insertMarkdownSyntax('**', '**')} className="pane-tool-btn" title="Bold">B</button>
+                <button type="button" onClick={() => insertMarkdownSyntax('*', '*')} className="pane-tool-btn" title="Italic">I</button>
+                <button type="button" onClick={() => insertMarkdownSyntax('> ')} className="pane-tool-btn" title="Quote">Quote</button>
+                <button type="button" onClick={() => insertMarkdownSyntax('`', '`')} className="pane-tool-btn" title="Inline Code">Code</button>
+                <button type="button" onClick={() => insertMarkdownSyntax('```\n', '\n```')} className="pane-tool-btn" title="Code Block">Block</button>
+                <button type="button" onClick={() => insertMarkdownSyntax('- ')} className="pane-tool-btn" title="Bullet List">&bull; List</button>
+                <button type="button" onClick={() => insertMarkdownSyntax('[', '](https://)')} className="pane-tool-btn" title="Link">Link</button>
+              </div>
             </div>
+
+            <textarea
+              ref={textareaRef}
+              className="studio-textarea"
+              value={draft.content}
+              onChange={(e) => setDraft({ ...draft, content: e.target.value })}
+              placeholder="Write your article in Markdown..."
+              id="textarea-cms-content"
+            />
           </div>
+        )}
 
-          <textarea
-            id="cms-markdown-input"
-            className="markdown-textarea"
-            value={draft.content}
-            onChange={(e) => setDraft({ ...draft, content: e.target.value })}
-            placeholder="Type your markdown article content here..."
-          />
+        {/* Live Preview Pane (Hidden in write mode) */}
+        {viewMode !== 'write' && (
+          <div className="studio-pane">
+            <div className="pane-header">
+              <span>Live Article Preview</span>
+              <span style={{ color: 'var(--accent-emerald)', fontSize: '0.72rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: 'var(--accent-emerald)' }} />
+                <span>Auto-synced</span>
+              </span>
+            </div>
 
-          <div style={{ padding: '0.5rem 1rem', background: 'var(--bg-surface)', borderTop: '1px solid var(--border-subtle)', display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-            <span>{words} words</span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: 'var(--accent-cyan)' }}>
-              <Clock size={12} /> ~{minutes} min read
-            </span>
+            <div
+              className="studio-preview-pane markdown-body"
+              dangerouslySetInnerHTML={{ __html: previewHtml }}
+              id="cms-live-preview-container"
+            />
           </div>
-        </div>
-
-        {/* Right: Live Preview */}
-        <div className="editor-pane">
-          <div className="editor-pane-header">
-            <span>Live Article Preview</span>
-            <span style={{ color: 'var(--accent-cyan)', fontSize: '0.75rem' }}>Auto-synced</span>
-          </div>
-
-          <div className="preview-body markdown-body" dangerouslySetInnerHTML={{ __html: previewHtml }} />
-        </div>
+        )}
       </div>
 
-      {/* Direct GitHub Publish Modal */}
+      {/* GitHub Direct Publish Modal */}
       {showGitHubModal && (
         <div style={{
           position: 'fixed',
           inset: 0,
-          background: 'rgba(0,0,0,0.75)',
-          backdropFilter: 'blur(10px)',
+          background: 'rgba(0,0,0,0.8)',
+          backdropFilter: 'blur(12px)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          zIndex: 100,
+          zIndex: 1000,
           padding: '1rem',
         }}>
           <div style={{
-            background: 'var(--bg-surface)',
+            background: 'var(--bg-elevated)',
             border: '1px solid var(--border-active)',
-            borderRadius: 'var(--radius-md)',
-            maxWidth: '520px',
+            borderRadius: 'var(--radius-lg)',
+            maxWidth: '500px',
             width: '100%',
             padding: '2rem',
-            boxShadow: '0 20px 50px rgba(0,0,0,0.8)',
+            boxShadow: 'var(--shadow-elevated)',
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1rem' }}>
-              <Send size={20} color="var(--accent-cyan)" />
-              <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#fff' }}>Publish Directly to GitHub</h3>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.75rem' }}>
+              <Send size={18} color="var(--accent-cyan)" />
+              <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#fff' }}>Publish Directly to GitHub</h3>
             </div>
 
-            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1.25rem' }}>
-              This will commit your article and all rendered images directly to <strong>{githubRepo}</strong> via the GitHub API, automatically triggering GitHub Actions to build and deploy!
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1.25rem', lineHeight: 1.5 }}>
+              This will commit your article and all rendered images directly to <strong>{githubRepo}</strong> via the GitHub REST API, automatically triggering GitHub Actions to deploy.
             </p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '1.5rem' }}>
@@ -884,9 +912,10 @@ Support for **bold**, *italics*, quotes, and tables:
                   placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
                   value={githubToken}
                   onChange={(e) => setGithubToken(e.target.value)}
+                  id="input-github-token"
                 />
                 <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', marginTop: '0.25rem' }}>
-                  Token is saved in your local browser only. Never shared or sent to any third-party server.
+                  Token is stored only in your local browser storage.
                 </span>
               </div>
 
@@ -898,6 +927,7 @@ Support for **bold**, *italics*, quotes, and tables:
                   style={{ width: '100%' }}
                   value={githubRepo}
                   onChange={(e) => setGithubRepo(e.target.value)}
+                  id="input-github-repo"
                 />
               </div>
             </div>
@@ -906,9 +936,9 @@ Support for **bold**, *italics*, quotes, and tables:
               <div style={{
                 padding: '0.75rem 1rem',
                 borderRadius: 'var(--radius-sm)',
-                fontSize: '0.85rem',
+                fontSize: '0.82rem',
                 marginBottom: '1.25rem',
-                background: publishStatus.success ? 'rgba(16, 185, 129, 0.15)' : 'rgba(244, 63, 94, 0.15)',
+                background: publishStatus.success ? 'rgba(16, 185, 129, 0.12)' : 'rgba(244, 63, 94, 0.12)',
                 color: publishStatus.success ? 'var(--accent-emerald)' : 'var(--accent-rose)',
                 border: `1px solid ${publishStatus.success ? 'var(--accent-emerald)' : 'var(--accent-rose)'}`,
               }}>
@@ -924,16 +954,29 @@ Support for **bold**, *italics*, quotes, and tables:
                   setPublishStatus({ loading: false, message: '' });
                 }}
                 className="btn-secondary"
+                disabled={publishStatus.loading}
               >
-                Close
+                Cancel
               </button>
+
               <button
                 type="button"
                 onClick={handlePublishToGitHub}
-                disabled={publishStatus.loading}
                 className="btn-primary"
+                disabled={publishStatus.loading}
+                id="btn-confirm-github-publish"
               >
-                {publishStatus.loading ? 'Committing to Git...' : 'Publish to GitHub'}
+                {publishStatus.loading ? (
+                  <>
+                    <Loader2 size={14} style={{ animation: 'spin 1s linear infinite' }} />
+                    <span>Committing to Git...</span>
+                  </>
+                ) : (
+                  <>
+                    <Send size={14} />
+                    <span>Commit &amp; Publish</span>
+                  </>
+                )}
               </button>
             </div>
           </div>

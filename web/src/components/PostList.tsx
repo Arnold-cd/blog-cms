@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import type { BlogPost } from '../types';
-import { Search, Clock, Calendar, User, Sparkles, Filter, Globe } from 'lucide-react';
+import { Search, Clock, Sparkles, Plus } from 'lucide-react';
 
 interface PostListProps {
   posts: BlogPost[];
@@ -11,9 +11,8 @@ interface PostListProps {
 export const PostList: React.FC<PostListProps> = ({ posts, onSelectPost, onOpenEditor }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
-  const [selectedLanguage, setSelectedLanguage] = useState('All');
 
-  // Compute unique categories and languages
+  // Categories
   const categories = useMemo(() => {
     const set = new Set<string>();
     posts.forEach((p) => {
@@ -22,15 +21,7 @@ export const PostList: React.FC<PostListProps> = ({ posts, onSelectPost, onOpenE
     return ['All', ...Array.from(set)];
   }, [posts]);
 
-  const languages = useMemo(() => {
-    const set = new Set<string>();
-    posts.forEach((p) => {
-      if (p.language) set.add(p.language);
-    });
-    return ['All', ...Array.from(set)];
-  }, [posts]);
-
-  // Filter posts based on search, category, language
+  // Filter posts
   const filteredPosts = useMemo(() => {
     return posts.filter((post) => {
       const matchesSearch =
@@ -40,13 +31,11 @@ export const PostList: React.FC<PostListProps> = ({ posts, onSelectPost, onOpenE
         post.author.toLowerCase().includes(searchQuery.toLowerCase());
 
       const matchesCat = selectedCategory === 'All' || post.category === selectedCategory;
-      const matchesLang = selectedLanguage === 'All' || post.language === selectedLanguage;
-
-      return matchesSearch && matchesCat && matchesLang;
+      return matchesSearch && matchesCat;
     });
-  }, [posts, searchQuery, selectedCategory, selectedLanguage]);
+  }, [posts, searchQuery, selectedCategory]);
 
-  // Determine featured post
+  // Featured hero post
   const featuredPost = useMemo(() => {
     return posts.find((p) => p.featured) || (posts.length > 0 ? posts[0] : null);
   }, [posts]);
@@ -66,82 +55,27 @@ export const PostList: React.FC<PostListProps> = ({ posts, onSelectPost, onOpenE
   };
 
   return (
-    <div className="post-list-container">
-      {/* Featured Hero Article */}
-      {featuredPost && selectedCategory === 'All' && selectedLanguage === 'All' && !searchQuery && (
-        <div
-          className="featured-hero-card"
-          onClick={() => onSelectPost(featuredPost)}
-          id={`hero-card-${featuredPost.id}`}
-        >
-          <div className="hero-grid">
-            <div className="hero-content">
-              <div className="hero-tag-row">
-                <span className="badge-featured">
-                  <Sparkles size={13} />
-                  Featured
-                </span>
-                <span className="badge-category">{featuredPost.category}</span>
-                <span className="card-lang-badge" style={{ position: 'static' }}>
-                  {featuredPost.language.toUpperCase()}
-                </span>
-              </div>
-              <h1 className="hero-title">{featuredPost.title}</h1>
-              <p className="hero-summary">{featuredPost.summary}</p>
-              <div className="hero-meta-row">
-                <span className="hero-meta-item">
-                  <User size={15} />
-                  {featuredPost.author}
-                </span>
-                <span className="hero-meta-item">
-                  <Calendar size={15} />
-                  {formatDate(featuredPost.date)}
-                </span>
-                <span className="hero-meta-item">
-                  <Clock size={15} />
-                  {featuredPost.reading_time_min} min read
-                </span>
-              </div>
-            </div>
-            <div className="hero-banner-wrap">
-              <img
-                src={featuredPost.thumbnail_url}
-                alt={featuredPost.title}
-                className="hero-banner-img"
-                loading="eager"
-                onError={(e) => {
-                  const target = e.currentTarget;
-                  target.onerror = null;
-                  target.src = 'images/banner-philosophy.svg';
-                }}
-              />
-            </div>
+    <div>
+      {/* Editorial Header */}
+      <div className="feed-header">
+        <div className="feed-title-bar">
+          <div>
+            <h1>The Publication</h1>
+            <p>Thoughtful essays, technical deep-dives, and serverless architectures.</p>
           </div>
-        </div>
-      )}
-
-      {/* Feed Filter & Search Controls */}
-      <div className="feed-controls">
-        <div className="search-bar-wrap">
-          <Search size={18} className="search-icon" />
-          <input
-            type="text"
-            className="search-input"
-            placeholder="Search articles by title, keywords, or author..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            id="input-article-search"
-          />
+          <button onClick={onOpenEditor} className="btn-primary" id="btn-create-post-top">
+            <Plus size={16} />
+            <span>Write Article</span>
+          </button>
         </div>
 
-        <div className="filter-row">
-          <div className="filter-pills-group">
-            <Filter size={15} style={{ color: 'var(--accent-cyan)' }} />
-            <span className="filter-label">Category:</span>
+        {/* Filter Bar */}
+        <div className="feed-filter-bar">
+          <div className="feed-category-pills">
             {categories.map((cat) => (
               <button
                 key={cat}
-                className={`pill-btn ${selectedCategory === cat ? 'active' : ''}`}
+                className={`category-chip ${selectedCategory === cat ? 'active' : ''}`}
                 onClick={() => setSelectedCategory(cat)}
                 id={`filter-cat-${cat.toLowerCase()}`}
               >
@@ -150,52 +84,92 @@ export const PostList: React.FC<PostListProps> = ({ posts, onSelectPost, onOpenE
             ))}
           </div>
 
-          <div className="filter-pills-group">
-            <Globe size={15} style={{ color: 'var(--accent-indigo)' }} />
-            <span className="filter-label">Language:</span>
-            {languages.map((lang) => (
-              <button
-                key={lang}
-                className={`pill-btn ${selectedLanguage === lang ? 'active' : ''}`}
-                onClick={() => setSelectedLanguage(lang)}
-                id={`filter-lang-${lang.toLowerCase()}`}
-              >
-                {lang === 'en' ? 'English (en)' : lang === 'mni' ? 'Meetei Mayek (mni)' : lang}
-              </button>
-            ))}
+          <div className="feed-search-wrap">
+            <Search size={15} className="feed-search-icon" />
+            <input
+              type="text"
+              className="feed-search-input"
+              placeholder="Search publication..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              id="input-article-search"
+            />
           </div>
         </div>
       </div>
 
-      {/* Articles Grid */}
+      {/* Featured Hero Article */}
+      {featuredPost && selectedCategory === 'All' && !searchQuery && (
+        <section
+          className="featured-hero"
+          onClick={() => onSelectPost(featuredPost)}
+          id={`hero-card-${featuredPost.id}`}
+        >
+          <div className="featured-content">
+            <div className="featured-meta-row">
+              <span className="featured-badge">
+                <Sparkles size={11} />
+                Featured
+              </span>
+              <span>&bull;</span>
+              <span>{featuredPost.category}</span>
+              <span>&bull;</span>
+              <span>{featuredPost.reading_time_min} min read</span>
+            </div>
+
+            <h2 className="featured-title">{featuredPost.title}</h2>
+            <p className="featured-summary">{featuredPost.summary}</p>
+
+            <div className="featured-author-row">
+              <div className="author-avatar-fallback" style={{ width: '28px', height: '28px', fontSize: '0.75rem' }}>
+                {featuredPost.author.charAt(0)}
+              </div>
+              <span style={{ color: '#fff', fontWeight: 500 }}>{featuredPost.author}</span>
+              <span>&bull;</span>
+              <span>{formatDate(featuredPost.date)}</span>
+            </div>
+          </div>
+
+          <div className="featured-banner-wrap">
+            <img
+              src={featuredPost.thumbnail_url}
+              alt={featuredPost.title}
+              className="featured-banner-img"
+              loading="eager"
+              onError={(e) => {
+                const target = e.currentTarget;
+                target.onerror = null;
+                target.src = 'images/banner-philosophy.svg';
+              }}
+            />
+          </div>
+        </section>
+      )}
+
+      {/* Grid of Articles */}
       {filteredPosts.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '4rem 1rem', color: 'var(--text-muted)' }}>
-          <h3>No articles found matching your criteria</h3>
-          <p style={{ marginTop: '0.5rem' }}>Try clearing filters or search query, or compose a new post.</p>
-          <button
-            onClick={onOpenEditor}
-            className="btn-primary"
-            style={{ marginTop: '1.5rem' }}
-          >
-            Create New Article in Studio
+        <div style={{ textAlign: 'center', padding: '5rem 1rem', background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-subtle)' }}>
+          <h3 style={{ color: '#fff', fontSize: '1.25rem', fontWeight: 600 }}>No stories found</h3>
+          <p style={{ marginTop: '0.4rem', color: 'var(--text-muted)', fontSize: '0.9rem' }}>Try refining your search query or clear the selected filters.</p>
+          <button onClick={onOpenEditor} className="btn-primary" style={{ marginTop: '1.5rem' }}>
+            <Plus size={16} />
+            <span>Compose Article</span>
           </button>
         </div>
       ) : (
-        <div className="post-grid">
-          {(selectedCategory === 'All' && selectedLanguage === 'All' && !searchQuery
-            ? nonFeaturedPosts
-            : filteredPosts
-          ).map((post) => (
+        <div className="posts-grid">
+          {(selectedCategory === 'All' && !searchQuery ? nonFeaturedPosts : filteredPosts).map((post) => (
             <article
               key={post.id}
               className="post-card"
               onClick={() => onSelectPost(post)}
               id={`card-post-${post.id}`}
             >
-              <div className="card-banner">
+              <div className="card-banner-wrap">
                 <img
                   src={post.thumbnail_url}
                   alt={post.title}
+                  className="card-banner-img"
                   loading="lazy"
                   onError={(e) => {
                     const target = e.currentTarget;
@@ -203,21 +177,24 @@ export const PostList: React.FC<PostListProps> = ({ posts, onSelectPost, onOpenE
                     target.src = 'images/banner-philosophy.svg';
                   }}
                 />
-                <span className="card-lang-badge">{post.language.toUpperCase()}</span>
+                <span className="card-lang-pill">{post.language.toUpperCase()}</span>
               </div>
+
               <div className="card-body">
-                <span className="card-category">{post.category}</span>
-                <h2 className="card-title">{post.title}</h2>
+                <div className="card-meta-row">
+                  <span className="card-category-tag">{post.category}</span>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                    <Clock size={12} />
+                    {post.reading_time_min}m
+                  </span>
+                </div>
+
+                <h3 className="card-title">{post.title}</h3>
                 <p className="card-summary">{post.summary}</p>
-                <div className="card-footer">
+
+                <div className="card-footer-row">
                   <span>{post.author}</span>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                    <span>{formatDate(post.date)}</span>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: 'var(--accent-cyan)' }}>
-                      <Clock size={13} />
-                      {post.reading_time_min}m
-                    </span>
-                  </div>
+                  <span>{formatDate(post.date)}</span>
                 </div>
               </div>
             </article>
