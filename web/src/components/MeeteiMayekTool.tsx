@@ -12,9 +12,10 @@ import { Languages, Copy, Check, Plus, ExternalLink, X } from 'lucide-react';
 interface MeeteiMayekToolProps {
   onInsertText: (text: string) => void;
   onClose: () => void;
+  onTranslateFullDraft?: () => void;
 }
 
-export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({ onInsertText, onClose }) => {
+export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({ onInsertText, onClose, onTranslateFullDraft }) => {
   const [inputText, setInputText] = useState('');
   const [convertedText, setConvertedText] = useState('');
   const [copied, setCopied] = useState(false);
@@ -142,10 +143,21 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({ onInsertText, 
               />
             </div>
 
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
               <button onClick={handleTranslate} className="btn-primary" style={{ padding: '0.4rem 0.9rem', fontSize: '0.82rem' }}>
-                Translate to Meetei Mayek
+                Translate Input
               </button>
+              {onTranslateFullDraft && (
+                <button
+                  type="button"
+                  onClick={onTranslateFullDraft}
+                  className="btn-secondary"
+                  style={{ padding: '0.4rem 0.9rem', fontSize: '0.82rem' }}
+                >
+                  <span style={{ fontFamily: "var(--font-meetei)" }}>ꯃ</span>
+                  <span>Translate Entire Current Article</span>
+                </button>
+              )}
             </div>
 
             {convertedText && (

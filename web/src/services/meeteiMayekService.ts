@@ -229,3 +229,204 @@ export function translateToMeeteiMayek(input: string): string {
 
   return converted;
 }
+
+/**
+ * Extended English-to-Meetei vocabulary dictionary
+ */
+const EXTENDED_VOCABULARY: Record<string, string> = {
+  introduction: 'ꯑꯍꯥꯟꯕ ꯋꯥꯔꯣꯜ',
+  section: 'ꯁꯔꯨꯛ',
+  conclusion: 'ꯋꯥꯔꯣꯢꯁꯤꯟ',
+  summary: 'ꯇꯦꯟꯊꯛ',
+  overview: 'ꯃꯤꯠꯌꯦꯡ',
+  philosophy: 'ꯋꯥꯈꯜꯂꯣꯟ',
+  wisdom: 'ꯂꯧꯁꯤꯡ',
+  ancient: 'ꯑꯔꯤꯕ',
+  manuscript: 'ꯄꯨꯌꯥ',
+  manuscripts: 'ꯄꯨꯌꯥꯁꯤꯡ',
+  history: 'ꯄꯨꯋꯥꯔꯤ',
+  culture: 'ꯆꯠꯅꯕꯤ',
+  tradition: 'ꯆꯠꯅꯕꯤ',
+  time: 'ꯃꯇꯝ',
+  life: 'ꯄꯨꯟꯁꯤ',
+  nature: 'ꯃꯍꯧꯁꯥ',
+  human: 'ꯃꯤꯑꯣꯏꯕ',
+  world: 'ꯃꯥꯂꯦꯝ',
+  universe: 'ꯇꯥꯏꯕꯪ',
+  language: 'ꯂꯣꯟ',
+  script: 'ꯃꯌꯦꯛ',
+  science: 'ꯁꯥꯏꯟꯁ',
+  technology: 'ꯇꯦꯛꯅꯣꯂꯣꯖꯤ',
+  engineering: 'ꯏꯟꯖꯤꯅꯤꯌꯔꯤꯡ',
+  architecture: 'ꯑꯥꯔꯀꯤꯇꯦꯛꯆꯔ',
+  article: 'ꯋꯥꯔꯦꯡ',
+  articles: 'ꯋꯥꯔꯦꯡꯁꯤꯡ',
+  author: 'ꯑꯏꯕ',
+  date: 'ꯇꯥꯡ',
+  read: 'ꯄꯥꯕ',
+  reading: 'ꯄꯥꯕ',
+  write: 'ꯏꯕ',
+  minute: 'ꯃꯤꯅꯤꯠ',
+  minutes: 'ꯃꯤꯅꯤꯠ',
+  simplicity: 'ꯂꯥꯏꯕ',
+  reliability: 'ꯊꯥꯖꯕ ꯌꯥꯕ',
+  prerequisite: 'ꯃꯔꯨꯑꯣꯏꯕ ꯇꯥꯡꯀꯛ',
+  fast: 'ꯌꯥꯡꯕ',
+  portable: 'ꯄꯨꯕ ꯌꯥꯕ',
+  standard: 'ꯁ꯭ꯇꯦꯟꯗꯔꯗ',
+  serverless: 'ꯁꯔꯚꯔꯂꯦꯁ',
+  headless: 'ꯍꯦꯗꯂꯦꯁ',
+  markdown: 'ꯃꯥꯔꯛꯗꯥꯎꯟ',
+  bold: 'ꯃꯣꯇꯥ',
+  italics: 'ꯏꯇꯥꯂꯤꯛ',
+  quotes: 'ꯈꯣꯟꯊꯣꯛ',
+  tables: 'ꯇꯦꯕꯜꯁꯤꯡ',
+  key: 'ꯃꯔꯨ',
+  description: 'ꯁꯟꯗꯣꯛꯅ ꯇꯥꯛꯄ',
+  idea: 'ꯋꯥꯈꯜꯂꯣꯟ',
+  core: 'ꯃꯔꯨꯑꯣꯏꯕ',
+  support: 'ꯁꯧꯒꯠꯄ',
+  featured: 'ꯃꯔꯨꯑꯣꯏꯕ',
+  general: 'ꯃꯌꯥꯝ',
+};
+
+/**
+ * Translates a complete Markdown document into Meetei Mayek while preserving:
+ * - Code blocks (``` ... ``` and inline `code`)
+ * - Images (![alt](url) -> ![translated_alt](url))
+ * - Links ([text](url) -> [translated_text](url))
+ * - HTML tags (<...>)
+ * - Table pipes and markdown formatting marks (#, >, *, -, etc.)
+ */
+export function translateMarkdownToMeeteiMayek(markdown: string): string {
+  if (!markdown) return '';
+
+  const lines = markdown.split('\n');
+  let inCodeBlock = false;
+  const translatedLines: string[] = [];
+
+  for (const line of lines) {
+    // Check for fenced code block toggle
+    if (line.trim().startsWith('```')) {
+      inCodeBlock = !inCodeBlock;
+      translatedLines.push(line);
+      continue;
+    }
+
+    if (inCodeBlock) {
+      translatedLines.push(line);
+      continue;
+    }
+
+    // Skip empty lines or divider lines
+    if (!line.trim() || line.trim() === '---' || line.trim() === '***') {
+      translatedLines.push(line);
+      continue;
+    }
+
+    // Check headings
+    const headingMatch = line.match(/^(#{1,6}\s+)(.*)$/);
+    if (headingMatch) {
+      const hashes = headingMatch[1];
+      const text = headingMatch[2];
+      translatedLines.push(`${hashes}${translateTextSegments(text)}`);
+      continue;
+    }
+
+    // Check blockquote
+    const quoteMatch = line.match(/^(\s*>\s*)(.*)$/);
+    if (quoteMatch) {
+      const quotePrefix = quoteMatch[1];
+      const text = quoteMatch[2];
+      translatedLines.push(`${quotePrefix}${translateTextSegments(text)}`);
+      continue;
+    }
+
+    // Check list item
+    const listMatch = line.match(/^(\s*[-*+]\s+|\s*\d+\.\s+)(.*)$/);
+    if (listMatch) {
+      const listPrefix = listMatch[1];
+      const text = listMatch[2];
+      translatedLines.push(`${listPrefix}${translateTextSegments(text)}`);
+      continue;
+    }
+
+    // Check table row
+    if (line.trim().startsWith('|') && line.trim().endsWith('|')) {
+      if (/^\|\s*[-:]+[-|\s:]*\|$/.test(line.trim())) {
+        translatedLines.push(line);
+        continue;
+      }
+      const cells = line.split('|');
+      const translatedCells = cells.map((cell, idx) => {
+        if (idx === 0 || idx === cells.length - 1) return cell;
+        return translateTextSegments(cell);
+      });
+      translatedLines.push(translatedCells.join('|'));
+      continue;
+    }
+
+    // Normal paragraph text
+    translatedLines.push(translateTextSegments(line));
+  }
+
+  return translatedLines.join('\n');
+}
+
+/**
+ * Translates a segment of text while preserving inline code, links, images, and HTML
+ */
+function translateTextSegments(text: string): string {
+  // Regex to extract images, links, inline code, or HTML tags
+  const tokenRegex = /(!?\[.*?\]\(.*?\)|`[^`]+`|<[^>]+>)/g;
+  const parts = text.split(tokenRegex);
+
+  return parts.map((part) => {
+    // If it's an image ![alt](url)
+    const imgMatch = part.match(/^!\[(.*?)\]\((.*?)\)$/);
+    if (imgMatch) {
+      const alt = imgMatch[1];
+      const url = imgMatch[2];
+      return `![${translateToMeeteiMayekWithVocab(alt)}](${url})`;
+    }
+
+    // If it's a link [text](url)
+    const linkMatch = part.match(/^\[(.*?)\]\((.*?)\)$/);
+    if (linkMatch) {
+      const label = linkMatch[1];
+      const url = linkMatch[2];
+      return `[${translateToMeeteiMayekWithVocab(label)}](${url})`;
+    }
+
+    // If it's code `...` or HTML <...>
+    if (part.startsWith('`') || part.startsWith('<')) {
+      return part;
+    }
+
+    // Translate regular text
+    return translateToMeeteiMayekWithVocab(part);
+  }).join('');
+}
+
+/**
+ * Translates text applying extended vocabulary and punctuation conversion
+ */
+export function translateToMeeteiMayekWithVocab(input: string): string {
+  if (!input) return '';
+
+  let text = input;
+
+  // Apply extended vocabulary replacements
+  for (const [en, mni] of Object.entries(EXTENDED_VOCABULARY)) {
+    const regex = new RegExp(`\\b${en}\\b`, 'gi');
+    text = text.replace(regex, mni);
+  }
+
+  // Then run core transliteration
+  text = translateToMeeteiMayek(text);
+
+  // Convert full stops to Cheikhei ꯫
+  text = text.replace(/\.(\s+|$)/g, '꯫$1');
+
+  return text;
+}

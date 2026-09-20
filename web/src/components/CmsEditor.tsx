@@ -32,6 +32,7 @@ import {
 } from 'lucide-react';
 import { marked } from 'marked';
 import { MeeteiMayekTool } from './MeeteiMayekTool';
+import { translateMarkdownToMeeteiMayek, translateToMeeteiMayekWithVocab } from '../services/meeteiMayekService';
 
 interface CmsEditorProps {
   onPreviewInFeed: (draftPost: BlogPost) => void;
@@ -46,6 +47,7 @@ export const CmsEditor: React.FC<CmsEditorProps> = ({ onPreviewInFeed }) => {
   const [viewMode, setViewMode] = useState<'split' | 'write' | 'preview'>('split');
   const [showSettings, setShowSettings] = useState<boolean>(false);
   const [showMeeteiTool, setShowMeeteiTool] = useState<boolean>(false);
+  const [isPreviewMeetei, setIsPreviewMeetei] = useState<boolean>(false);
 
   const [draft, setDraft] = useState<PostDraft>(() => {
     const saved = localStorage.getItem('blog_cms_current_draft');
@@ -199,7 +201,10 @@ Support for **bold**, *italics*, quotes, and tables:
         return defaultImage.call(renderer, token);
       };
 
-      return marked.parse(livePreviewMarkdown, { gfm: true, breaks: true, renderer }) as string;
+      const markdownToRender = isPreviewMeetei
+        ? translateMarkdownToMeeteiMayek(livePreviewMarkdown)
+        : livePreviewMarkdown;
+      return marked.parse(markdownToRender, { gfm: true, breaks: true, renderer }) as string;
     } catch {
       return '<p>Error rendering preview</p>';
     }
@@ -865,10 +870,33 @@ Support for **bold**, *italics*, quotes, and tables:
           <div className="studio-pane">
             <div className="pane-header">
               <span>Live Article Preview</span>
-              <span style={{ color: 'var(--accent-emerald)', fontSize: '0.72rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: 'var(--accent-emerald)' }} />
-                <span>Auto-synced</span>
-              </span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <button
+                  type="button"
+                  onClick={() => setIsPreviewMeetei(!isPreviewMeetei)}
+                  className="btn-ghost"
+                  style={{
+                    padding: '0.2rem 0.6rem',
+                    fontSize: '0.72rem',
+                    borderRadius: 'var(--radius-full)',
+                    background: isPreviewMeetei ? 'rgba(56, 189, 248, 0.15)' : 'rgba(255, 255, 255, 0.05)',
+                    color: isPreviewMeetei ? 'var(--accent-cyan)' : 'var(--text-secondary)',
+                    border: '1px solid var(--border-subtle)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.35rem',
+                  }}
+                  title="Toggle live preview in Meetei Mayek"
+                  id="btn-toggle-preview-meetei"
+                >
+                  <span style={{ fontFamily: 'var(--font-meetei)', fontSize: '0.9rem' }}>ꯃ</span>
+                  <span>{isPreviewMeetei ? 'Meetei Mayek Preview' : 'English Preview'}</span>
+                </button>
+                <span style={{ color: 'var(--accent-emerald)', fontSize: '0.72rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                  <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: 'var(--accent-emerald)' }} />
+                  <span>Auto-synced</span>
+                </span>
+              </div>
             </div>
 
             <div
@@ -999,6 +1027,17 @@ Support for **bold**, *italics*, quotes, and tables:
         <MeeteiMayekTool
           onInsertText={(txt) => insertMarkdownSyntax(txt)}
           onClose={() => setShowMeeteiTool(false)}
+          onTranslateFullDraft={() => {
+            const translatedContent = translateMarkdownToMeeteiMayek(draft.content);
+            const translatedTitle = translateToMeeteiMayekWithVocab(draft.title);
+            setDraft((prev) => ({
+              ...prev,
+              title: translatedTitle || prev.title,
+              content: translatedContent,
+              language: 'mni',
+            }));
+            setShowMeeteiTool(false);
+          }}
         />
       )}
     </div>

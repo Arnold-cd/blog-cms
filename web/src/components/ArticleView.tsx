@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import type { BlogPost } from '../types';
 import { fetchArticleMarkdown } from '../services/cmsService';
-import { ArrowLeft, Clock, Share2, Check, PenLine, Sparkles } from 'lucide-react';
+import { translateMarkdownToMeeteiMayek, translateToMeeteiMayekWithVocab } from '../services/meeteiMayekService';
+import { ArrowLeft, Clock, Share2, Check, PenLine, Sparkles, Languages } from 'lucide-react';
 import { marked } from 'marked';
 
 interface ArticleViewProps {
@@ -11,10 +12,11 @@ interface ArticleViewProps {
 }
 
 export const ArticleView: React.FC<ArticleViewProps> = ({ post, onBack, onEditDraft }) => {
-  const [contentHtml, setContentHtml] = useState<string>('');
+  const [rawMarkdown, setRawMarkdown] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState<boolean>(false);
+  const [isTranslated, setIsTranslated] = useState<boolean>(post.language === 'mni');
 
   useEffect(() => {
     let isMounted = true;
@@ -22,23 +24,15 @@ export const ArticleView: React.FC<ArticleViewProps> = ({ post, onBack, onEditDr
     setError(null);
 
     if (post.content && post.content.trim()) {
-      try {
-        const parsed = marked.parse(post.content, { gfm: true, breaks: true }) as string;
-        setContentHtml(parsed);
-        setLoading(false);
-        return;
-      } catch (err: any) {
-        setError(err.message || 'Failed to render markdown content');
-        setLoading(false);
-        return;
-      }
+      setRawMarkdown(post.content);
+      setLoading(false);
+      return;
     }
 
     fetchArticleMarkdown(post.content_url)
       .then((markdown) => {
         if (!isMounted) return;
-        const parsed = marked.parse(markdown, { gfm: true, breaks: true }) as string;
-        setContentHtml(parsed);
+        setRawMarkdown(markdown);
         setLoading(false);
       })
       .catch((err) => {
@@ -51,6 +45,21 @@ export const ArticleView: React.FC<ArticleViewProps> = ({ post, onBack, onEditDr
       isMounted = false;
     };
   }, [post]);
+
+  // Derived content based on translation toggle
+  const effectiveTitle = isTranslated ? translateToMeeteiMayekWithVocab(post.title) : post.title;
+  const effectiveCategory = isTranslated ? translateToMeeteiMayekWithVocab(post.category) : post.category;
+  const effectiveAuthor = isTranslated ? translateToMeeteiMayekWithVocab(post.author) : post.author;
+
+  const contentHtml = useMemo(() => {
+    if (!rawMarkdown) return '';
+    try {
+      const textToParse = isTranslated ? translateMarkdownToMeeteiMayek(rawMarkdown) : rawMarkdown;
+      return marked.parse(textToParse, { gfm: true, breaks: true }) as string;
+    } catch (err: any) {
+      return `<p>Error rendering article content: ${err.message}</p>`;
+    }
+  }, [rawMarkdown, isTranslated]);
 
   const handleShare = () => {
     navigator.clipboard.writeText(window.location.href);
@@ -71,7 +80,10 @@ export const ArticleView: React.FC<ArticleViewProps> = ({ post, onBack, onEditDr
   };
 
   return (
-    <div className={`reader-container ${post.language === "mni" ? "lang-mni" : ""}`} lang={post.language || "en"}>
+    <div
+      className={`reader-container ${isTranslated || post.language === 'mni' ? 'lang-mni' : ''}`}
+      lang={isTranslated ? 'mni' : (post.language || 'en')}
+    >
       {/* Draft Mode Pill */}
       {post.isDraft && (
         <div style={{
@@ -118,20 +130,65 @@ export const ArticleView: React.FC<ArticleViewProps> = ({ post, onBack, onEditDr
         </button>
       </div>
 
+      {/* Meetei Mayek Translation Toggle Bar */}
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: '0.75rem',
+        padding: '0.65rem 1.15rem',
+        marginBottom: '2rem',
+        background: 'rgba(24, 24, 27, 0.65)',
+        border: '1px solid var(--border-subtle)',
+        borderRadius: 'var(--radius-full)',
+        boxShadow: 'var(--shadow-subtle)',
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
+          <Languages size={15} color="var(--accent-cyan)" />
+          <span style={{ fontWeight: 600, color: '#fff' }}>Language View:</span>
+          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+            (Powered by Google Noto Sans Meetei Mayek)
+          </span>
+        </div>
+
+        <div className="studio-view-toggle" style={{ background: 'rgba(9, 9, 11, 0.8)' }}>
+          <button
+            type="button"
+            className={`view-toggle-btn ${!isTranslated ? 'active' : ''}`}
+            onClick={() => setIsTranslated(false)}
+            id="btn-toggle-lang-en"
+          >
+            <span>English</span>
+          </button>
+          <button
+            type="button"
+            className={`view-toggle-btn ${isTranslated ? 'active' : ''}`}
+            onClick={() => setIsTranslated(true)}
+            id="btn-toggle-lang-mni"
+          >
+            <span style={{ fontFamily: 'var(--font-meetei)', fontSize: '0.95rem' }}>ꯃꯤꯇꯩ ꯃꯌꯦꯛ</span>
+            <span>(Meetei Mayek)</span>
+          </button>
+        </div>
+      </div>
+
       {/* Article Header */}
       <header>
         <div className="reader-header-meta">
-          <span style={{ color: '#fff', fontWeight: 600 }}>{post.category}</span>
+          <span style={{ color: '#fff', fontWeight: 600 }}>{effectiveCategory}</span>
           <span>&bull;</span>
           <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
             <Clock size={13} />
             {post.reading_time_min} min read
           </span>
           <span>&bull;</span>
-          <span>{post.language.toUpperCase()}</span>
+          <span style={{ fontFamily: isTranslated ? 'var(--font-meetei)' : undefined }}>
+            {isTranslated ? 'ꯃꯤꯇꯩ ꯃꯌꯦꯛ' : post.language.toUpperCase()}
+          </span>
         </div>
 
-        <h1 className="reader-title">{post.title}</h1>
+        <h1 className="reader-title">{effectiveTitle}</h1>
 
         <div className="reader-author-strip">
           <div className="reader-author-info">
@@ -139,7 +196,7 @@ export const ArticleView: React.FC<ArticleViewProps> = ({ post, onBack, onEditDr
               {post.author.charAt(0)}
             </div>
             <div>
-              <div className="author-name">{post.author}</div>
+              <div className="author-name">{effectiveAuthor}</div>
               <div className="publish-date">{formatDate(post.date)}</div>
             </div>
           </div>
