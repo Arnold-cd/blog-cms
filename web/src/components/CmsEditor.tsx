@@ -1037,10 +1037,21 @@ Support for **bold**, *italics*, quotes, and tables:
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '1.5rem' }}>
               <div>
-                <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.35rem' }}>
-                  <Key size={13} />
-                  <span>GitHub Personal Access Token (repo scope)</span>
-                </label>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.35rem' }}>
+                  <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', margin: 0 }}>
+                    <Key size={13} />
+                    <span>GitHub Personal Access Token (repo scope)</span>
+                  </label>
+                  <a
+                    href="https://github.com/settings/tokens/new?scopes=repo&description=Blog+CMS+Publish+Token"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ fontSize: '0.75rem', color: 'var(--accent-cyan)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.25rem', fontWeight: 500 }}
+                    title="Create a new personal access token with repo scope pre-selected"
+                  >
+                    <span>Create Token ↗</span>
+                  </a>
+                </div>
                 <input
                   type="password"
                   className="form-input"
