@@ -231,6 +231,7 @@ const EXTENDED_VOCABULARY: Record<string, string> = {
   physics: 'ꯐꯤꯖꯤꯛꯁ',
   versus: 'ꯃꯥꯌꯣꯛꯇ',
   vs: 'ꯃꯥꯌꯣꯛꯇ',
+  'vs.': 'ꯃꯥꯌꯣꯛꯇ꯫',
   phenomenological: 'ꯐꯦꯅꯣꯃꯦꯅꯣꯂꯣꯖꯤꯀꯦꯜ',
   consciousness: 'ꯋꯥꯈꯜ',
   constructs: 'ꯁꯦꯝꯃꯤ',
@@ -380,13 +381,28 @@ const COMMON_PHONETIC_WORDS: Record<string, string> = {
 };
 
 const GREEK_TRANSLITERATION: Record<string, string> = {
+  // Common Greek philosophical terms
+  'Χρόνος': 'ꯈ꯭ꯔꯣꯅꯣꯁ',
   'χρόνος': 'ꯈ꯭ꯔꯣꯅꯣꯁ',
+  'Καιρός': 'ꯀꯥꯏꯔꯣꯁ',
   'καιρός': 'ꯀꯥꯏꯔꯣꯁ',
+  // Greek Uppercase (e.g. Χ and Κ which look identical to Latin X and K)
+  'Α': 'ꯑ', 'Β': 'ꯕ', 'Γ': 'ꯒ', 'Δ': 'ꯗ', 'Ε': 'ꯑꯦ',
+  'Ζ': 'ꯖ', 'Η': 'ꯑꯦ', 'Θ': 'ꯊ', 'Ι': 'ꯏ', 'Κ': 'ꯀ',
+  'Λ': 'ꯂ', 'Μ': 'ꯃ', 'Ν': 'ꯅ', 'Ξ': 'ꯛꯁ', 'Ο': 'ꯑꯣ',
+  'Π': 'ꯄ', 'Ρ': 'ꯔ', 'Σ': 'ꯁ', 'Τ': 'ꯇ', 'Υ': 'ꯎ',
+  'Φ': 'ꯐ', 'Χ': 'ꯈ', 'Ψ': 'ꯄꯁ', 'Ω': 'ꯑꯣ',
+  // Greek Lowercase
   'α': 'ꯑ', 'β': 'ꯕ', 'γ': 'ꯒ', 'δ': 'ꯗ', 'ε': 'ꯑꯦ',
   'ζ': 'ꯖ', 'η': 'ꯑꯦ', 'θ': 'ꯊ', 'ι': 'ꯏ', 'κ': 'ꯀ',
   'λ': 'ꯂ', 'μ': 'ꯃ', 'ν': 'ꯅ', 'ξ': 'ꯛꯁ', 'ο': 'ꯑꯣ',
   'π': 'ꯄ', 'ρ': 'ꯔ', 'σ': 'ꯁ', 'ς': 'ꯁ', 'τ': 'ꯇ',
   'υ': 'ꯎ', 'φ': 'ꯐ', 'χ': 'ꯈ', 'ψ': 'ꯄꯁ', 'ω': 'ꯑꯣ',
+  // Greek with accents / tonos / dialytika
+  'ά': 'ꯑꯥ', 'έ': 'ꯑꯦ', 'ή': 'ꯑꯦ', 'ί': 'ꯏ', 'ό': 'ꯑꯣ',
+  'ύ': 'ꯎ', 'ώ': 'ꯑꯣ', 'Ά': 'ꯑꯥ', 'Έ': 'ꯑꯦ', 'Ή': 'ꯑꯦ',
+  'Ί': 'ꯏ', 'Ό': 'ꯑꯣ', 'Ύ': 'ꯎ', 'Ώ': 'ꯑꯣ',
+  'ϊ': 'ꯏ', 'ϋ': 'ꯎ', 'ΐ': 'ꯏ', 'ΰ': 'ꯎ',
 };
 
 const MEETEI_DIGITS: [string, string][] = [
@@ -403,7 +419,11 @@ const LATIN_LETTER_FALLBACK: Record<string, string> = {
 };
 
 function transliterateLatinWord(token: string): string {
-  let word = token.toLowerCase();
+  let word = token;
+  for (const [grk, rep] of Object.entries(GREEK_TRANSLITERATION)) {
+    word = word.split(grk).join(rep);
+  }
+  word = word.toLowerCase();
 
   const clusters: [string, string][] = [
     ['sch', 'ꯁ꯭ꯀ'],
@@ -510,7 +530,7 @@ export function translateToMeeteiMayek(input: string): string {
   }
 
   for (const [latin, meetei] of Object.entries(COMMON_PHONETIC_WORDS)) {
-    const regex = new RegExp(`\b${latin}\b`, 'gi');
+    const regex = new RegExp(`\\b${latin}\\b`, 'gi');
     text = text.replace(regex, meetei);
   }
 
@@ -518,13 +538,13 @@ export function translateToMeeteiMayek(input: string): string {
     text = text.split(grk).join(meetei);
   }
 
-  const tokens = text.split(/([a-zA-Z]+|[0-9]+)/);
+  const tokens = text.split(/([a-zA-Z\u0370-\u03FF\u1F00-\u1FFF]+|[0-9]+)/);
   const convertedParts: string[] = [];
 
   for (const token of tokens) {
     if (!token) continue;
 
-    if (/^[a-zA-Z]+$/.test(token)) {
+    if (/^[a-zA-Z\u0370-\u03FF\u1F00-\u1FFF]+$/.test(token)) {
       convertedParts.push(transliterateLatinWord(token));
     } else if (/^[0-9]+$/.test(token)) {
       let d = token;
@@ -550,7 +570,7 @@ export function translateToMeeteiMayekWithVocab(input: string): string {
   let text = input;
 
   for (const [en, mni] of Object.entries(EXTENDED_VOCABULARY)) {
-    const regex = new RegExp(`\b${en}\b`, 'gi');
+    const regex = new RegExp(`\\b${en}\\b`, 'gi');
     text = text.replace(regex, mni);
   }
 
