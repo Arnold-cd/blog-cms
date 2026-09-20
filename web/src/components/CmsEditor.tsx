@@ -31,6 +31,7 @@ import {
   Plus,
 } from 'lucide-react';
 import { marked } from 'marked';
+import { MeeteiMayekTool } from './MeeteiMayekTool';
 
 interface CmsEditorProps {
   onPreviewInFeed: (draftPost: BlogPost) => void;
@@ -44,6 +45,7 @@ export const CmsEditor: React.FC<CmsEditorProps> = ({ onPreviewInFeed }) => {
 
   const [viewMode, setViewMode] = useState<'split' | 'write' | 'preview'>('split');
   const [showSettings, setShowSettings] = useState<boolean>(false);
+  const [showMeeteiTool, setShowMeeteiTool] = useState<boolean>(false);
 
   const [draft, setDraft] = useState<PostDraft>(() => {
     const saved = localStorage.getItem('blog_cms_current_draft');
@@ -521,6 +523,16 @@ Support for **bold**, *italics*, quotes, and tables:
         {/* Action Controls */}
         <div className="studio-actions-group">
           <button
+            onClick={() => setShowMeeteiTool(true)}
+            className="btn-secondary"
+            title="Meetei Mayek Translator & Character Palette"
+            id="btn-meetei-mayek-tool"
+          >
+            <span style={{ fontFamily: "var(--font-meetei)", fontSize: "1.05rem", lineHeight: 1 }}>ꯃ</span>
+            <span>Meetei Mayek</span>
+          </button>
+
+          <button
             onClick={() => setShowSettings(!showSettings)}
             className="btn-secondary"
             title="Configure category, author, summary, and banner"
@@ -981,6 +993,13 @@ Support for **bold**, *italics*, quotes, and tables:
             </div>
           </div>
         </div>
+      )}
+      {/* Meetei Mayek Translation & Character Tool */}
+      {showMeeteiTool && (
+        <MeeteiMayekTool
+          onInsertText={(txt) => insertMarkdownSyntax(txt)}
+          onClose={() => setShowMeeteiTool(false)}
+        />
       )}
     </div>
   );

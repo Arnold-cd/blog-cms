@@ -71,7 +71,7 @@ export const ArticleView: React.FC<ArticleViewProps> = ({ post, onBack, onEditDr
   };
 
   return (
-    <div className="reader-container">
+    <div className={`reader-container ${post.language === "mni" ? "lang-mni" : ""}`} lang={post.language || "en"}>
       {/* Draft Mode Pill */}
       {post.isDraft && (
         <div style={{

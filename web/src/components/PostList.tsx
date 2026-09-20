@@ -177,7 +177,7 @@ export const PostList: React.FC<PostListProps> = ({ posts, onSelectPost, onOpenE
                     target.src = 'images/banner-philosophy.svg';
                   }}
                 />
-                <span className="card-lang-pill">{post.language.toUpperCase()}</span>
+                <span className="card-lang-pill" style={{ fontFamily: post.language === "mni" ? "var(--font-meetei)" : undefined }}>{post.language === "mni" ? "ꯃꯤꯇꯩ ꯃꯌꯦꯛ" : post.language.toUpperCase()}</span>
               </div>
 
               <div className="card-body">
