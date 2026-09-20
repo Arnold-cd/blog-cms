@@ -210,19 +210,46 @@ Support for **bold**, *italics*, quotes, and tables:
     }
   }, [livePreviewMarkdown, isPreviewMeetei]);
 
-  // Validation checks
-  const validationErrors = useMemo(() => {
-    const errors: string[] = [];
-    if (!draft.id.trim()) errors.push('Slug ID is required');
-    if (!draft.title.trim()) errors.push('Title is required');
-    if (!draft.summary.trim()) errors.push('Summary is required');
-    if (!draft.author.trim()) errors.push('Author is required');
-    if (!draft.category.trim()) errors.push('Category is required');
-    if (!draft.thumbnail.trim()) errors.push('Thumbnail is required');
-    return errors;
+  // Missing metadata validation with field descriptors for interactive jumps
+  const missingFields = useMemo(() => {
+    const fields: { key: string; label: string; elementId: string; drawerField: boolean }[] = [];
+    if (!draft.title.trim()) {
+      fields.push({ key: 'title', label: 'Title', elementId: 'input-inline-title', drawerField: false });
+    }
+    if (!draft.summary.trim()) {
+      fields.push({ key: 'summary', label: 'Summary', elementId: 'textarea-cms-summary', drawerField: true });
+    }
+    if (!draft.id.trim()) {
+      fields.push({ key: 'id', label: 'Slug ID', elementId: 'input-inline-title', drawerField: false });
+    }
+    if (!draft.author.trim()) {
+      fields.push({ key: 'author', label: 'Author', elementId: 'input-cms-author', drawerField: true });
+    }
+    if (!draft.category.trim()) {
+      fields.push({ key: 'category', label: 'Category', elementId: 'select-cms-category', drawerField: true });
+    }
+    if (!draft.thumbnail.trim()) {
+      fields.push({ key: 'thumbnail', label: 'Banner Image', elementId: 'input-cms-thumbnail', drawerField: true });
+    }
+    return fields;
   }, [draft]);
 
-  const isValid = validationErrors.length === 0;
+
+
+  const isValid = missingFields.length === 0;
+
+  const handleJumpToMissing = (field: { elementId: string; drawerField: boolean }) => {
+    if (field.drawerField) {
+      setShowSettings(true);
+    }
+    setTimeout(() => {
+      const el = document.getElementById(field.elementId);
+      if (el) {
+        el.focus();
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 60);
+  };
 
   // Insert markdown helper at cursor
   const insertMarkdownSyntax = (prefix: string, suffix: string = '') => {
@@ -593,7 +620,14 @@ Support for **bold**, *italics*, quotes, and tables:
           </button>
 
           <button
-            onClick={() => setShowGitHubModal(true)}
+            onClick={() => {
+              if (!isValid) {
+                alert("Please complete required fields: " + missingFields.map(f => f.label).join(", "));
+                handleJumpToMissing(missingFields[0]);
+                return;
+              }
+              setShowGitHubModal(true);
+            }}
             className="btn-primary"
             title="Commit and deploy directly to GitHub"
             id="btn-publish-github"
@@ -609,10 +643,13 @@ Support for **bold**, *italics*, quotes, and tables:
         <input
           type="text"
           className="inline-title-input"
-          placeholder="Untitled Article..."
+          placeholder="Untitled Article (Click to enter Title)..."
           value={draft.title}
           onChange={(e) => handleTitleChange(e.target.value)}
           id="input-inline-title"
+          style={{
+            borderBottom: !draft.title.trim() ? '2px dashed rgba(245, 158, 11, 0.4)' : undefined,
+          }}
         />
         <div className="inline-slug-bar">
           <span>Permalink:</span>
@@ -622,10 +659,28 @@ Support for **bold**, *italics*, quotes, and tables:
           <span>&bull;</span>
           <span>{minutes} min read</span>
           {!isValid && (
-            <span style={{ color: 'var(--accent-amber)', display: 'flex', alignItems: 'center', gap: '0.25rem', marginLeft: '0.5rem' }}>
+            <button
+              type="button"
+              onClick={() => handleJumpToMissing(missingFields[0])}
+              style={{
+                color: 'var(--accent-amber)',
+                background: 'rgba(245, 158, 11, 0.12)',
+                border: '1px solid rgba(245, 158, 11, 0.35)',
+                padding: '0.15rem 0.55rem',
+                borderRadius: '4px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.35rem',
+                marginLeft: '0.5rem',
+                cursor: 'pointer',
+                fontSize: '0.74rem',
+                fontWeight: 500,
+              }}
+              title="Click to jump to missing field"
+            >
               <AlertCircle size={13} />
-              <span>Missing required metadata in Settings</span>
-            </span>
+              <span>Missing: {missingFields.map((f) => f.label).join(', ')} (click to edit)</span>
+            </button>
           )}
         </div>
       </div>
@@ -724,7 +779,30 @@ Support for **bold**, *italics*, quotes, and tables:
           </div>
 
           <div className="form-field" style={{ gridColumn: '1 / -1' }}>
-            <label className="form-label">Summary (Card snippet for readers) *</label>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.35rem' }}>
+              <label className="form-label" style={{ marginBottom: 0 }}>
+                Summary (Card snippet for readers) *
+              </label>
+              {draft.content && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    const lines = draft.content.split('\n');
+                    const firstPara = lines.find(
+                      (l) => l.trim().length > 0 && !l.trim().startsWith('#') && !l.trim().startsWith('!') && !l.trim().startsWith('```')
+                    );
+                    if (firstPara) {
+                      setDraft((prev) => ({ ...prev, summary: firstPara.trim().slice(0, 160) }));
+                    }
+                  }}
+                  className="btn-secondary"
+                  style={{ fontSize: '0.72rem', padding: '0.15rem 0.5rem', height: 'auto' }}
+                  title="Extract first paragraph as summary"
+                >
+                  Auto-fill from content
+                </button>
+              )}
+            </div>
             <textarea
               rows={2}
               className="form-textarea"
@@ -732,6 +810,9 @@ Support for **bold**, *italics*, quotes, and tables:
               value={draft.summary}
               onChange={(e) => setDraft({ ...draft, summary: e.target.value })}
               id="textarea-cms-summary"
+              style={{
+                borderColor: !draft.summary.trim() ? 'rgba(245, 158, 11, 0.6)' : undefined,
+              }}
             />
           </div>
         </section>
@@ -858,7 +939,31 @@ Support for **bold**, *italics*, quotes, and tables:
               ref={textareaRef}
               className="studio-textarea"
               value={draft.content}
-              onChange={(e) => setDraft({ ...draft, content: e.target.value })}
+              onChange={(e) => {
+                const val = e.target.value;
+                setDraft((prev) => {
+                  let nextTitle = prev.title;
+                  let nextId = prev.id;
+                  if (!prev.title.trim()) {
+                    const match = val.match(/^#\s+([^\n]+)/m);
+                    if (match && match[1].trim()) {
+                      nextTitle = match[1].trim();
+                      const slug = nextTitle
+                        .toLowerCase()
+                        .trim()
+                        .replace(/[^a-z0-9]+/g, '-')
+                        .replace(/^-+|-+$/g, '');
+                      if (slug) nextId = slug;
+                    }
+                  }
+                  return {
+                    ...prev,
+                    content: val,
+                    title: nextTitle,
+                    id: nextId,
+                  };
+                });
+              }}
               placeholder="Write your article in Markdown..."
               id="textarea-cms-content"
             />
