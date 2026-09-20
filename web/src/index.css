@@ -35,6 +35,11 @@
   --text-muted: #71717a;
   --text-inverse: #09090b;
 
+  /* Button Tokens (Dark) */
+  --btn-primary-bg: #f4f4f5;
+  --btn-primary-hover-bg: #ffffff;
+  --btn-primary-text: #09090b;
+
   /* Accents */
   --accent-white: #ffffff;
   --accent-indigo: #6366f1;
@@ -97,6 +102,11 @@
   --text-secondary: #4b5563;
   --text-muted: #9ca3af;
   --text-inverse: #ffffff;
+
+  /* Button Tokens (Light) */
+  --btn-primary-bg: #0f172a;
+  --btn-primary-hover-bg: #1e293b;
+  --btn-primary-text: #ffffff;
 
   /* Accents */
   --accent-white: #111827;
@@ -189,20 +199,21 @@ button {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  background: var(--text-primary);
-  color: var(--text-inverse);
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
   font-weight: 600;
   font-size: 0.85rem;
   padding: 0.5rem 1.1rem;
   border-radius: var(--radius-sm);
   transition: all var(--transition-fast);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--shadow-subtle);
 }
 
 .btn-primary:hover {
-  background: #ffffff;
+  background: var(--btn-primary-hover-bg);
+  color: var(--btn-primary-text);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .btn-primary:active {
@@ -232,7 +243,7 @@ button {
 }
 
 .btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--bg-subtle-hover);
   border-color: var(--border-active);
   color: var(--text-primary);
 }
@@ -252,7 +263,7 @@ button {
 }
 
 .btn-ghost:hover {
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--bg-subtle-hover);
   color: var(--text-primary);
 }
 
@@ -315,7 +326,7 @@ button {
   font-size: 0.68rem;
   font-weight: 500;
   color: var(--text-muted);
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bg-subtle);
   border: 1px solid var(--border-subtle);
   padding: 0.1rem 0.45rem;
   border-radius: var(--radius-full);
@@ -355,7 +366,7 @@ button {
 
 .nav-tab-count {
   font-size: 0.72rem;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--bg-subtle-hover);
   padding: 0.05rem 0.4rem;
   border-radius: var(--radius-full);
 }
@@ -406,14 +417,14 @@ button {
   padding: 0.4rem 0.85rem;
   border-radius: var(--radius-full);
   border: 1px solid var(--border-subtle);
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--bg-subtle);
   transition: all var(--transition-fast);
 }
 
 .nav-github-link:hover {
-  color: #ffffff;
+  color: var(--text-primary);
   border-color: var(--border-active);
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--bg-subtle-hover);
 }
 
 /* ==========================================================================
@@ -765,7 +776,7 @@ button {
   font-size: 0.72rem;
   font-weight: 500;
   color: var(--text-muted);
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--bg-subtle);
   border: 1px solid var(--border-subtle);
   padding: 0.15rem 0.55rem;
   border-radius: var(--radius-full);
@@ -1022,8 +1033,8 @@ button {
 }
 
 .pane-tool-btn:hover {
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+  background: var(--bg-subtle-hover);
 }
 
 .studio-textarea {
