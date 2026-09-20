@@ -6,6 +6,7 @@ import {
 } from '../services/cmsService';
 import { createDownloadPackage, publishToGitHub } from '../services/exportService';
 import { convertPdfToImages } from '../services/pdfService';
+import { saveStoredAssets, getAllStoredAssets, removeStoredAsset, clearAllStoredAssets } from '../services/draftStorage';
 import {
   Download,
   Copy,
@@ -23,6 +24,7 @@ import {
   Key,
   Paperclip,
   Loader2,
+  RotateCcw,
 } from 'lucide-react';
 import { marked } from 'marked';
 
@@ -92,6 +94,23 @@ Support for **bold**, *italics*, quotes, and tables:
     localStorage.setItem('blog_cms_current_draft', JSON.stringify(toSave));
   }, [draft]);
 
+  // Restore persistent assets (PDF pictures & uploaded images) from IndexedDB on mount
+  useEffect(() => {
+    getAllStoredAssets().then((storedAssets) => {
+      if (storedAssets && storedAssets.length > 0) {
+        setDraft((prev) => {
+          const existingNames = new Set(prev.assets.map((a) => a.name));
+          const toAdd = storedAssets.filter((a) => !existingNames.has(a.name));
+          if (toAdd.length === 0) return prev;
+          return {
+            ...prev,
+            assets: [...prev.assets, ...toAdd],
+          };
+        });
+      }
+    });
+  }, []);
+
   // Auto-generate slug from title
   const handleTitleChange = (val: string) => {
     const slug = val
@@ -105,6 +124,28 @@ Support for **bold**, *italics*, quotes, and tables:
       title: val,
       id: slug || prev.id,
     }));
+  };
+
+  // Reset draft to a blank state
+  const handleResetDraft = async () => {
+    if (window.confirm('Start a new blank draft? This will clear current editor text and uploaded pictures.')) {
+      await clearAllStoredAssets();
+      localStorage.removeItem('blog_cms_current_draft');
+      setDraft({
+        id: 'my-new-article',
+        title: '',
+        summary: '',
+        date: todayStr,
+        author: 'Arnold CD',
+        category: 'Philosophy',
+        thumbnail: 'images/banner-philosophy.svg',
+        thumbnailPreviewUrl: '',
+        language: 'en',
+        featured: false,
+        assets: [],
+        content: `# Introduction\n\nWrite your Markdown article here. Changes update live in the right preview panel.\n\n## Section 1: The Core Idea\n\nSupport for **bold**, *italics*, quotes, and tables:\n\n| Key | Description |\n| --- | --- |\n| Fast | Serverless Git Headless CMS |\n| Portable | Standard Markdown + YAML |\n\n> "Simplicity is prerequisite for reliability." — Edsger W. Dijkstra\n`,
+      });
+    }
   };
 
   // Live stats
@@ -129,7 +170,28 @@ Support for **bold**, *italics*, quotes, and tables:
   // Live HTML preview
   const previewHtml = useMemo(() => {
     try {
-      return marked.parse(livePreviewMarkdown, { gfm: true, breaks: true }) as string;
+      const renderer = new marked.Renderer();
+      const defaultImage = renderer.image.bind(renderer);
+
+      renderer.image = (token) => {
+        const { href } = token;
+        if (href.startsWith('images/') || href.startsWith('./images/')) {
+          return `
+            <div class="cms-missing-asset-notice">
+              <span style="font-size: 1.25rem;">🖼️</span>
+              <div style="flex: 1; min-width: 0;">
+                <div style="color: #fff; font-weight: 600; margin-bottom: 0.2rem;">Asset Reference: <code>${href}</code></div>
+                <p style="margin: 0; color: var(--text-muted); font-size: 0.8rem;">
+                  Picture not loaded in current session. Upload the PDF or image above to render it.
+                </p>
+              </div>
+            </div>
+          `;
+        }
+        return defaultImage.call(renderer, token);
+      };
+
+      return marked.parse(livePreviewMarkdown, { gfm: true, breaks: true, renderer }) as string;
     } catch {
       return '<p>Error rendering preview</p>';
     }
@@ -189,6 +251,7 @@ Support for **bold**, *italics*, quotes, and tables:
             previewUrl: firstPage.previewUrl,
             cmsPath: `images/${firstPage.name}`,
           };
+          await saveStoredAssets([asset]);
           setDraft((prev) => ({
             ...prev,
             thumbnail: `images/${firstPage.name}`,
@@ -216,6 +279,7 @@ Support for **bold**, *italics*, quotes, and tables:
       cmsPath: `images/${cleanName}`,
     };
 
+    await saveStoredAssets([asset]);
     setDraft((prev) => ({
       ...prev,
       thumbnail: `images/${cleanName}`,
@@ -269,6 +333,7 @@ Support for **bold**, *italics*, quotes, and tables:
         }
       }
 
+      await saveStoredAssets(newAssets);
       setDraft((prev) => ({
         ...prev,
         assets: [...prev.assets, ...newAssets],
@@ -288,6 +353,7 @@ Support for **bold**, *italics*, quotes, and tables:
       assets: prev.assets.filter((a) => a.name !== name),
       thumbnailPreviewUrl: prev.thumbnail === `images/${name}` ? '' : prev.thumbnailPreviewUrl,
     }));
+    removeStoredAsset(name);
   };
 
   // Download complete .zip package
@@ -407,6 +473,17 @@ Support for **bold**, *italics*, quotes, and tables:
           >
             <Send size={15} />
             <span>Publish to Git</span>
+          </button>
+
+          <button
+            onClick={handleResetDraft}
+            className="btn-secondary"
+            title="Start a new blank draft"
+            id="btn-reset-draft"
+            style={{ color: "var(--text-muted)" }}
+          >
+            <RotateCcw size={15} />
+            <span>New Draft</span>
           </button>
 
           <button

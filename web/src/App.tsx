@@ -79,20 +79,30 @@ export function App() {
               Retry Connection
             </button>
           </div>
-        ) : activeTab === 'editor' ? (
-          <CmsEditor onPreviewInFeed={handlePreviewInFeed} />
-        ) : selectedPost ? (
-          <ArticleView
-            post={selectedPost}
-            onBack={handleBackToFeed}
-            onEditDraft={handleEditDraft}
-          />
         ) : (
-          <PostList
-            posts={posts}
-            onSelectPost={handleSelectPost}
-            onOpenEditor={() => setActiveTab('editor')}
-          />
+          <>
+            {/* Always keep CmsEditor mounted so in-memory state, uploaded assets, and cursor are preserved */}
+            <div style={{ display: activeTab === 'editor' && !selectedPost ? 'block' : 'none' }}>
+              <CmsEditor onPreviewInFeed={handlePreviewInFeed} />
+            </div>
+
+            {selectedPost ? (
+              <ArticleView
+                post={selectedPost}
+                onBack={handleBackToFeed}
+                onEditDraft={handleEditDraft}
+              />
+            ) : activeTab === 'feed' ? (
+              <PostList
+                posts={posts}
+                onSelectPost={handleSelectPost}
+                onOpenEditor={() => {
+                  setSelectedPost(null);
+                  setActiveTab('editor');
+                }}
+              />
+            ) : null}
+          </>
         )}
       </main>
 
