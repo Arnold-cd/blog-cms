@@ -69,13 +69,14 @@ export const ArticleView: React.FC<ArticleViewProps> = ({ post, onBack, onEditDr
 
   const formatDate = (dateStr: string) => {
     try {
-      return new Date(dateStr).toLocaleDateString('en-US', {
+      const formatted = new Date(dateStr).toLocaleDateString('en-US', {
         month: 'long',
         day: 'numeric',
         year: 'numeric',
       });
+      return isTranslated ? translateToMeeteiMayekWithVocab(formatted) : formatted;
     } catch {
-      return dateStr;
+      return isTranslated ? translateToMeeteiMayekWithVocab(dateStr) : dateStr;
     }
   };
 
@@ -180,7 +181,9 @@ export const ArticleView: React.FC<ArticleViewProps> = ({ post, onBack, onEditDr
           <span>&bull;</span>
           <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
             <Clock size={13} />
-            {post.reading_time_min} min read
+            {isTranslated
+              ? `${translateToMeeteiMayekWithVocab(String(post.reading_time_min))} ꯃꯤꯅꯤꯠ ꯄꯥꯕ`
+              : `${post.reading_time_min} min read`}
           </span>
           <span>&bull;</span>
           <span style={{ fontFamily: isTranslated ? 'var(--font-meetei)' : undefined }}>
@@ -193,7 +196,7 @@ export const ArticleView: React.FC<ArticleViewProps> = ({ post, onBack, onEditDr
         <div className="reader-author-strip">
           <div className="reader-author-info">
             <div className="author-avatar-fallback">
-              {post.author.charAt(0)}
+              {effectiveAuthor ? effectiveAuthor.trim().charAt(0) : 'A'}
             </div>
             <div>
               <div className="author-name">{effectiveAuthor}</div>

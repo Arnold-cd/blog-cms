@@ -158,6 +158,7 @@ const BENGALI_TO_MEETEI_MAP: Record<string, string> = {
  * Extended English-to-Meetei vocabulary dictionary
  */
 const EXTENDED_VOCABULARY: Record<string, string> = {
+  // Common Structural & Editorial Terms
   introduction: 'ꯑꯍꯥꯟꯕ ꯋꯥꯔꯣꯜ',
   section: 'ꯁꯔꯨꯛ',
   conclusion: 'ꯋꯥꯔꯣꯢꯁꯤꯟ',
@@ -190,8 +191,19 @@ const EXTENDED_VOCABULARY: Record<string, string> = {
   read: 'ꯄꯥꯕ',
   reading: 'ꯄꯥꯕ',
   write: 'ꯏꯕ',
+  writing: 'ꯏꯕ',
   minute: 'ꯃꯤꯅꯤꯠ',
   minutes: 'ꯃꯤꯅꯤꯠ',
+  hour: 'ꯄꯨꯡ',
+  hours: 'ꯄꯨꯡꯁꯤꯡ',
+  day: 'ꯅꯨꯃꯤꯠ',
+  days: 'ꯅꯨꯃꯤꯠꯁꯤꯡ',
+  year: 'ꯆꯍꯤ',
+  years: 'ꯆꯍꯤꯁꯤꯡ',
+  moment: 'ꯃꯤꯀꯨꯞ',
+  moments: 'ꯃꯤꯀꯨꯞꯁꯤꯡ',
+  second: 'ꯁꯦꯀꯦꯟꯗ',
+  seconds: 'ꯁꯦꯀꯦꯟꯗꯁꯤꯡ',
   simplicity: 'ꯂꯥꯏꯕ',
   reliability: 'ꯊꯥꯖꯕ ꯌꯥꯕ',
   prerequisite: 'ꯃꯔꯨꯑꯣꯏꯕ ꯇꯥꯡꯀꯛ',
@@ -212,19 +224,139 @@ const EXTENDED_VOCABULARY: Record<string, string> = {
   support: 'ꯁꯧꯒꯠꯄ',
   featured: 'ꯃꯔꯨꯑꯣꯏꯕ',
   general: 'ꯃꯌꯥꯝ',
+  duration: 'ꯃꯇꯝꯒꯤ ꯃꯇꯝ',
+  subjective: 'ꯁꯕꯖꯦꯛꯇꯤꯚ',
+  objective: 'ꯑꯣꯕꯖꯦꯛꯇꯤꯚ',
+  chronological: 'ꯃꯇꯝꯒꯤ ꯃꯇꯨꯡ ꯏꯟꯅ',
+  physics: 'ꯐꯤꯖꯤꯛꯁ',
+  versus: 'ꯃꯥꯌꯣꯛꯇ',
+  vs: 'ꯃꯥꯌꯣꯛꯇ',
+  phenomenological: 'ꯐꯦꯅꯣꯃꯦꯅꯣꯂꯣꯖꯤꯀꯦꯜ',
+  consciousness: 'ꯋꯥꯈꯜ',
+  constructs: 'ꯁꯦꯝꯃꯤ',
+  construct: 'ꯁꯦꯝꯕ',
+  illusion: 'ꯑꯔꯥꯟꯕ ꯃꯤꯠꯌꯦꯡ',
+  temporal: 'ꯃꯇꯝꯒꯤ',
+  flow: 'ꯏꯆꯦꯜ',
+  why: 'ꯀꯔꯤꯒꯤ',
+  stretch: 'ꯂꯤꯡꯕ',
+  fly: 'ꯄꯥꯏꯕ',
+  flies: 'ꯄꯥꯏ',
+  often: 'ꯀꯌꯥꯔꯛ',
+  measured: 'ꯆꯥꯡ ꯌꯦꯡꯕ',
+  cold: 'ꯑꯔꯤꯡꯕ',
+  mechanical: 'ꯃꯦꯀꯥꯅꯤꯀꯦꯜ',
+  indifference: 'ꯃꯤꯠꯌꯦꯡ ꯂꯩꯇꯕ',
+  quartz: 'ꯀ꯭ꯋꯥꯔꯠꯖ',
+  oscillator: 'ꯑꯣꯁꯤꯂꯦꯇꯔ',
+  vibrating: 'ꯋꯥꯏꯕ꯭ꯔꯦꯇꯤꯡ',
+  times: 'ꯃꯇꯝꯁꯤꯡ',
+  per: 'ꯈꯨꯗꯤꯡꯒꯤ',
+  cesium: 'ꯁꯤꯖꯤꯌꯝ',
+  atomic: 'ꯑꯦꯇꯣꯃꯤꯛ',
+  clock: 'ꯄꯨꯡ',
+  registering: 'ꯔꯦꯖꯤꯁꯇꯔ ꯇꯧꯕ',
+  transition: 'ꯍꯣꯡꯂꯛꯄ',
+  frequencies: 'ꯐ꯭ꯔꯤꯛꯋꯦꯟꯁꯤꯁꯤꯡ',
+  energy: 'ꯁꯛꯇꯤ',
+  states: 'ꯐꯤꯚꯝꯁꯤꯡ',
+  inhabited: 'ꯂꯩꯔꯛꯈꯤ',
+  live: 'ꯍꯤꯡꯕ',
+  inside: 'ꯃꯅꯨꯡꯗ',
+  elastic: 'ꯏꯂꯥꯁꯇꯤꯛ',
+  psychological: 'ꯋꯥꯈꯜꯂꯣꯟꯒꯤ',
+  expands: 'ꯆꯥꯎꯈꯠꯄ',
+  during: 'ꯃꯇꯝꯗ',
+  intense: 'ꯀꯟꯅ',
+  focus: 'ꯃꯤꯠꯌꯦꯡ',
+  fear: 'ꯀꯤꯕ',
+  evaporates: 'ꯃꯥꯡꯈꯤꯕ',
+  periods: 'ꯃꯇꯝꯁꯤꯡ',
+  routine: 'ꯅꯨꯃꯤꯠ ꯈꯨꯗꯤꯡꯒꯤ',
+  arnold: 'ꯑꯥꯔꯅꯣꯜꯗ',
+  cd: 'ꯁꯤꯗꯤ',
+  st: 'ꯁꯦꯟꯠ',
+  augustine: 'ꯑꯣꯒꯁ꯭ꯇꯤꯟ',
+  confessions: 'ꯋꯥꯁꯛ',
+  chronos: 'ꯈ꯭ꯔꯣꯅꯣꯁ',
+  kairos: 'ꯀꯥꯏꯔꯣꯁ',
+  greeks: 'ꯒ꯭ꯔꯤꯛꯁꯤꯡ',
+  greek: 'ꯒ꯭ꯔꯤꯛ',
+  distinct: 'ꯇꯣꯉꯥꯟꯕ',
+  dimensions: 'ꯃꯥꯏꯀꯩꯁꯤꯡ',
+  dimension: 'ꯃꯥꯏꯀꯩ',
+  memory: 'ꯅꯤꯡꯁꯤꯡꯕ',
+  emotional: 'ꯄꯨꯛꯅꯤꯡꯒꯤ',
+  experience: 'ꯑꯦꯛꯁꯄꯔꯤꯌꯦꯟꯁ',
+  experiences: 'ꯑꯦꯛꯁꯄꯔꯤꯌꯦꯟꯁꯁꯤꯡ',
+  between: 'ꯃꯔꯛꯇ',
+  from: 'ꯗꯒꯤ',
+  to: 'ꯗ',
+  in: 'ꯗ',
+  of: 'ꯒꯤ',
+  for: 'ꯒꯤꯗꯃꯛ',
+  with: 'ꯒ ꯂꯣꯏꯅꯅ',
   the: 'ꯑꯗꯨ',
   and: 'ꯑꯃꯁꯨꯡ',
   is: 'ꯑꯣꯏ',
   are: 'ꯑꯣꯏꯔꯤ',
-  of: 'ꯒꯤ',
-  in: 'ꯗ',
-  for: 'ꯒꯤꯗꯃꯛ',
-  with: 'ꯒ ꯂꯣꯏꯅꯅ',
+  we: 'ꯑꯩꯈꯣꯏ',
+  you: 'ꯅꯍꯥꯛ',
+  they: 'ꯃꯈꯣꯏ',
+  he: 'ꯃꯍꯥꯛ',
+  she: 'ꯃꯍꯥꯛ',
+  it: 'ꯃꯁꯤ',
+  this: 'ꯃꯁꯤ',
+  that: 'ꯃꯗꯨ',
+  what: 'ꯀꯔꯤ',
+  when: 'ꯀꯗꯥꯏꯗ',
+  where: 'ꯀꯗꯥꯏꯗ',
+  who: 'ꯀꯅꯥ',
+  how: 'ꯀꯔꯝꯅ',
+  all: 'ꯄꯨꯝꯅꯃꯛ',
+  no: 'ꯅꯠꯇꯦ',
+  not: 'ꯅꯠꯇꯦ',
+  yes: 'ꯍꯣꯏ',
+  if: 'ꯀꯔꯤꯒꯨꯝꯕ',
+  then: 'ꯑꯗꯨꯗꯤ',
+  me: 'ꯑꯩꯉꯣꯟꯗ',
+  my: 'ꯑꯩꯒꯤ',
+  him: 'ꯃꯍꯥꯛꯄꯨ',
+  his: 'ꯃꯍꯥꯛꯀꯤ',
+  her: 'ꯃꯍꯥꯛꯀꯤ',
+  one: 'ꯑꯃ',
+  two: 'ꯑꯅꯤ',
+  three: 'ꯑꯍꯨꯝ',
+  four: 'ꯃꯔꯤ',
+  five: 'ꯃꯉꯥ',
+  six: 'ꯇꯔꯨꯛ',
+  seven: 'ꯇꯔꯦꯠ',
+  eight: 'ꯅꯤꯄꯥꯟ',
+  nine: 'ꯃꯄꯥꯟ',
+  ten: 'ꯇꯔꯥ',
+  // Months
+  january: 'ꯖꯥꯅꯨꯋꯥꯔꯤ',
+  february: 'ꯐꯦꯕ꯭ꯔꯨꯋꯥꯔꯤ',
+  march: 'ꯃꯥꯔꯆ',
+  april: 'ꯑꯦꯞꯔꯤꯜ',
+  may: 'ꯃꯦ',
+  june: 'ꯖꯨꯟ',
+  july: 'ꯖꯨꯂꯥꯏ',
+  august: 'ꯑꯣꯒꯁ꯭ꯠ',
+  september: 'ꯁꯦꯞꯇꯦꯝꯕꯔ',
+  october: 'ꯑꯣꯛꯇꯣꯕꯔ',
+  november: 'ꯅꯣꯚꯦꯝꯕꯔ',
+  december: 'ꯗꯤꯁꯦꯝꯕꯔ',
+  // Days of week
+  sunday: 'ꯅꯣꯡꯃꯥꯏꯖꯤꯡ',
+  monday: 'ꯅꯤꯡꯊꯧꯀꯥꯕ',
+  tuesday: 'ꯂꯩꯄꯥꯛꯄꯣꯛꯄ',
+  wednesday: 'ꯌꯨꯝꯁꯀꯩꯁꯥ',
+  thursday: 'ꯁꯒꯣꯜꯁꯦꯟ',
+  friday: 'ꯏꯔꯥꯏ',
+  saturday: 'ꯊꯥꯡꯖ',
 };
 
-/**
- * Phonetic transliteration dictionary for Manipuri names & terms
- */
 const COMMON_PHONETIC_WORDS: Record<string, string> = {
   kangleipak: 'ꯀꯪꯂꯩꯄꯥꯛ',
   manipur: 'ꯃꯅꯤꯄꯨꯔ',
@@ -233,12 +365,6 @@ const COMMON_PHONETIC_WORDS: Record<string, string> = {
   mayek: 'ꯃꯌꯦꯛ',
   puya: 'ꯄꯨꯌꯥ',
   khunung: 'ꯈꯨꯅꯨꯡ',
-  iyek: 'ꯏꯌꯦꯛ',
-  ipee: 'ꯏꯄꯤ',
-  lonsum: 'ꯂꯣꯟꯁꯨꯝ',
-  cheitap: 'ꯆꯩꯇꯥꯞ',
-  wakhal: 'ꯋꯥꯈꯜ',
-  wakhalon: 'ꯋꯥꯈꯜꯂꯣꯟ',
   khamba: 'ꯈꯝꯕ',
   thoibi: 'ꯊꯣꯢꯕꯤ',
   nongda: 'ꯅꯣꯡꯗ',
@@ -253,117 +379,184 @@ const COMMON_PHONETIC_WORDS: Record<string, string> = {
   thagatchari: 'ꯊꯥꯒꯠꯆꯔꯤ',
 };
 
-/**
- * Translate / Transliterate text from Latin or Bengali into Meetei Mayek Unicode
- */
+const GREEK_TRANSLITERATION: Record<string, string> = {
+  'χρόνος': 'ꯈ꯭ꯔꯣꯅꯣꯁ',
+  'καιρός': 'ꯀꯥꯏꯔꯣꯁ',
+  'α': 'ꯑ', 'β': 'ꯕ', 'γ': 'ꯒ', 'δ': 'ꯗ', 'ε': 'ꯑꯦ',
+  'ζ': 'ꯖ', 'η': 'ꯑꯦ', 'θ': 'ꯊ', 'ι': 'ꯏ', 'κ': 'ꯀ',
+  'λ': 'ꯂ', 'μ': 'ꯃ', 'ν': 'ꯅ', 'ξ': 'ꯛꯁ', 'ο': 'ꯑꯣ',
+  'π': 'ꯄ', 'ρ': 'ꯔ', 'σ': 'ꯁ', 'ς': 'ꯁ', 'τ': 'ꯇ',
+  'υ': 'ꯎ', 'φ': 'ꯐ', 'χ': 'ꯈ', 'ψ': 'ꯄꯁ', 'ω': 'ꯑꯣ',
+};
+
+const MEETEI_DIGITS: [string, string][] = [
+  ['0', '꯰'], ['1', '꯱'], ['2', '꯲'], ['3', '꯳'], ['4', '꯴'],
+  ['5', '꯵'], ['6', '꯶'], ['7', '꯷'], ['8', '꯸'], ['9', '꯹'],
+];
+
+const LATIN_LETTER_FALLBACK: Record<string, string> = {
+  a: 'ꯑ', b: 'ꯕ', c: 'ꯀ', d: 'ꯗ', e: 'ꯑꯦ', f: 'ꯐ',
+  g: 'ꯒ', h: 'ꯍ', i: 'ꯏ', j: 'ꯖ', k: 'ꯀ', l: 'ꯂ',
+  m: 'ꯃ', n: 'ꯅ', o: 'ꯑꯣ', p: 'ꯄ', q: 'ꯀ', r: 'ꯔ',
+  s: 'ꯁ', t: 'ꯇ', u: 'ꯎ', v: 'ꯋ', w: 'ꯋ', x: 'ꯛꯁ',
+  y: 'ꯌ', z: 'ꯖ',
+};
+
+function transliterateLatinWord(token: string): string {
+  let word = token.toLowerCase();
+
+  const clusters: [string, string][] = [
+    ['sch', 'ꯁ꯭ꯀ'],
+    ['tch', 'ꯆ'],
+    ['tion', 'ꯁꯟ'],
+    ['sion', 'ꯁꯟ'],
+    ['ight', 'ꯑꯥꯏꯠ'],
+    ['ous', 'ꯑꯁ'],
+    ['ing', 'ꯤꯡ'],
+    ['all', 'ꯑꯣꯜ'],
+    ['ell', 'ꯑꯦꯜ'],
+    ['ill', 'ꯏꯜ'],
+    ['ull', 'ꯎꯜ'],
+    ['wh', 'ꯋ'],
+    ['ck', 'ꯛ'],
+    ['qu', 'ꯀ꯭ꯋ'],
+    ['ph', 'ꯐ'],
+    ['ch', 'ꯆ'],
+    ['sh', 'ꯁ'],
+    ['th', 'ꯊ'],
+    ['dh', 'ꯙ'],
+    ['gh', 'ꯘ'],
+    ['jh', 'ꯓ'],
+    ['bh', 'ꯚ'],
+    ['kh', 'ꯈ'],
+    ['ng', 'ꯉ'],
+  ];
+
+  for (const [pat, rep] of clusters) {
+    word = word.split(pat).join(rep);
+  }
+
+  // Soft c before e, i, y -> Sam (ꯁ); hard c elsewhere -> Kok (ꯀ)
+  word = word.replace(/c([eiy])/g, 'ꯁ$1');
+  word = word.split('c').join('ꯀ');
+
+  const consonants: [string, string][] = [
+    ['k', 'ꯀ'], ['s', 'ꯁ'], ['l', 'ꯂ'], ['m', 'ꯃ'],
+    ['p', 'ꯄ'], ['n', 'ꯅ'], ['t', 'ꯇ'], ['w', 'ꯋ'],
+    ['y', 'ꯌ'], ['h', 'ꯍ'], ['g', 'ꯒ'], ['r', 'ꯔ'],
+    ['b', 'ꯕ'], ['j', 'ꯖ'], ['d', 'ꯗ'], ['f', 'ꯐ'],
+    ['v', 'ꯋ'], ['z', 'ꯖ'], ['x', 'ꯛꯁ'], ['q', 'ꯀ'],
+  ];
+
+  for (const [c, rep] of consonants) {
+    word = word.split(c).join(rep);
+  }
+
+  // Initial independent vowels
+  const initialVowels: [RegExp, string][] = [
+    [/^aa/, 'ꯑꯥ'], [/^ee/, 'ꯏ'], [/^ei/, 'ꯑꯩ'], [/^ai/, 'ꯑꯩ'],
+    [/^ou/, 'ꯑꯧ'], [/^au/, 'ꯑꯧ'], [/^oo/, 'ꯎ'],
+    [/^a/, 'ꯑ'], [/^i/, 'ꯏ'], [/^u/, 'ꯎ'], [/^e/, 'ꯑꯦ'], [/^o/, 'ꯑꯣ'],
+  ];
+
+  for (const [re, rep] of initialVowels) {
+    word = word.replace(re, rep);
+  }
+
+  // Dependent vowel signs (Cheitap)
+  const dependentVowels: [string, string][] = [
+    ['aa', 'ꯥ'], ['ee', 'ꯤ'], ['ei', 'ꯩ'], ['ai', 'ꯩ'],
+    ['ou', 'ꯧ'], ['au', 'ꯧ'], ['oo', 'ꯨ'],
+    ['a', 'ꯥ'], ['i', 'ꯤ'], ['u', 'ꯨ'], ['e', 'ꯦ'], ['o', 'ꯣ'],
+  ];
+
+  for (const [v, rep] of dependentVowels) {
+    word = word.split(v).join(rep);
+  }
+
+  // Fallback pass: eliminate 100% of ANY remaining English alphabet letter
+  let safeWord = '';
+  for (const char of word) {
+    safeWord += LATIN_LETTER_FALLBACK[char] || char;
+  }
+
+  return safeWord;
+}
+
+function cleanupOrphanedVowels(text: string): string {
+  let clean = text;
+  const pattern = /(^|[^ꯀ-ꯚꯎꯏꯑ])([ꯣ-ꯪ꯬])/g;
+  while (pattern.test(clean)) {
+    clean = clean.replace(pattern, '$1ꯑ$2');
+  }
+
+  clean = clean.split('ꯑꯤ').join('ꯏ');
+  clean = clean.split('ꯑꯨ').join('ꯎ');
+  return clean;
+}
+
 export function translateToMeeteiMayek(input: string): string {
   if (!input || !input.trim()) return '';
 
   let text = input;
 
-  // 1. Check if input contains Bengali characters
-  const containsBengali = /[\u0980-\u09FF]/.test(text);
+  const containsBengali = /[ঀ-৿]/.test(text);
   if (containsBengali) {
     let result = '';
     for (const char of text) {
       result += BENGALI_TO_MEETEI_MAP[char] || char;
     }
-    return result;
+    return cleanupOrphanedVowels(result);
   }
 
-  // 2. Latin word-level transliteration for common Manipuri vocabulary
   for (const [latin, meetei] of Object.entries(COMMON_PHONETIC_WORDS)) {
-    const regex = new RegExp(`\\b${latin}\\b`, 'gi');
+    const regex = new RegExp(`\b${latin}\b`, 'gi');
     text = text.replace(regex, meetei);
   }
 
-  // 3. Phonetic mapping
-  const PHONETIC_CONSONANTS: [string, string][] = [
-    ['kh', 'ꯈ'], ['gh', 'ꯘ'], ['ch', 'ꯆ'], ['jh', 'ꯓ'],
-    ['th', 'ꯊ'], ['dh', 'ꯙ'], ['ph', 'ꯐ'], ['bh', 'ꯚ'],
-    ['ng', 'ꯉ'], ['sh', 'ꯁ'],
-    ['k', 'ꯀ'], ['s', 'ꯁ'], ['l', 'ꯂ'], ['m', 'ꯃ'],
-    ['p', 'ꯄ'], ['n', 'ꯅ'], ['t', 'ꯇ'], ['w', 'ꯋ'],
-    ['y', 'ꯌ'], ['h', 'ꯍ'], ['g', 'ꯒ'], ['r', 'ꯔ'],
-    ['b', 'ꯕ'], ['j', 'ꯖ'], ['d', 'ꯗ'],
-  ];
-
-  // Digit transliteration U+ABF0 - U+ABF9
-  const DIGITS: [string, string][] = [
-    ['0', '꯰'], ['1', '꯱'], ['2', '꯲'], ['3', '꯳'], ['4', '꯴'],
-    ['5', '꯵'], ['6', '꯶'], ['7', '꯷'], ['8', '꯸'], ['9', '꯹'],
-  ];
-
-  let converted = '';
-  const tokens = text.split(/(\s+|[.,!?;:()[\]{}'"])/);
-
-  for (const token of tokens) {
-    if (/^[\s.,!?;:()[\]{}'"]+$/.test(token) || /[\uABC0-\uABFF\uAAE0-\uAAFF]/.test(token)) {
-      // Convert standard punctuation to Meetei Mayek Unicode punctuation
-      let p = token;
-      p = p.replace(/\?/g, '꫱'); // U+AAF1 Ahang Khudam (Question mark)
-      p = p.replace(/,/g, '꫰');  // U+AAF0 Cheikhan (Single danda)
-      p = p.replace(/\./g, '꯫');  // U+ABEB Cheikhei (Full stop)
-      converted += p;
-      continue;
-    }
-
-    let word = token.toLowerCase();
-
-    // Digits
-    for (const [d, m] of DIGITS) {
-      word = word.split(d).join(m);
-    }
-
-    // Phonetic replacements
-    for (const [c, m] of PHONETIC_CONSONANTS) {
-      word = word.split(c).join(m);
-    }
-
-    // Vowel markers
-    word = word.replace(/aa/g, 'ꯥ');
-    word = word.replace(/ee/g, 'ꯤ');
-    word = word.replace(/ei/g, 'ꯩ');
-    word = word.replace(/ou/g, 'ꯧ');
-    word = word.replace(/oo/g, 'ꯨ');
-    word = word.replace(/a/g, 'ꯥ');
-    word = word.replace(/i/g, 'ꯤ');
-    word = word.replace(/u/g, 'ꯨ');
-    word = word.replace(/e/g, 'ꯦ');
-    word = word.replace(/o/g, 'ꯣ');
-
-    converted += word;
+  for (const [grk, meetei] of Object.entries(GREEK_TRANSLITERATION)) {
+    text = text.split(grk).join(meetei);
   }
 
-  return converted;
+  const tokens = text.split(/([a-zA-Z]+|[0-9]+)/);
+  const convertedParts: string[] = [];
+
+  for (const token of tokens) {
+    if (!token) continue;
+
+    if (/^[a-zA-Z]+$/.test(token)) {
+      convertedParts.push(transliterateLatinWord(token));
+    } else if (/^[0-9]+$/.test(token)) {
+      let d = token;
+      for (const [digit, meeteiDigit] of MEETEI_DIGITS) {
+        d = d.split(digit).join(meeteiDigit);
+      }
+      convertedParts.push(d);
+    } else {
+      let p = token;
+      p = p.replace(/\?/g, '꫱');
+      p = p.replace(/,/g, '꫰');
+      p = p.replace(/\./g, '꯫');
+      convertedParts.push(p);
+    }
+  }
+
+  return cleanupOrphanedVowels(convertedParts.join(''));
 }
 
-/**
- * Translates text applying extended vocabulary and punctuation conversion
- */
 export function translateToMeeteiMayekWithVocab(input: string): string {
   if (!input) return '';
 
   let text = input;
 
-  // Apply extended vocabulary replacements
   for (const [en, mni] of Object.entries(EXTENDED_VOCABULARY)) {
-    const regex = new RegExp(`\\b${en}\\b`, 'gi');
+    const regex = new RegExp(`\b${en}\b`, 'gi');
     text = text.replace(regex, mni);
   }
 
-  // Core transliteration with Unicode punctuation (꫱, ꫰, ꯫)
   return translateToMeeteiMayek(text);
 }
 
-/**
- * Translates a complete Markdown document into Meetei Mayek while preserving:
- * - Code blocks (``` ... ``` and inline `code`)
- * - Images (![alt](url) -> ![translated_alt](url))
- * - Links ([text](url) -> [translated_text](url))
- * - HTML tags (<...>)
- * - Table pipes and markdown formatting marks (#, >, *, -, etc.)
- */
 export function translateMarkdownToMeeteiMayek(markdown: string): string {
   if (!markdown) return '';
 
@@ -437,9 +630,6 @@ export function translateMarkdownToMeeteiMayek(markdown: string): string {
   return translatedLines.join('\n');
 }
 
-/**
- * Translates segments of text preserving markdown markup
- */
 function translateTextSegments(text: string): string {
   const tokenRegex = /(!?\[.*?\]\(.*?\)|`[^`]+`|<[^>]+>)/g;
   const parts = text.split(tokenRegex);
