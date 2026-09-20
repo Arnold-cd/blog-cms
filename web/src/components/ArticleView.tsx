@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import type { BlogPost } from '../types';
 import { fetchArticleMarkdown } from '../services/cmsService';
 import { translateMarkdownToMeeteiMayek, translateToMeeteiMayekWithVocab } from '../services/meeteiMayekService';
-import { ArrowLeft, Clock, Share2, Check, PenLine, Sparkles, Languages, Trash2, AlertTriangle, Key, Loader2 } from 'lucide-react';
+import { ArrowLeft, Clock, Share2, Check, PenLine, Sparkles, Languages, Trash2, AlertTriangle, Key, Loader2, Download } from 'lucide-react';
 import { marked } from 'marked';
 
 interface ArticleViewProps {
@@ -180,7 +180,28 @@ export const ArticleView: React.FC<ArticleViewProps> = ({ post, onBack, onEditDr
           </span>
         </div>
 
-        <div className="studio-view-toggle">
+        <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
+          <a
+            href="fonts/NotoSansMeeteiMayek-Regular.ttf"
+            download="NotoSansMeeteiMayek-Regular.ttf"
+            className="btn-ghost"
+            style={{
+              textDecoration: "none",
+              fontSize: "0.75rem",
+              padding: "0.25rem 0.6rem",
+              color: "var(--text-muted)",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "0.35rem",
+            }}
+            title="Download Meetei Mayek TrueType Font (.ttf) to install in Word, Photoshop, Figma, or Android"
+            id="link-download-ttf"
+          >
+            <Download size={13} />
+            <span>Download TTF</span>
+          </a>
+
+          <div className="studio-view-toggle">
           <button
             type="button"
             className={`view-toggle-btn ${!isTranslated ? 'active' : ''}`}
@@ -198,6 +219,7 @@ export const ArticleView: React.FC<ArticleViewProps> = ({ post, onBack, onEditDr
             <span style={{ fontFamily: 'var(--font-meetei)', fontSize: '0.95rem' }}>ꯃꯤꯇꯩ ꯃꯌꯦꯛ</span>
             <span>(Meetei Mayek)</span>
           </button>
+        </div>
         </div>
       </div>
 

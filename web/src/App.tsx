@@ -6,7 +6,7 @@ import { Navbar } from './components/Navbar';
 import { PostList } from './components/PostList';
 import { ArticleView } from './components/ArticleView';
 import { CmsEditor } from './components/CmsEditor';
-import { RefreshCw, BookOpen } from 'lucide-react';
+import { RefreshCw, BookOpen, Download } from 'lucide-react';
 
 export function App() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
@@ -153,7 +153,16 @@ export function App() {
             <BookOpen size={16} color="var(--accent-cyan)" />
             <span><strong>Blog CMS</strong> &bull; Serverless Git Headless Architecture</span>
           </div>
-          <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+            <a
+              href="fonts/NotoSansMeeteiMayek-Regular.ttf"
+              download="NotoSansMeeteiMayek-Regular.ttf"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', color: 'var(--text-muted)', textDecoration: 'none', fontSize: '0.78rem' }}
+              title="Download official Meetei Mayek TrueType Font (.ttf) for offline typing and translation"
+            >
+              <Download size={12} />
+              <span>Meetei Mayek Font (.ttf)</span>
+            </a>
             <span>Push markdown to <code>posts/</code> &bull; Auto-deployed via GitHub Actions</span>
           </div>
         </div>

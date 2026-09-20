@@ -9,7 +9,7 @@ import {
   EXTENSIONS_BLOCK,
   translateToMeeteiMayekWithVocab,
 } from '../services/meeteiMayekService';
-import { Languages, Copy, Check, Plus, ExternalLink, X } from 'lucide-react';
+import { Languages, Copy, Check, Plus, ExternalLink, X, Download } from 'lucide-react';
 
 interface MeeteiMayekToolProps {
   onInsertText: (text: string) => void;
@@ -110,9 +110,30 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
             </p>
           </div>
 
-          <button onClick={onClose} className="btn-ghost" style={{ padding: '0.35rem' }}>
-            <X size={18} />
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <a
+              href="fonts/Meetei-Mayek-Fonts.zip"
+              download="Meetei-Mayek-Fonts.zip"
+              className="btn-secondary"
+              style={{
+                textDecoration: 'none',
+                fontSize: '0.78rem',
+                padding: '0.35rem 0.75rem',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.35rem',
+              }}
+              title="Download Meetei Mayek TrueType Fonts (.ttf) Package with Regular, Bold, & Install Guide"
+              id="btn-download-ttf-suite"
+            >
+              <Download size={13} />
+              <span>Download TTF Fonts (.zip)</span>
+            </a>
+
+            <button onClick={onClose} className="btn-ghost" style={{ padding: '0.35rem' }}>
+              <X size={18} />
+            </button>
+          </div>
         </div>
 
         {/* Tab Switcher */}
