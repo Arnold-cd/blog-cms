@@ -477,20 +477,25 @@ button {
 
 .feed-search-input {
   width: 100%;
-  background: rgba(24, 24, 27, 0.6);
+  background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-full);
   padding: 0.45rem 0.9rem 0.45rem 2.25rem;
   font-size: 0.85rem;
   color: var(--text-primary);
+  box-shadow: var(--shadow-subtle);
   transition: all var(--transition-fast);
+}
+
+.feed-search-input::placeholder {
+  color: var(--text-muted);
 }
 
 .feed-search-input:focus {
   outline: none;
   border-color: var(--border-focus);
-  background: rgba(24, 24, 27, 0.9);
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.05);
+  background: var(--bg-surface);
+  box-shadow: 0 0 0 3px var(--border-subtle);
 }
 
 .feed-category-pills {
@@ -663,8 +668,9 @@ button {
   position: absolute;
   top: 0.75rem;
   right: 0.75rem;
-  background: rgba(9, 9, 11, 0.8);
+  background: var(--bg-glass);
   backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border: 1px solid var(--border-subtle);
   color: var(--text-secondary);
   font-size: 0.65rem;
