@@ -5,7 +5,6 @@ import "package:shimmer/shimmer.dart";
 import "../models/pdf_document.dart";
 import "../providers/app_providers.dart";
 import "../providers/library_providers.dart";
-import "../widgets/app_drawer.dart";
 import "pdf_viewer_screen.dart";
 
 class PdfLibraryScreen extends ConsumerStatefulWidget {
@@ -44,13 +43,6 @@ class _PdfLibraryScreenState extends ConsumerState<PdfLibraryScreen> {
     final downloadedMap = ref.watch(downloadedPdfsProvider);
 
     return Scaffold(
-      drawer: AppDrawer(
-        currentIndex: ref.watch(selectedNavIndexProvider),
-        onSelectIndex: (index) {
-          ref.read(selectedNavIndexProvider.notifier).state = index;
-          Navigator.of(context).pop();
-        },
-      ),
       body: SafeArea(
         child: RefreshIndicator(
           color: const Color(0xFFD97706),
@@ -70,66 +62,64 @@ class _PdfLibraryScreenState extends ConsumerState<PdfLibraryScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Builder(
-                            builder: (scaffoldContext) => Row(
-                              children: [
-                                IconButton(
-                                  tooltip: "Open Navigation Menu",
-                                  visualDensity: VisualDensity.compact,
-                                  padding: const EdgeInsets.only(right: 8),
-                                  constraints: const BoxConstraints(),
-                                  icon: const Icon(Icons.notes_rounded, size: 24),
-                                  onPressed: () => Scaffold.of(scaffoldContext).openDrawer(),
-                                ),
-                                Container(
-                                  width: 38,
-                                  height: 38,
-                                  decoration: BoxDecoration(
-                                    gradient: const LinearGradient(
-                                      colors: [Color(0xFFD97706), Color(0xFFB45309)],
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                    ),
-                                    borderRadius: BorderRadius.circular(10),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: const Color(0xFFD97706).withValues(alpha: 0.35),
-                                        blurRadius: 8,
-                                        offset: const Offset(0, 3),
-                                      ),
-                                    ],
+                          Row(
+                            children: [
+                              IconButton(
+                                tooltip: "Open Navigation Menu",
+                                visualDensity: VisualDensity.compact,
+                                padding: const EdgeInsets.only(right: 8),
+                                constraints: const BoxConstraints(),
+                                icon: const Icon(Icons.notes_rounded, size: 24),
+                                onPressed: () => ref.read(mainScaffoldKeyProvider).currentState?.openDrawer(),
+                              ),
+                              Container(
+                                width: 38,
+                                height: 38,
+                                decoration: BoxDecoration(
+                                  gradient: const LinearGradient(
+                                    colors: [Color(0xFFD97706), Color(0xFFB45309)],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
                                   ),
-                                  alignment: Alignment.center,
-                                  child: const Icon(
-                                    Icons.menu_book_rounded,
-                                    color: Colors.white,
-                                    size: 20,
-                                  ),
-                                ),
-                                const SizedBox(width: 12),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text(
-                                      "PDF Library",
-                                      style: TextStyle(
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.w800,
-                                        letterSpacing: -0.5,
-                                      ),
-                                    ),
-                                    Text(
-                                      "Manuscripts & E-Books",
-                                      style: TextStyle(
-                                        fontSize: 11,
-                                        color: isDark ? Colors.white54 : Colors.black45,
-                                        fontWeight: FontWeight.w500,
-                                      ),
+                                  borderRadius: BorderRadius.circular(10),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: const Color(0xFFD97706).withValues(alpha: 0.35),
+                                      blurRadius: 8,
+                                      offset: const Offset(0, 3),
                                     ),
                                   ],
                                 ),
-                              ],
-                            ),
+                                alignment: Alignment.center,
+                                child: const Icon(
+                                  Icons.menu_book_rounded,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    "PDF Library",
+                                    style: TextStyle(
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.w800,
+                                      letterSpacing: -0.5,
+                                    ),
+                                  ),
+                                  Text(
+                                    "Manuscripts & E-Books",
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      color: isDark ? Colors.white54 : Colors.black45,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
                           // Search toggle button
                           IconButton(

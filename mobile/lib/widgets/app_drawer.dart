@@ -1,5 +1,6 @@
 import "dart:math" as math;
 import "package:flutter/material.dart";
+import "package:flutter/services.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
 import "../providers/app_providers.dart";
 import "../providers/library_providers.dart";
@@ -21,7 +22,7 @@ class AppDrawer extends ConsumerWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final screenWidth = MediaQuery.of(context).size.width;
-    final drawerWidth = math.min(screenWidth * 0.82, 330.0);
+    final drawerWidth = math.min(screenWidth * 0.82, 335.0);
 
     final posts = ref.watch(postsProvider).valueOrNull ?? [];
     final libraryDocs = ref.watch(libraryProvider).valueOrNull ?? [];
@@ -30,26 +31,30 @@ class AppDrawer extends ConsumerWidget {
 
     return Drawer(
       width: drawerWidth,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.horizontal(right: Radius.circular(24)),
+      elevation: 0,
+      backgroundColor: isDark ? const Color(0xFF0F0F13) : const Color(0xFFFAFAFC),
+      shape: Border(
+        right: BorderSide(
+          color: isDark ? Colors.white.withOpacity(0.07) : Colors.black.withOpacity(0.06),
+          width: 0.5,
+        ),
       ),
-      backgroundColor: isDark ? const Color(0xFF141418) : Colors.white,
       child: Column(
         children: [
-          // Elegant Brand Header
+          // Elegant Masthead
           _buildHeader(context, isDark),
 
-          // Scrollable Navigation Items
+          // Scrollable Editorial Navigation
           Expanded(
             child: ListView(
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
               children: [
-                _buildSectionHeader("ARCHIVE & READING", isDark),
+                _buildSectionHeader("ARCHIVE & COLLECTION", isDark),
                 _buildDrawerItem(
                   icon: Icons.article_outlined,
                   activeIcon: Icons.article_rounded,
                   title: "Articles Feed",
-                  subtitle: "Puya, philosophy & culture",
+                  subtitle: "Puya, philosophy & cultural essays",
                   badge: "${posts.length}",
                   isSelected: currentIndex == 0,
                   isDark: isDark,
@@ -59,7 +64,7 @@ class AppDrawer extends ConsumerWidget {
                   icon: Icons.menu_book_outlined,
                   activeIcon: Icons.menu_book_rounded,
                   title: "PDF Library",
-                  subtitle: "E-books & original scripts",
+                  subtitle: "E-books & original archived manuscripts",
                   badge: "${libraryDocs.length}",
                   isSelected: currentIndex == 1,
                   isDark: isDark,
@@ -69,7 +74,7 @@ class AppDrawer extends ConsumerWidget {
                   icon: Icons.translate_rounded,
                   activeIcon: Icons.translate_rounded,
                   title: "Mayek Explorer",
-                  subtitle: "English ↔ Meetei Mayek",
+                  subtitle: "English ↔ Meetei Mayek converter",
                   badge: "ꯃꯌꯦꯛ",
                   isSelected: currentIndex == 2,
                   isDark: isDark,
@@ -86,98 +91,36 @@ class AppDrawer extends ConsumerWidget {
                   onTap: () => onSelectIndex(3),
                 ),
 
-                const SizedBox(height: 12),
-                _buildSectionHeader("PREFERENCES & DISPLAY", isDark),
+                const SizedBox(height: 14),
+                _buildSectionHeader("READING COMFORT", isDark),
 
-                // Quick Dark Mode Toggle Tile
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 6),
-                  child: Material(
-                    color: isDark ? Colors.white.withOpacity(0.03) : const Color(0xFFF8FAFC),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
-                      side: BorderSide(
-                        color: isDark ? Colors.white.withOpacity(0.06) : Colors.black.withOpacity(0.05),
-                      ),
-                    ),
-                    clipBehavior: Clip.antiAlias,
-                    child: ListTile(
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
-                      dense: true,
-                    leading: Container(
-                      width: 36,
-                      height: 36,
-                      decoration: BoxDecoration(
-                        color: isDark ? const Color(0xFF27272A) : const Color(0xFFE2E8F0),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Icon(
-                        isDark ? Icons.dark_mode_rounded : Icons.light_mode_rounded,
-                        size: 18,
-                        color: isDark ? const Color(0xFFF59E0B) : const Color(0xFF0F172A),
-                      ),
-                    ),
-                    title: Text(
-                      "Appearance",
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: isDark ? Colors.white : const Color(0xFF0F172A),
-                      ),
-                    ),
-                    subtitle: Text(
-                      isDark ? "Dark Theme" : "Light Theme",
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: isDark ? Colors.white54 : Colors.black54,
-                      ),
-                    ),
-                    trailing: Transform.scale(
-                      scale: 0.8,
-                      child: Switch(
-                        value: isDark,
-                        activeColor: const Color(0xFF0284C7),
-                        onChanged: (val) {
-                          ref.read(themeModeProvider.notifier).setThemeMode(val);
-                        },
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+                // Appearance & Theme Mode Tile
+                _buildThemeTile(ref, isDark),
+                const SizedBox(height: 10),
 
-                // Reading Paper Tone Quick Indicator / Settings
+                // Paper Tone Quick Swatch Selector
+                _buildPaperToneBar(ref, currentPaperTone, isDark),
+
+                const SizedBox(height: 10),
                 _buildDrawerItem(
-                  icon: Icons.palette_outlined,
-                  activeIcon: Icons.palette_rounded,
-                  title: "Paper Tone",
-                  subtitle: "Active: ${_paperToneName(currentPaperTone)}",
-                  isSelected: false,
-                  isDark: isDark,
-                  onTap: () => onSelectIndex(4), // Navigate to Settings
-                ),
-
-                // Settings
-                _buildDrawerItem(
-                  icon: Icons.settings_outlined,
-                  activeIcon: Icons.settings_rounded,
-                  title: "App Settings",
-                  subtitle: "Font scale, TTS, offline cache",
+                  icon: Icons.tune_rounded,
+                  activeIcon: Icons.tune_rounded,
+                  title: "Reading Settings",
+                  subtitle: "Font scaling, TTS, offline cache",
                   isSelected: currentIndex == 4,
                   isDark: isDark,
                   onTap: () => onSelectIndex(4),
                 ),
 
-                const SizedBox(height: 12),
+                const SizedBox(height: 14),
                 _buildSectionHeader("PROJECT & TRUST", isDark),
 
-                // Support & Contribution
                 _buildDrawerItem(
                   icon: Icons.volunteer_activism_outlined,
                   activeIcon: Icons.volunteer_activism_rounded,
                   title: "Support SLLK",
                   subtitle: "Cultural preservation contribution",
-                  iconColor: const Color(0xFFF43F5E),
+                  accentColor: const Color(0xFFF43F5E),
                   isSelected: false,
                   isDark: isDark,
                   onTap: () {
@@ -185,14 +128,12 @@ class AppDrawer extends ConsumerWidget {
                     DonationModal.show(context);
                   },
                 ),
-
-                // Privacy Policy
                 _buildDrawerItem(
                   icon: Icons.shield_outlined,
                   activeIcon: Icons.shield_rounded,
                   title: "Privacy Policy",
-                  subtitle: "100% private, zero data tracking",
-                  iconColor: const Color(0xFF10B981),
+                  subtitle: "100% Private, zero data tracking",
+                  accentColor: const Color(0xFF10B981),
                   isSelected: false,
                   isDark: isDark,
                   onTap: () {
@@ -200,13 +141,11 @@ class AppDrawer extends ConsumerWidget {
                     PrivacyPolicyModal.show(context);
                   },
                 ),
-
-                // About SLLK Dialog
                 _buildDrawerItem(
                   icon: Icons.info_outline_rounded,
                   activeIcon: Icons.info_rounded,
                   title: "About SLLK",
-                  subtitle: "Version 1.0.0 • Verified Archive",
+                  subtitle: "Version 1.0.0 • Public Cultural Archive",
                   isSelected: false,
                   isDark: isDark,
                   onTap: () {
@@ -218,7 +157,7 @@ class AppDrawer extends ConsumerWidget {
             ),
           ),
 
-          // Refined Footer
+          // Refined Masthead Footer
           _buildFooter(context, isDark),
         ],
       ),
@@ -226,14 +165,16 @@ class AppDrawer extends ConsumerWidget {
   }
 
   Widget _buildHeader(BuildContext context, bool isDark) {
+    final topPadding = MediaQuery.of(context).padding.top;
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.fromLTRB(20, MediaQuery.of(context).padding.top + 16, 20, 18),
+      padding: EdgeInsets.fromLTRB(20, topPadding + 16, 20, 18),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF18181D) : const Color(0xFFF8FAFC),
+        color: isDark ? const Color(0xFF141419) : Colors.white,
         border: Border(
           bottom: BorderSide(
-            color: isDark ? Colors.white.withOpacity(0.08) : Colors.black.withOpacity(0.06),
+            color: isDark ? Colors.white.withOpacity(0.06) : Colors.black.withOpacity(0.05),
+            width: 0.5,
           ),
         ),
       ),
@@ -241,34 +182,45 @@ class AppDrawer extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              // High-end Framed Logo
               Container(
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: isDark ? Colors.white.withOpacity(0.1) : Colors.black.withOpacity(0.08),
+                    width: 1,
+                  ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(isDark ? 0.4 : 0.1),
+                      color: Colors.black.withOpacity(isDark ? 0.35 : 0.06),
                       blurRadius: 10,
                       offset: const Offset(0, 3),
                     ),
                   ],
                 ),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(11),
                   child: Image.asset(
                     "assets/images/app_logo.png",
-                    width: 48,
-                    height: 48,
+                    width: 44,
+                    height: 44,
                     fit: BoxFit.cover,
                   ),
                 ),
               ),
               const Spacer(),
+              // Verified Status Pill
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4.5),
                 decoration: BoxDecoration(
-                  color: isDark ? const Color(0xFF27272A) : const Color(0xFFE2E8F0),
-                  borderRadius: BorderRadius.circular(8),
+                  color: isDark ? const Color(0xFF1F1F26) : const Color(0xFFF1F5F9),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: isDark ? Colors.white.withOpacity(0.06) : Colors.black.withOpacity(0.04),
+                    width: 0.5,
+                  ),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -283,10 +235,11 @@ class AppDrawer extends ConsumerWidget {
                     ),
                     const SizedBox(width: 5),
                     Text(
-                      "v1.0.0",
+                      "ARCHIVE • v1.0",
                       style: TextStyle(
-                        fontSize: 10,
+                        fontSize: 9.5,
                         fontWeight: FontWeight.w700,
+                        letterSpacing: 0.3,
                         color: isDark ? Colors.white70 : const Color(0xFF475569),
                       ),
                     ),
@@ -299,27 +252,28 @@ class AppDrawer extends ConsumerWidget {
           Text(
             "SLLK",
             style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.w800,
-              letterSpacing: -0.5,
+              fontSize: 23,
+              fontWeight: FontWeight.w900,
+              letterSpacing: -0.6,
               color: isDark ? Colors.white : const Color(0xFF0F172A),
             ),
           ),
-          const SizedBox(height: 3),
+          const SizedBox(height: 2),
           Text(
-            "ꯁꯅꯥꯃꯍꯤ ꯂꯥꯏꯅꯤꯡ • Puya Archive",
+            "ꯁꯅꯥꯃꯍꯤ ꯂꯥꯏꯅꯤꯡ ꯂꯥꯏꯔꯤꯛ",
             style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
               color: isDark ? const Color(0xFF38BDF8) : const Color(0xFF0284C7),
             ),
           ),
           const SizedBox(height: 2),
           Text(
-            "Meetei Mayek & English Cultural Reader",
+            "Manipuri Digital Archives & Puya Journal",
             style: TextStyle(
               fontSize: 11,
-              color: isDark ? Colors.white54 : const Color(0xFF64748B),
+              letterSpacing: -0.1,
+              color: isDark ? const Color(0xFFA1A1AA) : const Color(0xFF64748B),
             ),
           ),
         ],
@@ -329,14 +283,14 @@ class AppDrawer extends ConsumerWidget {
 
   Widget _buildSectionHeader(String title, bool isDark) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(8, 12, 8, 6),
+      padding: const EdgeInsets.fromLTRB(6, 10, 6, 6),
       child: Text(
         title,
         style: TextStyle(
-          fontSize: 10,
+          fontSize: 9.5,
           fontWeight: FontWeight.w700,
-          letterSpacing: 0.8,
-          color: isDark ? Colors.white38 : const Color(0xFF94A3B8),
+          letterSpacing: 1.1,
+          color: isDark ? const Color(0xFF71717A) : const Color(0xFF94A3B8),
         ),
       ),
     );
@@ -351,104 +305,301 @@ class AppDrawer extends ConsumerWidget {
     required bool isDark,
     required VoidCallback onTap,
     String? badge,
-    Color? iconColor,
+    Color? accentColor,
   }) {
-    final effectiveIconColor = iconColor ??
+    final effectiveColor = accentColor ??
         (isSelected
             ? const Color(0xFF0284C7)
             : isDark
-                ? Colors.white70
-                : const Color(0xFF475569));
+                ? const Color(0xFFA1A1AA)
+                : const Color(0xFF64748B));
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 4),
+      padding: const EdgeInsets.only(bottom: 2),
       child: Material(
         color: isSelected
-            ? (isDark ? const Color(0xFF0284C7).withOpacity(0.15) : const Color(0xFF0284C7).withOpacity(0.08))
+            ? (isDark ? const Color(0xFF0284C7).withOpacity(0.12) : const Color(0xFF0284C7).withOpacity(0.08))
             : Colors.transparent,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-          side: isSelected
-              ? BorderSide(
-                  color: const Color(0xFF0284C7).withOpacity(0.3),
-                  width: 1,
-                )
-              : BorderSide.none,
-        ),
-        clipBehavior: Clip.antiAlias,
-        child: ListTile(
-          onTap: onTap,
-          dense: true,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 1),
-        leading: Container(
-          width: 34,
-          height: 34,
-          decoration: BoxDecoration(
-            color: isSelected
-                ? const Color(0xFF0284C7).withOpacity(0.18)
-                : (isDark ? Colors.white.withOpacity(0.05) : const Color(0xFFF1F5F9)),
-            borderRadius: BorderRadius.circular(9),
-          ),
-          child: Icon(
-            isSelected ? activeIcon : icon,
-            size: 18,
-            color: effectiveIconColor,
-          ),
-        ),
-        title: Text(
-          title,
-          style: TextStyle(
-            fontSize: 13.5,
-            fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
-            color: isSelected
-                ? (isDark ? Colors.white : const Color(0xFF0284C7))
-                : (isDark ? Colors.white : const Color(0xFF1E293B)),
-          ),
-        ),
-        subtitle: Text(
-          subtitle,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: TextStyle(
-            fontSize: 10.5,
-            color: isDark ? Colors.white54 : const Color(0xFF64748B),
-          ),
-        ),
-        trailing: badge != null
-            ? Container(
-                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
-                decoration: BoxDecoration(
-                  color: isSelected
-                      ? const Color(0xFF0284C7)
-                      : (isDark ? const Color(0xFF27272A) : const Color(0xFFE2E8F0)),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Text(
-                  badge,
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w700,
-                    color: isSelected
-                        ? Colors.white
-                        : (isDark ? Colors.white70 : const Color(0xFF475569)),
+        borderRadius: BorderRadius.circular(10),
+        child: InkWell(
+          onTap: () {
+            HapticFeedback.selectionClick();
+            onTap();
+          },
+          borderRadius: BorderRadius.circular(10),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
+            child: Row(
+              children: [
+                // Active Left Indicator Pill
+                Container(
+                  width: 3.5,
+                  height: 20,
+                  margin: const EdgeInsets.only(right: 10),
+                  decoration: BoxDecoration(
+                    color: isSelected ? const Color(0xFF0284C7) : Colors.transparent,
+                    borderRadius: BorderRadius.circular(2),
                   ),
                 ),
-              )
-            : null,
+
+                // Icon without bulky background
+                Icon(
+                  isSelected ? activeIcon : icon,
+                  size: 20,
+                  color: effectiveColor,
+                ),
+                const SizedBox(width: 12),
+
+                // Title & Subtitle
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        title,
+                        style: TextStyle(
+                          fontSize: 13.5,
+                          fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                          letterSpacing: -0.2,
+                          color: isSelected
+                              ? (isDark ? Colors.white : const Color(0xFF0284C7))
+                              : (isDark ? const Color(0xFFF4F4F5) : const Color(0xFF0F172A)),
+                        ),
+                      ),
+                      const SizedBox(height: 1),
+                      Text(
+                        subtitle,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 10.5,
+                          color: isDark ? const Color(0xFF71717A) : const Color(0xFF64748B),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Minimalist Pill Badge
+                if (badge != null)
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: isSelected
+                          ? const Color(0xFF0284C7)
+                          : (isDark ? const Color(0xFF22222A) : const Color(0xFFE2E8F0)),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      badge,
+                      style: TextStyle(
+                        fontSize: 9.5,
+                        fontWeight: FontWeight.w700,
+                        color: isSelected
+                            ? Colors.white
+                            : (isDark ? Colors.white70 : const Color(0xFF475569)),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
         ),
       ),
     );
   }
 
+  Widget _buildThemeTile(WidgetRef ref, bool isDark) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF15151B) : Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isDark ? Colors.white.withOpacity(0.06) : Colors.black.withOpacity(0.05),
+          width: 0.5,
+        ),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 30,
+            height: 30,
+            decoration: BoxDecoration(
+              color: isDark ? const Color(0xFF22222B) : const Color(0xFFF1F5F9),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(
+              isDark ? Icons.dark_mode_rounded : Icons.light_mode_rounded,
+              size: 16,
+              color: isDark ? const Color(0xFFF59E0B) : const Color(0xFF0284C7),
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  "Appearance",
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: -0.2,
+                    color: isDark ? Colors.white : const Color(0xFF0F172A),
+                  ),
+                ),
+                Text(
+                  isDark ? "Dark Palette" : "Light Palette",
+                  style: TextStyle(
+                    fontSize: 10.5,
+                    color: isDark ? const Color(0xFF71717A) : const Color(0xFF64748B),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Transform.scale(
+            scale: 0.78,
+            child: Switch.adaptive(
+              value: isDark,
+              activeColor: const Color(0xFF0284C7),
+              onChanged: (val) {
+                HapticFeedback.selectionClick();
+                ref.read(themeModeProvider.notifier).setThemeMode(val);
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPaperToneBar(WidgetRef ref, String currentTone, bool isDark) {
+    final tones = [
+      {"id": "default", "label": "Pure", "color": isDark ? const Color(0xFF18181B) : Colors.white, "border": isDark ? Colors.white24 : Colors.black12},
+      {"id": "cream", "label": "Cream", "color": const Color(0xFFFAF6EE), "border": const Color(0xFFE2D9C5)},
+      {"id": "sepia", "label": "Sepia", "color": const Color(0xFFF4ECD8), "border": const Color(0xFFDCCDB2)},
+      {"id": "sage", "label": "Sage", "color": const Color(0xFFEAEFE9), "border": const Color(0xFFCBD6CA)},
+      {"id": "oled", "label": "OLED", "color": Colors.black, "border": Colors.white30},
+    ];
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF15151B) : Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isDark ? Colors.white.withOpacity(0.06) : Colors.black.withOpacity(0.05),
+          width: 0.5,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Paper Tone Palette",
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: -0.2,
+                  color: isDark ? Colors.white : const Color(0xFF0F172A),
+                ),
+              ),
+              Text(
+                _paperToneName(currentTone),
+                style: const TextStyle(
+                  fontSize: 10.5,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF0284C7),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: tones.map((tone) {
+              final isToneSelected = currentTone == tone["id"];
+              return GestureDetector(
+                onTap: () {
+                  HapticFeedback.selectionClick();
+                  ref.read(paperToneProvider.notifier).setTone(tone["id"] as String);
+                },
+                behavior: HitTestBehavior.opaque,
+                child: Column(
+                  children: [
+                    Container(
+                      width: 28,
+                      height: 28,
+                      decoration: BoxDecoration(
+                        color: tone["color"] as Color,
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: isToneSelected
+                              ? const Color(0xFF0284C7)
+                              : (tone["border"] as Color),
+                          width: isToneSelected ? 2.2 : 1.0,
+                        ),
+                        boxShadow: isToneSelected
+                            ? [
+                                BoxShadow(
+                                  color: const Color(0xFF0284C7).withOpacity(0.4),
+                                  blurRadius: 6,
+                                  offset: const Offset(0, 1),
+                                ),
+                              ]
+                            : null,
+                      ),
+                      child: isToneSelected
+                          ? Center(
+                              child: Icon(
+                                Icons.check_rounded,
+                                size: 14,
+                                color: (tone["id"] == "oled" || isDark && tone["id"] == "default")
+                                    ? Colors.white
+                                    : const Color(0xFF0284C7),
+                              ),
+                            )
+                          : null,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      tone["label"] as String,
+                      style: TextStyle(
+                        fontSize: 9.5,
+                        fontWeight: isToneSelected ? FontWeight.w700 : FontWeight.w400,
+                        color: isToneSelected
+                            ? const Color(0xFF0284C7)
+                            : (isDark ? const Color(0xFF71717A) : const Color(0xFF64748B)),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }).toList(),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildFooter(BuildContext context, bool isDark) {
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+      padding: EdgeInsets.fromLTRB(16, 12, 16, bottomPadding > 0 ? bottomPadding + 8 : 16),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF101014) : const Color(0xFFF8FAFC),
+        color: isDark ? const Color(0xFF141419) : Colors.white,
         border: Border(
           top: BorderSide(
             color: isDark ? Colors.white.withOpacity(0.06) : Colors.black.withOpacity(0.05),
+            width: 0.5,
           ),
         ),
       ),
@@ -464,7 +615,7 @@ class AppDrawer extends ConsumerWidget {
                 style: TextStyle(
                   fontSize: 10.5,
                   fontWeight: FontWeight.w500,
-                  color: isDark ? Colors.white60 : const Color(0xFF64748B),
+                  color: isDark ? const Color(0xFFA1A1AA) : const Color(0xFF64748B),
                 ),
               ),
             ],
@@ -474,7 +625,7 @@ class AppDrawer extends ConsumerWidget {
             "© 2026 SLLK • Git Headless Architecture",
             style: TextStyle(
               fontSize: 9.5,
-              color: isDark ? Colors.white38 : const Color(0xFF94A3B8),
+              color: isDark ? const Color(0xFF52525B) : const Color(0xFF94A3B8),
             ),
           ),
         ],
@@ -503,8 +654,8 @@ class AppDrawer extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        backgroundColor: isDark ? const Color(0xFF1E1E24) : Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+        backgroundColor: isDark ? const Color(0xFF18181E) : Colors.white,
         title: Row(
           children: [
             ClipRRect(
@@ -514,7 +665,7 @@ class AppDrawer extends ConsumerWidget {
             const SizedBox(width: 10),
             const Text(
               "About SLLK",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
             ),
           ],
         ),
@@ -523,14 +674,14 @@ class AppDrawer extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              "SLLK is a dedicated digital publication and e-library designed to read, preserve, and celebrate indigenous Manipuri literature, ancient Puya manuscripts, and cultural essays in both Meetei Mayek and English scripts.",
+              "SLLK is a digital publication and e-library designed to read, preserve, and celebrate indigenous Manipuri literature, ancient Puya manuscripts, and cultural essays in both Meetei Mayek and English scripts.",
               style: TextStyle(fontSize: 13, height: 1.5),
             ),
             const SizedBox(height: 12),
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: isDark ? const Color(0xFF27272A) : const Color(0xFFF1F5F9),
+                color: isDark ? const Color(0xFF22222A) : const Color(0xFFF1F5F9),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: const Column(
