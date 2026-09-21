@@ -153,7 +153,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         : Rect.fromLTWH(0, 0, MediaQuery.of(context).size.width, MediaQuery.of(context).size.height / 2);
 
     Share.share(
-      "Read indigenous Manipuri Puya manuscripts and articles with SLLK!\nhttps://arnold-cd.github.io/blog-cms/",
+      "Read indigenous Manipuri Puya manuscripts and articles with SLLK!\nhttps://blog-cms-gilt.vercel.app/",
       subject: "SLLK - Meetei Mayek & English Reader",
       sharePositionOrigin: origin,
     );

@@ -192,7 +192,7 @@ class DonationModal extends StatelessWidget {
                           : Rect.fromLTWH(0, 0, MediaQuery.of(context).size.width, MediaQuery.of(context).size.height / 2);
 
                       Share.share(
-                        "Support SLLK - Indigenous Meetei Mayek & English Publication\nhttps://arnold-cd.github.io/blog-cms/",
+                        "Support SLLK - Indigenous Meetei Mayek & English Publication\nhttps://blog-cms-gilt.vercel.app/",
                         sharePositionOrigin: origin,
                       );
                     },
