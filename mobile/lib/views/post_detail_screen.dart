@@ -192,29 +192,41 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
     final paperTone = ref.watch(paperToneProvider);
 
     // Dynamic paper tone styling
-    final Color? customBgColor = paperTone == "sepia"
-        ? const Color(0xFFFBF0D9)
-        : paperTone == "oled"
-            ? Colors.black
-            : null;
+    final Color? customBgColor = switch (paperTone) {
+      "sepia" => const Color(0xFFFBF0D9),
+      "cream" => const Color(0xFFFAF7F0),
+      "sage" => const Color(0xFFEBF2EB),
+      "navy" => const Color(0xFF0F172A),
+      "oled" => Colors.black,
+      _ => null,
+    };
 
-    final Color? customTextColor = paperTone == "sepia"
-        ? const Color(0xFF2C241E)
-        : paperTone == "oled"
-            ? const Color(0xFFEDEDED)
-            : null;
+    final Color? customTextColor = switch (paperTone) {
+      "sepia" => const Color(0xFF2C241E),
+      "cream" => const Color(0xFF1F2421),
+      "sage" => const Color(0xFF1C2B1E),
+      "navy" => const Color(0xFFE2E8F0),
+      "oled" => const Color(0xFFEDEDED),
+      _ => null,
+    };
 
-    final Color? customSubtitleColor = paperTone == "sepia"
-        ? const Color(0xFF6B5847)
-        : paperTone == "oled"
-            ? Colors.white60
-            : null;
+    final Color? customSubtitleColor = switch (paperTone) {
+      "sepia" => const Color(0xFF6B5847),
+      "cream" => const Color(0xFF5C635E),
+      "sage" => const Color(0xFF4B5E4D),
+      "navy" => const Color(0xFF94A3B8),
+      "oled" => Colors.white60,
+      _ => null,
+    };
 
-    final Color? customContainerColor = paperTone == "sepia"
-        ? const Color(0xFFF2E4C4)
-        : paperTone == "oled"
-            ? const Color(0xFF141418)
-            : null;
+    final Color? customContainerColor = switch (paperTone) {
+      "sepia" => const Color(0xFFF2E4C4),
+      "cream" => const Color(0xFFF0EBE0),
+      "sage" => const Color(0xFFDEE9DE),
+      "navy" => const Color(0xFF1E293B),
+      "oled" => const Color(0xFF141418),
+      _ => null,
+    };
 
     // Derived translated or original text
     final effectiveTitle = _isTranslated
@@ -673,7 +685,13 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
                   const SizedBox(height: 20),
                   Divider(
                     height: 1,
-                    color: paperTone == "sepia" ? const Color(0xFFD6C6A8) : null,
+                    color: switch (paperTone) {
+                      "sepia" => const Color(0xFFD6C6A8),
+                      "cream" => const Color(0xFFE2DDD3),
+                      "sage" => const Color(0xFFCFDDCF),
+                      "navy" => const Color(0xFF334155),
+                      _ => null,
+                    },
                   ),
                 ],
               ),

@@ -298,20 +298,132 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   leading: const Icon(Icons.auto_stories_rounded, color: Color(0xFF6366F1)),
                   title: const Text("Reader Paper Tone", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
                   subtitle: Text(
-                    currentPaperTone == "sepia"
-                        ? "Warm Sepia"
-                        : currentPaperTone == "oled"
-                            ? "OLED Pure Black"
-                            : "Default Paper",
+                    switch (currentPaperTone) {
+                      "sepia" => "Warm Sepia (Parchment)",
+                      "cream" => "Soft Cream (Book Paper)",
+                      "sage" => "Calm Sage (Eye Comfort)",
+                      "navy" => "Midnight Navy (Night)",
+                      "oled" => "OLED Pure Black (Zero-Nit)",
+                      _ => "Default Paper",
+                    },
                     style: TextStyle(fontSize: 12, color: isDark ? Colors.white54 : Colors.black54),
                   ),
                   trailing: DropdownButton<String>(
                     value: currentPaperTone,
                     underline: const SizedBox.shrink(),
-                    items: const [
-                      DropdownMenuItem(value: "default", child: Text("Default", style: TextStyle(fontSize: 13))),
-                      DropdownMenuItem(value: "sepia", child: Text("Warm Sepia", style: TextStyle(fontSize: 13))),
-                      DropdownMenuItem(value: "oled", child: Text("OLED Black", style: TextStyle(fontSize: 13))),
+                    items: [
+                      DropdownMenuItem(
+                        value: "default",
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              width: 12,
+                              height: 12,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: isDark ? const Color(0xFF1E293B) : Colors.white,
+                                border: Border.all(color: Colors.grey.shade400, width: 1),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            const Text("Default", style: TextStyle(fontSize: 13)),
+                          ],
+                        ),
+                      ),
+                      DropdownMenuItem(
+                        value: "cream",
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              width: 12,
+                              height: 12,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: const Color(0xFFFAF7F0),
+                                border: Border.all(color: const Color(0xFFDCD6C8), width: 1),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            const Text("Soft Cream", style: TextStyle(fontSize: 13)),
+                          ],
+                        ),
+                      ),
+                      DropdownMenuItem(
+                        value: "sepia",
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              width: 12,
+                              height: 12,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: const Color(0xFFFBF0D9),
+                                border: Border.all(color: const Color(0xFFD9C6A5), width: 1),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            const Text("Warm Sepia", style: TextStyle(fontSize: 13)),
+                          ],
+                        ),
+                      ),
+                      DropdownMenuItem(
+                        value: "sage",
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              width: 12,
+                              height: 12,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: const Color(0xFFEBF2EB),
+                                border: Border.all(color: const Color(0xFFB8CEB8), width: 1),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            const Text("Calm Sage", style: TextStyle(fontSize: 13)),
+                          ],
+                        ),
+                      ),
+                      DropdownMenuItem(
+                        value: "navy",
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              width: 12,
+                              height: 12,
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Color(0xFF0F172A),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            const Text("Midnight Navy", style: TextStyle(fontSize: 13)),
+                          ],
+                        ),
+                      ),
+                      DropdownMenuItem(
+                        value: "oled",
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              width: 12,
+                              height: 12,
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.black,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            const Text("OLED Black", style: TextStyle(fontSize: 13)),
+                          ],
+                        ),
+                      ),
                     ],
                     onChanged: (val) {
                       if (val != null) {
