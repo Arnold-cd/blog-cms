@@ -1,3 +1,4 @@
+import "../widgets/app_drawer.dart";
 import "../widgets/donation_modal.dart";
 import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
@@ -42,6 +43,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final selectedCategory = ref.watch(selectedCategoryProvider);
 
     return Scaffold(
+      drawer: AppDrawer(
+        currentIndex: ref.watch(selectedNavIndexProvider),
+        onSelectIndex: (index) {
+          ref.read(selectedNavIndexProvider.notifier).state = index;
+          Navigator.of(context).pop();
+        },
+      ),
       body: SafeArea(
         child: NestedScrollView(
           headerSliverBuilder: (context, innerBoxIsScrolled) => [
@@ -56,43 +64,58 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Expanded(
-                          child: Row(
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: Image.asset(
-                                  "assets/images/app_logo.png",
-                                  width: 38,
-                                  height: 38,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text(
-                                      "SLLK",
-                                      style: TextStyle(
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.w800,
-                                        letterSpacing: -0.5,
-                                      ),
+                          child: Builder(
+                            builder: (scaffoldContext) => InkWell(
+                              onTap: () => Scaffold.of(scaffoldContext).openDrawer(),
+                              borderRadius: BorderRadius.circular(10),
+                              child: Row(
+                                children: [
+                                  IconButton(
+                                    tooltip: "Open Navigation Menu",
+                                    visualDensity: VisualDensity.compact,
+                                    padding: EdgeInsets.zero,
+                                    constraints: const BoxConstraints(),
+                                    icon: const Icon(Icons.notes_rounded, size: 24),
+                                    onPressed: () => Scaffold.of(scaffoldContext).openDrawer(),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: Image.asset(
+                                      "assets/images/app_logo.png",
+                                      width: 36,
+                                      height: 36,
+                                      fit: BoxFit.cover,
                                     ),
-                                    Text(
-                                      "Meetei Mayek & English Feed",
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: theme.textTheme.bodySmall?.copyWith(
-                                        fontSize: 11,
-                                        color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
-                                      ),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        const Text(
+                                          "SLLK",
+                                          style: TextStyle(
+                                            fontSize: 21,
+                                            fontWeight: FontWeight.w800,
+                                            letterSpacing: -0.5,
+                                          ),
+                                        ),
+                                        Text(
+                                          "Meetei Mayek & English Feed",
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: theme.textTheme.bodySmall?.copyWith(
+                                            fontSize: 10.5,
+                                            color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
-                            ],
+                            ),
                           ),
                         ),
                         // Top Right Action Buttons

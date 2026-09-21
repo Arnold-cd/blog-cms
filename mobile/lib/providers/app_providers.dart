@@ -114,6 +114,11 @@ class ThemeNotifier extends StateNotifier<ThemeMode> {
     state = next;
     await CacheService.setThemeMode(next == ThemeMode.dark);
   }
+
+  Future<void> setThemeMode(bool isDark) async {
+    state = isDark ? ThemeMode.dark : ThemeMode.light;
+    await CacheService.setThemeMode(isDark);
+  }
 }
 
 final themeModeProvider = StateNotifierProvider<ThemeNotifier, ThemeMode>((ref) {
@@ -193,4 +198,11 @@ class PaperToneNotifier extends StateNotifier<String> {
 final paperToneProvider = StateNotifierProvider<PaperToneNotifier, String>((ref) {
   return PaperToneNotifier();
 });
+
+/// Main Navigation & Global Drawer Key
+final mainScaffoldKeyProvider = Provider<GlobalKey<ScaffoldState>>((ref) {
+  return GlobalKey<ScaffoldState>();
+});
+
+final selectedNavIndexProvider = StateProvider<int>((ref) => 0);
 

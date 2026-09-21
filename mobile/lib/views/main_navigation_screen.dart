@@ -16,8 +16,6 @@ class MainNavigationScreen extends ConsumerStatefulWidget {
 }
 
 class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
-  int _currentIndex = 0;
-
   final List<Widget> _screens = const [
     HomeScreen(),
     PdfLibraryScreen(),
@@ -31,10 +29,11 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final bookmarks = ref.watch(bookmarksProvider);
+    final currentIndex = ref.watch(selectedNavIndexProvider);
 
     return Scaffold(
       body: IndexedStack(
-        index: _currentIndex,
+        index: currentIndex,
         children: _screens,
       ),
       bottomNavigationBar: Container(
@@ -106,14 +105,12 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
     int badgeCount = 0,
     required bool isDark,
   }) {
-    final isSelected = _currentIndex == index;
+    final isSelected = ref.watch(selectedNavIndexProvider) == index;
     final primaryColor = isDark ? const Color(0xFF6366F1) : const Color(0xFF4F46E5);
 
     return GestureDetector(
       onTap: () {
-        setState(() {
-          _currentIndex = index;
-        });
+        ref.read(selectedNavIndexProvider.notifier).state = index;
       },
       behavior: HitTestBehavior.opaque,
       child: AnimatedContainer(
