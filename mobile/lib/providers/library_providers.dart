@@ -118,7 +118,8 @@ class DownloadedPdfsNotifier extends StateNotifier<Map<String, String>> {
   Future<String?> downloadPdf(PdfDocument doc, {Function(double)? onProgress}) async {
     try {
       final path = await _getAppDir();
-      final filePath = "$path/${doc.fileName}";
+      final safeName = PdfDocument.sanitizeFileName(doc.fileName, fallbackId: doc.id);
+      final filePath = "$path/$safeName";
       final file = File(filePath);
 
       if (await file.exists()) {

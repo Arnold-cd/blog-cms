@@ -54,7 +54,8 @@ class _PdfViewerScreenState extends ConsumerState<PdfViewerScreen> {
 
     try {
       final dir = await getTemporaryDirectory();
-      final tempFile = File("${dir.path}/${widget.document.fileName}");
+      final safeName = PdfDocument.sanitizeFileName(widget.document.fileName, fallbackId: widget.document.id);
+      final tempFile = File("${dir.path}/$safeName");
 
       if (await tempFile.exists()) {
         if (mounted) {

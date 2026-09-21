@@ -33,6 +33,18 @@ class PdfDocument {
     this.tags = const [],
   });
 
+  /// Sanitizes fileName to prevent Path Traversal attacks (CWE-22)
+  static String sanitizeFileName(String? raw, {String fallbackId = ""}) {
+    if (raw == null || raw.trim().isEmpty) {
+      final safeFallback = fallbackId.replaceAll(RegExp(r"[^a-zA-Z0-9._-]"), "_");
+      return safeFallback.isNotEmpty ? "$safeFallback.pdf" : "document.pdf";
+    }
+    // Strip directory traversal sequences, backslashes, slashes, and leading dots
+    final stripped = raw.split(RegExp(r"[\\/]")).last.replaceAll(RegExp(r"^\.+"), "");
+    final clean = stripped.replaceAll(RegExp(r"[^a-zA-Z0-9._-]"), "_");
+    return clean.isEmpty ? "document.pdf" : clean;
+  }
+
   factory PdfDocument.fromJson(Map<String, dynamic> json) {
     final rawTags = json["tags"];
     List<String> parsedTags = [];
@@ -40,15 +52,19 @@ class PdfDocument {
       parsedTags = rawTags.map((t) => t.toString()).toList();
     }
 
+    final docId = json["id"] as String? ?? "";
+    final rawFileName = json["file_name"] as String? ?? json["fileName"] as String? ?? "";
+    final safeFileName = sanitizeFileName(rawFileName, fallbackId: docId);
+
     return PdfDocument(
-      id: json["id"] as String? ?? "",
+      id: docId,
       title: json["title"] as String? ?? "Untitled Document",
       description: json["description"] as String? ?? "",
       author: json["author"] as String? ?? "Unknown Author",
       category: json["category"] as String? ?? "General",
       language: json["language"] as String? ?? "en",
       publishedDate: json["published_date"] as String? ?? json["publishedDate"] as String? ?? "",
-      fileName: json["file_name"] as String? ?? json["fileName"] as String? ?? "",
+      fileName: safeFileName,
       pdfUrl: json["pdf_url"] as String? ?? json["pdfUrl"] as String? ?? "",
       coverUrl: json["cover_url"] as String? ?? json["coverUrl"] as String? ?? "",
       pageCount: (json["page_count"] as num?)?.toInt() ?? (json["pageCount"] as num?)?.toInt() ?? 1,
