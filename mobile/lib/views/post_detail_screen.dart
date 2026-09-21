@@ -103,6 +103,8 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
       if (mounted) setState(() => _isPlayingTts = false);
     } else {
       if (_rawMarkdown.isEmpty) return;
+      final speed = await CacheService.getTtsSpeed();
+      await _flutterTts.setSpeechRate(speed * 0.5);
       final cleanText = _stripMarkdown(_rawMarkdown);
       final title = _isTranslated
           ? MeeteiMayekService.translateToMeeteiMayekWithVocab(widget.post.title)
@@ -115,6 +117,15 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
           : cleanText;
       final spokenText = "$title. By $author. $body";
       await _flutterTts.speak(spokenText);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Playing audio narration..."),
+            duration: Duration(seconds: 2),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
     }
   }
 
