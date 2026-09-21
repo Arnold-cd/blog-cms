@@ -353,7 +353,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         Text(
           hasSearch
               ? "Try adjusting your search terms or selecting a different category."
-              : "Articles pushed to GitHub will instantly appear here with zero app updates required.",
+              : "Newly published articles will instantly appear here with zero app updates required.",
           textAlign: TextAlign.center,
           style: theme.textTheme.bodyMedium?.copyWith(
             color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6),
@@ -394,7 +394,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ),
         const SizedBox(height: 8),
         Text(
-          "Check your internet connection. SLLK syncs dynamically with the GitHub repository.",
+          "Check your internet connection and tap retry below to reload.",
           textAlign: TextAlign.center,
           style: theme.textTheme.bodyMedium?.copyWith(
             color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6),

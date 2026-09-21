@@ -1,6 +1,5 @@
 import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
-import "package:url_launcher/url_launcher.dart";
 import "package:share_plus/share_plus.dart";
 import "../providers/app_providers.dart";
 import "../providers/library_providers.dart";
@@ -55,7 +54,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text("Catalog successfully synced with GitHub!"),
+            content: Text("Catalog successfully updated!"),
             backgroundColor: Color(0xFF10B981),
             behavior: SnackBarBehavior.floating,
           ),
@@ -125,11 +124,28 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     }
   }
 
-  Future<void> _openGitHub() async {
-    final uri = Uri.parse("https://github.com/Arnold-cd/blog-cms");
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
-    }
+  void _showAboutDialog() {
+    showAboutDialog(
+      context: context,
+      applicationName: "SLLK Reader",
+      applicationVersion: "v1.0.0",
+      applicationIcon: ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: Image.asset(
+          "assets/images/app_logo.png",
+          width: 48,
+          height: 48,
+          fit: BoxFit.cover,
+        ),
+      ),
+      children: const [
+        SizedBox(height: 12),
+        Text(
+          "SLLK is a digital platform dedicated to the preservation, transliteration, and study of ancient Manipuri Puya manuscripts and contemporary indigenous literature.",
+          style: TextStyle(fontSize: 13, height: 1.4),
+        ),
+      ],
+    );
   }
 
   void _shareApp() {
@@ -196,7 +212,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        "v1.0.0 • Git-Driven Headless CMS",
+                        "v1.0.0 • Digital Library & Reader",
                         style: TextStyle(
                           fontSize: 12,
                           color: isDark ? Colors.white60 : Colors.black54,
@@ -232,31 +248,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                             : "System Default",
                     style: TextStyle(fontSize: 12, color: isDark ? Colors.white54 : Colors.black54),
                   ),
-                  trailing: SegmentedButton<ThemeMode>(
-                    segments: const [
-                      ButtonSegment(value: ThemeMode.light, icon: Icon(Icons.light_mode, size: 16)),
-                      ButtonSegment(value: ThemeMode.dark, icon: Icon(Icons.dark_mode, size: 16)),
-                    ],
-                    selected: {currentThemeMode == ThemeMode.light ? ThemeMode.light : ThemeMode.dark},
-                    onSelectionChanged: (val) {
+                  trailing: Switch.adaptive(
+                    value: currentThemeMode == ThemeMode.dark,
+                    activeColor: const Color(0xFF6366F1),
+                    onChanged: (val) {
                       ref.read(themeModeProvider.notifier).toggle();
                     },
-                    style: const ButtonStyle(visualDensity: VisualDensity.compact),
                   ),
                 ),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: 20),
-
-          // Section 2: Reading & Typography
-          _buildSectionHeader("Reading & Typography", Icons.menu_book_outlined),
-          _buildCard(
-            isDark: isDark,
-            child: Column(
-              children: [
-                // Font Size Scale
+                const Divider(height: 1),
                 ListTile(
                   contentPadding: EdgeInsets.zero,
                   leading: const Icon(Icons.format_size_rounded, color: Color(0xFF6366F1)),
@@ -269,7 +269,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       IconButton(
-                        icon: const Icon(Icons.remove_circle_outline, size: 20),
+                        icon: const Icon(Icons.remove_circle_outline_rounded, size: 20),
                         onPressed: currentFontSize > 0.8
                             ? () => ref.read(fontSizeProvider.notifier).decrease()
                             : null,
@@ -279,7 +279,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
                       ),
                       IconButton(
-                        icon: const Icon(Icons.add_circle_outline, size: 20),
+                        icon: const Icon(Icons.add_circle_outline_rounded, size: 20),
                         onPressed: currentFontSize < 1.4
                             ? () => ref.read(fontSizeProvider.notifier).increase()
                             : null,
@@ -288,7 +288,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   ),
                 ),
                 const Divider(height: 1),
-                // Paper Tone Preference
                 ListTile(
                   contentPadding: EdgeInsets.zero,
                   leading: const Icon(Icons.auto_stories_rounded, color: Color(0xFF6366F1)),
@@ -317,38 +316,44 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     },
                   ),
                 ),
-                const Divider(height: 1),
-                // Transliteration Hints Toggle
-                SwitchListTile(
-                  contentPadding: EdgeInsets.zero,
-                  secondary: const Icon(Icons.translate_rounded, color: Color(0xFF6366F1)),
-                  title: const Text("Meetei Mayek Hints", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
-                  subtitle: Text(
-                    "Display phonetic transliteration on ancient titles",
-                    style: TextStyle(fontSize: 12, color: isDark ? Colors.white54 : Colors.black54),
-                  ),
-                  value: _transliteration,
-                  activeColor: const Color(0xFF6366F1),
-                  onChanged: (val) {
-                    setState(() => _transliteration = val);
-                    CacheService.setTransliteration(val);
-                  },
-                ),
               ],
             ),
           ),
 
           const SizedBox(height: 20),
 
-          // Section 3: Storage & Offline Downloads
-          _buildSectionHeader("Storage & Offline Library", Icons.storage_rounded),
+          // Section 2: Language & Script
+          _buildSectionHeader("Language & Script", Icons.translate_rounded),
+          _buildCard(
+            isDark: isDark,
+            child: SwitchListTile.adaptive(
+              contentPadding: EdgeInsets.zero,
+              secondary: const Icon(Icons.spellcheck_rounded, color: Color(0xFF6366F1)),
+              title: const Text("Script Transliteration", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+              subtitle: Text(
+                "Instant toggle between Bengali/Roman script and Meetei Mayek",
+                style: TextStyle(fontSize: 12, color: isDark ? Colors.white54 : Colors.black54),
+              ),
+              value: _transliteration,
+              activeColor: const Color(0xFF6366F1),
+              onChanged: (val) {
+                setState(() => _transliteration = val);
+                CacheService.setTransliteration(val);
+              },
+            ),
+          ),
+
+          const SizedBox(height: 20),
+
+          // Section 3: Storage & Offline Cache
+          _buildSectionHeader("Storage & Offline Cache", Icons.sd_storage_rounded),
           _buildCard(
             isDark: isDark,
             child: Column(
               children: [
                 ListTile(
                   contentPadding: EdgeInsets.zero,
-                  leading: const Icon(Icons.picture_as_pdf_rounded, color: Color(0xFFD97706)),
+                  leading: const Icon(Icons.picture_as_pdf_rounded, color: Color(0xFFEF4444)),
                   title: const Text("Downloaded PDF Documents", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
                   subtitle: Text(
                     "${downloadedPdfs.length} offline files (${_formatBytes(totalStorageBytes)})",
@@ -357,10 +362,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   trailing: downloadedPdfs.isNotEmpty
                       ? TextButton(
                           onPressed: _clearPdfDownloads,
-                          style: TextButton.styleFrom(foregroundColor: Colors.redAccent),
-                          child: const Text("Clear", style: TextStyle(fontSize: 12)),
+                          style: TextButton.styleFrom(
+                            foregroundColor: Colors.redAccent,
+                            visualDensity: VisualDensity.compact,
+                          ),
+                          child: const Text("Clear All"),
                         )
-                      : const Text("Empty", style: TextStyle(fontSize: 12, color: Colors.grey)),
+                      : Text(
+                          "Empty",
+                          style: TextStyle(fontSize: 12, color: isDark ? Colors.white38 : Colors.black38),
+                        ),
                 ),
                 const Divider(height: 1),
                 ListTile(
@@ -373,7 +384,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   ),
                   trailing: TextButton(
                     onPressed: _clearImageCache,
-                    child: const Text("Free Up", style: TextStyle(fontSize: 12)),
+                    style: TextButton.styleFrom(
+                      foregroundColor: const Color(0xFF6366F1),
+                      visualDensity: VisualDensity.compact,
+                    ),
+                    child: const Text("Free Up"),
                   ),
                 ),
               ],
@@ -382,11 +397,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
           const SizedBox(height: 20),
 
-          // Section 4: Narration & Audio
+          // Section 4: Audio Narration (TTS)
           _buildSectionHeader("Audio Narration (TTS)", Icons.record_voice_over_rounded),
           _buildCard(
             isDark: isDark,
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ListTile(
                   contentPadding: EdgeInsets.zero,
@@ -415,8 +431,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
           const SizedBox(height: 20),
 
-          // Section 5: Sync & CMS Manifests
-          _buildSectionHeader("Sync & Manifests", Icons.sync_rounded),
+          // Section 5: Content & Sync
+          _buildSectionHeader("Content & Sync", Icons.sync_rounded),
           _buildCard(
             isDark: isDark,
             child: ListTile(
@@ -425,9 +441,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 Icons.cloud_sync_rounded,
                 color: _isSyncing ? const Color(0xFFD97706) : const Color(0xFF10B981),
               ),
-              title: const Text("Sync Catalog with GitHub", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+              title: const Text("Sync Latest Content", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
               subtitle: Text(
-                "Fetches latest posts.json and library.json",
+                "Checks for newly published articles and documents",
                 style: TextStyle(fontSize: 12, color: isDark ? Colors.white54 : Colors.black54),
               ),
               trailing: _isSyncing
@@ -451,7 +467,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
           const SizedBox(height: 20),
 
-          // Section 6: Community & About
+          // Section 6: Community & Project
           _buildSectionHeader("Community & Project", Icons.info_outline_rounded),
           _buildCard(
             isDark: isDark,
@@ -471,14 +487,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 const Divider(height: 1),
                 ListTile(
                   contentPadding: EdgeInsets.zero,
-                  leading: const Icon(Icons.code_rounded, color: Color(0xFF6366F1)),
-                  title: const Text("GitHub Repository", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+                  leading: const Icon(Icons.info_outline_rounded, color: Color(0xFF6366F1)),
+                  title: const Text("About SLLK", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
                   subtitle: Text(
-                    "Open source code, contributions & issues",
+                    "Mission to preserve indigenous manuscripts",
                     style: TextStyle(fontSize: 12, color: isDark ? Colors.white54 : Colors.black54),
                   ),
-                  trailing: const Icon(Icons.open_in_new_rounded, size: 18),
-                  onTap: _openGitHub,
+                  trailing: const Icon(Icons.chevron_right_rounded),
+                  onTap: _showAboutDialog,
                 ),
                 const Divider(height: 1),
                 ListTile(
