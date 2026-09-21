@@ -4,6 +4,7 @@ import "package:flutter/services.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
 import "../providers/app_providers.dart";
 import "../providers/library_providers.dart";
+import "../theme/app_theme.dart";
 import "donation_modal.dart";
 import "inquiry_modal.dart";
 import "privacy_modal.dart";
@@ -272,20 +273,22 @@ class AppDrawer extends ConsumerWidget {
               color: isDark ? Colors.white : const Color(0xFF0F172A),
             ),
           ),
-          const SizedBox(height: 2),
+          const SizedBox(height: 3),
           Text(
-            "ꯁꯅꯥꯃꯍꯤ ꯂꯥꯏꯅꯤꯡ ꯂꯥꯏꯔꯤꯛ",
+            "ꯁꯥꯅꯥꯃꯍꯤ  ꯂꯥꯏꫫꯅꯡ  ꯂꯤꯆꯠ ꫰  ꯀꯪꯂꯩꯄꯥꯛ",
             style: TextStyle(
-              fontSize: 13,
+              fontSize: 12.5,
               fontWeight: FontWeight.w600,
               color: isDark ? const Color(0xFF38BDF8) : const Color(0xFF0284C7),
+              fontFamilyFallback: AppTheme.fontFallbacks,
             ),
           ),
           const SizedBox(height: 2),
           Text(
-            "Manipuri Digital Archives & Puya Journal",
+            "Sanamahi Laining Leechat Kangleipak",
             style: TextStyle(
               fontSize: 11,
+              fontWeight: FontWeight.w500,
               letterSpacing: -0.1,
               color: isDark ? const Color(0xFFA1A1AA) : const Color(0xFF64748B),
             ),
@@ -688,7 +691,7 @@ class AppDrawer extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              "SLLK is a digital publication and e-library designed to read, preserve, and celebrate indigenous Manipuri literature, ancient Puya manuscripts, and cultural essays in both Meetei Mayek and English scripts.",
+              "SLLK (Sanamahi Laining Leechat Kangleipak • ꯁꯥꯅꯥꯃꯍꯤ  ꯂꯥꯏꫫꯅꯡ  ꯂꯤꯆꯠ ꫰  ꯀꯪꯂꯩꯄꯥꯛ) is a digital publication and e-library designed to read, preserve, and celebrate indigenous Manipuri literature, ancient Puya manuscripts, and cultural essays in both Meetei Mayek and English scripts.",
               style: TextStyle(fontSize: 13, height: 1.5),
             ),
             const SizedBox(height: 12),

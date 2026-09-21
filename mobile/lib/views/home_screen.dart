@@ -92,15 +92,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                           letterSpacing: -0.5,
                                         ),
                                       ),
-                                      Text(
-                                        "Meetei Mayek & English Feed",
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: theme.textTheme.bodySmall?.copyWith(
-                                          fontSize: 10.5,
-                                          color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
-                                        ),
-                                      ),
+                                       Text(
+                                         "Sanamahi Laining Leechat Kangleipak",
+                                         maxLines: 1,
+                                         overflow: TextOverflow.ellipsis,
+                                         style: theme.textTheme.bodySmall?.copyWith(
+                                           fontSize: 10.5,
+                                           fontWeight: FontWeight.w500,
+                                           color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
+                                         ),
+                                       ),
                                     ],
                                   ),
                                 ),
