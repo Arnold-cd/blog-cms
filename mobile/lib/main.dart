@@ -3,7 +3,7 @@ import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
 import "providers/app_providers.dart";
 import "theme/app_theme.dart";
-import "views/main_navigation_screen.dart";
+import "views/splash_screen.dart";
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,7 +31,7 @@ class SLLKApp extends ConsumerWidget {
       theme: AppTheme.light(),
       darkTheme: AppTheme.dark(),
       themeMode: themeMode,
-      home: const MainNavigationScreen(),
+      home: const SplashScreen(),
     );
   }
 }
