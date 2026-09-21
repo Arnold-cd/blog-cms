@@ -7,6 +7,7 @@ import "../services/cache_service.dart";
 import "../widgets/donation_modal.dart";
 import "../widgets/inquiry_modal.dart";
 import "../widgets/privacy_modal.dart";
+import "../widgets/rating_modal.dart";
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -639,6 +640,18 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   ),
                   trailing: const Icon(Icons.chevron_right_rounded),
                   onTap: () => PrivacyPolicyModal.show(context),
+                ),
+                const Divider(height: 1),
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.star_rounded, color: Color(0xFFF59E0B)),
+                  title: const Text("Rate & Review SLLK", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+                  subtitle: Text(
+                    "Share your experience & support the archive",
+                    style: TextStyle(fontSize: 12, color: isDark ? Colors.white54 : Colors.black54),
+                  ),
+                  trailing: const Icon(Icons.chevron_right_rounded),
+                  onTap: () => RatingModal.show(context),
                 ),
                 const Divider(height: 1),
                 ListTile(

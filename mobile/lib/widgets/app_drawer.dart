@@ -8,6 +8,7 @@ import "../theme/app_theme.dart";
 import "donation_modal.dart";
 import "inquiry_modal.dart";
 import "privacy_modal.dart";
+import "rating_modal.dart";
 
 class AppDrawer extends ConsumerWidget {
   final int currentIndex;
@@ -141,6 +142,20 @@ class AppDrawer extends ConsumerWidget {
                   onTap: () {
                     Navigator.of(context).pop();
                     InquiryModal.show(context);
+                  },
+                ),
+                _buildDrawerItem(
+                  icon: Icons.star_outline_rounded,
+                  activeIcon: Icons.star_rounded,
+                  title: "Rate & Review",
+                  subtitle: "Support our cultural archive",
+                  badge: "★ 5.0",
+                  accentColor: const Color(0xFFF59E0B),
+                  isSelected: false,
+                  isDark: isDark,
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    RatingModal.show(context);
                   },
                 ),
                 _buildDrawerItem(
