@@ -173,3 +173,24 @@ class FontSizeNotifier extends StateNotifier<double> {
 final fontSizeProvider = StateNotifierProvider<FontSizeNotifier, double>((ref) {
   return FontSizeNotifier();
 });
+
+/// Reader Paper Tone Notifier ("default", "sepia", "oled")
+class PaperToneNotifier extends StateNotifier<String> {
+  PaperToneNotifier() : super("default") {
+    _init();
+  }
+
+  Future<void> _init() async {
+    state = await CacheService.getPaperTone();
+  }
+
+  Future<void> setTone(String tone) async {
+    state = tone;
+    await CacheService.setPaperTone(tone);
+  }
+}
+
+final paperToneProvider = StateNotifierProvider<PaperToneNotifier, String>((ref) {
+  return PaperToneNotifier();
+});
+

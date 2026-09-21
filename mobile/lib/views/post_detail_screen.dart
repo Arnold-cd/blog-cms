@@ -189,6 +189,32 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
     final bookmarks = ref.watch(bookmarksProvider);
     final isBookmarked = bookmarks.contains(widget.post.id);
     final fontScale = ref.watch(fontSizeProvider);
+    final paperTone = ref.watch(paperToneProvider);
+
+    // Dynamic paper tone styling
+    final Color? customBgColor = paperTone == "sepia"
+        ? const Color(0xFFFBF0D9)
+        : paperTone == "oled"
+            ? Colors.black
+            : null;
+
+    final Color? customTextColor = paperTone == "sepia"
+        ? const Color(0xFF2C241E)
+        : paperTone == "oled"
+            ? const Color(0xFFEDEDED)
+            : null;
+
+    final Color? customSubtitleColor = paperTone == "sepia"
+        ? const Color(0xFF6B5847)
+        : paperTone == "oled"
+            ? Colors.white60
+            : null;
+
+    final Color? customContainerColor = paperTone == "sepia"
+        ? const Color(0xFFF2E4C4)
+        : paperTone == "oled"
+            ? const Color(0xFF141418)
+            : null;
 
     // Derived translated or original text
     final effectiveTitle = _isTranslated
@@ -202,6 +228,7 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
         : widget.post.author;
 
     return Scaffold(
+      backgroundColor: customBgColor,
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
@@ -378,7 +405,7 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
                                 colors: [
                                   Colors.black.withValues(alpha: 0.3),
                                   Colors.transparent,
-                                  isDark ? const Color(0xFF09090B) : Colors.white,
+                                  customBgColor ?? (isDark ? const Color(0xFF09090B) : Colors.white),
                                 ],
                                 stops: const [0.0, 0.5, 1.0],
                               ),
@@ -403,7 +430,7 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
                     margin: const EdgeInsets.only(bottom: 16),
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: isDark ? const Color(0xFF141418) : const Color(0xFFF1F5F9),
+                      color: customContainerColor ?? (isDark ? const Color(0xFF141418) : const Color(0xFFF1F5F9)),
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
                         color: isDark ? Colors.white.withValues(alpha: 0.07) : Colors.black.withValues(alpha: 0.06),
@@ -421,7 +448,7 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
                               style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w700,
-                                color: isDark ? Colors.white : const Color(0xFF0F172A),
+                                color: customTextColor ?? (isDark ? Colors.white : const Color(0xFF0F172A)),
                               ),
                             ),
                             const SizedBox(width: 6),
@@ -431,7 +458,7 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
                                   fontSize: 10.5,
-                                  color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.6),
+                                  color: customSubtitleColor ?? theme.textTheme.bodySmall?.color?.withValues(alpha: 0.6),
                                 ),
                               ),
                             ),
@@ -441,7 +468,7 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
                         Container(
                           padding: const EdgeInsets.all(3),
                           decoration: BoxDecoration(
-                            color: isDark ? const Color(0xFF09090B) : Colors.white,
+                            color: customBgColor ?? (isDark ? const Color(0xFF09090B) : Colors.white),
                             borderRadius: BorderRadius.circular(9),
                             border: Border.all(
                               color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.black.withValues(alpha: 0.05),
@@ -479,7 +506,7 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
                                       style: TextStyle(
                                         fontSize: 12.5,
                                         fontWeight: !_isTranslated ? FontWeight.w700 : FontWeight.w500,
-                                        color: !_isTranslated ? Colors.white : (isDark ? Colors.white70 : Colors.black87),
+                                        color: !_isTranslated ? Colors.white : (customTextColor ?? (isDark ? Colors.white70 : Colors.black87)),
                                       ),
                                     ),
                                   ),
@@ -520,7 +547,7 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
                                             fontSize: 12.5,
                                             fontWeight: _isTranslated ? FontWeight.w700 : FontWeight.w500,
                                             fontFamilyFallback: AppTheme.fontFallbacks,
-                                            color: _isTranslated ? Colors.white : (isDark ? Colors.white70 : Colors.black87),
+                                            color: _isTranslated ? Colors.white : (customTextColor ?? (isDark ? Colors.white70 : Colors.black87)),
                                           ),
                                         ),
                                         const SizedBox(width: 4),
@@ -528,7 +555,7 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
                                           "(Meetei)",
                                           style: TextStyle(
                                             fontSize: 10.5,
-                                            color: _isTranslated ? Colors.white.withValues(alpha: 0.85) : (isDark ? Colors.white54 : Colors.black54),
+                                            color: _isTranslated ? Colors.white.withValues(alpha: 0.85) : (customSubtitleColor ?? (isDark ? Colors.white54 : Colors.black54)),
                                           ),
                                         ),
                                       ],
@@ -592,6 +619,7 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
                   Text(
                     effectiveTitle,
                     style: theme.textTheme.headlineMedium?.copyWith(
+                      color: customTextColor,
                       fontWeight: FontWeight.w800,
                       letterSpacing: -0.5,
                       height: 1.3,
@@ -623,6 +651,7 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
                           Text(
                             effectiveAuthor,
                             style: theme.textTheme.bodyMedium?.copyWith(
+                              color: customTextColor,
                               fontWeight: FontWeight.w600,
                               fontFamilyFallback: AppTheme.fontFallbacks,
                             ),
@@ -632,7 +661,7 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
                                 ? "${MeeteiMayekService.translateToMeeteiMayekWithVocab(_formatDate(widget.post.date))} • ${MeeteiMayekService.translateToMeeteiMayekWithVocab(widget.post.readingTimeMin.toString())} ꯃꯤꯅꯤꯠ ꯄꯥꯕ"
                                 : "${_formatDate(widget.post.date)} • ${widget.post.readingTimeMin} min read",
                             style: TextStyle(
-                              color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.6),
+                              color: customSubtitleColor ?? theme.textTheme.bodySmall?.color?.withValues(alpha: 0.6),
                               fontSize: 12,
                               fontFamilyFallback: AppTheme.fontFallbacks,
                             ),
@@ -642,7 +671,10 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
                     ],
                   ),
                   const SizedBox(height: 20),
-                  const Divider(height: 1),
+                  Divider(
+                    height: 1,
+                    color: paperTone == "sepia" ? const Color(0xFFD6C6A8) : null,
+                  ),
                 ],
               ),
             ),
@@ -746,35 +778,39 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
                       p: theme.textTheme.bodyLarge?.copyWith(
                         fontSize: 16 * fontScale,
                         height: 1.7,
+                        color: customTextColor,
                         fontFamilyFallback: AppTheme.fontFallbacks,
                       ),
                       h1: theme.textTheme.headlineMedium?.copyWith(
                         fontSize: 24 * fontScale,
                         fontWeight: FontWeight.bold,
+                        color: customTextColor,
                         fontFamilyFallback: AppTheme.fontFallbacks,
                       ),
                       h2: theme.textTheme.titleLarge?.copyWith(
                         fontSize: 20 * fontScale,
                         fontWeight: FontWeight.w700,
+                        color: customTextColor,
                         fontFamilyFallback: AppTheme.fontFallbacks,
                       ),
                       h3: theme.textTheme.titleMedium?.copyWith(
                         fontSize: 18 * fontScale,
                         fontWeight: FontWeight.w600,
+                        color: customTextColor,
                         fontFamilyFallback: AppTheme.fontFallbacks,
                       ),
                       blockquote: theme.textTheme.bodyMedium?.copyWith(
                         fontSize: 15 * fontScale,
                         fontStyle: FontStyle.italic,
                         height: 1.6,
-                        color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8),
+                        color: customSubtitleColor ?? theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8),
                         fontFamilyFallback: AppTheme.fontFallbacks,
                       ),
                       blockquoteDecoration: BoxDecoration(
                         border: const Border(
                           left: BorderSide(color: Color(0xFF6366F1), width: 4),
                         ),
-                        color: isDark ? const Color(0xFF1B1B21) : const Color(0xFFF4F4F8),
+                        color: customContainerColor ?? (isDark ? const Color(0xFF1B1B21) : const Color(0xFFF4F4F8)),
                         borderRadius: const BorderRadius.only(
                           topRight: Radius.circular(8),
                           bottomRight: Radius.circular(8),
@@ -787,7 +823,7 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
                         color: isDark ? const Color(0xFF818CF8) : const Color(0xFF4F46E5),
                       ),
                       codeblockDecoration: BoxDecoration(
-                        color: isDark ? const Color(0xFF141418) : const Color(0xFFF3F3F7),
+                        color: customContainerColor ?? (isDark ? const Color(0xFF141418) : const Color(0xFFF3F3F7)),
                         borderRadius: BorderRadius.circular(10),
                         border: Border.all(
                           color: isDark ? Colors.white.withValues(alpha: 0.08) : Colors.black.withValues(alpha: 0.06),
@@ -795,6 +831,7 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
                       ),
                       listBullet: TextStyle(
                         fontSize: 16 * fontScale,
+                        color: customTextColor,
                         fontFamilyFallback: AppTheme.fontFallbacks,
                       ),
                     ),

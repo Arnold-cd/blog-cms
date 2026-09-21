@@ -17,7 +17,6 @@ class SettingsScreen extends ConsumerStatefulWidget {
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   bool _isSyncing = false;
   bool _transliteration = true;
-  String _paperTone = "default";
   double _ttsSpeed = 1.0;
 
   @override
@@ -28,12 +27,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   Future<void> _loadPreferences() async {
     final trans = await CacheService.isTransliterationEnabled();
-    final tone = await CacheService.getPaperTone();
     final speed = await CacheService.getTtsSpeed();
     if (mounted) {
       setState(() {
         _transliteration = trans;
-        _paperTone = tone;
         _ttsSpeed = speed;
       });
     }
@@ -168,6 +165,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final isDark = theme.brightness == Brightness.dark;
     final currentThemeMode = ref.watch(themeModeProvider);
     final currentFontSize = ref.watch(fontSizeProvider);
+    final currentPaperTone = ref.watch(paperToneProvider);
     final downloadedPdfs = ref.watch(downloadedPdfsProvider);
     final totalStorageBytes = ref.read(downloadedPdfsProvider.notifier).getTotalStorageBytes();
 
@@ -300,15 +298,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   leading: const Icon(Icons.auto_stories_rounded, color: Color(0xFF6366F1)),
                   title: const Text("Reader Paper Tone", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
                   subtitle: Text(
-                    _paperTone == "sepia"
+                    currentPaperTone == "sepia"
                         ? "Warm Sepia"
-                        : _paperTone == "oled"
+                        : currentPaperTone == "oled"
                             ? "OLED Pure Black"
                             : "Default Paper",
                     style: TextStyle(fontSize: 12, color: isDark ? Colors.white54 : Colors.black54),
                   ),
                   trailing: DropdownButton<String>(
-                    value: _paperTone,
+                    value: currentPaperTone,
                     underline: const SizedBox.shrink(),
                     items: const [
                       DropdownMenuItem(value: "default", child: Text("Default", style: TextStyle(fontSize: 13))),
@@ -317,8 +315,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     ],
                     onChanged: (val) {
                       if (val != null) {
-                        setState(() => _paperTone = val);
-                        CacheService.setPaperTone(val);
+                        ref.read(paperToneProvider.notifier).setTone(val);
                       }
                     },
                   ),
