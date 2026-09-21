@@ -58,35 +58,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         Expanded(
                           child: Row(
                             children: [
-                              Container(
-                                width: 38,
-                                height: 38,
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: isDark
-                                        ? [const Color(0xFF6366F1), const Color(0xFF4F46E5)]
-                                        : [const Color(0xFF4F46E5), const Color(0xFF4338CA)],
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                  ),
-                                  borderRadius: BorderRadius.circular(10),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: const Color(0xFF6366F1).withOpacity(0.35),
-                                      blurRadius: 8,
-                                      offset: const Offset(0, 3),
-                                    ),
-                                  ],
-                                ),
-                                alignment: Alignment.center,
-                                child: const Text(
-                                  "S",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.w900,
-                                    letterSpacing: -0.5,
-                                  ),
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Image.asset(
+                                  "assets/images/app_logo.png",
+                                  width: 38,
+                                  height: 38,
+                                  fit: BoxFit.cover,
                                 ),
                               ),
                               const SizedBox(width: 12),
