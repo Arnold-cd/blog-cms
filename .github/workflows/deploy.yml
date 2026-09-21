@@ -10,7 +10,10 @@ on:
       - 'library/**'
       - 'scripts/**'
       - 'web/**'
+      - '.github/workflows/**'
       - 'requirements.txt'
+      - 'library.json'
+      - 'posts.json'
   workflow_dispatch:
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages and committing posts.json
