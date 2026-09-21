@@ -1,5 +1,26 @@
 [
   {
+    "id": "senpi-mukaanlei",
+    "title": "Senpi mukaanlei",
+    "description": "Pamheiba Larei Lathup.",
+    "author": "Sanamahee Laining Leechat Kangleipak",
+    "category": "Puya & History",
+    "language": "mni",
+    "published_date": "2026-09-21",
+    "file_name": "Senpi mukaanlei.pdf",
+    "pdf_url": "https://raw.githubusercontent.com/Arnold-cd/blog-cms/main/library/pdfs/Senpi mukaanlei.pdf",
+    "cover_url": "https://raw.githubusercontent.com/Arnold-cd/blog-cms/main/library/covers/senpi-mukaanlei-cover.png",
+    "page_count": 43,
+    "file_size_bytes": 31060862,
+    "file_size_formatted": "29.6 MB",
+    "featured": true,
+    "tags": [
+      "Puya",
+      "History",
+      "Manuscript"
+    ]
+  },
+  {
     "id": "heritage-quiz-meiteilon-113-qa-3-choices-1",
     "title": "Heritage Quiz Meeteilon 113 QA 3 Choices 1",
     "description": "",
