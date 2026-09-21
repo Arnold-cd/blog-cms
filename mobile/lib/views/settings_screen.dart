@@ -5,6 +5,7 @@ import "../providers/app_providers.dart";
 import "../providers/library_providers.dart";
 import "../services/cache_service.dart";
 import "../widgets/donation_modal.dart";
+import "../widgets/privacy_modal.dart";
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -495,6 +496,18 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   ),
                   trailing: const Icon(Icons.chevron_right_rounded),
                   onTap: _showAboutDialog,
+                ),
+                const Divider(height: 1),
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.shield_outlined, color: Color(0xFF10B981)),
+                  title: const Text("Privacy & Data Safety", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+                  subtitle: Text(
+                    "Zero tracking, strictly local device storage",
+                    style: TextStyle(fontSize: 12, color: isDark ? Colors.white54 : Colors.black54),
+                  ),
+                  trailing: const Icon(Icons.chevron_right_rounded),
+                  onTap: () => PrivacyPolicyModal.show(context),
                 ),
                 const Divider(height: 1),
                 ListTile(
