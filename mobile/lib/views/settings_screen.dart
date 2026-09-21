@@ -147,10 +147,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }
 
   void _shareApp() {
+    final media = MediaQuery.of(context);
+    final screenW = media.size.width > 0 ? media.size.width : 375.0;
+    final screenH = media.size.height > 0 ? media.size.height : 667.0;
     final box = context.findRenderObject() as RenderBox?;
-    final origin = (box != null && box.hasSize)
+    final origin = (box != null && box.hasSize && box.size.width > 10 && box.size.height > 10)
         ? (box.localToGlobal(Offset.zero) & box.size)
-        : Rect.fromLTWH(0, 0, MediaQuery.of(context).size.width, MediaQuery.of(context).size.height / 2);
+        : Rect.fromLTWH(0, 0, screenW, screenH / 2);
 
     Share.share(
       "Read indigenous Manipuri Puya manuscripts and articles with SLLK!\nhttps://blog-cms-gilt.vercel.app/",

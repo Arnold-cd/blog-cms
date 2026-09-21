@@ -90,18 +90,20 @@ class AppDrawer extends ConsumerWidget {
                 _buildSectionHeader("PREFERENCES & DISPLAY", isDark),
 
                 // Quick Dark Mode Toggle Tile
-                Container(
-                  margin: const EdgeInsets.only(bottom: 6),
-                  decoration: BoxDecoration(
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 6),
+                  child: Material(
                     color: isDark ? Colors.white.withOpacity(0.03) : const Color(0xFFF8FAFC),
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(
-                      color: isDark ? Colors.white.withOpacity(0.06) : Colors.black.withOpacity(0.05),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                      side: BorderSide(
+                        color: isDark ? Colors.white.withOpacity(0.06) : Colors.black.withOpacity(0.05),
+                      ),
                     ),
-                  ),
-                  child: ListTile(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
-                    dense: true,
+                    clipBehavior: Clip.antiAlias,
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
+                      dense: true,
                     leading: Container(
                       width: 36,
                       height: 36,
@@ -142,6 +144,7 @@ class AppDrawer extends ConsumerWidget {
                     ),
                   ),
                 ),
+              ),
 
                 // Reading Paper Tone Quick Indicator / Settings
                 _buildDrawerItem(
@@ -357,25 +360,26 @@ class AppDrawer extends ConsumerWidget {
                 ? Colors.white70
                 : const Color(0xFF475569));
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 4),
-      decoration: BoxDecoration(
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 4),
+      child: Material(
         color: isSelected
             ? (isDark ? const Color(0xFF0284C7).withOpacity(0.15) : const Color(0xFF0284C7).withOpacity(0.08))
             : Colors.transparent,
-        borderRadius: BorderRadius.circular(12),
-        border: isSelected
-            ? Border.all(
-                color: const Color(0xFF0284C7).withOpacity(0.3),
-                width: 1,
-              )
-            : null,
-      ),
-      child: ListTile(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        onTap: onTap,
-        dense: true,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 1),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: isSelected
+              ? BorderSide(
+                  color: const Color(0xFF0284C7).withOpacity(0.3),
+                  width: 1,
+                )
+              : BorderSide.none,
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: ListTile(
+          onTap: onTap,
+          dense: true,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 1),
         leading: Container(
           width: 34,
           height: 34,
@@ -431,6 +435,7 @@ class AppDrawer extends ConsumerWidget {
                 ),
               )
             : null,
+        ),
       ),
     );
   }
