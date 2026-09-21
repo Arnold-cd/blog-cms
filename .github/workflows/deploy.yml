@@ -58,13 +58,12 @@ jobs:
 
       - name: 🔄 Sync CMS Assets to Web App Public Dir
         run: |
-          mkdir -p web/public/images web/public/posts web/public/library/pdfs web/public/library/covers
+          mkdir -p web/public/images web/public/posts web/public/library
           cp posts.json web/public/
           cp library.json web/public/
           cp -r images/* web/public/images/
           cp -r posts/* web/public/posts/
-          if [ -d library/pdfs ] && [ "$(ls -A library/pdfs)" ]; then cp -r library/pdfs/* web/public/library/pdfs/; fi
-          if [ -d library/covers ] && [ "$(ls -A library/covers)" ]; then cp -r library/covers/* web/public/library/covers/; fi
+          if [ -d library ]; then cp -R library/. web/public/library/; fi
 
       - name: 🟢 Set up Node.js
         uses: actions/setup-node@v4
