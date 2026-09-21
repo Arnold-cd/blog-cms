@@ -3,199 +3,388 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Privacy Policy - SLLK Reader & E-Library</title>
+  <title>Privacy Policy - SLLK Reader</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0b0f19;
-      --card-bg: rgba(30, 41, 59, 0.5);
-      --border: rgba(255, 255, 255, 0.08);
-      --text: #f1f5f9;
-      --text-muted: #94a3b8;
-      --accent: #6366f1;
-      --accent-light: #818cf8;
-      --emerald: #10b981;
+      --bg: #FAFAF9;
+      --surface: #FFFFFF;
+      --border: #E7E5E4;
+      --border-subtle: #F5F5F4;
+      --text-primary: #1C1917;
+      --text-secondary: #57534E;
+      --text-muted: #78716C;
+      --accent: #292524;
+      --accent-badge-bg: #F5F5F4;
+      --accent-badge-text: #44403C;
+      --callout-bg: #F0FDF4;
+      --callout-border: #DCFCE7;
+      --callout-text: #166534;
+      --link: #0284C7;
     }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
     }
+
     body {
       background-color: var(--bg);
-      color: var(--text);
-      line-height: 1.7;
-      padding: 40px 20px;
+      color: var(--text-secondary);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.75;
+      font-size: 15px;
+      -webkit-font-smoothing: antialiased;
+      padding: 60px 20px 80px;
     }
-    .container {
-      max-width: 760px;
+
+    .wrapper {
+      max-width: 720px;
       margin: 0 auto;
     }
+
+    /* Classic Brand Header */
     .header {
-      margin-bottom: 40px;
-      text-align: center;
+      margin-bottom: 48px;
+      padding-bottom: 32px;
+      border-bottom: 1px solid var(--border);
     }
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 14px;
-      background: rgba(99, 102, 241, 0.12);
-      color: var(--accent-light);
-      border: 1px solid rgba(99, 102, 241, 0.25);
-      border-radius: 9999px;
-      font-size: 13px;
-      font-weight: 600;
-      margin-bottom: 16px;
-    }
-    h1 {
-      font-size: 32px;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      margin-bottom: 12px;
-      background: linear-gradient(135deg, #fff 0%, #cbd5e1 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .effective-date {
-      color: var(--text-muted);
-      font-size: 14px;
-    }
-    .card {
-      background: var(--card-bg);
-      backdrop-filter: blur(16px);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 32px;
-      margin-bottom: 24px;
-    }
-    h2 {
-      font-size: 20px;
-      font-weight: 700;
-      margin-bottom: 12px;
-      color: #fff;
+
+    .brand-row {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
+      margin-bottom: 24px;
     }
-    h2::before {
-      content: '';
+
+    .brand-logo {
+      width: 42px;
+      height: 42px;
+      background: #1C1917;
+      color: #FFFFFF;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: 0.05em;
+    }
+
+    .brand-meta {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.01em;
+    }
+
+    .brand-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .badge {
       display: inline-block;
-      width: 4px;
-      height: 18px;
-      background: var(--accent);
-      border-radius: 2px;
+      padding: 4px 10px;
+      background: var(--accent-badge-bg);
+      color: var(--accent-badge-text);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 16px;
     }
+
+    h1 {
+      font-size: 34px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.03em;
+      margin-bottom: 10px;
+      line-height: 1.25;
+    }
+
+    .meta-line {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    /* Key Guarantee Callout */
+    .guarantee-box {
+      background: var(--callout-bg);
+      border: 1px solid var(--callout-border);
+      border-radius: 12px;
+      padding: 18px 22px;
+      margin-bottom: 36px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+
+    .guarantee-icon {
+      font-size: 18px;
+      line-height: 1;
+      margin-top: 2px;
+    }
+
+    .guarantee-content h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--callout-text);
+      margin-bottom: 4px;
+    }
+
+    .guarantee-content p {
+      font-size: 13px;
+      color: #15803D;
+      line-height: 1.5;
+    }
+
+    /* Policy Content Sections */
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px 32px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .section-num {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+    }
+
+    h2 {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.01em;
+    }
+
     p {
-      color: var(--text-muted);
-      margin-bottom: 16px;
-      font-size: 15px;
+      margin-bottom: 12px;
     }
+
+    p:last-child {
+      margin-bottom: 0;
+    }
+
     ul {
-      margin-left: 20px;
-      margin-bottom: 16px;
-      color: var(--text-muted);
-      font-size: 15px;
+      list-style: none;
+      padding-left: 0;
+      margin: 12px 0;
     }
+
     li {
+      position: relative;
+      padding-left: 20px;
       margin-bottom: 8px;
     }
-    .highlight {
-      background: rgba(16, 185, 129, 0.1);
-      border-left: 3px solid var(--emerald);
-      padding: 16px;
-      border-radius: 0 12px 12px 0;
-      margin-bottom: 16px;
-    }
-    .highlight p {
-      color: #e2e8f0;
-      margin-bottom: 0;
-      font-size: 14px;
-    }
-    .footer {
-      text-align: center;
-      margin-top: 50px;
+
+    li::before {
+      content: "•";
+      position: absolute;
+      left: 6px;
       color: var(--text-muted);
-      font-size: 13px;
+      font-weight: bold;
     }
-    .footer a {
-      color: var(--accent-light);
+
+    strong {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    /* Links */
+    a {
+      color: var(--link);
       text-decoration: none;
+      word-break: break-all;
     }
-    .footer a:hover {
+
+    a:hover {
       text-decoration: underline;
+    }
+
+    /* Footer */
+    .footer {
+      margin-top: 48px;
+      padding-top: 28px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .footer a {
+      color: var(--text-secondary);
+      margin-top: 6px;
+      display: inline-block;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 36px 16px 60px;
+      }
+      .section {
+        padding: 22px 20px;
+      }
+      h1 {
+        font-size: 26px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="header">
-      <div class="badge">Official Policy</div>
-      <h1>Privacy Policy for SLLK</h1>
-      <p class="effective-date">Effective Date: September 21, 2026 • Version 1.0</p>
-    </div>
+  <div class="wrapper">
 
-    <div class="card">
-      <h2>Introduction & Commitment</h2>
-      <p>
-        <strong>SLLK</strong> ("we", "our", or "us") is dedicated to preserving, transliterating, and promoting ancient Manipuri Puya manuscripts and indigenous literature. We prioritize user privacy and believe that reading and cultural study should remain completely confidential.
-      </p>
-      <div class="highlight">
-        <p><strong>Summary:</strong> SLLK does not collect personal identifiers, does not create user tracking profiles, does not serve targeted ads, and stores your bookmarks and reading preferences strictly offline on your own device.</p>
+    <!-- Header -->
+    <header class="header">
+      <div class="brand-row">
+        <div class="brand-logo">S</div>
+        <div class="brand-meta">
+          <span class="brand-title">SLLK Reader</span>
+          <span class="brand-sub">Manipuri Cultural Preservation & E-Library</span>
+        </div>
+      </div>
+      <span class="badge">Privacy Policy</span>
+      <h1>Privacy Policy</h1>
+      <p class="meta-line">Effective Date: September 21, 2026 • Version 1.0.0</p>
+    </header>
+
+    <!-- Key Guarantee Banner -->
+    <div class="guarantee-box">
+      <div class="guarantee-icon">🛡️</div>
+      <div class="guarantee-content">
+        <h4>100% Privacy by Design</h4>
+        <p>SLLK does not require user accounts, does not collect personal identifiers, does not track your reading activity, and does not sell or share data with any advertising network.</p>
       </div>
     </div>
 
-    <div class="card">
-      <h2>Information We Collect</h2>
-      <p>SLLK is built with privacy-by-design principles:</p>
+    <!-- Section 1 -->
+    <article class="section">
+      <div class="section-header">
+        <span class="section-num">01</span>
+        <h2>Introduction</h2>
+      </div>
+      <p>
+        <strong>SLLK</strong> is a clean, non-profit digital publication and e-library application dedicated to the study, transliteration, and preservation of indigenous Manipuri Puya manuscripts, literature, and educational essays in both Meetei Mayek and English scripts.
+      </p>
+      <p>
+        We believe that cultural reading should be private, serene, and respectful. This Privacy Policy transparently outlines our data practices for the SLLK mobile app across iOS and Android.
+      </p>
+    </article>
+
+    <!-- Section 2 -->
+    <article class="section">
+      <div class="section-header">
+        <span class="section-num">02</span>
+        <h2>Information We Do Not Collect</h2>
+      </div>
+      <p>SLLK operates with strict zero-data collection standards:</p>
       <ul>
-        <li><strong>No Personal Information:</strong> We do not require account registration, email addresses, names, phone numbers, or passwords.</li>
-        <li><strong>Local Device Storage:</strong> Bookmarks, reading font size, theme preference, and downloaded PDF documents are stored entirely in your local device storage. They are never uploaded or synced to external profiling servers.</li>
-        <li><strong>Text-to-Speech (TTS):</strong> Narration uses your device's built-in native speech synthesis engine. No spoken audio or reader text is transmitted to our servers.</li>
-        <li><strong>Network Requests:</strong> The app connects to the content delivery network solely to fetch published articles, metadata manifests, and PDF documents. Standard HTTP web logs (such as IP address and user-agent) may be temporarily processed by content delivery networks to serve files securely.</li>
+        <li><strong>No Account Required:</strong> You do not need to register, provide an email address, phone number, or create passwords.</li>
+        <li><strong>No Personal Identifiers:</strong> We do not collect names, addresses, contacts, or device hardware identifiers (IMEI/MAC).</li>
+        <li><strong>No Location Data:</strong> We never request access to GPS, cellular triangulation, or IP location services.</li>
+        <li><strong>No Advertising or Tracking:</strong> The application contains zero advertising SDKs, tracking pixels, or commercial telemetry brokers.</li>
       </ul>
-    </div>
+    </article>
 
-    <div class="card">
-      <h2>Offline Storage & Data Control</h2>
+    <!-- Section 3 -->
+    <article class="section">
+      <div class="section-header">
+        <span class="section-num">03</span>
+        <h2>Local Storage & Device Permissions</h2>
+      </div>
       <p>
-        You have complete control over all data saved on your device. From the in-app <strong>Settings</strong> screen, you can:
+        To ensure high performance and enable offline reading in remote areas, SLLK stores selected data strictly on your local device:
       </p>
       <ul>
-        <li>Clear downloaded offline PDF files at any time with a single tap.</li>
-        <li>Clear article and image thumbnail caches.</li>
-        <li>Uninstalling the app immediately deletes all stored offline files and preferences.</li>
+        <li><strong>Reader Preferences:</strong> Your selected article font size, reading paper tone, and audio narration speed are saved locally in private app storage.</li>
+        <li><strong>Offline PDFs:</strong> When you tap "Download", the requested manuscript PDF is saved in your device's sandboxed document directory for offline reading.</li>
+        <li><strong>Cached Articles:</strong> Downloaded article text is cached locally so you can read without an active internet connection.</li>
       </ul>
-    </div>
-
-    <div class="card">
-      <h2>Children's Privacy</h2>
       <p>
-        SLLK provides historical literature and educational cultural materials. We do not knowingly collect or solicit personal data from children under the age of 13.
+        This information stays exclusively on your physical device. You can purge all cached content at any time via <strong>Settings &gt; Storage &gt; Clear All Offline Cache</strong>.
       </p>
-    </div>
+    </article>
 
-    <div class="card">
-      <h2>Changes to this Policy</h2>
+    <!-- Section 4 -->
+    <article class="section">
+      <div class="section-header">
+        <span class="section-num">04</span>
+        <h2>Network Connections</h2>
+      </div>
       <p>
-        We may update this Privacy Policy from time to time to reflect improvements or regulatory requirements. Any updates will be posted here with an updated effective date.
+        The application connects to our verified Content Delivery Network (CDN) and GitHub repository solely to fetch public article manifests (<code>posts.json</code>) and open digital library documents (<code>library.json</code>).
       </p>
-    </div>
-
-    <div class="card">
-      <h2>Contact Us</h2>
       <p>
-        If you have any questions or suggestions regarding this Privacy Policy, please reach out to us through our project portal:
+        These network requests transmit standard HTTP client headers (such as User-Agent) necessary to deliver requested media files. No profiling or cross-session tracking is performed.
       </p>
-      <p><a href="https://blog-cms-gilt.vercel.app/" style="color: var(--accent-light);">https://blog-cms-gilt.vercel.app/</a></p>
-    </div>
+    </article>
 
-    <div class="footer">
+    <!-- Section 5 -->
+    <article class="section">
+      <div class="section-header">
+        <span class="section-num">05</span>
+        <h2>Children's Privacy</h2>
+      </div>
+      <p>
+        SLLK provides cultural, linguistic, and historical educational content suitable for all age groups. We do not knowingly solicit or collect information from children under the age of 13.
+      </p>
+    </article>
+
+    <!-- Section 6 -->
+    <article class="section">
+      <div class="section-header">
+        <span class="section-num">06</span>
+        <h2>Changes to This Policy</h2>
+      </div>
+      <p>
+        We may occasionally update this Privacy Policy to reflect app enhancements or legal compliance. Any revisions will be published immediately at this URL with an updated effective date.
+      </p>
+    </article>
+
+    <!-- Section 7 -->
+    <article class="section">
+      <div class="section-header">
+        <span class="section-num">07</span>
+        <h2>Contact & Project Information</h2>
+      </div>
+      <p>
+        If you have any questions or feedback regarding this policy, please reach out via our project portal:
+      </p>
+      <p>
+        <a href="https://blog-cms-gilt.vercel.app/" target="_blank" rel="noopener">https://blog-cms-gilt.vercel.app/</a>
+      </p>
+    </article>
+
+    <!-- Footer -->
+    <footer class="footer">
       <p>© 2026 SLLK. Dedicated to Manipuri Cultural Preservation.</p>
       <p><a href="https://blog-cms-gilt.vercel.app/">Return to SLLK Portal</a></p>
-    </div>
+    </footer>
+
   </div>
 </body>
 </html>
