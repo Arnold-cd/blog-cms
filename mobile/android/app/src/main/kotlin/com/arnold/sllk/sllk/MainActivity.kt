@@ -1,4 +1,4 @@
-package com.arnold.sllk.sllk
+package sllk.kangleipak.app
 
 import io.flutter.embedding.android.FlutterActivity
 

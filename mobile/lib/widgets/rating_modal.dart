@@ -7,9 +7,9 @@ class RatingModal extends StatefulWidget {
   const RatingModal({super.key});
 
   static const String playStoreUrl =
-      "https://play.google.com/store/apps/details?id=com.arnold.sllk.sllk";
+      "https://play.google.com/store/apps/details?id=sllk.kangleipak.app";
   static const String playStoreMarketUri =
-      "market://details?id=com.arnold.sllk.sllk";
+      "market://details?id=sllk.kangleipak.app";
   static const String feedbackEmail =
       "sanamaheelainingleechatkanglei@gmail.com";
 
@@ -38,7 +38,8 @@ class _RatingModalState extends State<RatingModal> {
       final webUri = Uri.parse(RatingModal.playStoreUrl);
 
       try {
-        final launched = await launchUrl(marketUri, mode: LaunchMode.externalApplication);
+        final launched =
+            await launchUrl(marketUri, mode: LaunchMode.externalApplication);
         if (!launched) {
           await launchUrl(webUri, mode: LaunchMode.externalApplication);
         }
@@ -49,7 +50,8 @@ class _RatingModalState extends State<RatingModal> {
           if (!mounted) return;
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text("Thank you for your 5-star rating! Review portal will open upon Play Store release."),
+              content: Text(
+                  "Thank you for your 5-star rating! Review portal will open upon Play Store release."),
               behavior: SnackBarBehavior.floating,
             ),
           );
@@ -71,7 +73,8 @@ class _RatingModalState extends State<RatingModal> {
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text("Thank you for your feedback! Please email us at: ${RatingModal.feedbackEmail}"),
+            content: Text(
+                "Thank you for your feedback! Please email us at: ${RatingModal.feedbackEmail}"),
             behavior: SnackBarBehavior.floating,
           ),
         );
@@ -108,7 +111,9 @@ class _RatingModalState extends State<RatingModal> {
         color: isDark ? const Color(0xFF141418) : Colors.white,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
         border: Border.all(
-          color: isDark ? Colors.white.withOpacity(0.08) : Colors.black.withOpacity(0.06),
+          color: isDark
+              ? Colors.white.withOpacity(0.08)
+              : Colors.black.withOpacity(0.06),
         ),
       ),
       padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
@@ -190,10 +195,13 @@ class _RatingModalState extends State<RatingModal> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
-                color: isDark ? const Color(0xFF1E1E24) : const Color(0xFFF8FAFC),
+                color:
+                    isDark ? const Color(0xFF1E1E24) : const Color(0xFFF8FAFC),
                 borderRadius: BorderRadius.circular(14),
                 border: Border.all(
-                  color: isDark ? Colors.white.withOpacity(0.06) : Colors.black.withOpacity(0.05),
+                  color: isDark
+                      ? Colors.white.withOpacity(0.06)
+                      : Colors.black.withOpacity(0.05),
                 ),
               ),
               child: Column(
@@ -210,9 +218,12 @@ class _RatingModalState extends State<RatingModal> {
                         },
                         behavior: HitTestBehavior.opaque,
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 6, vertical: 4),
                           child: Icon(
-                            isSelected ? Icons.star_rounded : Icons.star_outline_rounded,
+                            isSelected
+                                ? Icons.star_rounded
+                                : Icons.star_outline_rounded,
                             size: 38,
                             color: isSelected
                                 ? const Color(0xFFF59E0B)
@@ -261,10 +272,14 @@ class _RatingModalState extends State<RatingModal> {
                   child: ElevatedButton.icon(
                     onPressed: _submitRating,
                     icon: Icon(
-                      _selectedStars >= 4 ? Icons.rate_review_rounded : Icons.feedback_outlined,
+                      _selectedStars >= 4
+                          ? Icons.rate_review_rounded
+                          : Icons.feedback_outlined,
                       size: 16,
                     ),
-                    label: Text(_selectedStars >= 4 ? "Rate on Store" : "Send Feedback"),
+                    label: Text(_selectedStars >= 4
+                        ? "Rate on Store"
+                        : "Send Feedback"),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFF59E0B),
                       foregroundColor: Colors.white,

@@ -1,5 +1,8 @@
+import "dart:io";
 import "package:flutter/material.dart";
+import "package:flutter/services.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
+import "package:path_provider/path_provider.dart";
 import "package:share_plus/share_plus.dart";
 import "../providers/app_providers.dart";
 import "../providers/library_providers.dart";
@@ -148,20 +151,42 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
   }
 
-  void _shareApp() {
+  Future<void> _shareApp() async {
     final media = MediaQuery.of(context);
     final screenW = media.size.width > 0 ? media.size.width : 375.0;
     final screenH = media.size.height > 0 ? media.size.height : 667.0;
     final box = context.findRenderObject() as RenderBox?;
-    final origin = (box != null && box.hasSize && box.size.width > 10 && box.size.height > 10)
+    final origin = (box != null &&
+            box.hasSize &&
+            box.size.width > 10 &&
+            box.size.height > 10)
         ? (box.localToGlobal(Offset.zero) & box.size)
         : Rect.fromLTWH(0, 0, screenW, screenH / 2);
 
-    Share.share(
-      "Read indigenous Manipuri Puya manuscripts and articles with SLLK!\nhttps://blog-cms-gilt.vercel.app/",
-      subject: "SLLK - Meetei Mayek & English Reader",
-      sharePositionOrigin: origin,
-    );
+    const shareText =
+        "Read indigenous Manipuri Puya manuscripts, literary essays & Meetei Mayek script with SLLK!\nhttps://play.google.com/store/apps/details?id=sllk.kangleipak.app";
+
+    try {
+      final byteData = await rootBundle.load("assets/images/app_logo.png");
+      final tempDir = await getTemporaryDirectory();
+      final file = File("${tempDir.path}/app_logo.png");
+      await file.writeAsBytes(
+        byteData.buffer
+            .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes),
+      );
+      await Share.shareXFiles(
+        [XFile(file.path)],
+        text: shareText,
+        subject: "SLLK - Meetei Mayek & English Reader",
+        sharePositionOrigin: origin,
+      );
+    } catch (_) {
+      await Share.share(
+        shareText,
+        subject: "SLLK - Meetei Mayek & English Reader",
+        sharePositionOrigin: origin,
+      );
+    }
   }
 
   @override
@@ -172,7 +197,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final currentFontSize = ref.watch(fontSizeProvider);
     final currentPaperTone = ref.watch(paperToneProvider);
     final downloadedPdfs = ref.watch(downloadedPdfsProvider);
-    final totalStorageBytes = ref.read(downloadedPdfsProvider.notifier).getTotalStorageBytes();
+    final totalStorageBytes =
+        ref.read(downloadedPdfsProvider.notifier).getTotalStorageBytes();
 
     return Scaffold(
       appBar: AppBar(
@@ -197,7 +223,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                color: isDark ? Colors.white.withValues(alpha: 0.08) : const Color(0xFFC7D2FE),
+                color: isDark
+                    ? Colors.white.withValues(alpha: 0.08)
+                    : const Color(0xFFC7D2FE),
               ),
             ),
             child: Row(
@@ -218,7 +246,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     children: [
                       const Text(
                         "SLLK Reader & E-Library",
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 2),
                       Text(
@@ -249,14 +278,18 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     isDark ? Icons.dark_mode_rounded : Icons.light_mode_rounded,
                     color: const Color(0xFF6366F1),
                   ),
-                  title: const Text("Theme Mode", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+                  title: const Text("Theme Mode",
+                      style:
+                          TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
                   subtitle: Text(
                     currentThemeMode == ThemeMode.dark
                         ? "Dark Mode"
                         : currentThemeMode == ThemeMode.light
                             ? "Light Mode"
                             : "System Default",
-                    style: TextStyle(fontSize: 12, color: isDark ? Colors.white54 : Colors.black54),
+                    style: TextStyle(
+                        fontSize: 12,
+                        color: isDark ? Colors.white54 : Colors.black54),
                   ),
                   trailing: Switch.adaptive(
                     value: currentThemeMode == ThemeMode.dark,
@@ -269,29 +302,39 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 const Divider(height: 1),
                 ListTile(
                   contentPadding: EdgeInsets.zero,
-                  leading: const Icon(Icons.format_size_rounded, color: Color(0xFF6366F1)),
-                  title: const Text("Article Font Size", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+                  leading: const Icon(Icons.format_size_rounded,
+                      color: Color(0xFF6366F1)),
+                  title: const Text("Article Font Size",
+                      style:
+                          TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
                   subtitle: Text(
                     "${(currentFontSize * 100).toInt()}% scale",
-                    style: TextStyle(fontSize: 12, color: isDark ? Colors.white54 : Colors.black54),
+                    style: TextStyle(
+                        fontSize: 12,
+                        color: isDark ? Colors.white54 : Colors.black54),
                   ),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       IconButton(
-                        icon: const Icon(Icons.remove_circle_outline_rounded, size: 20),
+                        icon: const Icon(Icons.remove_circle_outline_rounded,
+                            size: 20),
                         onPressed: currentFontSize > 0.8
-                            ? () => ref.read(fontSizeProvider.notifier).decrease()
+                            ? () =>
+                                ref.read(fontSizeProvider.notifier).decrease()
                             : null,
                       ),
                       Text(
                         "${currentFontSize.toStringAsFixed(1)}x",
-                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 13),
                       ),
                       IconButton(
-                        icon: const Icon(Icons.add_circle_outline_rounded, size: 20),
+                        icon: const Icon(Icons.add_circle_outline_rounded,
+                            size: 20),
                         onPressed: currentFontSize < 1.4
-                            ? () => ref.read(fontSizeProvider.notifier).increase()
+                            ? () =>
+                                ref.read(fontSizeProvider.notifier).increase()
                             : null,
                       ),
                     ],
@@ -300,8 +343,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 const Divider(height: 1),
                 ListTile(
                   contentPadding: EdgeInsets.zero,
-                  leading: const Icon(Icons.auto_stories_rounded, color: Color(0xFF6366F1)),
-                  title: const Text("Reader Paper Tone", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+                  leading: const Icon(Icons.auto_stories_rounded,
+                      color: Color(0xFF6366F1)),
+                  title: const Text("Reader Paper Tone",
+                      style:
+                          TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
                   subtitle: Text(
                     switch (currentPaperTone) {
                       "sepia" => "Warm Sepia (Parchment)",
@@ -311,7 +357,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       "oled" => "OLED Pure Black (Zero-Nit)",
                       _ => "Default Paper",
                     },
-                    style: TextStyle(fontSize: 12, color: isDark ? Colors.white54 : Colors.black54),
+                    style: TextStyle(
+                        fontSize: 12,
+                        color: isDark ? Colors.white54 : Colors.black54),
                   ),
                   trailing: DropdownButton<String>(
                     value: currentPaperTone,
@@ -327,12 +375,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                               height: 12,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: isDark ? const Color(0xFF1E293B) : Colors.white,
-                                border: Border.all(color: Colors.grey.shade400, width: 1),
+                                color: isDark
+                                    ? const Color(0xFF1E293B)
+                                    : Colors.white,
+                                border: Border.all(
+                                    color: Colors.grey.shade400, width: 1),
                               ),
                             ),
                             const SizedBox(width: 8),
-                            const Text("Default", style: TextStyle(fontSize: 13)),
+                            const Text("Default",
+                                style: TextStyle(fontSize: 13)),
                           ],
                         ),
                       ),
@@ -347,11 +399,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 color: const Color(0xFFFAF7F0),
-                                border: Border.all(color: const Color(0xFFDCD6C8), width: 1),
+                                border: Border.all(
+                                    color: const Color(0xFFDCD6C8), width: 1),
                               ),
                             ),
                             const SizedBox(width: 8),
-                            const Text("Soft Cream", style: TextStyle(fontSize: 13)),
+                            const Text("Soft Cream",
+                                style: TextStyle(fontSize: 13)),
                           ],
                         ),
                       ),
@@ -366,11 +420,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 color: const Color(0xFFFBF0D9),
-                                border: Border.all(color: const Color(0xFFD9C6A5), width: 1),
+                                border: Border.all(
+                                    color: const Color(0xFFD9C6A5), width: 1),
                               ),
                             ),
                             const SizedBox(width: 8),
-                            const Text("Warm Sepia", style: TextStyle(fontSize: 13)),
+                            const Text("Warm Sepia",
+                                style: TextStyle(fontSize: 13)),
                           ],
                         ),
                       ),
@@ -385,11 +441,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 color: const Color(0xFFEBF2EB),
-                                border: Border.all(color: const Color(0xFFB8CEB8), width: 1),
+                                border: Border.all(
+                                    color: const Color(0xFFB8CEB8), width: 1),
                               ),
                             ),
                             const SizedBox(width: 8),
-                            const Text("Calm Sage", style: TextStyle(fontSize: 13)),
+                            const Text("Calm Sage",
+                                style: TextStyle(fontSize: 13)),
                           ],
                         ),
                       ),
@@ -407,7 +465,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                               ),
                             ),
                             const SizedBox(width: 8),
-                            const Text("Midnight Navy", style: TextStyle(fontSize: 13)),
+                            const Text("Midnight Navy",
+                                style: TextStyle(fontSize: 13)),
                           ],
                         ),
                       ),
@@ -425,7 +484,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                               ),
                             ),
                             const SizedBox(width: 8),
-                            const Text("OLED Black", style: TextStyle(fontSize: 13)),
+                            const Text("OLED Black",
+                                style: TextStyle(fontSize: 13)),
                           ],
                         ),
                       ),
@@ -449,11 +509,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             isDark: isDark,
             child: SwitchListTile.adaptive(
               contentPadding: EdgeInsets.zero,
-              secondary: const Icon(Icons.spellcheck_rounded, color: Color(0xFF6366F1)),
-              title: const Text("Script Transliteration", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+              secondary: const Icon(Icons.spellcheck_rounded,
+                  color: Color(0xFF6366F1)),
+              title: const Text("Script Transliteration",
+                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
               subtitle: Text(
                 "Instant toggle between Bengali/Roman script and Meetei Mayek",
-                style: TextStyle(fontSize: 12, color: isDark ? Colors.white54 : Colors.black54),
+                style: TextStyle(
+                    fontSize: 12,
+                    color: isDark ? Colors.white54 : Colors.black54),
               ),
               value: _transliteration,
               activeColor: const Color(0xFF6366F1),
@@ -467,18 +531,24 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           const SizedBox(height: 20),
 
           // Section 3: Storage & Offline Cache
-          _buildSectionHeader("Storage & Offline Cache", Icons.sd_storage_rounded),
+          _buildSectionHeader(
+              "Storage & Offline Cache", Icons.sd_storage_rounded),
           _buildCard(
             isDark: isDark,
             child: Column(
               children: [
                 ListTile(
                   contentPadding: EdgeInsets.zero,
-                  leading: const Icon(Icons.picture_as_pdf_rounded, color: Color(0xFFEF4444)),
-                  title: const Text("Downloaded PDF Documents", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+                  leading: const Icon(Icons.picture_as_pdf_rounded,
+                      color: Color(0xFFEF4444)),
+                  title: const Text("Downloaded PDF Documents",
+                      style:
+                          TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
                   subtitle: Text(
                     "${downloadedPdfs.length} offline files (${_formatBytes(totalStorageBytes)})",
-                    style: TextStyle(fontSize: 12, color: isDark ? Colors.white54 : Colors.black54),
+                    style: TextStyle(
+                        fontSize: 12,
+                        color: isDark ? Colors.white54 : Colors.black54),
                   ),
                   trailing: downloadedPdfs.isNotEmpty
                       ? TextButton(
@@ -491,17 +561,24 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         )
                       : Text(
                           "Empty",
-                          style: TextStyle(fontSize: 12, color: isDark ? Colors.white38 : Colors.black38),
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: isDark ? Colors.white38 : Colors.black38),
                         ),
                 ),
                 const Divider(height: 1),
                 ListTile(
                   contentPadding: EdgeInsets.zero,
-                  leading: const Icon(Icons.cleaning_services_rounded, color: Color(0xFF6366F1)),
-                  title: const Text("Clear Image & Data Cache", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+                  leading: const Icon(Icons.cleaning_services_rounded,
+                      color: Color(0xFF6366F1)),
+                  title: const Text("Clear Image & Data Cache",
+                      style:
+                          TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
                   subtitle: Text(
                     "Re-downloads fresh thumbnail images and post covers",
-                    style: TextStyle(fontSize: 12, color: isDark ? Colors.white54 : Colors.black54),
+                    style: TextStyle(
+                        fontSize: 12,
+                        color: isDark ? Colors.white54 : Colors.black54),
                   ),
                   trailing: TextButton(
                     onPressed: _clearImageCache,
@@ -519,7 +596,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           const SizedBox(height: 20),
 
           // Section 4: Audio Narration (TTS)
-          _buildSectionHeader("Audio Narration (TTS)", Icons.record_voice_over_rounded),
+          _buildSectionHeader(
+              "Audio Narration (TTS)", Icons.record_voice_over_rounded),
           _buildCard(
             isDark: isDark,
             child: Column(
@@ -527,11 +605,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               children: [
                 ListTile(
                   contentPadding: EdgeInsets.zero,
-                  leading: const Icon(Icons.speed_rounded, color: Color(0xFF6366F1)),
-                  title: const Text("Narration Speed", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+                  leading:
+                      const Icon(Icons.speed_rounded, color: Color(0xFF6366F1)),
+                  title: const Text("Narration Speed",
+                      style:
+                          TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
                   subtitle: Text(
                     "${_ttsSpeed.toStringAsFixed(2)}x reading speed",
-                    style: TextStyle(fontSize: 12, color: isDark ? Colors.white54 : Colors.black54),
+                    style: TextStyle(
+                        fontSize: 12,
+                        color: isDark ? Colors.white54 : Colors.black54),
                   ),
                 ),
                 Slider(
@@ -560,18 +643,24 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               contentPadding: EdgeInsets.zero,
               leading: Icon(
                 Icons.cloud_sync_rounded,
-                color: _isSyncing ? const Color(0xFFD97706) : const Color(0xFF10B981),
+                color: _isSyncing
+                    ? const Color(0xFFD97706)
+                    : const Color(0xFF10B981),
               ),
-              title: const Text("Sync Latest Content", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+              title: const Text("Sync Latest Content",
+                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
               subtitle: Text(
                 "Checks for newly published articles and documents",
-                style: TextStyle(fontSize: 12, color: isDark ? Colors.white54 : Colors.black54),
+                style: TextStyle(
+                    fontSize: 12,
+                    color: isDark ? Colors.white54 : Colors.black54),
               ),
               trailing: _isSyncing
                   ? const SizedBox(
                       width: 20,
                       height: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFFD97706)),
+                      child: CircularProgressIndicator(
+                          strokeWidth: 2, color: Color(0xFFD97706)),
                     )
                   : ElevatedButton(
                       onPressed: _syncCatalog,
@@ -581,7 +670,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         visualDensity: VisualDensity.compact,
                         padding: const EdgeInsets.symmetric(horizontal: 12),
                       ),
-                      child: const Text("Sync Now", style: TextStyle(fontSize: 12)),
+                      child: const Text("Sync Now",
+                          style: TextStyle(fontSize: 12)),
                     ),
             ),
           ),
@@ -589,18 +679,24 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           const SizedBox(height: 20),
 
           // Section 6: Community & Project
-          _buildSectionHeader("Community & Project", Icons.info_outline_rounded),
+          _buildSectionHeader(
+              "Community & Project", Icons.info_outline_rounded),
           _buildCard(
             isDark: isDark,
             child: Column(
               children: [
                 ListTile(
                   contentPadding: EdgeInsets.zero,
-                  leading: const Icon(Icons.volunteer_activism_rounded, color: Color(0xFFF43F5E)),
-                  title: const Text("Support & Contribute", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+                  leading: const Icon(Icons.volunteer_activism_rounded,
+                      color: Color(0xFFF43F5E)),
+                  title: const Text("Support & Contribute",
+                      style:
+                          TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
                   subtitle: Text(
                     "Donate towards preserving ancient Manipuri scripts",
-                    style: TextStyle(fontSize: 12, color: isDark ? Colors.white54 : Colors.black54),
+                    style: TextStyle(
+                        fontSize: 12,
+                        color: isDark ? Colors.white54 : Colors.black54),
                   ),
                   trailing: const Icon(Icons.chevron_right_rounded),
                   onTap: () => DonationModal.show(context),
@@ -608,11 +704,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 const Divider(height: 1),
                 ListTile(
                   contentPadding: EdgeInsets.zero,
-                  leading: const Icon(Icons.mail_outline_rounded, color: Color(0xFF0284C7)),
-                  title: const Text("App Inquiries & Contact", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+                  leading: const Icon(Icons.mail_outline_rounded,
+                      color: Color(0xFF0284C7)),
+                  title: const Text("App Inquiries & Contact",
+                      style:
+                          TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
                   subtitle: Text(
                     "sanamaheelainingleechatkanglei@gmail.com",
-                    style: TextStyle(fontSize: 12, color: isDark ? Colors.white54 : Colors.black54),
+                    style: TextStyle(
+                        fontSize: 12,
+                        color: isDark ? Colors.white54 : Colors.black54),
                   ),
                   trailing: const Icon(Icons.chevron_right_rounded),
                   onTap: () => InquiryModal.show(context),
@@ -620,11 +721,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 const Divider(height: 1),
                 ListTile(
                   contentPadding: EdgeInsets.zero,
-                  leading: const Icon(Icons.info_outline_rounded, color: Color(0xFF6366F1)),
-                  title: const Text("About SLLK", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+                  leading: const Icon(Icons.info_outline_rounded,
+                      color: Color(0xFF6366F1)),
+                  title: const Text("About SLLK",
+                      style:
+                          TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
                   subtitle: Text(
                     "Mission to preserve indigenous manuscripts",
-                    style: TextStyle(fontSize: 12, color: isDark ? Colors.white54 : Colors.black54),
+                    style: TextStyle(
+                        fontSize: 12,
+                        color: isDark ? Colors.white54 : Colors.black54),
                   ),
                   trailing: const Icon(Icons.chevron_right_rounded),
                   onTap: _showAboutDialog,
@@ -632,11 +738,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 const Divider(height: 1),
                 ListTile(
                   contentPadding: EdgeInsets.zero,
-                  leading: const Icon(Icons.shield_outlined, color: Color(0xFF10B981)),
-                  title: const Text("Privacy & Data Safety", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+                  leading: const Icon(Icons.shield_outlined,
+                      color: Color(0xFF10B981)),
+                  title: const Text("Privacy & Data Safety",
+                      style:
+                          TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
                   subtitle: Text(
                     "Zero tracking, strictly local device storage",
-                    style: TextStyle(fontSize: 12, color: isDark ? Colors.white54 : Colors.black54),
+                    style: TextStyle(
+                        fontSize: 12,
+                        color: isDark ? Colors.white54 : Colors.black54),
                   ),
                   trailing: const Icon(Icons.chevron_right_rounded),
                   onTap: () => PrivacyPolicyModal.show(context),
@@ -644,11 +755,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 const Divider(height: 1),
                 ListTile(
                   contentPadding: EdgeInsets.zero,
-                  leading: const Icon(Icons.star_rounded, color: Color(0xFFF59E0B)),
-                  title: const Text("Rate & Review SLLK", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+                  leading:
+                      const Icon(Icons.star_rounded, color: Color(0xFFF59E0B)),
+                  title: const Text("Rate & Review SLLK",
+                      style:
+                          TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
                   subtitle: Text(
                     "Share your experience & support the archive",
-                    style: TextStyle(fontSize: 12, color: isDark ? Colors.white54 : Colors.black54),
+                    style: TextStyle(
+                        fontSize: 12,
+                        color: isDark ? Colors.white54 : Colors.black54),
                   ),
                   trailing: const Icon(Icons.chevron_right_rounded),
                   onTap: () => RatingModal.show(context),
@@ -656,8 +772,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 const Divider(height: 1),
                 ListTile(
                   contentPadding: EdgeInsets.zero,
-                  leading: const Icon(Icons.share_rounded, color: Color(0xFF6366F1)),
-                  title: const Text("Share SLLK", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+                  leading:
+                      const Icon(Icons.share_rounded, color: Color(0xFF6366F1)),
+                  title: const Text("Share SLLK",
+                      style:
+                          TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
                   trailing: const Icon(Icons.chevron_right_rounded),
                   onTap: _shareApp,
                 ),
@@ -711,7 +830,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
           side: BorderSide(
-            color: isDark ? Colors.white.withValues(alpha: 0.08) : Colors.black.withValues(alpha: 0.06),
+            color: isDark
+                ? Colors.white.withValues(alpha: 0.08)
+                : Colors.black.withValues(alpha: 0.06),
           ),
         ),
         child: Padding(

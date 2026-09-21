@@ -63,6 +63,28 @@ def build_library_index(
             print(f"⚠️ Warning: Could not parse existing library.json: {e}")
             items = []
 
+    # Auto-discover any new PDFs uploaded directly to library/pdfs/
+    import re
+    indexed_files = {item.get("file_name") for item in items if item.get("file_name")}
+    for pdf_path in sorted(pdfs_dir.glob("*.pdf")):
+        if pdf_path.name not in indexed_files:
+            stem = pdf_path.stem
+            doc_id = re.sub(r'[^a-zA-Z0-9_-]', '-', stem.lower()).strip('-')
+            clean_title = stem.replace("_", " ").replace("-", " ")
+            print(f"🆕 Auto-discovered new PDF document: {pdf_path.name}")
+            items.append({
+                "id": doc_id,
+                "title": clean_title,
+                "category": "General",
+                "file_name": pdf_path.name,
+                "description": "",
+                "author": "SLLK",
+                "language": "mni",
+                "published_date": datetime.now().strftime("%Y-%m-%d"),
+                "featured": False,
+                "tags": ["Manuscript"]
+            })
+
     validated_items = []
     for item in items:
         missing = [f for f in REQUIRED_FIELDS if not item.get(f)]
@@ -87,10 +109,29 @@ def build_library_index(
         clean_base = base_url.rstrip("/")
         item["pdf_url"] = f"{clean_base}/library/pdfs/{file_name}"
 
-        cover_name = item.get("cover_name") or f"{doc_id}.png"
-        cover_file = covers_dir / cover_name
-        if cover_file.exists() or item.get("cover_url"):
-            item["cover_url"] = f"{clean_base}/library/covers/{cover_name}"
+        # Match actual cover image from candidates
+        actual_cover = None
+        candidates = [
+            item.get("cover_name"),
+            f"{doc_id}-cover.png",
+            f"{doc_id}.png",
+            f"{doc_id}-cover.jpg",
+            f"{doc_id}.jpg",
+        ]
+        if item.get("cover_url"):
+            existing_name = item["cover_url"].split("/")[-1]
+            candidates.insert(0, existing_name)
+
+        for cand in candidates:
+            if cand and (covers_dir / cand).exists():
+                actual_cover = cand
+                break
+
+        if actual_cover:
+            item["cover_name"] = actual_cover
+            item["cover_url"] = f"{clean_base}/library/covers/{actual_cover}"
+        elif item.get("cover_url"):
+            pass
         else:
             item["cover_url"] = ""
 

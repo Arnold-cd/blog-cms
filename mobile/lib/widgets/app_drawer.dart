@@ -1,7 +1,10 @@
+import "dart:io";
 import "dart:math" as math;
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
+import "package:path_provider/path_provider.dart";
+import "package:share_plus/share_plus.dart";
 import "../providers/app_providers.dart";
 import "../providers/library_providers.dart";
 import "../theme/app_theme.dart";
@@ -35,10 +38,13 @@ class AppDrawer extends ConsumerWidget {
     return Drawer(
       width: drawerWidth,
       elevation: 0,
-      backgroundColor: isDark ? const Color(0xFF0F0F13) : const Color(0xFFFAFAFC),
+      backgroundColor:
+          isDark ? const Color(0xFF0F0F13) : const Color(0xFFFAFAFC),
       shape: Border(
         right: BorderSide(
-          color: isDark ? Colors.white.withOpacity(0.07) : Colors.black.withOpacity(0.06),
+          color: isDark
+              ? Colors.white.withOpacity(0.07)
+              : Colors.black.withOpacity(0.06),
           width: 0.5,
         ),
       ),
@@ -159,6 +165,28 @@ class AppDrawer extends ConsumerWidget {
                   },
                 ),
                 _buildDrawerItem(
+                  icon: Icons.share_outlined,
+                  activeIcon: Icons.share_rounded,
+                  leading: ClipRRect(
+                    borderRadius: BorderRadius.circular(6),
+                    child: Image.asset(
+                      "assets/images/app_logo.png",
+                      width: 22,
+                      height: 22,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  title: "Share App",
+                  subtitle: "Share with friends & community",
+                  accentColor: const Color(0xFF8B5CF6),
+                  isSelected: false,
+                  isDark: isDark,
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    _shareApp(context);
+                  },
+                ),
+                _buildDrawerItem(
                   icon: Icons.shield_outlined,
                   activeIcon: Icons.shield_rounded,
                   title: "Privacy Policy",
@@ -194,6 +222,42 @@ class AppDrawer extends ConsumerWidget {
     );
   }
 
+  Future<void> _shareApp(BuildContext context) async {
+    final media = MediaQuery.of(context);
+    final screenW = media.size.width > 0 ? media.size.width : 375.0;
+    final screenH = media.size.height > 0 ? media.size.height : 667.0;
+    final box = context.findRenderObject() as RenderBox?;
+    final origin = (box != null &&
+            box.hasSize &&
+            box.size.width > 10 &&
+            box.size.height > 10)
+        ? (box.localToGlobal(Offset.zero) & box.size)
+        : Rect.fromLTWH(0, 0, screenW, screenH / 2);
+
+    const shareText =
+        "Read indigenous Manipuri Puya manuscripts, literary essays & Meetei Mayek script with SLLK!\nhttps://play.google.com/store/apps/details?id=sllk.kangleipak.app";
+
+    try {
+      final byteData = await rootBundle.load("assets/images/app_logo.png");
+      final tempDir = await getTemporaryDirectory();
+      final file = File("${tempDir.path}/app_logo.png");
+      await file.writeAsBytes(
+        byteData.buffer
+            .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes),
+      );
+      await Share.shareXFiles(
+        [XFile(file.path)],
+        text: shareText,
+        sharePositionOrigin: origin,
+      );
+    } catch (_) {
+      await Share.share(
+        shareText,
+        sharePositionOrigin: origin,
+      );
+    }
+  }
+
   Widget _buildHeader(BuildContext context, bool isDark) {
     final topPadding = MediaQuery.of(context).padding.top;
     return Container(
@@ -203,7 +267,9 @@ class AppDrawer extends ConsumerWidget {
         color: isDark ? const Color(0xFF141419) : Colors.white,
         border: Border(
           bottom: BorderSide(
-            color: isDark ? Colors.white.withOpacity(0.06) : Colors.black.withOpacity(0.05),
+            color: isDark
+                ? Colors.white.withOpacity(0.06)
+                : Colors.black.withOpacity(0.05),
             width: 0.5,
           ),
         ),
@@ -219,7 +285,9 @@ class AppDrawer extends ConsumerWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: isDark ? Colors.white.withOpacity(0.1) : Colors.black.withOpacity(0.08),
+                    color: isDark
+                        ? Colors.white.withOpacity(0.1)
+                        : Colors.black.withOpacity(0.08),
                     width: 1,
                   ),
                   boxShadow: [
@@ -243,12 +311,17 @@ class AppDrawer extends ConsumerWidget {
               const Spacer(),
               // Verified Status Pill
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4.5),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 9, vertical: 4.5),
                 decoration: BoxDecoration(
-                  color: isDark ? const Color(0xFF1F1F26) : const Color(0xFFF1F5F9),
+                  color: isDark
+                      ? const Color(0xFF1F1F26)
+                      : const Color(0xFFF1F5F9),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color: isDark ? Colors.white.withOpacity(0.06) : Colors.black.withOpacity(0.04),
+                    color: isDark
+                        ? Colors.white.withOpacity(0.06)
+                        : Colors.black.withOpacity(0.04),
                     width: 0.5,
                   ),
                 ),
@@ -270,7 +343,8 @@ class AppDrawer extends ConsumerWidget {
                         fontSize: 9.5,
                         fontWeight: FontWeight.w700,
                         letterSpacing: 0.3,
-                        color: isDark ? Colors.white70 : const Color(0xFF475569),
+                        color:
+                            isDark ? Colors.white70 : const Color(0xFF475569),
                       ),
                     ),
                   ],
@@ -329,8 +403,9 @@ class AppDrawer extends ConsumerWidget {
   }
 
   Widget _buildDrawerItem({
-    required IconData icon,
-    required IconData activeIcon,
+    IconData? icon,
+    IconData? activeIcon,
+    Widget? leading,
     required String title,
     required String subtitle,
     required bool isSelected,
@@ -350,7 +425,9 @@ class AppDrawer extends ConsumerWidget {
       padding: const EdgeInsets.only(bottom: 2),
       child: Material(
         color: isSelected
-            ? (isDark ? const Color(0xFF0284C7).withOpacity(0.12) : const Color(0xFF0284C7).withOpacity(0.08))
+            ? (isDark
+                ? const Color(0xFF0284C7).withOpacity(0.12)
+                : const Color(0xFF0284C7).withOpacity(0.08))
             : Colors.transparent,
         borderRadius: BorderRadius.circular(10),
         child: InkWell(
@@ -369,17 +446,22 @@ class AppDrawer extends ConsumerWidget {
                   height: 20,
                   margin: const EdgeInsets.only(right: 10),
                   decoration: BoxDecoration(
-                    color: isSelected ? const Color(0xFF0284C7) : Colors.transparent,
+                    color: isSelected
+                        ? const Color(0xFF0284C7)
+                        : Colors.transparent,
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
 
-                // Icon without bulky background
-                Icon(
-                  isSelected ? activeIcon : icon,
-                  size: 20,
-                  color: effectiveColor,
-                ),
+                // Icon or custom leading
+                if (leading != null)
+                  leading
+                else if (icon != null)
+                  Icon(
+                    isSelected ? (activeIcon ?? icon) : icon,
+                    size: 20,
+                    color: effectiveColor,
+                  ),
                 const SizedBox(width: 12),
 
                 // Title & Subtitle
@@ -392,11 +474,16 @@ class AppDrawer extends ConsumerWidget {
                         title,
                         style: TextStyle(
                           fontSize: 13.5,
-                          fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                          fontWeight:
+                              isSelected ? FontWeight.w700 : FontWeight.w500,
                           letterSpacing: -0.2,
                           color: isSelected
-                              ? (isDark ? Colors.white : const Color(0xFF0284C7))
-                              : (isDark ? const Color(0xFFF4F4F5) : const Color(0xFF0F172A)),
+                              ? (isDark
+                                  ? Colors.white
+                                  : const Color(0xFF0284C7))
+                              : (isDark
+                                  ? const Color(0xFFF4F4F5)
+                                  : const Color(0xFF0F172A)),
                         ),
                       ),
                       const SizedBox(height: 1),
@@ -406,7 +493,9 @@ class AppDrawer extends ConsumerWidget {
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           fontSize: 10.5,
-                          color: isDark ? const Color(0xFF71717A) : const Color(0xFF64748B),
+                          color: isDark
+                              ? const Color(0xFF71717A)
+                              : const Color(0xFF64748B),
                         ),
                       ),
                     ],
@@ -416,11 +505,14 @@ class AppDrawer extends ConsumerWidget {
                 // Minimalist Pill Badge
                 if (badge != null)
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
                     decoration: BoxDecoration(
                       color: isSelected
                           ? const Color(0xFF0284C7)
-                          : (isDark ? const Color(0xFF22222A) : const Color(0xFFE2E8F0)),
+                          : (isDark
+                              ? const Color(0xFF22222A)
+                              : const Color(0xFFE2E8F0)),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Text(
@@ -430,7 +522,9 @@ class AppDrawer extends ConsumerWidget {
                         fontWeight: FontWeight.w700,
                         color: isSelected
                             ? Colors.white
-                            : (isDark ? Colors.white70 : const Color(0xFF475569)),
+                            : (isDark
+                                ? Colors.white70
+                                : const Color(0xFF475569)),
                       ),
                     ),
                   ),
@@ -449,7 +543,9 @@ class AppDrawer extends ConsumerWidget {
         color: isDark ? const Color(0xFF15151B) : Colors.white,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: isDark ? Colors.white.withOpacity(0.06) : Colors.black.withOpacity(0.05),
+          color: isDark
+              ? Colors.white.withOpacity(0.06)
+              : Colors.black.withOpacity(0.05),
           width: 0.5,
         ),
       ),
@@ -487,7 +583,9 @@ class AppDrawer extends ConsumerWidget {
                   isDark ? "Dark Palette" : "Light Palette",
                   style: TextStyle(
                     fontSize: 10.5,
-                    color: isDark ? const Color(0xFF71717A) : const Color(0xFF64748B),
+                    color: isDark
+                        ? const Color(0xFF71717A)
+                        : const Color(0xFF64748B),
                   ),
                 ),
               ],
@@ -511,11 +609,36 @@ class AppDrawer extends ConsumerWidget {
 
   Widget _buildPaperToneBar(WidgetRef ref, String currentTone, bool isDark) {
     final tones = [
-      {"id": "default", "label": "Pure", "color": isDark ? const Color(0xFF18181B) : Colors.white, "border": isDark ? Colors.white24 : Colors.black12},
-      {"id": "cream", "label": "Cream", "color": const Color(0xFFFAF6EE), "border": const Color(0xFFE2D9C5)},
-      {"id": "sepia", "label": "Sepia", "color": const Color(0xFFF4ECD8), "border": const Color(0xFFDCCDB2)},
-      {"id": "sage", "label": "Sage", "color": const Color(0xFFEAEFE9), "border": const Color(0xFFCBD6CA)},
-      {"id": "oled", "label": "OLED", "color": Colors.black, "border": Colors.white30},
+      {
+        "id": "default",
+        "label": "Pure",
+        "color": isDark ? const Color(0xFF18181B) : Colors.white,
+        "border": isDark ? Colors.white24 : Colors.black12
+      },
+      {
+        "id": "cream",
+        "label": "Cream",
+        "color": const Color(0xFFFAF6EE),
+        "border": const Color(0xFFE2D9C5)
+      },
+      {
+        "id": "sepia",
+        "label": "Sepia",
+        "color": const Color(0xFFF4ECD8),
+        "border": const Color(0xFFDCCDB2)
+      },
+      {
+        "id": "sage",
+        "label": "Sage",
+        "color": const Color(0xFFEAEFE9),
+        "border": const Color(0xFFCBD6CA)
+      },
+      {
+        "id": "oled",
+        "label": "OLED",
+        "color": Colors.black,
+        "border": Colors.white30
+      },
     ];
 
     return Container(
@@ -524,7 +647,9 @@ class AppDrawer extends ConsumerWidget {
         color: isDark ? const Color(0xFF15151B) : Colors.white,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: isDark ? Colors.white.withOpacity(0.06) : Colors.black.withOpacity(0.05),
+          color: isDark
+              ? Colors.white.withOpacity(0.06)
+              : Colors.black.withOpacity(0.05),
           width: 0.5,
         ),
       ),
@@ -561,7 +686,9 @@ class AppDrawer extends ConsumerWidget {
               return GestureDetector(
                 onTap: () {
                   HapticFeedback.selectionClick();
-                  ref.read(paperToneProvider.notifier).setTone(tone["id"] as String);
+                  ref
+                      .read(paperToneProvider.notifier)
+                      .setTone(tone["id"] as String);
                 },
                 behavior: HitTestBehavior.opaque,
                 child: Column(
@@ -581,7 +708,8 @@ class AppDrawer extends ConsumerWidget {
                         boxShadow: isToneSelected
                             ? [
                                 BoxShadow(
-                                  color: const Color(0xFF0284C7).withOpacity(0.4),
+                                  color:
+                                      const Color(0xFF0284C7).withOpacity(0.4),
                                   blurRadius: 6,
                                   offset: const Offset(0, 1),
                                 ),
@@ -593,7 +721,8 @@ class AppDrawer extends ConsumerWidget {
                               child: Icon(
                                 Icons.check_rounded,
                                 size: 14,
-                                color: (tone["id"] == "oled" || isDark && tone["id"] == "default")
+                                color: (tone["id"] == "oled" ||
+                                        isDark && tone["id"] == "default")
                                     ? Colors.white
                                     : const Color(0xFF0284C7),
                               ),
@@ -605,10 +734,13 @@ class AppDrawer extends ConsumerWidget {
                       tone["label"] as String,
                       style: TextStyle(
                         fontSize: 9.5,
-                        fontWeight: isToneSelected ? FontWeight.w700 : FontWeight.w400,
+                        fontWeight:
+                            isToneSelected ? FontWeight.w700 : FontWeight.w400,
                         color: isToneSelected
                             ? const Color(0xFF0284C7)
-                            : (isDark ? const Color(0xFF71717A) : const Color(0xFF64748B)),
+                            : (isDark
+                                ? const Color(0xFF71717A)
+                                : const Color(0xFF64748B)),
                       ),
                     ),
                   ],
@@ -625,12 +757,15 @@ class AppDrawer extends ConsumerWidget {
     final bottomPadding = MediaQuery.of(context).padding.bottom;
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.fromLTRB(16, 12, 16, bottomPadding > 0 ? bottomPadding + 8 : 16),
+      padding: EdgeInsets.fromLTRB(
+          16, 12, 16, bottomPadding > 0 ? bottomPadding + 8 : 16),
       decoration: BoxDecoration(
         color: isDark ? const Color(0xFF141419) : Colors.white,
         border: Border(
           top: BorderSide(
-            color: isDark ? Colors.white.withOpacity(0.06) : Colors.black.withOpacity(0.05),
+            color: isDark
+                ? Colors.white.withOpacity(0.06)
+                : Colors.black.withOpacity(0.05),
             width: 0.5,
           ),
         ),
@@ -640,14 +775,17 @@ class AppDrawer extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.favorite_rounded, size: 12, color: Color(0xFFF43F5E)),
+              const Icon(Icons.favorite_rounded,
+                  size: 12, color: Color(0xFFF43F5E)),
               const SizedBox(width: 6),
               Text(
                 "Dedicated to Manipuri Cultural Preservation",
                 style: TextStyle(
                   fontSize: 10.5,
                   fontWeight: FontWeight.w500,
-                  color: isDark ? const Color(0xFFA1A1AA) : const Color(0xFF64748B),
+                  color: isDark
+                      ? const Color(0xFFA1A1AA)
+                      : const Color(0xFF64748B),
                 ),
               ),
             ],
@@ -692,7 +830,8 @@ class AppDrawer extends ConsumerWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
-              child: Image.asset("assets/images/app_logo.png", width: 32, height: 32),
+              child: Image.asset("assets/images/app_logo.png",
+                  width: 32, height: 32),
             ),
             const SizedBox(width: 10),
             const Text(
@@ -713,17 +852,22 @@ class AppDrawer extends ConsumerWidget {
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: isDark ? const Color(0xFF22222A) : const Color(0xFFF1F5F9),
+                color:
+                    isDark ? const Color(0xFF22222A) : const Color(0xFFF1F5F9),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("• Version: 1.0.0 (Build 1)", style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600)),
+                  Text("• Version: 1.0.0 (Build 1)",
+                      style:
+                          TextStyle(fontSize: 11, fontWeight: FontWeight.w600)),
                   SizedBox(height: 3),
-                  Text("• Platform: Flutter & Git Headless CMS", style: TextStyle(fontSize: 11)),
+                  Text("• Platform: Flutter & Git Headless CMS",
+                      style: TextStyle(fontSize: 11)),
                   SizedBox(height: 3),
-                  Text("• Zero Tracking • 100% Privacy by Design", style: TextStyle(fontSize: 11)),
+                  Text("• Zero Tracking • 100% Privacy by Design",
+                      style: TextStyle(fontSize: 11)),
                 ],
               ),
             ),

@@ -94,7 +94,7 @@ jobs:
             echo "No changes to commit."
           else
             echo "Changes detected. Committing..."
-            git commit -m "chore(cms): auto-update manifests and web build [skip ci]"
+            git commit -m "chore(cms): auto-update manifests and web build"
             git push origin main
           fi
 

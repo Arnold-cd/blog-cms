@@ -16,7 +16,7 @@ import {
   Loader2,
 } from 'lucide-react';
 import type { PdfDocument } from '../types';
-import { deletePdfFromGitHub } from '../services/libraryService';
+import { deletePdfFromGitHub, resolvePdfAssetUrl } from '../services/libraryService';
 import { PdfUploadModal } from './PdfUploadModal';
 
 interface PdfLibraryViewProps {
@@ -325,7 +325,7 @@ export const PdfLibraryView: React.FC<PdfLibraryViewProps> = ({
               >
                 {doc.cover_url ? (
                   <img
-                    src={doc.cover_url}
+                    src={resolvePdfAssetUrl(doc.cover_url)}
                     alt={doc.title}
                     style={{
                       maxHeight: '160px',
@@ -494,7 +494,7 @@ export const PdfLibraryView: React.FC<PdfLibraryViewProps> = ({
                   }}
                 >
                   <a
-                    href={doc.pdf_url}
+                    href={resolvePdfAssetUrl(doc.pdf_url)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="btn btn-secondary"
@@ -512,7 +512,7 @@ export const PdfLibraryView: React.FC<PdfLibraryViewProps> = ({
 
                   <div style={{ display: 'flex', gap: '0.5rem' }}>
                     <a
-                      href={doc.pdf_url}
+                      href={resolvePdfAssetUrl(doc.pdf_url)}
                       download={doc.file_name}
                       className="btn btn-secondary"
                       title="Download PDF file"

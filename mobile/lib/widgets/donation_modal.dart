@@ -1,4 +1,7 @@
+import "dart:io";
 import "package:flutter/material.dart";
+import "package:flutter/services.dart";
+import "package:path_provider/path_provider.dart";
 import "package:share_plus/share_plus.dart";
 import "../theme/app_theme.dart";
 
@@ -24,7 +27,9 @@ class DonationModal extends StatelessWidget {
         color: isDark ? const Color(0xFF141418) : Colors.white,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
         border: Border.all(
-          color: isDark ? Colors.white.withValues(alpha: 0.08) : Colors.black.withValues(alpha: 0.06),
+          color: isDark
+              ? Colors.white.withValues(alpha: 0.08)
+              : Colors.black.withValues(alpha: 0.06),
         ),
       ),
       padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
@@ -129,7 +134,8 @@ class DonationModal extends StatelessWidget {
                         width: 220,
                         height: 220,
                         child: Center(
-                          child: Icon(Icons.qr_code_rounded, size: 64, color: Colors.black54),
+                          child: Icon(Icons.qr_code_rounded,
+                              size: 64, color: Colors.black54),
                         ),
                       ),
                     ),
@@ -138,7 +144,8 @@ class DonationModal extends StatelessWidget {
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.qr_code_scanner_rounded, size: 16, color: Colors.grey.shade700),
+                      Icon(Icons.qr_code_scanner_rounded,
+                          size: 16, color: Colors.grey.shade700),
                       const SizedBox(width: 6),
                       Text(
                         "Scan with any UPI / Banking app",
@@ -163,9 +170,12 @@ class DonationModal extends StatelessWidget {
                   child: OutlinedButton.icon(
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 12),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
                       side: BorderSide(
-                        color: isDark ? Colors.white.withValues(alpha: 0.15) : Colors.black.withValues(alpha: 0.15),
+                        color: isDark
+                            ? Colors.white.withValues(alpha: 0.15)
+                            : Colors.black.withValues(alpha: 0.15),
                       ),
                     ),
                     onPressed: () {
@@ -183,21 +193,46 @@ class DonationModal extends StatelessWidget {
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       elevation: 0,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
                     ),
-                    onPressed: () {
+                    onPressed: () async {
                       final media = MediaQuery.of(context);
-                      final screenW = media.size.width > 0 ? media.size.width : 375.0;
-                      final screenH = media.size.height > 0 ? media.size.height : 667.0;
+                      final screenW =
+                          media.size.width > 0 ? media.size.width : 375.0;
+                      final screenH =
+                          media.size.height > 0 ? media.size.height : 667.0;
                       final box = context.findRenderObject() as RenderBox?;
-                      final origin = (box != null && box.hasSize && box.size.width > 10 && box.size.height > 10)
+                      final origin = (box != null &&
+                              box.hasSize &&
+                              box.size.width > 10 &&
+                              box.size.height > 10)
                           ? (box.localToGlobal(Offset.zero) & box.size)
                           : Rect.fromLTWH(0, 0, screenW, screenH / 2);
 
-                      Share.share(
-                        "Support SLLK - Indigenous Meetei Mayek & English Publication\nhttps://blog-cms-gilt.vercel.app/",
-                        sharePositionOrigin: origin,
-                      );
+                      const shareText =
+                          "Support SLLK - Indigenous Meetei Mayek & English Publication\nhttps://play.google.com/store/apps/details?id=sllk.kangleipak.app";
+
+                      try {
+                        final byteData = await rootBundle
+                            .load("assets/images/donation_qr.png");
+                        final tempDir = await getTemporaryDirectory();
+                        final file = File("${tempDir.path}/donation_qr.png");
+                        await file.writeAsBytes(
+                          byteData.buffer.asUint8List(
+                              byteData.offsetInBytes, byteData.lengthInBytes),
+                        );
+                        await Share.shareXFiles(
+                          [XFile(file.path)],
+                          text: shareText,
+                          sharePositionOrigin: origin,
+                        );
+                      } catch (_) {
+                        await Share.share(
+                          shareText,
+                          sharePositionOrigin: origin,
+                        );
+                      }
                     },
                     icon: const Icon(Icons.share_rounded, size: 18),
                     label: const Text("Share SLLK"),

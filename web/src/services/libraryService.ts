@@ -20,6 +20,20 @@ export function formatFileSize(sizeBytes: number): string {
 }
 
 /**
+ * Resolves a PDF or cover asset URL to local relative './library/...' or Vercel CDN,
+ * bypassing GitHub raw 404s on private repositories.
+ */
+export function resolvePdfAssetUrl(rawUrl: string | undefined): string {
+  if (!rawUrl) return '';
+  const trimmed = rawUrl.trim();
+  const rawBase = 'https://raw.githubusercontent.com/Arnold-cd/blog-cms/main';
+  if (trimmed.startsWith(rawBase)) {
+    return trimmed.replace(rawBase, '.');
+  }
+  return trimmed;
+}
+
+/**
  * Loads the library document manifest from local or GitHub Pages CDN.
  */
 export async function fetchLibraryDocuments(): Promise<PdfDocument[]> {
