@@ -544,7 +544,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       ),
       child: Material(
         color: isDark ? const Color(0xFF1C1C22) : Colors.white,
-        borderRadius: BorderRadius.circular(16),
         clipBehavior: Clip.antiAlias,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
