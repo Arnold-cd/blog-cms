@@ -5,6 +5,7 @@ import "../providers/app_providers.dart";
 import "../providers/library_providers.dart";
 import "../services/cache_service.dart";
 import "../widgets/donation_modal.dart";
+import "../widgets/inquiry_modal.dart";
 import "../widgets/privacy_modal.dart";
 
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -602,6 +603,18 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   ),
                   trailing: const Icon(Icons.chevron_right_rounded),
                   onTap: () => DonationModal.show(context),
+                ),
+                const Divider(height: 1),
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.mail_outline_rounded, color: Color(0xFF0284C7)),
+                  title: const Text("App Inquiries & Contact", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+                  subtitle: Text(
+                    "sanamaheelainingleechatkanglei@gmail.com",
+                    style: TextStyle(fontSize: 12, color: isDark ? Colors.white54 : Colors.black54),
+                  ),
+                  trailing: const Icon(Icons.chevron_right_rounded),
+                  onTap: () => InquiryModal.show(context),
                 ),
                 const Divider(height: 1),
                 ListTile(

@@ -5,6 +5,7 @@ import "package:flutter_riverpod/flutter_riverpod.dart";
 import "../providers/app_providers.dart";
 import "../providers/library_providers.dart";
 import "donation_modal.dart";
+import "inquiry_modal.dart";
 import "privacy_modal.dart";
 
 class AppDrawer extends ConsumerWidget {
@@ -126,6 +127,19 @@ class AppDrawer extends ConsumerWidget {
                   onTap: () {
                     Navigator.of(context).pop();
                     DonationModal.show(context);
+                  },
+                ),
+                _buildDrawerItem(
+                  icon: Icons.mail_outline_rounded,
+                  activeIcon: Icons.mail_rounded,
+                  title: "App Inquiries",
+                  subtitle: "sanamaheelainingleechatkanglei@gmail.com",
+                  accentColor: const Color(0xFF0284C7),
+                  isSelected: false,
+                  isDark: isDark,
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    InquiryModal.show(context);
                   },
                 ),
                 _buildDrawerItem(
