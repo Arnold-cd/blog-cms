@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Privacy Policy - SLLK Reader</title>
-  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="icon" type="image/png" href="app_logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -57,22 +57,18 @@
     .brand-row {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 14px;
       margin-bottom: 24px;
     }
 
-    .brand-logo {
-      width: 42px;
-      height: 42px;
-      background: #1C1917;
-      color: #FFFFFF;
+    .brand-logo-img {
+      width: 44px;
+      height: 44px;
       border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 16px;
-      letter-spacing: 0.05em;
+      object-fit: cover;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      flex-shrink: 0;
     }
 
     .brand-meta {
@@ -261,7 +257,7 @@
     <!-- Header -->
     <header class="header">
       <div class="brand-row">
-        <div class="brand-logo">S</div>
+        <img src="app_logo.png" alt="SLLK Logo" class="brand-logo-img">
         <div class="brand-meta">
           <span class="brand-title">SLLK Reader</span>
           <span class="brand-sub">Manipuri Cultural Preservation & E-Library</span>
