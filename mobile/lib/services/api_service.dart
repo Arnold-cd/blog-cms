@@ -4,37 +4,59 @@ import "../models/post.dart";
 import "../models/pdf_document.dart";
 
 class ApiService {
+  static const String baseVercelUrl = "https://blog-cms-gilt.vercel.app";
   static const String baseRawUrl = "https://raw.githubusercontent.com/Arnold-cd/blog-cms/main";
-  static const String manifestUrl = "$baseRawUrl/posts.json";
-  static const String libraryManifestUrl = "$baseRawUrl/library.json";
 
   final http.Client _client;
 
   ApiService({http.Client? client}) : _client = client ?? http.Client();
 
-  /// Resolves relative paths (e.g. images/banner.png or posts/intro.md) to full GitHub Raw URLs
+  /// Resolves relative paths or GitHub Raw URLs into reliable Vercel CDN URLs
   static String resolveUrl(String? raw) {
     if (raw == null || raw.trim().isEmpty) {
-      return "$baseRawUrl/images/banner-philosophy.svg";
+      return "$baseVercelUrl/images/banner-philosophy.svg";
     }
     final trimmed = raw.trim();
+
+    // If points to GitHub raw for this repo (which fails if repo is private), route to Vercel CDN
+    if (trimmed.startsWith("https://raw.githubusercontent.com/Arnold-cd/blog-cms/main/")) {
+      return trimmed.replaceFirst(
+        "https://raw.githubusercontent.com/Arnold-cd/blog-cms/main",
+        baseVercelUrl,
+      );
+    }
+
     if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
       return trimmed;
     }
     final cleaned = trimmed.replaceFirst(RegExp(r"^\.?/"), "");
-    return "$baseRawUrl/$cleaned";
+    return "$baseVercelUrl/$cleaned";
   }
 
-  /// Fetches latest posts manifest from GitHub repository with cache-busting
+  /// Fetches latest posts manifest from Vercel CDN with fallback to GitHub
   Future<List<Post>> fetchPosts() async {
-    final uri = Uri.parse("$manifestUrl?t=${DateTime.now().millisecondsSinceEpoch}");
-    final response = await _client.get(
-      uri,
-      headers: {
-        "Accept": "application/json",
-        "Cache-Control": "no-cache",
-      },
-    );
+    final timestamp = DateTime.now().millisecondsSinceEpoch;
+    final primaryUri = Uri.parse("$baseVercelUrl/posts.json?t=$timestamp");
+    final fallbackUri = Uri.parse("$baseRawUrl/posts.json?t=$timestamp");
+
+    http.Response response;
+    try {
+      response = await _client.get(
+        primaryUri,
+        headers: {"Accept": "application/json", "Cache-Control": "no-cache"},
+      );
+      if (response.statusCode != 200) {
+        response = await _client.get(
+          fallbackUri,
+          headers: {"Accept": "application/json", "Cache-Control": "no-cache"},
+        );
+      }
+    } catch (_) {
+      response = await _client.get(
+        fallbackUri,
+        headers: {"Accept": "application/json", "Cache-Control": "no-cache"},
+      );
+    }
 
     if (response.statusCode == 200) {
       final decoded = json.decode(utf8.decode(response.bodyBytes));
@@ -49,7 +71,7 @@ class ApiService {
       }
       return [];
     } else {
-      throw Exception("Failed to load posts from GitHub (HTTP ${response.statusCode})");
+      throw Exception("Failed to load posts (HTTP ${response.statusCode})");
     }
   }
 
@@ -58,10 +80,30 @@ class ApiService {
 
   Future<String> fetchMarkdown(String url) async {
     final targetUrl = resolveUrl(url);
-    final response = await _client.get(
-      Uri.parse("$targetUrl?t=${DateTime.now().millisecondsSinceEpoch}"),
-      headers: {"Accept": "text/plain; charset=utf-8"},
-    );
+    final timestamp = DateTime.now().millisecondsSinceEpoch;
+
+    http.Response response;
+    try {
+      response = await _client.get(
+        Uri.parse("$targetUrl?t=$timestamp"),
+        headers: {"Accept": "text/plain; charset=utf-8"},
+      );
+      if (response.statusCode != 200 && targetUrl.startsWith(baseVercelUrl)) {
+        final fallbackUrl = targetUrl.replaceFirst(baseVercelUrl, baseRawUrl);
+        response = await _client.get(
+          Uri.parse("$fallbackUrl?t=$timestamp"),
+          headers: {"Accept": "text/plain; charset=utf-8"},
+        );
+      }
+    } catch (_) {
+      final fallbackUrl = targetUrl.startsWith(baseVercelUrl)
+          ? targetUrl.replaceFirst(baseVercelUrl, baseRawUrl)
+          : targetUrl;
+      response = await _client.get(
+        Uri.parse("$fallbackUrl?t=$timestamp"),
+        headers: {"Accept": "text/plain; charset=utf-8"},
+      );
+    }
 
     if (response.statusCode == 200) {
       return utf8.decode(response.bodyBytes);
@@ -70,16 +112,30 @@ class ApiService {
     }
   }
 
-  /// Fetches latest PDF library manifest from GitHub repository
+  /// Fetches latest PDF library manifest from Vercel CDN with fallback to GitHub
   Future<List<PdfDocument>> fetchLibraryDocuments() async {
-    final uri = Uri.parse("$libraryManifestUrl?t=${DateTime.now().millisecondsSinceEpoch}");
-    final response = await _client.get(
-      uri,
-      headers: {
-        "Accept": "application/json",
-        "Cache-Control": "no-cache",
-      },
-    );
+    final timestamp = DateTime.now().millisecondsSinceEpoch;
+    final primaryUri = Uri.parse("$baseVercelUrl/library.json?t=$timestamp");
+    final fallbackUri = Uri.parse("$baseRawUrl/library.json?t=$timestamp");
+
+    http.Response response;
+    try {
+      response = await _client.get(
+        primaryUri,
+        headers: {"Accept": "application/json", "Cache-Control": "no-cache"},
+      );
+      if (response.statusCode != 200) {
+        response = await _client.get(
+          fallbackUri,
+          headers: {"Accept": "application/json", "Cache-Control": "no-cache"},
+        );
+      }
+    } catch (_) {
+      response = await _client.get(
+        fallbackUri,
+        headers: {"Accept": "application/json", "Cache-Control": "no-cache"},
+      );
+    }
 
     if (response.statusCode == 200) {
       final decoded = json.decode(utf8.decode(response.bodyBytes));
@@ -94,7 +150,7 @@ class ApiService {
       }
       return [];
     } else {
-      throw Exception("Failed to load PDF library from GitHub (HTTP ${response.statusCode})");
+      throw Exception("Failed to load PDF library (HTTP ${response.statusCode})");
     }
   }
 }
