@@ -1,10 +1,12 @@
 import "dart:convert";
 import "package:http/http.dart" as http;
 import "../models/post.dart";
+import "../models/pdf_document.dart";
 
 class ApiService {
   static const String baseRawUrl = "https://raw.githubusercontent.com/Arnold-cd/blog-cms/main";
   static const String manifestUrl = "$baseRawUrl/posts.json";
+  static const String libraryManifestUrl = "$baseRawUrl/library.json";
 
   final http.Client _client;
 
@@ -65,6 +67,34 @@ class ApiService {
       return utf8.decode(response.bodyBytes);
     } else {
       throw Exception("Failed to load markdown content (HTTP ${response.statusCode})");
+    }
+  }
+
+  /// Fetches latest PDF library manifest from GitHub repository
+  Future<List<PdfDocument>> fetchLibraryDocuments() async {
+    final uri = Uri.parse("$libraryManifestUrl?t=${DateTime.now().millisecondsSinceEpoch}");
+    final response = await _client.get(
+      uri,
+      headers: {
+        "Accept": "application/json",
+        "Cache-Control": "no-cache",
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final decoded = json.decode(utf8.decode(response.bodyBytes));
+      if (decoded is List) {
+        return decoded.map((item) {
+          final doc = PdfDocument.fromJson(item as Map<String, dynamic>);
+          return doc.copyWith(
+            pdfUrl: resolveUrl(doc.pdfUrl),
+            coverUrl: doc.coverUrl.isNotEmpty ? resolveUrl(doc.coverUrl) : "",
+          );
+        }).toList();
+      }
+      return [];
+    } else {
+      throw Exception("Failed to load PDF library from GitHub (HTTP ${response.statusCode})");
     }
   }
 }

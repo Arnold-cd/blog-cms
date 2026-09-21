@@ -5,6 +5,7 @@ import "../theme/app_theme.dart";
 import "bookmarks_screen.dart";
 import "home_screen.dart";
 import "mayek_explorer_screen.dart";
+import "pdf_library_screen.dart";
 
 class MainNavigationScreen extends ConsumerStatefulWidget {
   const MainNavigationScreen({super.key});
@@ -18,6 +19,7 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
 
   final List<Widget> _screens = const [
     HomeScreen(),
+    PdfLibraryScreen(),
     MayekExplorerScreen(),
     BookmarksScreen(),
   ];
@@ -44,7 +46,7 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
         ),
         child: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -57,6 +59,13 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
                 ),
                 _buildNavItem(
                   index: 1,
+                  icon: Icons.menu_book_outlined,
+                  activeIcon: Icons.menu_book_rounded,
+                  label: "Library",
+                  isDark: isDark,
+                ),
+                _buildNavItem(
+                  index: 2,
                   icon: Icons.translate_rounded,
                   activeIcon: Icons.translate_rounded,
                   label: "Explorer",
@@ -64,7 +73,7 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
                   isDark: isDark,
                 ),
                 _buildNavItem(
-                  index: 2,
+                  index: 3,
                   icon: Icons.bookmark_outline_rounded,
                   activeIcon: Icons.bookmark_rounded,
                   label: "Saved",

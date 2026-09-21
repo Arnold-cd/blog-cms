@@ -1,19 +1,23 @@
 import { useEffect, useState } from 'react';
-import type { BlogPost } from './types';
+import type { BlogPost, PdfDocument } from './types';
 import { fetchPosts } from './services/cmsService';
 import { deleteFromGitHub } from './services/exportService';
+import { fetchLibraryDocuments } from './services/libraryService';
 import { Navbar } from './components/Navbar';
 import { PostList } from './components/PostList';
 import { ArticleView } from './components/ArticleView';
 import { CmsEditor } from './components/CmsEditor';
+import { PdfLibraryView } from './components/PdfLibraryView';
 import { RefreshCw, BookOpen, Download } from 'lucide-react';
 
 export function App() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
+  const [pdfDocuments, setPdfDocuments] = useState<PdfDocument[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [loadingLibrary, setLoadingLibrary] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
-  const [activeTab, setActiveTab] = useState<'feed' | 'editor'>('feed');
+  const [activeTab, setActiveTab] = useState<'feed' | 'editor' | 'library'>('feed');
 
   // Light / Dark Theme State
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
@@ -46,8 +50,21 @@ export function App() {
     }
   };
 
+  const loadLibrary = async () => {
+    setLoadingLibrary(true);
+    try {
+      const docs = await fetchLibraryDocuments();
+      setPdfDocuments(docs);
+    } catch (err) {
+      console.warn('Could not load PDF library:', err);
+    } finally {
+      setLoadingLibrary(false);
+    }
+  };
+
   useEffect(() => {
     loadPosts();
+    loadLibrary();
   }, []);
 
   const handleSelectPost = (post: BlogPost) => {
@@ -91,6 +108,14 @@ export function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handlePdfAdded = (newDoc: PdfDocument) => {
+    setPdfDocuments((prev) => [newDoc, ...prev.filter((d) => d.id !== newDoc.id)]);
+  };
+
+  const handlePdfDeleted = (deletedId: string) => {
+    setPdfDocuments((prev) => prev.filter((d) => d.id !== deletedId));
+  };
+
   return (
     <div className="app-container">
       <Navbar
@@ -100,6 +125,7 @@ export function App() {
           setSelectedPost(null);
         }}
         postCount={posts.length}
+        pdfCount={pdfDocuments.length}
         theme={theme}
         onToggleTheme={toggleTheme}
       />
@@ -141,6 +167,14 @@ export function App() {
                   setSelectedPost(null);
                   setActiveTab('editor');
                 }}
+              />
+            ) : activeTab === 'library' ? (
+              <PdfLibraryView
+                documents={pdfDocuments}
+                loading={loadingLibrary}
+                onRefresh={loadLibrary}
+                onDocumentAdded={handlePdfAdded}
+                onDocumentDeleted={handlePdfDeleted}
               />
             ) : null}
           </>

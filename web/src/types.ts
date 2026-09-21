@@ -37,3 +37,39 @@ export interface PostDraft {
   content: string;
   assets: UploadedAsset[];
 }
+
+export interface PdfDocument {
+  id: string;
+  title: string;
+  description: string;
+  author: string;
+  category: string;
+  language: string;
+  published_date: string;
+  file_name: string;
+  pdf_url: string;
+  cover_url: string;
+  page_count: number;
+  file_size_bytes: number;
+  file_size_formatted: string;
+  featured: boolean;
+  tags: string[];
+}
+
+export interface PdfUploadPayload {
+  id: string;
+  title: string;
+  description: string;
+  author: string;
+  category: string;
+  language: string;
+  published_date: string;
+  pdfFile: File;
+  coverFile: File;
+  coverPreviewUrl: string;
+  page_count: number;
+  file_size_bytes: number;
+  file_size_formatted: string;
+  featured: boolean;
+  tags: string[];
+}

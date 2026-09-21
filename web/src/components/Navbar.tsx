@@ -1,10 +1,11 @@
 import React from 'react';
-import { BookOpen, PenLine, Sun, Moon } from 'lucide-react';
+import { BookOpen, PenLine, Sun, Moon, Library } from 'lucide-react';
 
 interface NavbarProps {
-  activeTab: 'feed' | 'editor';
-  onSelectTab: (tab: 'feed' | 'editor') => void;
+  activeTab: 'feed' | 'editor' | 'library';
+  onSelectTab: (tab: 'feed' | 'editor' | 'library') => void;
   postCount: number;
+  pdfCount?: number;
   theme: 'dark' | 'light';
   onToggleTheme: () => void;
 }
@@ -13,6 +14,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   activeTab,
   onSelectTab,
   postCount,
+  pdfCount = 0,
   theme,
   onToggleTheme,
 }) => {
@@ -46,6 +48,15 @@ export const Navbar: React.FC<NavbarProps> = ({
           >
             <PenLine size={14} />
             <span>CMS Studio</span>
+          </button>
+          <button
+            className={`nav-tab-btn ${activeTab === 'library' ? 'active' : ''}`}
+            onClick={() => onSelectTab('library')}
+            id="tab-pdf-library"
+          >
+            <Library size={14} />
+            <span>PDF Library</span>
+            {pdfCount > 0 && <span className="nav-tab-count" style={{ background: 'rgba(217, 119, 6, 0.25)', color: '#d97706' }}>{pdfCount}</span>}
           </button>
         </nav>
 
