@@ -24,9 +24,9 @@ class _SplashScreenState extends State<SplashScreen>
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.light,
-        systemNavigationBarColor: Color(0xFF0C0D12),
-        systemNavigationBarIconBrightness: Brightness.light,
+        statusBarIconBrightness: Brightness.dark,
+        systemNavigationBarColor: Colors.white,
+        systemNavigationBarIconBrightness: Brightness.dark,
       ),
     );
 
@@ -77,7 +77,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0C0D12),
+      backgroundColor: Colors.white,
       body: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: _navigateToHome,
@@ -91,14 +91,26 @@ class _SplashScreenState extends State<SplashScreen>
                 children: [
                   const Spacer(flex: 3),
 
-                  // Clean App Logo
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child: Image.asset(
-                      "assets/images/app_logo.png",
-                      width: 88,
-                      height: 88,
-                      fit: BoxFit.cover,
+                  // Clean App Logo with Soft Elevation
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(22),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.07),
+                          blurRadius: 24,
+                          offset: const Offset(0, 6),
+                        ),
+                      ],
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(22),
+                      child: Image.asset(
+                        "assets/images/app_logo.png",
+                        width: 88,
+                        height: 88,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
 
@@ -111,7 +123,7 @@ class _SplashScreenState extends State<SplashScreen>
                       fontSize: 22,
                       fontWeight: FontWeight.w700,
                       letterSpacing: 4.0,
-                      color: Colors.white,
+                      color: Color(0xFF0F172A),
                     ),
                   ),
 
@@ -122,9 +134,9 @@ class _SplashScreenState extends State<SplashScreen>
                     "Digital Library & Reader",
                     style: TextStyle(
                       fontSize: 13,
-                      fontWeight: FontWeight.w400,
+                      fontWeight: FontWeight.w500,
                       letterSpacing: 1.0,
-                      color: Colors.white54,
+                      color: Color(0xFF64748B),
                     ),
                   ),
 
@@ -138,7 +150,7 @@ class _SplashScreenState extends State<SplashScreen>
                       style: TextStyle(
                         fontSize: 11,
                         letterSpacing: 0.5,
-                        color: Colors.white24,
+                        color: Color(0xFF94A3B8),
                       ),
                     ),
                   ),
