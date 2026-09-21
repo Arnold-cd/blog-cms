@@ -1,5 +1,18 @@
 [
   {
+    "id": "nongshapa",
+    "title": "Nongshapa",
+    "summary": "Nongshapa",
+    "date": "2026-09-20",
+    "author": "SLLK.",
+    "category": "Philosophy",
+    "thumbnail_url": "https://raw.githubusercontent.com/Arnold-cd/blog-cms/main/images/banner-philosophy.svg",
+    "content_url": "https://raw.githubusercontent.com/Arnold-cd/blog-cms/main/posts/nongshapa.md",
+    "reading_time_min": 1,
+    "language": "en",
+    "featured": true
+  },
+  {
     "id": "new-article",
     "title": "New Article",
     "summary": "Pukninggi warol",
@@ -10,21 +23,6 @@
     "content_url": "https://raw.githubusercontent.com/Arnold-cd/blog-cms/main/posts/new-article.md",
     "reading_time_min": 1,
     "language": "en",
-    "featured": false,
-    "content": "---\nid: \"new-article\"\ntitle: \"New Article\"\nsummary: \"Pukninggi warol\"\ndate: \"2026-09-20\"\nauthor: \"Arnold CD\"\ncategory: \"Philosophy\"\nthumbnail: \"images/393483-final-2.png\"\nlanguage: \"en\"\nfeatured: false\n---\n\n# Pukninggi Warol\n\n\nWrite your thoughts here...\nkmdwrige nungaiiribo\n\n\n\n![whatsapp-image-2026-09-20-at-5.25.49-pm](images/whatsapp-image-2026-09-20-at-5.25.49-pm.jpeg)\n\n\n![Heritage_Quiz_Meiteilon_113_QA_3_Choices-1.pdf - Page 1](images/heritage-quiz-meiteilon-113-qa-3-choices-1-p1.png)\n\n\n![Heritage_Quiz_Meiteilon_113_QA_3_Choices-1.pdf - Page 2](images/heritage-quiz-meiteilon-113-qa-3-choices-1-p2.png)\n\n\n![Heritage_Quiz_Meiteilon_113_QA_3_Choices-1.pdf - Page 3](images/heritage-quiz-meiteilon-113-qa-3-choices-1-p3.png)\n\n\n![Heritage_Quiz_Meiteilon_113_QA_3_Choices-1.pdf - Page 4](images/heritage-quiz-meiteilon-113-qa-3-choices-1-p4.png)\n\n\n![Heritage_Quiz_Meiteilon_113_QA_3_Choices-1.pdf - Page 5](images/heritage-quiz-meiteilon-113-qa-3-choices-1-p5.png)\n\n\n![Heritage_Quiz_Meiteilon_113_QA_3_Choices-1.pdf - Page 6](images/heritage-quiz-meiteilon-113-qa-3-choices-1-p6.png)\n\n\n![Heritage_Quiz_Meiteilon_113_QA_3_Choices-1.pdf - Page 7](images/heritage-quiz-meiteilon-113-qa-3-choices-1-p7.png)\n\n\n![Heritage_Quiz_Meiteilon_113_QA_3_Choices-1.pdf - Page 8](images/heritage-quiz-meiteilon-113-qa-3-choices-1-p8.png)\n\n\n![Heritage_Quiz_Meiteilon_113_QA_3_Choices-1.pdf - Page 9](images/heritage-quiz-meiteilon-113-qa-3-choices-1-p9.png)\n\n\n![Heritage_Quiz_Meiteilon_113_QA_3_Choices-1.pdf - Page 10](images/heritage-quiz-meiteilon-113-qa-3-choices-1-p10.png)\n"
-  },
-  {
-    "id": "nongshapa",
-    "title": "Nongshapa ",
-    "summary": "Nongshapa ",
-    "date": "2026-09-20",
-    "author": "SLLK.",
-    "category": "Philosophy",
-    "thumbnail_url": "https://raw.githubusercontent.com/Arnold-cd/blog-cms/main/images/banner-philosophy.svg",
-    "content_url": "https://raw.githubusercontent.com/Arnold-cd/blog-cms/main/posts/nongshapa.md",
-    "reading_time_min": 1,
-    "language": "en",
-    "featured": true,
-    "content": "---\nid: \"nongshapa\"\ntitle: \"Nongshapa\"\nsummary: \"Nongshapa\"\ndate: \"2026-09-20\"\nauthor: \"SLLK.\"\ncategory: \"Philosophy\"\nthumbnail: \"images/banner-philosophy.svg\"\nlanguage: \"en\"\nfeatured: true\n---\n\nLainingthou Nongsapa.\n"
+    "featured": false
   }
 ]
