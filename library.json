@@ -19,27 +19,5 @@
       "History",
       "Manuscript"
     ]
-  },
-  {
-    "id": "introduction-to-meetei-mayek",
-    "title": "Introduction to Meetei Mayek Script & Manuscripts",
-    "description": "A comprehensive primer on the historical script of Kangleipak, orthography, and ancient manuscript preservation.",
-    "author": "SLLK Research Cell",
-    "category": "Puya & History",
-    "language": "mni",
-    "published_date": "2026-09-21",
-    "file_name": "introduction-to-meetei-mayek.pdf",
-    "pdf_url": "https://raw.githubusercontent.com/Arnold-cd/blog-cms/main/library/pdfs/introduction-to-meetei-mayek.pdf",
-    "cover_url": "https://raw.githubusercontent.com/Arnold-cd/blog-cms/main/library/covers/introduction-to-meetei-mayek.png",
-    "page_count": 24,
-    "file_size_bytes": 1048576,
-    "file_size_formatted": "1.0 MB",
-    "featured": true,
-    "tags": [
-      "Meetei Mayek",
-      "Puya",
-      "Manuscripts",
-      "Culture"
-    ]
   }
 ]
