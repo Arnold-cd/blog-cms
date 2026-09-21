@@ -150,9 +150,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }
 
   void _shareApp() {
+    final box = context.findRenderObject() as RenderBox?;
+    final origin = (box != null && box.hasSize)
+        ? (box.localToGlobal(Offset.zero) & box.size)
+        : Rect.fromLTWH(0, 0, MediaQuery.of(context).size.width, MediaQuery.of(context).size.height / 2);
+
     Share.share(
       "Read indigenous Manipuri Puya manuscripts and articles with SLLK!\nhttps://arnold-cd.github.io/blog-cms/",
       subject: "SLLK - Meetei Mayek & English Reader",
+      sharePositionOrigin: origin,
     );
   }
 

@@ -110,9 +110,15 @@ class _PdfViewerScreenState extends ConsumerState<PdfViewerScreen> {
   }
 
   void _shareDocument() {
+    final box = context.findRenderObject() as RenderBox?;
+    final origin = (box != null && box.hasSize)
+        ? (box.localToGlobal(Offset.zero) & box.size)
+        : Rect.fromLTWH(0, 0, MediaQuery.of(context).size.width, MediaQuery.of(context).size.height / 2);
+
     Share.share(
       "Read \"${widget.document.title}\" by ${widget.document.author}\n${widget.document.pdfUrl}",
       subject: widget.document.title,
+      sharePositionOrigin: origin,
     );
   }
 

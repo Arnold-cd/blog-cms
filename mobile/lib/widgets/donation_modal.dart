@@ -186,8 +186,14 @@ class DonationModal extends StatelessWidget {
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     ),
                     onPressed: () {
+                      final box = context.findRenderObject() as RenderBox?;
+                      final origin = (box != null && box.hasSize)
+                          ? (box.localToGlobal(Offset.zero) & box.size)
+                          : Rect.fromLTWH(0, 0, MediaQuery.of(context).size.width, MediaQuery.of(context).size.height / 2);
+
                       Share.share(
-                        "Support SLLK - Indigenous Meetei Mayek & English Publication\nhttps://github.com/Arnold-cd/blog-cms",
+                        "Support SLLK - Indigenous Meetei Mayek & English Publication\nhttps://arnold-cd.github.io/blog-cms/",
+                        sharePositionOrigin: origin,
                       );
                     },
                     icon: const Icon(Icons.share_rounded, size: 18),

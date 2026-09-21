@@ -346,8 +346,14 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
                   ),
                 ),
                 onPressed: () {
+                  final box = context.findRenderObject() as RenderBox?;
+                  final origin = (box != null && box.hasSize)
+                      ? (box.localToGlobal(Offset.zero) & box.size)
+                      : Rect.fromLTWH(0, 0, MediaQuery.of(context).size.width, MediaQuery.of(context).size.height / 2);
+
                   Share.share(
-                    "${widget.post.title}\n\nRead on SLLK app\nhttps://github.com/Arnold-cd/blog-cms",
+                    "${widget.post.title}\n\nRead on SLLK app\nhttps://arnold-cd.github.io/blog-cms/",
+                    sharePositionOrigin: origin,
                   );
                 },
               ),
