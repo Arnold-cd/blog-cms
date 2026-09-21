@@ -6,6 +6,7 @@ import "bookmarks_screen.dart";
 import "home_screen.dart";
 import "mayek_explorer_screen.dart";
 import "pdf_library_screen.dart";
+import "settings_screen.dart";
 
 class MainNavigationScreen extends ConsumerStatefulWidget {
   const MainNavigationScreen({super.key});
@@ -22,6 +23,7 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
     PdfLibraryScreen(),
     MayekExplorerScreen(),
     BookmarksScreen(),
+    SettingsScreen(),
   ];
 
   @override
@@ -78,6 +80,13 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
                   activeIcon: Icons.bookmark_rounded,
                   label: "Saved",
                   badgeCount: bookmarks.length,
+                  isDark: isDark,
+                ),
+                _buildNavItem(
+                  index: 4,
+                  icon: Icons.settings_outlined,
+                  activeIcon: Icons.settings_rounded,
+                  label: "Settings",
                   isDark: isDark,
                 ),
               ],

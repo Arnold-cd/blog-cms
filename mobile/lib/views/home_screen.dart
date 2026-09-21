@@ -4,8 +4,8 @@ import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:shimmer/shimmer.dart";
 import "../providers/app_providers.dart";
 import "../widgets/post_card.dart";
-import "bookmarks_screen.dart";
 import "post_detail_screen.dart";
+import "settings_screen.dart";
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -40,7 +40,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final filteredPosts = ref.watch(filteredPostsProvider);
     final categories = ref.watch(categoriesProvider);
     final selectedCategory = ref.watch(selectedCategoryProvider);
-    final bookmarks = ref.watch(bookmarksProvider);
 
     return Scaffold(
       body: SafeArea(
@@ -56,125 +55,115 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
-                          children: [
-                            Container(
-                              width: 38,
-                              height: 38,
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: isDark
-                                      ? [const Color(0xFF6366F1), const Color(0xFF4F46E5)]
-                                      : [const Color(0xFF4F46E5), const Color(0xFF4338CA)],
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                ),
-                                borderRadius: BorderRadius.circular(10),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: const Color(0xFF6366F1).withOpacity(0.35),
-                                    blurRadius: 8,
-                                    offset: const Offset(0, 3),
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 38,
+                                height: 38,
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: isDark
+                                        ? [const Color(0xFF6366F1), const Color(0xFF4F46E5)]
+                                        : [const Color(0xFF4F46E5), const Color(0xFF4338CA)],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
                                   ),
-                                ],
-                              ),
-                              alignment: Alignment.center,
-                              child: const Text(
-                                "S",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.w900,
-                                  letterSpacing: -0.5,
+                                  borderRadius: BorderRadius.circular(10),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: const Color(0xFF6366F1).withOpacity(0.35),
+                                      blurRadius: 8,
+                                      offset: const Offset(0, 3),
+                                    ),
+                                  ],
                                 ),
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  "SLLK",
+                                alignment: Alignment.center,
+                                child: const Text(
+                                  "S",
                                   style: TextStyle(
+                                    color: Colors.white,
                                     fontSize: 22,
-                                    fontWeight: FontWeight.w800,
+                                    fontWeight: FontWeight.w900,
                                     letterSpacing: -0.5,
                                   ),
                                 ),
-                                Text(
-                                  "Meetei Mayek & English Feed",
-                                  style: theme.textTheme.bodySmall?.copyWith(
-                                    fontSize: 11,
-                                    color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
-                                  ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      "SLLK",
+                                      style: TextStyle(
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.w800,
+                                        letterSpacing: -0.5,
+                                      ),
+                                    ),
+                                    Text(
+                                      "Meetei Mayek & English Feed",
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: theme.textTheme.bodySmall?.copyWith(
+                                        fontSize: 11,
+                                        color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          ],
+                              ),
+                            ],
+                          ),
                         ),
                         // Top Right Action Buttons
                         Row(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
                             // Donate / Support Button
                             IconButton(
                               tooltip: "Support & Donate",
+                              visualDensity: VisualDensity.compact,
+                              padding: const EdgeInsets.all(6),
+                              constraints: const BoxConstraints(),
                               icon: const Icon(
                                 Icons.volunteer_activism_rounded,
                                 color: Color(0xFFF43F5E),
-                                size: 21,
+                                size: 20,
                               ),
                               onPressed: () => DonationModal.show(context),
                             ),
-                            // Bookmarks / Saved Button with Badge
-                            Stack(
-                              children: [
-                                IconButton(
-                                  tooltip: "Saved Bookmarks",
-                                  icon: const Icon(Icons.bookmark_outline_rounded, size: 24),
-                                  onPressed: () {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (_) => const BookmarksScreen(),
-                                      ),
-                                    );
-                                  },
-                                ),
-                                if (bookmarks.isNotEmpty)
-                                  Positioned(
-                                    right: 6,
-                                    top: 6,
-                                    child: Container(
-                                      padding: const EdgeInsets.all(4),
-                                      decoration: const BoxDecoration(
-                                        color: Color(0xFF6366F1),
-                                        shape: BoxShape.circle,
-                                      ),
-                                      constraints: const BoxConstraints(
-                                        minWidth: 16,
-                                        minHeight: 16,
-                                      ),
-                                      child: Text(
-                                        bookmarks.length > 9 ? "9+" : "${bookmarks.length}",
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 9,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                  ),
-                              ],
-                            ),
+                            const SizedBox(width: 6),
                             // Theme Switcher
                             IconButton(
                               tooltip: isDark ? "Switch to Light Mode" : "Switch to Dark Mode",
+                              visualDensity: VisualDensity.compact,
+                              padding: const EdgeInsets.all(6),
+                              constraints: const BoxConstraints(),
                               icon: Icon(
                                 isDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
-                                size: 22,
+                                size: 20,
                               ),
                               onPressed: () {
                                 ref.read(themeModeProvider.notifier).toggle();
+                              },
+                            ),
+                            const SizedBox(width: 6),
+                            // Settings Button
+                            IconButton(
+                              tooltip: "Settings",
+                              visualDensity: VisualDensity.compact,
+                              padding: const EdgeInsets.all(6),
+                              constraints: const BoxConstraints(),
+                              icon: const Icon(
+                                Icons.settings_outlined,
+                                size: 20,
+                              ),
+                              onPressed: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(builder: (_) => const SettingsScreen()),
+                                );
                               },
                             ),
                           ],

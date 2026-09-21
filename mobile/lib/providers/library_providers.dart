@@ -141,6 +141,49 @@ class DownloadedPdfsNotifier extends StateNotifier<Map<String, String>> {
   bool isDownloaded(String fileName) => state.containsKey(fileName);
 
   String? getLocalPath(String fileName) => state[fileName];
+
+  Future<void> deletePdf(String fileName) async {
+    final path = state[fileName];
+    if (path != null) {
+      try {
+        final file = File(path);
+        if (await file.exists()) {
+          await file.delete();
+        }
+      } catch (_) {}
+      final next = Map<String, String>.from(state)..remove(fileName);
+      state = next;
+    }
+  }
+
+  Future<void> clearAllDownloads() async {
+    try {
+      final path = await _getAppDir();
+      final dir = Directory(path);
+      if (await dir.exists()) {
+        final files = dir.listSync();
+        for (final f in files) {
+          if (f is File) {
+            await f.delete();
+          }
+        }
+      }
+    } catch (_) {}
+    state = {};
+  }
+
+  int getTotalStorageBytes() {
+    int total = 0;
+    for (final path in state.values) {
+      try {
+        final file = File(path);
+        if (file.existsSync()) {
+          total += file.lengthSync();
+        }
+      } catch (_) {}
+    }
+    return total;
+  }
 }
 
 final downloadedPdfsProvider =

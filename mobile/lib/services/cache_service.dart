@@ -87,4 +87,48 @@ class CacheService {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setDouble(_keyFontSize, scale);
   }
+
+  /// Paper Tone Preference ("default", "sepia", "oled")
+  static Future<String> getPaperTone() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString("sllk_paper_tone") ?? "default";
+  }
+
+  static Future<void> setPaperTone(String tone) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString("sllk_paper_tone", tone);
+  }
+
+  /// Transliteration hint preference
+  static Future<bool> isTransliterationEnabled() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool("sllk_transliteration_enabled") ?? true;
+  }
+
+  static Future<void> setTransliteration(bool enabled) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool("sllk_transliteration_enabled", enabled);
+  }
+
+  /// TTS Speed preference
+  static Future<double> getTtsSpeed() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getDouble("sllk_tts_speed") ?? 1.0;
+  }
+
+  static Future<void> setTtsSpeed(double speed) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble("sllk_tts_speed", speed);
+  }
+
+  /// Clears cached articles and temporary manifests
+  static Future<void> clearCache() async {
+    final prefs = await SharedPreferences.getInstance();
+    final keys = prefs.getKeys();
+    for (final key in keys) {
+      if (key.startsWith("sllk_md_") || key == _keyPostsManifest) {
+        await prefs.remove(key);
+      }
+    }
+  }
 }
