@@ -130,7 +130,7 @@ class PrivacyPolicyModal extends StatelessWidget {
                 const SizedBox(height: 20),
                 Center(
                   child: Text(
-                    "Effective Date: September 2026 • v1.0.0\nPublic Policy: https://blog-cms-gilt.vercel.app/privacy.html",
+                    "Effective Date: September 2026 • v1.0.0\nPublic Policy: https://arnold-cd.github.io/sllk-privacy/",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 11,
