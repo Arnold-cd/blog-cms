@@ -38,8 +38,50 @@ export function resolvePdfAssetUrl(rawUrl: string | undefined): string {
  */
 export async function fetchLibraryDocuments(): Promise<PdfDocument[]> {
   const timestamp = Date.now();
+  const token = localStorage.getItem('github_cms_token');
 
-  // 1. Try real-time GitHub raw manifest first (cache-busted) so remote additions/deletions reflect immediately
+  // 1. If user has a GitHub token, query GitHub API directly (real-time 0-second sync even on private repos)
+  if (token && token.trim()) {
+    try {
+      const apiRes = await fetch(
+        `https://api.github.com/repos/Arnold-cd/blog-cms/contents/library.json?t=${timestamp}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token.trim()}`,
+            Accept: 'application/vnd.github.v3+json',
+          },
+          cache: 'no-store',
+        }
+      );
+      if (apiRes.ok) {
+        const fileData = await apiRes.json();
+        const decoded = decodeURIComponent(escape(atob(fileData.content.replace(/\s/g, ''))));
+        const data = JSON.parse(decoded);
+        if (Array.isArray(data)) {
+          return data;
+        }
+      }
+    } catch (err) {
+      console.warn('GitHub API authenticated library.json fetch failed:', err);
+    }
+  }
+
+  // 2. Try Vercel CDN manifest (cache-busted)
+  try {
+    const vercelRes = await fetch(`https://blog-cms-gilt.vercel.app/library.json?t=${timestamp}`, {
+      cache: 'no-store',
+    });
+    if (vercelRes.ok) {
+      const data = await vercelRes.json();
+      if (Array.isArray(data)) {
+        return data;
+      }
+    }
+  } catch (err) {
+    console.warn('Vercel CDN library.json fetch failed:', err);
+  }
+
+  // 3. Try GitHub raw manifest
   try {
     const rawRes = await fetch(`${GITHUB_RAW_LIBRARY_URL}?t=${timestamp}`, {
       cache: 'no-store',
@@ -51,10 +93,10 @@ export async function fetchLibraryDocuments(): Promise<PdfDocument[]> {
       }
     }
   } catch (err) {
-    console.warn('GitHub raw library.json fetch failed, trying local fallback:', err);
+    console.warn('GitHub raw library.json fetch failed:', err);
   }
 
-  // 2. Fallback to local library.json (bundled static asset or offline mode)
+  // 4. Fallback to local library.json (bundled static asset or offline mode)
   try {
     const res = await fetch(`${LOCAL_LIBRARY_URL}?t=${timestamp}`);
     if (res.ok) {
