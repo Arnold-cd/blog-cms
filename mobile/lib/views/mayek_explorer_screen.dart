@@ -118,29 +118,42 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
 
             // Tab Bar
             Container(
-              margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(
-                color: isDark ? const Color(0xFF1B1B21) : const Color(0xFFEFEFF4),
+                color: isDark ? const Color(0xFF1E1E26) : const Color(0xFFF1F5F9),
                 borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.black.withValues(alpha: 0.05),
+                ),
               ),
               child: TabBar(
                 controller: _tabController,
                 indicatorSize: TabBarIndicatorSize.tab,
                 dividerColor: Colors.transparent,
                 indicator: BoxDecoration(
-                  color: isDark ? const Color(0xFF6366F1) : const Color(0xFF4F46E5),
-                  borderRadius: BorderRadius.circular(10),
+                  color: isDark ? const Color(0xFF3B82F6) : Colors.white,
+                  borderRadius: BorderRadius.circular(9),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.06),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
                 ),
-                labelColor: Colors.white,
-                unselectedLabelColor: isDark ? Colors.white60 : Colors.black54,
+                labelColor: isDark ? Colors.white : const Color(0xFF0F172A),
+                unselectedLabelColor: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
                 labelStyle: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w700),
-                isScrollable: true,
+                unselectedLabelStyle: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w500),
+                labelPadding: EdgeInsets.zero,
+                isScrollable: false,
                 tabs: const [
-                  Tab(text: "✍️ Sandbox"),
-                  Tab(text: "📜 Puya & Pukok"),
-                  Tab(text: "🔤 Letters"),
-                  Tab(text: "✒️ Cheitap"),
-                  Tab(text: "🔢 Numbers"),
+                  Tab(text: "Sandbox"),
+                  Tab(text: "Puya"),
+                  Tab(text: "Letters"),
+                  Tab(text: "Cheitap"),
+                  Tab(text: "Numbers"),
                 ],
               ),
             ),
@@ -245,12 +258,12 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
               ),
               const SizedBox(height: 14),
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
-                  color: isDark ? Colors.amber.withValues(alpha: 0.08) : Colors.amber.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(10),
+                  color: isDark ? const Color(0xFF16161D) : const Color(0xFFF8FAFC),
+                  borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: Colors.amber.withValues(alpha: 0.28),
+                    color: isDark ? Colors.white.withValues(alpha: 0.08) : const Color(0xFFE2E8F0),
                   ),
                 ),
                 child: Column(
@@ -259,14 +272,27 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
-                          "AUTHENTIC WAKOKLON PUKOK EEYEK (PUYA SCRIPT)",
-                          style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.amber,
-                            letterSpacing: 0.6,
-                          ),
+                        Row(
+                          children: [
+                            Container(
+                              width: 6,
+                              height: 6,
+                              decoration: BoxDecoration(
+                                color: isDark ? const Color(0xFF38BDF8) : const Color(0xFF0284C7),
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              "AUTHENTIC WAKOKLON PUKOK EEYEK (PUYA SCRIPT)",
+                              style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w700,
+                                color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                                letterSpacing: 0.6,
+                              ),
+                            ),
+                          ],
                         ),
                         InkWell(
                           onTap: () {
@@ -281,21 +307,27 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
                               );
                             }
                           },
-                          child: const Padding(
-                            padding: EdgeInsets.all(2),
-                            child: Icon(Icons.copy_rounded, size: 14, color: Colors.amber),
+                          borderRadius: BorderRadius.circular(6),
+                          child: Padding(
+                            padding: const EdgeInsets.all(4),
+                            child: Icon(
+                              Icons.copy_rounded,
+                              size: 14,
+                              color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                            ),
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 10),
                     SelectableText(
                       MeeteiMayekService.convertUnicodeToPukokFont(_translatedOutput),
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontFamily: "PukokEeyek",
                         fontSize: 28,
                         fontWeight: FontWeight.w700,
-                        color: Colors.amber,
+                        height: 1.3,
+                        color: isDark ? const Color(0xFFF1F5F9) : const Color(0xFF0F172A),
                       ),
                     ),
                   ],
@@ -473,23 +505,33 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: isDark
-                  ? [Colors.amber.withValues(alpha: 0.15), Colors.amber.withValues(alpha: 0.05)]
-                  : [Colors.amber.withValues(alpha: 0.2), Colors.amber.withValues(alpha: 0.08)],
+                  ? [const Color(0xFF1E2235), const Color(0xFF161824)]
+                  : [const Color(0xFFF8FAFC), const Color(0xFFF1F5F9)],
             ),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.amber.withValues(alpha: 0.35)),
+            border: Border.all(
+              color: isDark ? const Color(0xFF6366F1).withValues(alpha: 0.3) : const Color(0xFFE2E8F0),
+            ),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Row(
+              Row(
                 children: [
-                  Icon(Icons.auto_stories_rounded, color: Colors.amber, size: 20),
-                  SizedBox(width: 8),
+                  Icon(
+                    Icons.auto_stories_rounded,
+                    color: isDark ? const Color(0xFF818CF8) : const Color(0xFF4F46E5),
+                    size: 20,
+                  ),
+                  const SizedBox(width: 8),
                   Expanded(
                     child: Text(
                       "Wakoklon Heelel Thilel Salai Ama-Ilon Pukok Puya",
-                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.amber),
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: isDark ? Colors.white : const Color(0xFF0F172A),
+                      ),
                     ),
                   ),
                 ],
@@ -497,7 +539,11 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
               const SizedBox(height: 8),
               Text(
                 "Authentic ancient Kanglei linguistic science from the sacred Puya manuscript and research by Wangkhemcha Chingtamlen. Includes the official QWERTY layout designed by Wakambam Macha Waanglel.",
-                style: TextStyle(fontSize: 12, height: 1.5, color: isDark ? Colors.white70 : Colors.black87),
+                style: TextStyle(
+                  fontSize: 12,
+                  height: 1.5,
+                  color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF475569),
+                ),
               ),
             ],
           ),
@@ -508,14 +554,14 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
         _buildPuyaConceptCard(
           title: "🩸 Singthalon Cheising Eeyek Ama & The Eelik",
           desc: "In the Puya, numeral 1 is written with an Eelik (dot '.'), representing the sacred blood drop of the Universal Father God Creator, Eapung Loinapa Apakpa. The 1980 Gazette version removed this dot.",
-          color: Colors.amber,
+          color: const Color(0xFF6366F1),
           isDark: isDark,
         ),
         const SizedBox(height: 10),
         _buildPuyaConceptCard(
           title: "🧘 18 Indigenous Anatomical Roots (Ipi Eeyek)",
           desc: "The 18 core letters correspond to parts of human anatomy (Kok = head, Sam = hair, Lai = forehead, Meet = eye, Paa = ear, Naa = nose, Chil = mouth, etc.) reflecting early cosmological human science.",
-          color: const Color(0xFF6366F1),
+          color: const Color(0xFF3B82F6),
           isDark: isDark,
         ),
         const SizedBox(height: 10),
@@ -535,9 +581,13 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
         const SizedBox(height: 12),
 
         // 18 Roots Key Grid
-        const Text(
+        Text(
           "18 Ipi Eeyek Roots (k - a):",
-          style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.amber),
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.bold,
+            color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF334155),
+          ),
         ),
         const SizedBox(height: 8),
         _buildPukokKeyGrid([
@@ -688,10 +738,10 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
                       ),
                       Text(
                         tier['meitei'] as String,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Colors.amber,
+                          color: isDark ? const Color(0xFF38BDF8) : const Color(0xFF0284C7),
                           fontFamilyFallback: AppTheme.fontFallbacks,
                         ),
                       ),
@@ -764,10 +814,10 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
             children: [
               Text(
                 keyChar,
-                style: const TextStyle(
+                style: TextStyle(
                   fontFamily: 'PukokEeyek',
                   fontSize: 22,
-                  color: Colors.amber,
+                  color: isDark ? const Color(0xFFF1F5F9) : const Color(0xFF0F172A),
                   height: 1.1,
                 ),
               ),

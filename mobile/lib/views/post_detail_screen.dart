@@ -644,7 +644,7 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                   decoration: BoxDecoration(
-                                    color: _isPukokFont ? Colors.amber : Colors.transparent,
+                                    color: _isPukokFont ? const Color(0xFF6366F1) : Colors.transparent,
                                     borderRadius: BorderRadius.circular(6),
                                   ),
                                   child: Text(
@@ -652,7 +652,7 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
                                     style: TextStyle(
                                       fontSize: 11,
                                       fontWeight: _isPukokFont ? FontWeight.bold : FontWeight.normal,
-                                      color: _isPukokFont ? Colors.black : (isDark ? Colors.white70 : Colors.black87),
+                                      color: _isPukokFont ? Colors.white : (isDark ? Colors.white70 : Colors.black87),
                                     ),
                                   ),
                                 ),

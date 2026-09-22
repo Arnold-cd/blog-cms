@@ -1550,10 +1550,10 @@ button {
 }
 
 .meetei-tab-pill.active-amber {
-  background: rgba(245, 158, 11, 0.14);
-  color: var(--accent-amber);
-  border-color: var(--accent-amber);
-  box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
+  background: rgba(99, 102, 241, 0.14);
+  color: var(--accent-indigo);
+  border-color: var(--accent-indigo);
+  box-shadow: 0 0 15px rgba(99, 102, 241, 0.2);
   font-weight: 600;
 }
 

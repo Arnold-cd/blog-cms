@@ -178,8 +178,8 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
                 alignItems: 'center',
                 gap: '0.35rem',
                 borderRadius: 'var(--radius-full)',
-                borderColor: 'rgba(245, 158, 11, 0.3)',
-                color: 'var(--accent-amber)',
+                borderColor: 'rgba(99, 102, 241, 0.3)',
+                color: 'var(--accent-indigo)',
               }}
               title="Download Authentic Wakoklon Puya Pukok Eeyek Font (.otf)"
               id="btn-download-pukok-suite"
@@ -221,10 +221,10 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
             <span>✍️ Transliterate</span>
           </button>
           <button
-            className={`meetei-tab-pill ${activeTab === 'puya18' ? 'active-amber' : ''}`}
+            className={`meetei-tab-pill ${activeTab === 'puya18' ? 'active' : ''}`}
             onClick={() => setActiveTab('puya18')}
           >
-            <Sparkles size={12} style={{ color: 'var(--accent-amber)' }} />
+            <Sparkles size={12} style={{ color: 'var(--accent-indigo)' }} />
             <span>Wakoklon Puya (18 vs 27)</span>
           </button>
           <button
@@ -337,8 +337,8 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
                     borderTop: '1px dashed var(--border-subtle)',
                   }}>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.4rem' }}>
-                      <span className="form-label" style={{ color: 'var(--accent-amber)', display: 'flex', alignItems: 'center', gap: '0.35rem', marginBottom: 0 }}>
-                        <Sparkles size={13} />
+                      <span className="form-label" style={{ color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '0.35rem', marginBottom: 0 }}>
+                        <Sparkles size={13} style={{ color: 'var(--accent-indigo)' }} />
                         <span>Authentic Wakoklon Pukok Eeyek (Puya Manuscript Calligraphy)</span>
                       </span>
                       <button
@@ -355,7 +355,7 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
                       fontSize: '1.65rem',
                       fontFamily: 'var(--font-pukok)',
                       lineHeight: 1.8,
-                      color: 'var(--accent-amber)',
+                      color: 'var(--text-primary)',
                       letterSpacing: '0.04em',
                       userSelect: 'all',
                     }}>
@@ -545,7 +545,7 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
                 </div>
 
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', flexWrap: 'wrap' }}>
-                  <span style={{ fontSize: '0.72rem', color: 'var(--accent-amber)', minWidth: '75px', fontWeight: 600 }}>8 Lonsum:</span>
+                  <span style={{ fontSize: '0.72rem', color: 'var(--accent-cyan)', minWidth: '75px', fontWeight: 600 }}>8 Lonsum:</span>
                   {LONSUM_8.map((l) => (
                     <button
                       key={l.char}
@@ -556,9 +556,9 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
                         padding: '0.15rem 0.35rem',
                         fontSize: '0.9rem',
                         fontFamily: 'var(--font-meetei)',
-                        color: sampleConsonant === l.char ? 'var(--accent-amber)' : 'var(--accent-amber)',
-                        background: sampleConsonant === l.char ? 'rgba(245, 158, 11, 0.15)' : 'rgba(245, 158, 11, 0.05)',
-                        border: sampleConsonant === l.char ? '1px solid var(--accent-amber)' : '1px solid var(--border-subtle)',
+                        color: sampleConsonant === l.char ? 'var(--accent-cyan)' : 'var(--text-secondary)',
+                        background: sampleConsonant === l.char ? 'rgba(56, 189, 248, 0.15)' : 'rgba(255, 255, 255, 0.03)',
+                        border: sampleConsonant === l.char ? '1px solid var(--accent-cyan)' : '1px solid var(--border-subtle)',
                         borderRadius: 'var(--radius-xs)',
                         lineHeight: 1,
                       }}
@@ -698,7 +698,7 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
                       <tbody>
                         {(matrixFilter === 'all' ? ALL_LETTERS_MAIN_AND_LONSUM : matrixFilter === 'main' ? ALL_27_MAIN_LETTERS : LONSUM_8).map((letter) => (
                           <tr key={letter.char} style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-                            <td style={{ padding: '0.35rem 0.5rem', textAlign: 'left', color: letter.category === 'lonsum' ? 'var(--accent-amber)' : 'var(--text-primary)', fontWeight: 600 }}>
+                            <td style={{ padding: '0.35rem 0.5rem', textAlign: 'left', color: letter.category === 'lonsum' ? 'var(--accent-cyan)' : 'var(--text-primary)', fontWeight: 600 }}>
                               <span style={{ fontFamily: 'var(--font-meetei)', fontSize: '1.15rem', marginRight: '0.3rem' }}>{letter.char}</span>
                               <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{letter.name}</span>
                             </td>
@@ -713,7 +713,7 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
                                     style={{
                                       fontFamily: 'var(--font-meetei)',
                                       fontSize: '1.3rem',
-                                      color: letter.category === 'lonsum' ? 'var(--accent-amber)' : 'var(--accent-cyan)',
+                                      color: letter.category === 'lonsum' ? 'var(--accent-cyan)' : 'var(--accent-cyan)',
                                       padding: '0.15rem 0.3rem',
                                       borderRadius: 'var(--radius-xs)',
                                       width: '100%',
@@ -741,14 +741,14 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
             {/* Header & Source Charter Info */}
             <div style={{
-              background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(217, 119, 6, 0.03) 100%)',
-              border: '1px solid rgba(245, 158, 11, 0.3)',
+              background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(56, 189, 248, 0.04))',
+              border: '1px solid rgba(99, 102, 241, 0.25)',
               borderRadius: 'var(--radius-md)',
               padding: '1.2rem',
             }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '0.6rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <Sparkles size={18} style={{ color: 'var(--accent-amber)' }} />
+                  <Sparkles size={18} style={{ color: 'var(--accent-indigo)' }} />
                   <h4 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-primary)' }}>
                     Wakoklon Heelel Thilel Salai Ama-Ilon Pukok Puya (18 vs 27 Scripts)
                   </h4>
@@ -758,7 +758,7 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
                     href="fonts/PukokEeyek.otf"
                     download="PukokEeyek.otf"
                     className="btn-secondary"
-                    style={{ fontSize: '0.75rem', padding: '0.25rem 0.6rem', color: 'var(--accent-amber)' }}
+                    style={{ fontSize: '0.75rem', padding: '0.25rem 0.6rem', color: 'var(--text-secondary)' }}
                   >
                     <Download size={12} style={{ marginRight: '0.25rem' }} />
                     Download Pukok Font (.otf)
@@ -783,10 +783,10 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
                 padding: '1rem',
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.4rem' }}>
-                  <span style={{ color: 'var(--accent-amber)', fontWeight: 700, fontSize: '0.9rem' }}>꯱ &bull; The Sacred Eelik (Blood Drop)</span>
+                  <span style={{ color: 'var(--accent-indigo)', fontWeight: 700, fontSize: '0.9rem' }}>꯱ &bull; The Sacred Eelik (Blood Drop)</span>
                 </div>
                 <p style={{ margin: 0, fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
-                  In the original Puya (Singthalon Cheising Eeyek Ama), the numeral <strong>1</strong> is written as <strong>$*</strong> with an <strong>Eelik</strong> (dot <code style={{ color: 'var(--accent-amber)' }}>.</code>), representing the sacred blood drop of the Universal Father God Creator, <em>Eapung Loinapa Apakpa</em>.
+                  In the original Puya (Singthalon Cheising Eeyek Ama), the numeral <strong>1</strong> is written as <strong>$*</strong> with an <strong>Eelik</strong> (dot <code style={{ color: 'var(--accent-indigo)' }}>.</code>), representing the sacred blood drop of the Universal Father God Creator, <em>Eapung Loinapa Apakpa</em>.
                 </p>
               </div>
 
@@ -842,7 +842,7 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
 
               {/* 18 Roots Table */}
               <div style={{ marginBottom: '1rem' }}>
-                <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--accent-amber)', display: 'block', marginBottom: '0.4rem' }}>
+                <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-secondary)', display: 'block', marginBottom: '0.4rem' }}>
                   18 Ipi Eeyek Roots:
                 </span>
                 <div style={{
@@ -884,7 +884,7 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
                       title={`Press '${item.key}' in Pukok font or insert ${item.uni}`}
                     >
                       <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.35rem' }}>
-                        <span style={{ fontFamily: 'var(--font-pukok)', fontSize: '1.45rem', color: 'var(--accent-amber)', lineHeight: 1 }}>
+                        <span style={{ fontFamily: 'var(--font-pukok)', fontSize: '1.45rem', color: 'var(--text-primary)', lineHeight: 1 }}>
                           {item.key}
                         </span>
                         <span style={{ fontFamily: 'var(--font-meetei)', fontSize: '1rem', color: 'var(--text-muted)' }}>
@@ -1146,7 +1146,7 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
                     {item.name}
                   </span>
                   {item.ipa && (
-                    <span style={{ fontSize: '0.68rem', color: 'var(--accent-amber)', fontFamily: 'monospace' }}>
+                    <span style={{ fontSize: '0.68rem', color: 'var(--accent-cyan)', fontFamily: 'monospace' }}>
                       {item.ipa}
                     </span>
                   )}
@@ -1290,7 +1290,7 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
                     {item.name}
                   </span>
                   {item.ipa && (
-                    <span style={{ fontSize: '0.68rem', color: 'var(--accent-amber)', fontFamily: 'monospace' }}>
+                    <span style={{ fontSize: '0.68rem', color: 'var(--accent-cyan)', fontFamily: 'monospace' }}>
                       {item.ipa}
                     </span>
                   )}
@@ -1348,7 +1348,7 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
                       style={{
                         fontFamily: 'var(--font-pukok)',
                         fontSize: '1.25rem',
-                        color: 'var(--accent-amber)',
+                        color: 'var(--text-primary)',
                         lineHeight: 1,
                         margin: '0.2rem 0',
                       }}
@@ -1360,7 +1360,7 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
                       {item.name}
                     </span>
                     {item.ipa && (
-                      <span style={{ fontSize: '0.64rem', color: 'var(--accent-amber)', fontFamily: 'monospace' }}>
+                      <span style={{ fontSize: '0.64rem', color: 'var(--accent-cyan)', fontFamily: 'monospace' }}>
                         {item.ipa}
                       </span>
                     )}
@@ -1462,15 +1462,15 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
                         <tr
                           key={idx}
                           style={{
-                            background: isHighTier ? 'rgba(245, 158, 11, 0.025)' : undefined,
+                            background: isHighTier ? 'rgba(99, 102, 241, 0.05)' : undefined,
                           }}
                         >
                           <td>
                             <span style={{
                               fontSize: '0.72rem',
                               fontWeight: 600,
-                              color: isHighTier ? 'var(--accent-amber)' : 'var(--text-muted)',
-                              background: isHighTier ? 'rgba(245, 158, 11, 0.14)' : 'rgba(255, 255, 255, 0.04)',
+                              color: isHighTier ? 'var(--accent-indigo)' : 'var(--text-muted)',
+                              background: isHighTier ? 'rgba(99, 102, 241, 0.14)' : 'rgba(255, 255, 255, 0.04)',
                               padding: '0.15rem 0.5rem',
                               borderRadius: 'var(--radius-full)',
                               display: 'inline-block',
@@ -1493,7 +1493,7 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
                           <td>
                             <span style={{
                               fontSize: '0.75rem',
-                              color: isHighTier ? 'var(--accent-amber)' : 'var(--text-secondary)',
+                              color: isHighTier ? 'var(--accent-indigo)' : 'var(--text-secondary)',
                             }}>
                               {row.meaning}
                             </span>
