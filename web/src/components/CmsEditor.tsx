@@ -41,9 +41,16 @@ import { translateMarkdownToMeeteiMayek, translateToMeeteiMayekWithVocab } from 
 interface CmsEditorProps {
   onPreviewInFeed: (draftPost: BlogPost) => void;
   onPostPublished?: (newPost: BlogPost) => void;
+  postToEdit?: PostDraft | null;
+  onDraftLoaded?: () => void;
 }
 
-export const CmsEditor: React.FC<CmsEditorProps> = ({ onPreviewInFeed, onPostPublished }) => {
+export const CmsEditor: React.FC<CmsEditorProps> = ({
+  onPreviewInFeed,
+  onPostPublished,
+  postToEdit,
+  onDraftLoaded,
+}) => {
   const todayStr = new Date().toISOString().split('T')[0];
   const fileInputRef = useRef<HTMLInputElement>(null);
   const bannerInputRef = useRef<HTMLInputElement>(null);
@@ -132,6 +139,14 @@ Support for **bold**, *italics*, quotes, and tables:
     });
   }, []);
 
+  // Sync external post to re-edit (from ArticleView Edit button)
+  useEffect(() => {
+    if (postToEdit) {
+      setDraft(postToEdit);
+      onDraftLoaded?.();
+    }
+  }, [postToEdit, onDraftLoaded]);
+
   // Reset draft to blank state
   const handleResetDraft = async () => {
     if (window.confirm('Start a new blank draft? This will clear current editor text and uploaded pictures.')) {
@@ -194,18 +209,17 @@ Support for **bold**, *italics*, quotes, and tables:
       const defaultImage = renderer.image.bind(renderer);
 
       renderer.image = (token) => {
-        const { href } = token;
+        const { href, text, title } = token;
         if (href.startsWith('images/') || href.startsWith('./images/')) {
+          const rawUrl = `https://raw.githubusercontent.com/${githubRepo}/main/${href.replace(/^\.\//, '')}`;
           return `
-            <div class="cms-missing-asset-notice">
-              <span style="font-size: 1.25rem;">🖼️</span>
-              <div style="flex: 1; min-width: 0;">
-                <div style="color: #fff; font-weight: 600; margin-bottom: 0.2rem;">Asset Reference: <code>${href}</code></div>
-                <p style="margin: 0; color: var(--text-muted); font-size: 0.8rem;">
-                  Picture not loaded in current session. Upload the PDF or image above to render it.
-                </p>
-              </div>
-            </div>
+            <img
+              src="${rawUrl}"
+              alt="${text || ''}"
+              title="${title || ''}"
+              class="markdown-img"
+              onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'cms-missing-asset-notice\\'><span style=\\'font-size: 1.25rem;\\'>🖼️</span><div style=\\'flex: 1; min-width: 0;\\'><div style=\\'color: #fff; font-weight: 600; margin-bottom: 0.2rem;\\'>Asset Reference: <code>${href}</code></div><p style=\\'margin: 0; color: var(--text-muted); font-size: 0.8rem;\\'>Picture not loaded. Upload image or PDF to replace.</p></div></div>';"
+            />
           `;
         }
         return defaultImage.call(renderer, token);

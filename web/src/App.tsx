@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import type { BlogPost, PdfDocument } from './types';
+import type { BlogPost, PdfDocument, PostDraft } from './types';
 import { fetchPosts } from './services/cmsService';
 import { deleteFromGitHub } from './services/exportService';
 import { fetchLibraryDocuments } from './services/libraryService';
@@ -17,6 +17,7 @@ export function App() {
   const [loadingLibrary, setLoadingLibrary] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
+  const [postToEdit, setPostToEdit] = useState<PostDraft | null>(null);
   const [activeTab, setActiveTab] = useState<'feed' | 'editor' | 'library'>('feed');
 
   // Light / Dark Theme State
@@ -108,6 +109,14 @@ export function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleEditArticle = (draftToLoad: PostDraft) => {
+    localStorage.setItem('blog_cms_current_draft', JSON.stringify(draftToLoad));
+    setPostToEdit(draftToLoad);
+    setSelectedPost(null);
+    setActiveTab('editor');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const handlePdfAdded = (newDoc: PdfDocument) => {
     setPdfDocuments((prev) => [newDoc, ...prev.filter((d) => d.id !== newDoc.id)]);
   };
@@ -149,7 +158,12 @@ export function App() {
           <>
             {/* Always keep CmsEditor mounted so in-memory state, uploaded assets, and cursor are preserved */}
             <div style={{ display: activeTab === 'editor' && !selectedPost ? 'block' : 'none' }}>
-              <CmsEditor onPreviewInFeed={handlePreviewInFeed} onPostPublished={handlePostPublished} />
+              <CmsEditor
+                onPreviewInFeed={handlePreviewInFeed}
+                onPostPublished={handlePostPublished}
+                postToEdit={postToEdit}
+                onDraftLoaded={() => setPostToEdit(null)}
+              />
             </div>
 
             {selectedPost ? (
@@ -157,6 +171,7 @@ export function App() {
                 post={selectedPost}
                 onBack={handleBackToFeed}
                 onEditDraft={handleEditDraft}
+                onEditArticle={handleEditArticle}
                 onDeletePost={handleDeletePost}
               />
             ) : activeTab === 'feed' ? (

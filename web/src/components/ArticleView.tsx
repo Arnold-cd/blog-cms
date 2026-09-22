@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import type { BlogPost } from '../types';
+import type { BlogPost, PostDraft } from '../types';
 import { fetchArticleMarkdown } from '../services/cmsService';
 import { translateMarkdownToMeeteiMayek, translateToMeeteiMayekWithVocab } from '../services/meeteiMayekService';
 import { ArrowLeft, Clock, Share2, Check, PenLine, Sparkles, Languages, Trash2, AlertTriangle, Key, Loader2, Download } from 'lucide-react';
@@ -9,10 +9,11 @@ interface ArticleViewProps {
   post: BlogPost;
   onBack: () => void;
   onEditDraft?: () => void;
+  onEditArticle?: (draft: PostDraft) => void;
   onDeletePost?: (post: BlogPost, token: string) => Promise<void>;
 }
 
-export const ArticleView: React.FC<ArticleViewProps> = ({ post, onBack, onEditDraft, onDeletePost }) => {
+export const ArticleView: React.FC<ArticleViewProps> = ({ post, onBack, onEditDraft, onEditArticle, onDeletePost }) => {
   const [rawMarkdown, setRawMarkdown] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -70,6 +71,45 @@ export const ArticleView: React.FC<ArticleViewProps> = ({ post, onBack, onEditDr
     navigator.clipboard.writeText(window.location.href);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleEditClick = async () => {
+    if (post.isDraft) {
+      onEditDraft?.();
+      return;
+    }
+
+    let contentToUse = rawMarkdown || post.content || '';
+    if (!contentToUse && post.content_url) {
+      try {
+        contentToUse = await fetchArticleMarkdown(post.content_url);
+      } catch (err) {
+        console.warn('Could not fetch markdown for editing:', err);
+      }
+    }
+
+    let thumbnailPath = post.thumbnail_url || '';
+    const rawMatch = thumbnailPath.match(/main\/(.+)$/);
+    if (rawMatch) {
+      thumbnailPath = rawMatch[1];
+    }
+
+    const draftToLoad: PostDraft = {
+      id: post.id,
+      title: post.title,
+      summary: post.summary || '',
+      date: post.date || new Date().toISOString().split('T')[0],
+      author: post.author || '',
+      category: post.category || 'General',
+      thumbnail: thumbnailPath,
+      thumbnailPreviewUrl: post.thumbnail_url || '',
+      language: post.language || 'en',
+      featured: post.featured || false,
+      assets: [],
+      content: contentToUse || `# ${post.title}\n\n`,
+    };
+
+    onEditArticle?.(draftToLoad);
   };
 
   const formatDate = (dateStr: string) => {
@@ -134,6 +174,23 @@ export const ArticleView: React.FC<ArticleViewProps> = ({ post, onBack, onEditDr
           <button onClick={handleShare} className="btn-secondary" id="btn-share-article">
             {copied ? <Check size={14} color="var(--accent-emerald)" /> : <Share2 size={14} />}
             <span>{copied ? 'Link Copied' : 'Share'}</span>
+          </button>
+
+          <button
+            onClick={handleEditClick}
+            className="btn-secondary"
+            id="btn-edit-article"
+            title="Edit article in CMS Studio"
+            style={{
+              padding: '0.45rem 0.75rem',
+              fontSize: '0.82rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.35rem',
+            }}
+          >
+            <PenLine size={14} />
+            <span>Edit</span>
           </button>
 
           {!post.isDraft && onDeletePost && (
