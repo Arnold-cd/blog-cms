@@ -6,14 +6,15 @@ date: "2026-09-20"
 author: "Sanamahee Laining Leechat Kangleipak"
 category: "Philosophy"
 thumbnail: "images/screenshot-2026-09-01-14-40-12-209-com.google.android.apps.docs-edit.jpg"
-language: "mni"
+language: "en"
 featured: true
 ---
 
-"Wakoklon Hilel Thilel Salai Ama Ilon pukok"
+"wakoklon-hilel-thilel-salai-ama-ilon-pukok"
 
 
-Wakoklon_Hilel_Thilel_Salai_Ama_Ilon_pukok masigi maming asigi wahanthok karino haibasi eikhoi khanglabara??
+Wakoklon_Hilel_Thilel_Salai_Ama_Ilon_pukok masigi maming asigi wahanthok karino haibasi eikhoi khangminnasi.
+
 Puya asigi manunggi warol khangbidringai puya asigi maminggi wahanthok hanna khangba tangai fade puya asibu masak khangsi hairabadi.
 .
 WAKOKLON+HILEL+THILEL+SALAI+AMA-I-LON+PUKOK
