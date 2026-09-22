@@ -272,28 +272,35 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
-                          children: [
-                            Container(
-                              width: 6,
-                              height: 6,
-                              decoration: BoxDecoration(
-                                color: isDark ? const Color(0xFF38BDF8) : const Color(0xFF0284C7),
-                                shape: BoxShape.circle,
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 6,
+                                height: 6,
+                                decoration: BoxDecoration(
+                                  color: isDark ? const Color(0xFF38BDF8) : const Color(0xFF0284C7),
+                                  shape: BoxShape.circle,
+                                ),
                               ),
-                            ),
-                            const SizedBox(width: 6),
-                            Text(
-                              "AUTHENTIC WAKOKLON PUKOK EEYEK (PUYA SCRIPT)",
-                              style: TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w700,
-                                color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
-                                letterSpacing: 0.6,
+                              const SizedBox(width: 6),
+                              Expanded(
+                                child: Text(
+                                  "AUTHENTIC WAKOKLON PUKOK EEYEK (PUYA)",
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w700,
+                                    color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                                    letterSpacing: 0.5,
+                                  ),
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
+                        const SizedBox(width: 8),
                         InkWell(
                           onTap: () {
                             final pukok = MeeteiMayekService.convertUnicodeToPukokFont(_translatedOutput);
