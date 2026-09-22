@@ -1,4 +1,6 @@
 import "dart:convert";
+import "dart:io";
+import "dart:async";
 import "package:http/http.dart" as http;
 import "../models/post.dart";
 import "../models/pdf_document.dart";
@@ -7,9 +9,32 @@ class ApiService {
   static const String baseVercelUrl = "https://blog-cms-gilt.vercel.app";
   static const String baseRawUrl = "https://raw.githubusercontent.com/Arnold-cd/blog-cms/main";
 
+  /// Extended Safe Download Limits requested by user
+  static const int maxMarkdownBytes = 100 * 1024 * 1024; // 100 MB for markdown articles
+  static const int maxPdfBytes = 150 * 1024 * 1024;      // 150 MB for library PDF documents
+
+  /// Strict Domain Allowlist for CDN & Git repository
+  static const Set<String> allowedDomains = {
+    "blog-cms-gilt.vercel.app",
+    "raw.githubusercontent.com",
+    "github.com",
+  };
+
   final http.Client _client;
 
   ApiService({http.Client? client}) : _client = client ?? http.Client();
+
+  /// Verifies if a given URL belongs to approved CDN/Git hosts
+  static bool isAllowedDomain(String rawUrl) {
+    if (rawUrl.isEmpty) return false;
+    final uri = Uri.tryParse(rawUrl);
+    if (uri == null) return false;
+    final host = uri.host.toLowerCase();
+    if (host.isEmpty) return true; // Relative URLs will resolve to baseVercelUrl
+    return allowedDomains.contains(host) ||
+        host.endsWith(".vercel.app") ||
+        host.endsWith(".githubusercontent.com");
+  }
 
   /// Resolves relative paths or GitHub Raw URLs into reliable Vercel CDN URLs
   static String resolveUrl(String? raw) {
@@ -33,29 +58,119 @@ class ApiService {
     return "$baseVercelUrl/$cleaned";
   }
 
+  /// Securely downloads a file directly to disk using chunked streaming.
+  /// Prevents memory exhaustion (OOM), enforces max byte limits (150MB PDF / 100MB MD),
+  /// checks domain allowlisting, and validates %PDF- magic bytes.
+  static Future<File> downloadFileStreamed(
+    String url,
+    File destinationFile, {
+    int maxBytes = maxPdfBytes,
+    Duration timeout = const Duration(seconds: 90),
+    Function(double progress)? onProgress,
+    bool verifyPdfHeader = false,
+  }) async {
+    final resolvedUrl = resolveUrl(url);
+    if (!isAllowedDomain(resolvedUrl)) {
+      throw Exception("Security restriction: Host '${Uri.tryParse(resolvedUrl)?.host}' is not in approved allowlist");
+    }
+
+    final client = http.Client();
+    IOSink? sink;
+    try {
+      final request = http.Request("GET", Uri.parse(resolvedUrl));
+      request.headers["Accept"] = "*/*";
+
+      final streamedResponse = await client.send(request).timeout(
+        const Duration(seconds: 20),
+        onTimeout: () => throw TimeoutException("Connection timed out while reaching server"),
+      );
+
+      if (streamedResponse.statusCode != 200) {
+        throw Exception("Server returned HTTP ${streamedResponse.statusCode}");
+      }
+
+      final contentLength = streamedResponse.contentLength;
+      if (contentLength != null && contentLength > maxBytes) {
+        throw Exception(
+          "File size ($contentLength bytes) exceeds maximum security limit of ${maxBytes ~/ (1024 * 1024)}MB",
+        );
+      }
+
+      // Ensure parent directory exists
+      if (!await destinationFile.parent.exists()) {
+        await destinationFile.parent.create(recursive: true);
+      }
+
+      sink = destinationFile.openWrite();
+      int received = 0;
+      bool checkedHeader = false;
+
+      await for (final chunk in streamedResponse.stream.timeout(timeout)) {
+        // Validate PDF magic bytes on first chunk
+        if (verifyPdfHeader && !checkedHeader && chunk.length >= 4) {
+          final magic = String.fromCharCodes(chunk.take(5));
+          if (!magic.startsWith("%PDF")) {
+            throw Exception("Security alert: Corrupted or non-PDF file header ('$magic')");
+          }
+          checkedHeader = true;
+        }
+
+        received += chunk.length;
+        if (received > maxBytes) {
+          throw Exception("Download aborted: File exceeded ${maxBytes ~/ (1024 * 1024)}MB limit");
+        }
+
+        sink.add(chunk);
+        if (contentLength != null && contentLength > 0 && onProgress != null) {
+          onProgress(received / contentLength);
+        }
+      }
+
+      await sink.flush();
+      await sink.close();
+      sink = null;
+      return destinationFile;
+    } catch (e) {
+      if (sink != null) {
+        try {
+          await sink.close();
+        } catch (_) {}
+      }
+      if (await destinationFile.exists()) {
+        try {
+          await destinationFile.delete();
+        } catch (_) {}
+      }
+      rethrow;
+    } finally {
+      client.close();
+    }
+  }
+
   /// Fetches latest posts manifest from Vercel CDN with fallback to GitHub
   Future<List<Post>> fetchPosts() async {
     final timestamp = DateTime.now().millisecondsSinceEpoch;
     final primaryUri = Uri.parse("$baseVercelUrl/posts.json?t=$timestamp");
     final fallbackUri = Uri.parse("$baseRawUrl/posts.json?t=$timestamp");
+    const timeout = Duration(seconds: 15);
 
     http.Response response;
     try {
       response = await _client.get(
         primaryUri,
         headers: {"Accept": "application/json", "Cache-Control": "no-cache"},
-      );
+      ).timeout(timeout);
       if (response.statusCode != 200) {
         response = await _client.get(
           fallbackUri,
           headers: {"Accept": "application/json", "Cache-Control": "no-cache"},
-        );
+        ).timeout(timeout);
       }
     } catch (_) {
       response = await _client.get(
         fallbackUri,
         headers: {"Accept": "application/json", "Cache-Control": "no-cache"},
-      );
+      ).timeout(timeout);
     }
 
     if (response.statusCode == 200) {
@@ -80,20 +195,24 @@ class ApiService {
 
   Future<String> fetchMarkdown(String url) async {
     final targetUrl = resolveUrl(url);
+    if (!isAllowedDomain(targetUrl)) {
+      throw Exception("Security restriction: Host '${Uri.tryParse(targetUrl)?.host}' not in approved allowlist");
+    }
     final timestamp = DateTime.now().millisecondsSinceEpoch;
+    const timeout = Duration(seconds: 35);
 
     http.Response response;
     try {
       response = await _client.get(
         Uri.parse("$targetUrl?t=$timestamp"),
         headers: {"Accept": "text/plain; charset=utf-8"},
-      );
+      ).timeout(timeout);
       if (response.statusCode != 200 && targetUrl.startsWith(baseVercelUrl)) {
         final fallbackUrl = targetUrl.replaceFirst(baseVercelUrl, baseRawUrl);
         response = await _client.get(
           Uri.parse("$fallbackUrl?t=$timestamp"),
           headers: {"Accept": "text/plain; charset=utf-8"},
-        );
+        ).timeout(timeout);
       }
     } catch (_) {
       final fallbackUrl = targetUrl.startsWith(baseVercelUrl)
@@ -102,10 +221,15 @@ class ApiService {
       response = await _client.get(
         Uri.parse("$fallbackUrl?t=$timestamp"),
         headers: {"Accept": "text/plain; charset=utf-8"},
-      );
+      ).timeout(timeout);
     }
 
     if (response.statusCode == 200) {
+      if (response.bodyBytes.length > maxMarkdownBytes) {
+        throw Exception(
+          "Security restriction: Markdown body exceeds maximum limit of ${maxMarkdownBytes ~/ (1024 * 1024)}MB",
+        );
+      }
       return utf8.decode(response.bodyBytes);
     } else {
       throw Exception("Failed to load markdown content (HTTP ${response.statusCode})");
@@ -117,24 +241,25 @@ class ApiService {
     final timestamp = DateTime.now().millisecondsSinceEpoch;
     final primaryUri = Uri.parse("$baseVercelUrl/library.json?t=$timestamp");
     final fallbackUri = Uri.parse("$baseRawUrl/library.json?t=$timestamp");
+    const timeout = Duration(seconds: 15);
 
     http.Response response;
     try {
       response = await _client.get(
         primaryUri,
         headers: {"Accept": "application/json", "Cache-Control": "no-cache"},
-      );
+      ).timeout(timeout);
       if (response.statusCode != 200) {
         response = await _client.get(
           fallbackUri,
           headers: {"Accept": "application/json", "Cache-Control": "no-cache"},
-        );
+        ).timeout(timeout);
       }
     } catch (_) {
       response = await _client.get(
         fallbackUri,
         headers: {"Accept": "application/json", "Cache-Control": "no-cache"},
-      );
+      ).timeout(timeout);
     }
 
     if (response.statusCode == 200) {

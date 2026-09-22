@@ -1,8 +1,8 @@
 import "dart:io";
 import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:path_provider/path_provider.dart";
-import "package:http/http.dart" as http;
 import "../models/pdf_document.dart";
+import "../services/api_service.dart";
 import "app_providers.dart";
 
 /// State Notifier for PDF Library documents
@@ -127,9 +127,14 @@ class DownloadedPdfsNotifier extends StateNotifier<Map<String, String>> {
         return filePath;
       }
 
-      final response = await http.get(Uri.parse(doc.pdfUrl));
-      if (response.statusCode == 200) {
-        await file.writeAsBytes(response.bodyBytes);
+      final downloaded = await ApiService.downloadFileStreamed(
+        doc.pdfUrl,
+        file,
+        maxBytes: ApiService.maxPdfBytes, // 150 MB safe limit
+        verifyPdfHeader: true,             // Verifies %PDF- magic bytes
+        onProgress: onProgress,
+      );
+      if (await downloaded.exists()) {
         state = {...state, doc.fileName: filePath};
         return filePath;
       }

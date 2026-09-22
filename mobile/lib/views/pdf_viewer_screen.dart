@@ -2,11 +2,11 @@ import "dart:io";
 import "package:flutter/material.dart";
 import "package:flutter_pdfview/flutter_pdfview.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
-import "package:http/http.dart" as http;
 import "package:path_provider/path_provider.dart";
 import "package:share_plus/share_plus.dart";
 import "../models/pdf_document.dart";
 import "../providers/library_providers.dart";
+import "../services/api_service.dart";
 
 class PdfViewerScreen extends ConsumerStatefulWidget {
   final PdfDocument document;
@@ -46,7 +46,7 @@ class _PdfViewerScreenState extends ConsumerState<PdfViewerScreen> {
       return;
     }
 
-    // Download to temporary cache directory for instant reading
+    // Download to temporary cache directory for instant reading using secure streaming
     setState(() {
       _isLoading = true;
       _loadingMessage = "Downloading PDF (${widget.document.fileSizeFormatted})...";
@@ -67,27 +67,31 @@ class _PdfViewerScreenState extends ConsumerState<PdfViewerScreen> {
         return;
       }
 
-      final response = await http.get(Uri.parse(widget.document.pdfUrl));
-      if (response.statusCode == 200) {
-        await tempFile.writeAsBytes(response.bodyBytes);
-        if (mounted) {
-          setState(() {
-            _localPath = tempFile.path;
-            _isLoading = false;
-          });
-        }
-      } else {
-        if (mounted) {
-          setState(() {
-            _errorMessage = "Unable to fetch document (HTTP ${response.statusCode})";
-            _isLoading = false;
-          });
-        }
+      await ApiService.downloadFileStreamed(
+        widget.document.pdfUrl,
+        tempFile,
+        maxBytes: ApiService.maxPdfBytes, // 150 MB safe limit
+        verifyPdfHeader: true,             // Verifies %PDF- magic bytes
+        onProgress: (progress) {
+          if (mounted) {
+            setState(() {
+              final pct = (progress * 100).toInt();
+              _loadingMessage = "Downloading PDF (${widget.document.fileSizeFormatted}) • $pct%...";
+            });
+          }
+        },
+      );
+
+      if (mounted) {
+        setState(() {
+          _localPath = tempFile.path;
+          _isLoading = false;
+        });
       }
     } catch (e) {
       if (mounted) {
         setState(() {
-          _errorMessage = "Network error: ${e.toString()}";
+          _errorMessage = "Security/Download Error: ${e.toString().replaceAll('Exception: ', '')}";
           _isLoading = false;
         });
       }
