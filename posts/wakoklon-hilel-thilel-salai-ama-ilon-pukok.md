@@ -1,7 +1,7 @@
 ---
 id: "wakoklon-hilel-thilel-salai-ama-ilon-pukok"
 title: "Wakoklon Hilel Thilel Salai Ama Ilon pukok"
-summary: "Wakoklon Hilel Thilel Salai Ama-ilon Pukok"
+summary: "Wakoklon Hilel Thilel Salai Ama Ilon pukok puya"
 date: "2026-09-20"
 author: "Sanamahee Laining Leechat Kangleipak"
 category: "Philosophy"
@@ -10,11 +10,19 @@ language: "en"
 featured: true
 ---
 
-"wakoklon-hilel-thilel-salai-ama-ilon-pukok"
+---
+id: "wakoklon-hilel-thilel-salai-ama-ilon-pukok"
+title: "Wakoklon Hilel Thilel Salai Ama Ilon pukok"
+summary: "Nongshapa"
+date: "2026-09-20"
+author: "SLLK."
+category: "Philosophy"
+thumbnail: "images/nongsapa-p1.png"
+language: "en"
+featured: true
+---
 
-
-Wakoklon_Hilel_Thilel_Salai_Ama_Ilon_pukok masigi maming asigi wahanthok karino haibasi eikhoi khangminnasi.
-
+Wakoklon_Hilel_Thilel_Salai_Ama_Ilon_pukok masigi maming asigi wahanthok karino haibasi eikhoi khanglabara??
 Puya asigi manunggi warol khangbidringai puya asigi maminggi wahanthok hanna khangba tangai fade puya asibu masak khangsi hairabadi.
 .
 WAKOKLON+HILEL+THILEL+SALAI+AMA-I-LON+PUKOK
