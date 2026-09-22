@@ -1433,43 +1433,200 @@ button {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.85);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1100;
-  padding: 1rem;
+  padding: 1.25rem;
+  animation: fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .meetei-modal-dialog {
-  background: var(--bg-elevated);
+  background: var(--bg-card);
   border: 1px solid var(--border-active);
-  border-radius: var(--radius-lg);
-  max-width: 860px;
+  border-radius: var(--radius-lg, 16px);
+  max-width: 1040px;
   width: 100%;
+  height: 90vh;
   max-height: 90vh;
-  overflow-y: auto;
-  padding: 1.75rem;
-  box-shadow: var(--shadow-elevated);
+  box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(255, 255, 255, 0.05);
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  overflow: hidden;
+  position: relative;
+  animation: scaleUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .meetei-modal-header {
+  flex-shrink: 0;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: 1rem;
+  padding: 1.15rem 1.5rem 0.85rem 1.5rem;
+  border-bottom: 1px solid var(--border-subtle);
+  background: rgba(0, 0, 0, 0.2);
 }
 
 .meetei-modal-tabs {
+  flex-shrink: 0;
   display: flex;
-  gap: 0.4rem;
+  gap: 0.5rem;
   border-bottom: 1px solid var(--border-subtle);
-  padding-bottom: 0.5rem;
-  flex-wrap: wrap;
+  padding: 0.65rem 1.5rem;
+  background: rgba(0, 0, 0, 0.12);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+.meetei-modal-tabs::-webkit-scrollbar {
+  height: 3px;
+}
+.meetei-modal-tabs::-webkit-scrollbar-thumb {
+  background: var(--border-active);
+  border-radius: 4px;
+}
+
+.meetei-modal-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-active) transparent;
+}
+
+.meetei-modal-body::-webkit-scrollbar {
+  width: 6px;
+}
+.meetei-modal-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+.meetei-modal-body::-webkit-scrollbar-thumb {
+  background: var(--border-active);
+  border-radius: 4px;
+}
+.meetei-modal-body::-webkit-scrollbar-thumb:hover {
+  background: var(--border-focus);
+}
+
+/* Tab pill buttons in meetei modal */
+.meetei-tab-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.38rem 0.85rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  white-space: nowrap;
+  border-radius: var(--radius-full, 9999px);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-subtle);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+
+.meetei-tab-pill:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+  border-color: var(--border-active);
+  transform: translateY(-1px);
+}
+
+.meetei-tab-pill.active {
+  background: rgba(56, 189, 248, 0.14);
+  color: var(--accent-cyan);
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
+  font-weight: 600;
+}
+
+.meetei-tab-pill.active-amber {
+  background: rgba(245, 158, 11, 0.14);
+  color: var(--accent-amber);
+  border-color: var(--accent-amber);
+  box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
+  font-weight: 600;
+}
+
+/* Interactive Numeral / Letter Card in Studio */
+.meetei-char-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 0.5rem;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md, 8px);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  user-select: none;
+}
+
+.meetei-char-card:hover {
+  background: rgba(56, 189, 248, 0.06);
+  border-color: var(--accent-cyan);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px -6px rgba(0, 0, 0, 0.4);
+}
+
+.meetei-char-card:active {
+  transform: translateY(0);
+}
+
+/* Sticky Header & Sleek Styling for Cheishing Table */
+.cheishing-table-wrap {
+  position: relative;
+  max-height: 520px;
+  overflow-y: auto;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.01);
+  scrollbar-width: thin;
+}
+
+.cheishing-table-wrap table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.82rem;
+}
+
+.cheishing-table-wrap thead th {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: #111419;
+  border-bottom: 1px solid var(--border-active);
+  padding: 0.75rem 0.85rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-align: left;
+}
+
+.cheishing-table-wrap tbody tr {
+  transition: background 0.15s ease;
+}
+
+.cheishing-table-wrap tbody tr:hover {
+  background: rgba(56, 189, 248, 0.05);
+}
+
+.cheishing-table-wrap tbody td {
+  padding: 0.75rem 0.85rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 }
 
 
@@ -1887,27 +2044,29 @@ button {
   }
 
   .meetei-modal-dialog {
-    padding: 1.15rem;
+    max-height: 96vh;
+    height: 96vh;
     border-radius: var(--radius-md);
-    max-height: 94vh;
   }
 
   .meetei-modal-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.6rem;
+    padding: 0.85rem 1rem;
+    flex-wrap: wrap;
+    gap: 0.75rem;
   }
 
   .meetei-modal-tabs {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    padding-bottom: 0.35rem;
+    padding: 0.5rem 1rem;
     scrollbar-width: none;
   }
 
   .meetei-modal-tabs::-webkit-scrollbar {
     display: none;
+  }
+
+  .meetei-modal-body {
+    padding: 1rem;
+    gap: 1rem;
   }
 
   /* App Footer */

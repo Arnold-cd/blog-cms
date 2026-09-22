@@ -12,7 +12,7 @@ import {
   translateToMeeteiMayekWithVocab,
   convertUnicodeToPukokFont,
 } from '../services/meeteiMayekService';
-import { Languages, Copy, Check, Plus, ExternalLink, X, Download, Sparkles } from 'lucide-react';
+import { Languages, Copy, Check, Plus, ExternalLink, X, Download, Sparkles, Search } from 'lucide-react';
 
 interface MeeteiMayekToolProps {
   onInsertText: (text: string) => void;
@@ -28,10 +28,17 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
   const [inputText, setInputText] = useState('');
   const [convertedText, setConvertedText] = useState('');
   const [copied, setCopied] = useState(false);
-  const [activeTab, setActiveTab] = useState<'translate' | 'vowels' | 'puya18' | 'main27' | 'lonsum' | 'cheitap' | 'extensions' | 'numerals'>('vowels');
+  const [activeTab, setActiveTab] = useState<'translate' | 'vowels' | 'puya18' | 'main27' | 'lonsum' | 'cheitap' | 'extensions' | 'numerals'>('numerals');
   const [sampleConsonant, setSampleConsonant] = useState<string>('ꯀ');
   const [showFullMatrix, setShowFullMatrix] = useState<boolean>(false);
   const [matrixFilter, setMatrixFilter] = useState<'all' | 'main' | 'lonsum'>('all');
+  const [cheishingFilter, setCheishingFilter] = useState('');
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 1800);
+  };
 
   const handleTranslate = () => {
     const result = translateToMeeteiMayekWithVocab(inputText);
@@ -42,96 +49,121 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
     if (!text) return;
     navigator.clipboard.writeText(text);
     setCopied(true);
+    showToast(`Copied: ${text.length > 20 ? text.slice(0, 20) + '...' : text}`);
     setTimeout(() => setCopied(false), 2000);
   };
 
   const handleInsert = (text: string) => {
     if (!text) return;
     onInsertText(text);
+    showToast(`Inserted: ${text}`);
   };
 
   return (
-    <div className="meetei-modal-overlay" style={{
-      position: 'fixed',
-      inset: 0,
-      background: 'rgba(0, 0, 0, 0.85)',
-      backdropFilter: 'blur(14px)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      zIndex: 1100,
-      padding: '1rem',
-    }}>
-      <div className="card" style={{
-        width: '100%',
-        maxWidth: '960px',
-        maxHeight: '92vh',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '1rem',
-        overflow: 'hidden',
-        background: 'var(--bg-card)',
-        border: '1px solid var(--border-default)',
-        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.7)',
-      }}>
+    <div
+      className="meetei-modal-overlay"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div className="meetei-modal-dialog">
+        {/* Floating Toast Notification */}
+        {toastMessage && (
+          <div style={{
+            position: 'absolute',
+            top: '1.2rem',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 100,
+            background: 'var(--accent-cyan)',
+            color: '#000',
+            fontWeight: 700,
+            fontSize: '0.78rem',
+            padding: '0.4rem 1.1rem',
+            borderRadius: 'var(--radius-full)',
+            boxShadow: '0 8px 24px rgba(0, 0, 0, 0.6)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.4rem',
+            animation: 'fadeIn 0.15s ease',
+          }}>
+            <Check size={14} />
+            <span>{toastMessage}</span>
+          </div>
+        )}
+
         {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.75rem', flexWrap: 'wrap', gap: '0.5rem', padding: '1.25rem 1.25rem 0 1.25rem' }}>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Languages size={20} style={{ color: 'var(--accent-cyan)' }} />
-              <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+        <div className="meetei-modal-header">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <div style={{
+              width: '38px',
+              height: '38px',
+              borderRadius: 'var(--radius-md)',
+              background: 'linear-gradient(135deg, rgba(56, 189, 248, 0.2) 0%, rgba(99, 102, 241, 0.2) 100%)',
+              border: '1px solid rgba(56, 189, 248, 0.3)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'var(--accent-cyan)',
+              flexShrink: 0,
+            }}>
+              <Languages size={20} />
+            </div>
+            <div>
+              <h3 style={{ margin: 0, fontSize: '1.18rem', fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-0.01em' }}>
                 Meetei Mayek Linguistic Studio &amp; Reference
               </h3>
+              <p style={{ margin: '0.15rem 0 0', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+                Complete Unicode Standard (
+                <a
+                  href="https://unicode.org/charts/PDF/UABC0.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: 'var(--accent-cyan)', textDecoration: 'none', fontWeight: 500 }}
+                >
+                  U+ABC0..U+ABFF
+                </a>
+                ,{' '}
+                <a
+                  href="https://unicode.org/charts/PDF/UAAE0.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: 'var(--accent-cyan)', textDecoration: 'none', fontWeight: 500 }}
+                >
+                  U+AAE0..U+AAFF
+                </a>
+                ) &bull;{' '}
+                <a
+                  href="https://en.wikipedia.org/wiki/Meitei_script"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: 'var(--text-muted)', textDecoration: 'none' }}
+                >
+                  Wikipedia Spec <ExternalLink size={10} style={{ display: 'inline' }} />
+                </a>
+              </p>
             </div>
-            <p style={{ margin: '0.2rem 0 0', fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
-              Complete Unicode Standard (
-              <a
-                href="https://unicode.org/charts/PDF/UABC0.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ color: 'var(--accent-cyan)', textDecoration: 'none' }}
-              >
-                U+ABC0..U+ABFF
-              </a>
-              ,{' '}
-              <a
-                href="https://unicode.org/charts/PDF/UAAE0.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ color: 'var(--accent-cyan)', textDecoration: 'none' }}
-              >
-                U+AAE0..U+AAFF
-              </a>
-              ) &bull;{' '}
-              <a
-                href="https://en.wikipedia.org/wiki/Meitei_script"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ color: 'var(--text-muted)', textDecoration: 'none' }}
-              >
-                Wikipedia Spec <ExternalLink size={10} style={{ display: 'inline' }} />
-              </a>
-            </p>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
             <a
               href="fonts/Meetei-Mayek-Fonts.zip"
               download="Meetei-Mayek-Fonts.zip"
               className="btn-secondary"
               style={{
                 textDecoration: 'none',
-                fontSize: '0.78rem',
+                fontSize: '0.76rem',
                 padding: '0.35rem 0.75rem',
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '0.35rem',
+                borderRadius: 'var(--radius-full)',
               }}
-              title="Download Meetei Mayek TrueType Fonts (.ttf) Package with Regular, Bold, & Install Guide"
+              title="Download Meetei Mayek TrueType Fonts (.ttf) Package"
               id="btn-download-ttf-suite"
             >
               <Download size={13} />
-              <span>Download TTF (.zip)</span>
+              <span>TTF (.zip)</span>
             </a>
 
             <a
@@ -140,198 +172,204 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
               className="btn-secondary"
               style={{
                 textDecoration: 'none',
-                fontSize: '0.78rem',
+                fontSize: '0.76rem',
                 padding: '0.35rem 0.75rem',
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '0.35rem',
+                borderRadius: 'var(--radius-full)',
+                borderColor: 'rgba(245, 158, 11, 0.3)',
+                color: 'var(--accent-amber)',
               }}
-              title="Download Authentic Wakoklon Puya Pukok Eeyek Font (.otf) by Kanglei Eempham"
+              title="Download Authentic Wakoklon Puya Pukok Eeyek Font (.otf)"
               id="btn-download-pukok-suite"
             >
               <Download size={13} />
               <span>Pukok OTF</span>
             </a>
 
-            <button onClick={onClose} className="btn-ghost" style={{ padding: '0.35rem' }}>
+            <button
+              onClick={onClose}
+              className="btn-ghost"
+              style={{ padding: '0.4rem', borderRadius: 'var(--radius-full)' }}
+              title="Close Reference Studio"
+            >
               <X size={18} />
             </button>
           </div>
         </div>
 
-        {/* Tab Switcher */}
-        <div className="meetei-modal-tabs" style={{ display: 'flex', gap: '0.4rem', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.5rem', flexWrap: 'wrap', padding: '0 1.25rem' }}>
+        {/* Sleek Tab Navigation Strip */}
+        <div className="meetei-modal-tabs">
           <button
-            className={`category-chip ${activeTab === 'vowels' ? 'active' : ''}`}
+            className={`meetei-tab-pill ${activeTab === 'numerals' ? 'active' : ''}`}
+            onClick={() => setActiveTab('numerals')}
+          >
+            <span>꯰-꯹ 10 Digits &amp; Cheishing</span>
+          </button>
+          <button
+            className={`meetei-tab-pill ${activeTab === 'vowels' ? 'active' : ''}`}
             onClick={() => setActiveTab('vowels')}
             id="tab-vowels-suite"
           >
-            Vowels (7 Independent &amp; 8 Diacritics)
+            <span>🔤 Vowels &amp; Matrix</span>
           </button>
           <button
-            className={`category-chip ${activeTab === 'translate' ? 'active' : ''}`}
+            className={`meetei-tab-pill ${activeTab === 'translate' ? 'active' : ''}`}
             onClick={() => setActiveTab('translate')}
           >
-            Translate / Transliterate
+            <span>✍️ Transliterate</span>
           </button>
           <button
-            className={`category-chip ${activeTab === 'puya18' ? 'active' : ''}`}
+            className={`meetei-tab-pill ${activeTab === 'puya18' ? 'active-amber' : ''}`}
             onClick={() => setActiveTab('puya18')}
-            style={{
-              borderColor: activeTab === 'puya18' ? 'var(--accent-amber)' : undefined,
-              color: activeTab === 'puya18' ? 'var(--accent-amber)' : undefined,
-            }}
           >
-            <Sparkles size={12} style={{ display: 'inline', marginRight: '0.25rem' }} />
-            Wakoklon Puya (18 vs 27) &amp; Key Layout
+            <Sparkles size={12} style={{ color: 'var(--accent-amber)' }} />
+            <span>Wakoklon Puya (18 vs 27)</span>
           </button>
           <button
-            className={`category-chip ${activeTab === 'main27' ? 'active' : ''}`}
+            className={`meetei-tab-pill ${activeTab === 'main27' ? 'active' : ''}`}
             onClick={() => setActiveTab('main27')}
           >
-            27 Main Letters (ꯀ-ꯚ)
+            <span>ꯀ 27 Main Letters</span>
           </button>
           <button
-            className={`category-chip ${activeTab === 'lonsum' ? 'active' : ''}`}
+            className={`meetei-tab-pill ${activeTab === 'lonsum' ? 'active' : ''}`}
             onClick={() => setActiveTab('lonsum')}
           >
-            8 Lonsum (ꯛ-ꯢ)
+            <span>ꯛ 8 Lonsum</span>
           </button>
           <button
-            className={`category-chip ${activeTab === 'cheitap' ? 'active' : ''}`}
+            className={`meetei-tab-pill ${activeTab === 'cheitap' ? 'active' : ''}`}
             onClick={() => setActiveTab('cheitap')}
           >
-            8 Cheitap &amp; Marks
+            <span>ꯣ 8 Cheitap &amp; Marks</span>
           </button>
           <button
-            className={`category-chip ${activeTab === 'extensions' ? 'active' : ''}`}
+            className={`meetei-tab-pill ${activeTab === 'extensions' ? 'active' : ''}`}
             onClick={() => setActiveTab('extensions')}
           >
-            Extensions (U+AAE0)
-          </button>
-          <button
-            className={`category-chip ${activeTab === 'numerals' ? 'active' : ''}`}
-            onClick={() => setActiveTab('numerals')}
-          >
-            10 Digits & Cheishing (ꯆꯩꯁꯤꯡ)
+            <span>ꫠ Extensions (U+AAE0)</span>
           </button>
         </div>
 
-        {/* Tab 1: Translation / Transliteration */}
-        {activeTab === 'translate' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <div>
-              <label className="form-label">Type English / Latin Phonetics or Bengali Script</label>
-              <textarea
-                rows={3}
-                className="form-textarea"
-                placeholder="Type Latin words (e.g., 'kangleipak', 'meetei mayek', 'manipur', 'puya') or paste Bengali script text..."
-                value={inputText}
-                onChange={(e) => {
-                  setInputText(e.target.value);
-                  setConvertedText(translateToMeeteiMayekWithVocab(e.target.value));
-                }}
-              />
-            </div>
+        {/* Scrollable Modal Body Container */}
+        <div className="meetei-modal-body">
+          {/* Tab 1: Translation / Transliteration */}
+          {activeTab === 'translate' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <div>
+                <label className="form-label">Type English / Latin Phonetics or Bengali Script</label>
+                <textarea
+                  rows={3}
+                  className="form-textarea"
+                  placeholder="Type Latin words (e.g., 'kangleipak', 'meetei mayek', 'manipur', 'puya') or paste Bengali script text..."
+                  value={inputText}
+                  onChange={(e) => {
+                    setInputText(e.target.value);
+                    setConvertedText(translateToMeeteiMayekWithVocab(e.target.value));
+                  }}
+                />
+              </div>
 
-            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-              <button onClick={handleTranslate} className="btn-primary" style={{ padding: '0.4rem 0.9rem', fontSize: '0.82rem' }}>
-                Translate Input
-              </button>
-              {onTranslateFullDraft && (
-                <button
-                  type="button"
-                  onClick={onTranslateFullDraft}
-                  className="btn-secondary"
-                  style={{ padding: '0.4rem 0.9rem', fontSize: '0.82rem' }}
-                >
-                  <span style={{ fontFamily: 'var(--font-meetei)' }}>ꯃ</span>
-                  <span>Translate Entire Current Article</span>
+              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                <button onClick={handleTranslate} className="btn-primary" style={{ padding: '0.4rem 0.9rem', fontSize: '0.82rem' }}>
+                  Translate Input
                 </button>
-              )}
-            </div>
+                {onTranslateFullDraft && (
+                  <button
+                    type="button"
+                    onClick={onTranslateFullDraft}
+                    className="btn-secondary"
+                    style={{ padding: '0.4rem 0.9rem', fontSize: '0.82rem' }}
+                  >
+                    <span style={{ fontFamily: 'var(--font-meetei)' }}>ꯃ</span>
+                    <span>Translate Entire Current Article</span>
+                  </button>
+                )}
+              </div>
 
-            {convertedText && (
-              <div style={{
-                background: 'rgba(9, 9, 11, 0.8)',
-                border: '1px solid var(--border-active)',
-                borderRadius: 'var(--radius-sm)',
-                padding: '1rem',
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                  <span className="form-label" style={{ color: 'var(--accent-cyan)' }}>
-                    Meetei Mayek Unicode Result
-                  </span>
-                  <div style={{ display: 'flex', gap: '0.4rem' }}>
-                    <button
-                      onClick={() => handleCopy(convertedText)}
-                      className="btn-secondary"
-                      style={{ padding: '0.25rem 0.6rem', fontSize: '0.75rem' }}
-                    >
-                      {copied ? <Check size={12} color="var(--accent-emerald)" /> : <Copy size={12} />}
-                      <span>{copied ? 'Copied' : 'Copy'}</span>
-                    </button>
-                    <button
-                      onClick={() => handleInsert(convertedText)}
-                      className="btn-primary"
-                      style={{ padding: '0.25rem 0.6rem', fontSize: '0.75rem' }}
-                    >
-                      <Plus size={12} />
-                      <span>Insert into Article</span>
-                    </button>
-                  </div>
-                </div>
-
+              {convertedText && (
                 <div style={{
-                  fontSize: '1.4rem',
-                  fontFamily: 'var(--font-meetei)',
-                  lineHeight: 1.8,
-                  color: '#fff',
-                  userSelect: 'all',
+                  background: 'rgba(9, 9, 11, 0.8)',
+                  border: '1px solid var(--border-active)',
+                  borderRadius: 'var(--radius-sm)',
+                  padding: '1rem',
                 }}>
-                  {convertedText}
-                </div>
-
-                {/* Authentic Wakoklon Pukok Eeyek Puya Font Rendering */}
-                <div style={{
-                  marginTop: '1rem',
-                  paddingTop: '0.85rem',
-                  borderTop: '1px dashed var(--border-subtle)',
-                }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.4rem' }}>
-                    <span className="form-label" style={{ color: 'var(--accent-amber)', display: 'flex', alignItems: 'center', gap: '0.35rem', marginBottom: 0 }}>
-                      <Sparkles size={13} />
-                      <span>Authentic Wakoklon Pukok Eeyek (Puya Manuscript Calligraphy)</span>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                    <span className="form-label" style={{ color: 'var(--accent-cyan)' }}>
+                      Meetei Mayek Unicode Result
                     </span>
-                    <button
-                      onClick={() => handleCopy(convertUnicodeToPukokFont(convertedText))}
-                      className="btn-ghost"
-                      style={{ padding: '0.15rem 0.45rem', fontSize: '0.72rem' }}
-                      title="Copy Pukok Eeyek mapped character string"
-                    >
-                      <Copy size={11} />
-                      <span>Copy Pukok Font Keys</span>
-                    </button>
+                    <div style={{ display: 'flex', gap: '0.4rem' }}>
+                      <button
+                        onClick={() => handleCopy(convertedText)}
+                        className="btn-secondary"
+                        style={{ padding: '0.25rem 0.6rem', fontSize: '0.75rem' }}
+                      >
+                        {copied ? <Check size={12} color="var(--accent-emerald)" /> : <Copy size={12} />}
+                        <span>{copied ? 'Copied' : 'Copy'}</span>
+                      </button>
+                      <button
+                        onClick={() => handleInsert(convertedText)}
+                        className="btn-primary"
+                        style={{ padding: '0.25rem 0.6rem', fontSize: '0.75rem' }}
+                      >
+                        <Plus size={12} />
+                        <span>Insert into Article</span>
+                      </button>
+                    </div>
                   </div>
+
                   <div style={{
-                    fontSize: '1.65rem',
-                    fontFamily: 'var(--font-pukok)',
+                    fontSize: '1.4rem',
+                    fontFamily: 'var(--font-meetei)',
                     lineHeight: 1.8,
-                    color: 'var(--accent-amber)',
-                    letterSpacing: '0.04em',
+                    color: '#fff',
                     userSelect: 'all',
                   }}>
-                    {convertUnicodeToPukokFont(convertedText)}
+                    {convertedText}
+                  </div>
+
+                  {/* Authentic Wakoklon Pukok Eeyek Puya Font Rendering */}
+                  <div style={{
+                    marginTop: '1rem',
+                    paddingTop: '0.85rem',
+                    borderTop: '1px dashed var(--border-subtle)',
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.4rem' }}>
+                      <span className="form-label" style={{ color: 'var(--accent-amber)', display: 'flex', alignItems: 'center', gap: '0.35rem', marginBottom: 0 }}>
+                        <Sparkles size={13} />
+                        <span>Authentic Wakoklon Pukok Eeyek (Puya Manuscript Calligraphy)</span>
+                      </span>
+                      <button
+                        onClick={() => handleCopy(convertUnicodeToPukokFont(convertedText))}
+                        className="btn-ghost"
+                        style={{ padding: '0.15rem 0.45rem', fontSize: '0.72rem' }}
+                        title="Copy Pukok Eeyek mapped character string"
+                      >
+                        <Copy size={11} />
+                        <span>Copy Pukok Font Keys</span>
+                      </button>
+                    </div>
+                    <div style={{
+                      fontSize: '1.65rem',
+                      fontFamily: 'var(--font-pukok)',
+                      lineHeight: 1.8,
+                      color: 'var(--accent-amber)',
+                      letterSpacing: '0.04em',
+                      userSelect: 'all',
+                    }}>
+                      {convertUnicodeToPukokFont(convertedText)}
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
-          </div>
-        )}
+              )}
+            </div>
+          )}
 
-        {/* Tab: Seven Independent Vowels & Vowel Diacritics (Cheitap Eeyek) */}
-        {activeTab === 'vowels' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', maxHeight: '550px', overflowY: 'auto' }}>
+          {/* Tab: Seven Independent Vowels & Vowel Diacritics (Cheitap Eeyek) */}
+          {activeTab === 'vowels' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
             {/* Section 1: Seven Independent Vowels */}
             <div>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.4rem', flexWrap: 'wrap', gap: '0.5rem' }}>
@@ -700,7 +738,7 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
 
         {/* Tab: Wakoklon Puya 18 vs 27 & Authentic Pukok Keyboard Layout */}
         {activeTab === 'puya18' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', maxHeight: '580px', overflowY: 'auto', paddingRight: '0.4rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
             {/* Header & Source Charter Info */}
             <div style={{
               background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(217, 119, 6, 0.03) 100%)',
@@ -1042,8 +1080,6 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fill, minmax(135px, 1fr))',
               gap: '0.6rem',
-              maxHeight: '380px',
-              overflowY: 'auto',
             }}>
               {ALL_27_MAIN_LETTERS.map((item) => (
                 <button
@@ -1232,8 +1268,6 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fill, minmax(135px, 1fr))',
               gap: '0.6rem',
-              maxHeight: '380px',
-              overflowY: 'auto',
             }}>
               {EXTENSIONS_BLOCK.map((item) => (
                 <button
@@ -1274,51 +1308,66 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
 
         {/* Tab 6: 10 Digits & Cheishing Thiba Number System */}
         {activeTab === 'numerals' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            {/* 10 Digits Grid */}
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                <span style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-primary)' }}>
-                  Cheising Eeyek (10 Digits &bull; U+ABF0 to U+ABF9)
-                </span>
-                <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
-                  Click to insert digit
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.65rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+                <div>
+                  <h4 style={{ margin: 0, fontSize: '0.98rem', fontWeight: 700, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <span>Cheising Eeyek (ꯆꯩꯁꯤꯡ ꯏꯌꯦꯛ)</span>
+                    <span style={{ fontSize: '0.74rem', fontWeight: 600, color: 'var(--accent-cyan)', background: 'rgba(56, 189, 248, 0.12)', padding: '0.12rem 0.5rem', borderRadius: 'var(--radius-full)' }}>
+                      10 Digits &bull; U+ABF0 to U+ABF9
+                    </span>
+                  </h4>
+                  <p style={{ margin: '0.15rem 0 0', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                    Meetei base-10 numerical digits with authentic Wakoklon calligraphy and IPA phonetics
+                  </p>
+                </div>
+                <span style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>
+                  Click any digit to insert
                 </span>
               </div>
+
+              {/* Clean 10-column layout: perfectly balances 0 to 9 */}
               <div style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(105px, 1fr))',
-                gap: '0.6rem',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(84px, 1fr))',
+                gap: '0.55rem',
               }}>
                 {NUMERALS_10.map((item) => (
-                  <button
+                  <div
                     key={item.codePoint}
                     onClick={() => handleInsert(item.char)}
-                    className="btn-secondary"
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      padding: '0.6rem 0.4rem',
-                      textAlign: 'center',
-                      background: 'rgba(255, 255, 255, 0.02)',
-                    }}
-                    title={`Insert ${item.char} (${item.name} - ${item.codePoint})`}
+                    className="meetei-char-card"
+                    title={`Click to insert ${item.char} (${item.name} - ${item.codePoint})`}
                   >
-                    <span style={{ fontFamily: 'var(--font-meetei)', fontSize: '1.85rem', color: 'var(--text-primary)', lineHeight: 1.2 }}>
+                    <span style={{ fontFamily: 'var(--font-meetei)', fontSize: '1.85rem', color: 'var(--text-primary)', lineHeight: 1.1 }}>
                       {item.char}
                     </span>
-                    <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-primary)', marginTop: '0.2rem' }}>
+                    <span
+                      style={{
+                        fontFamily: 'var(--font-pukok)',
+                        fontSize: '1.25rem',
+                        color: 'var(--accent-amber)',
+                        lineHeight: 1,
+                        margin: '0.2rem 0',
+                      }}
+                      title={`Wakoklon Puya calligraphy glyph (Key: ${convertUnicodeToPukokFont(item.char)})`}
+                    >
+                      {convertUnicodeToPukokFont(item.char)}
+                    </span>
+                    <span style={{ fontSize: '0.74rem', fontWeight: 700, color: 'var(--text-primary)' }}>
                       {item.name}
                     </span>
                     {item.ipa && (
-                      <span style={{ fontSize: '0.65rem', color: 'var(--accent-amber)', fontFamily: 'monospace' }}>
+                      <span style={{ fontSize: '0.64rem', color: 'var(--accent-amber)', fontFamily: 'monospace' }}>
                         {item.ipa}
                       </span>
                     )}
-                    <code style={{ fontSize: '0.6rem', color: 'var(--accent-cyan)', opacity: 0.8 }}>
+                    <code style={{ fontSize: '0.58rem', color: 'var(--accent-cyan)', opacity: 0.85, marginTop: '0.15rem' }}>
                       {item.codePoint}
                     </code>
-                  </button>
+                  </div>
                 ))}
               </div>
             </div>
@@ -1328,84 +1377,165 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
               background: 'rgba(255, 255, 255, 0.02)',
               border: '1px solid var(--border-subtle)',
               borderRadius: 'var(--radius-md)',
-              padding: '1rem',
+              padding: '1.2rem',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '0.85rem',
             }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
                 <div>
-                  <h4 style={{ margin: 0, fontSize: '0.92rem', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <span style={{ fontFamily: 'var(--font-meetei)', fontSize: '1.1rem', color: 'var(--accent-cyan)' }}>ꯆꯩꯁꯤꯡ ꯊꯤꯕ</span>
+                  <h4 style={{ margin: 0, fontSize: '1.02rem', fontWeight: 700, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '0.55rem' }}>
+                    <span style={{ fontFamily: 'var(--font-meetei)', fontSize: '1.25rem', color: 'var(--accent-cyan)' }}>ꯆꯩꯁꯤꯡ ꯊꯤꯕ</span>
                     <span>(Cheishing - thiba &bull; Traditional Number System)</span>
                   </h4>
-                  <p style={{ margin: '0.2rem 0 0', fontSize: '0.72rem', color: 'var(--text-muted)' }}>
-                    Ancient Manipuri numerical scale from units (Ama) up to ten trillions (Puu Ama)
+                  <p style={{ margin: '0.2rem 0 0', fontSize: '0.76rem', color: 'var(--text-secondary)' }}>
+                    Ancient Manipuri numerical scale from units (Ama) up to ten trillions (Puu Ama), preserved in sacred Puyas
                   </p>
+                </div>
+
+                {/* Search / Filter Bar for Cheishing Table */}
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.45rem',
+                  background: 'rgba(0, 0, 0, 0.35)',
+                  border: '1px solid var(--border-subtle)',
+                  borderRadius: 'var(--radius-full)',
+                  padding: '0.3rem 0.85rem',
+                }}>
+                  <Search size={14} style={{ color: 'var(--text-muted)' }} />
+                  <input
+                    type="text"
+                    placeholder="Filter scale (e.g. Lipun, Crore, 1000, Tala)..."
+                    value={cheishingFilter}
+                    onChange={(e) => setCheishingFilter(e.target.value)}
+                    style={{
+                      background: 'transparent',
+                      border: 'none',
+                      color: 'var(--text-primary)',
+                      fontSize: '0.78rem',
+                      outline: 'none',
+                      width: '190px',
+                    }}
+                  />
+                  {cheishingFilter && (
+                    <button
+                      onClick={() => setCheishingFilter('')}
+                      className="btn-ghost"
+                      style={{ padding: 0, color: 'var(--text-muted)' }}
+                      title="Clear search"
+                    >
+                      <X size={12} />
+                    </button>
+                  )}
                 </div>
               </div>
 
-              <div style={{ overflowX: 'auto' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem', textAlign: 'left' }}>
+              {/* Table with Sticky Header and Smooth Scroll */}
+              <div className="cheishing-table-wrap">
+                <table>
                   <thead>
-                    <tr style={{ borderBottom: '1px solid var(--border-subtle)', color: 'var(--text-secondary)' }}>
-                      <th style={{ padding: '0.5rem', fontWeight: 600 }}>Meetei Word</th>
-                      <th style={{ padding: '0.5rem', fontWeight: 600 }}>Numerals</th>
-                      <th style={{ padding: '0.5rem', fontWeight: 600 }}>Roman Name</th>
-                      <th style={{ padding: '0.5rem', fontWeight: 600 }}>Standard Value</th>
-                      <th style={{ padding: '0.5rem', fontWeight: 600 }}>Scale / Meaning</th>
-                      <th style={{ padding: '0.5rem', textAlign: 'right', fontWeight: 600 }}>Insert</th>
+                    <tr>
+                      <th style={{ width: '65px' }}>Level</th>
+                      <th>Meetei Word (ꯄꯨꯌꯥ ꯏꯔꯝ)</th>
+                      <th>Numerals (ꯆꯩꯁꯤꯡ)</th>
+                      <th>Roman Name</th>
+                      <th>Standard Value</th>
+                      <th>Scale / Meaning</th>
+                      <th style={{ textAlign: 'right', minWidth: '140px' }}>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {CHEISHING_THIBA.map((row, idx) => (
-                      <tr
-                        key={idx}
-                        style={{
-                          borderBottom: '1px solid rgba(255, 255, 255, 0.04)',
-                          transition: 'background 0.15s ease',
-                        }}
-                      >
-                        <td style={{ padding: '0.5rem', fontFamily: 'var(--font-meetei)', fontSize: '1rem', color: 'var(--accent-cyan)', fontWeight: 600 }}>
-                          {row.meeteiWord}
-                        </td>
-                        <td style={{ padding: '0.5rem', fontFamily: 'var(--font-meetei)', fontSize: '0.95rem', color: 'var(--text-primary)' }}>
-                          {row.digits}
-                        </td>
-                        <td style={{ padding: '0.5rem', fontWeight: 500, color: 'var(--text-primary)' }}>
-                          {row.romanName}
-                        </td>
-                        <td style={{ padding: '0.5rem', fontFamily: 'monospace', color: 'var(--text-secondary)' }}>
-                          {row.value}
-                        </td>
-                        <td style={{ padding: '0.5rem', color: 'var(--text-muted)', fontSize: '0.75rem' }}>
-                          {row.meaning}
-                        </td>
-                        <td style={{ padding: '0.5rem', textAlign: 'right' }}>
-                          <div style={{ display: 'inline-flex', gap: '0.35rem' }}>
-                            <button
-                              onClick={() => handleInsert(row.meeteiWord)}
-                              className="btn-secondary"
-                              style={{ padding: '0.2rem 0.45rem', fontSize: '0.68rem' }}
-                              title={`Insert "${row.meeteiWord}"`}
-                            >
-                              Word
-                            </button>
-                            <button
-                              onClick={() => handleInsert(row.digits)}
-                              className="btn-secondary"
-                              style={{ padding: '0.2rem 0.45rem', fontSize: '0.68rem' }}
-                              title={`Insert "${row.digits}"`}
-                            >
-                              Digits
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
+                    {CHEISHING_THIBA.filter((row) => {
+                      if (!cheishingFilter.trim()) return true;
+                      const q = cheishingFilter.toLowerCase();
+                      return (
+                        row.romanName.toLowerCase().includes(q) ||
+                        row.meaning.toLowerCase().includes(q) ||
+                        row.value.includes(q) ||
+                        row.meeteiWord.includes(q) ||
+                        row.digits.includes(q)
+                      );
+                    }).map((row, idx) => {
+                      const isHighTier = idx >= 7; // Lipun (Crore) and above
+                      return (
+                        <tr
+                          key={idx}
+                          style={{
+                            background: isHighTier ? 'rgba(245, 158, 11, 0.025)' : undefined,
+                          }}
+                        >
+                          <td>
+                            <span style={{
+                              fontSize: '0.72rem',
+                              fontWeight: 600,
+                              color: isHighTier ? 'var(--accent-amber)' : 'var(--text-muted)',
+                              background: isHighTier ? 'rgba(245, 158, 11, 0.14)' : 'rgba(255, 255, 255, 0.04)',
+                              padding: '0.15rem 0.5rem',
+                              borderRadius: 'var(--radius-full)',
+                              display: 'inline-block',
+                            }}>
+                              #{idx + 1}
+                            </span>
+                          </td>
+                          <td style={{ fontFamily: 'var(--font-meetei)', fontSize: '1.05rem', color: 'var(--accent-cyan)', fontWeight: 600 }}>
+                            {row.meeteiWord}
+                          </td>
+                          <td style={{ fontFamily: 'var(--font-meetei)', fontSize: '1rem', color: 'var(--text-primary)', letterSpacing: '0.04em' }}>
+                            {row.digits}
+                          </td>
+                          <td style={{ fontWeight: 600, color: 'var(--text-primary)' }}>
+                            {row.romanName}
+                          </td>
+                          <td style={{ fontFamily: 'monospace', color: 'var(--text-secondary)', fontSize: '0.82rem' }}>
+                            {row.value}
+                          </td>
+                          <td>
+                            <span style={{
+                              fontSize: '0.75rem',
+                              color: isHighTier ? 'var(--accent-amber)' : 'var(--text-secondary)',
+                            }}>
+                              {row.meaning}
+                            </span>
+                          </td>
+                          <td style={{ textAlign: 'right' }}>
+                            <div style={{ display: 'inline-flex', gap: '0.35rem' }}>
+                              <button
+                                onClick={() => handleInsert(row.meeteiWord)}
+                                className="btn-secondary"
+                                style={{ padding: '0.22rem 0.55rem', fontSize: '0.72rem', borderRadius: 'var(--radius-xs)' }}
+                                title={`Insert "${row.meeteiWord}"`}
+                              >
+                                Word
+                              </button>
+                              <button
+                                onClick={() => handleInsert(row.digits)}
+                                className="btn-secondary"
+                                style={{ padding: '0.22rem 0.55rem', fontSize: '0.72rem', borderRadius: 'var(--radius-xs)' }}
+                                title={`Insert "${row.digits}"`}
+                              >
+                                Digits
+                              </button>
+                              <button
+                                onClick={() => handleCopy(`${row.meeteiWord} (${row.digits}) = ${row.value}`)}
+                                className="btn-ghost"
+                                style={{ padding: '0.22rem 0.4rem', fontSize: '0.72rem' }}
+                                title="Copy definition"
+                              >
+                                <Copy size={11} />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
             </div>
           </div>
         )}
+        </div>
       </div>
     </div>
   );
