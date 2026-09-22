@@ -23,4 +23,5 @@ Ama-i-lon=word of the one,
 Pukok=Pumnamakpu kokpiriba (i.e. the creator or the one who brings forth of everthing.).
 Yaifare.
 
+
 ![screenshot-2026-09-01-14-40-12-209-com.google.android.apps.docs-edit](images/screenshot-2026-09-01-14-40-12-209-com.google.android.apps.docs-edit.jpg)
