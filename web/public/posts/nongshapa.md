@@ -5,7 +5,7 @@ summary: "Nongshapa"
 date: "2026-09-20"
 author: "SLLK."
 category: "Philosophy"
-thumbnail: "images/banner-philosophy.svg"
+thumbnail: "images/nongsapa-p1.png"
 language: "en"
 featured: true
 ---

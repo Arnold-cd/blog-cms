@@ -130,19 +130,21 @@ export const PostList: React.FC<PostListProps> = ({ posts, onSelectPost, onOpenE
             </div>
           </div>
 
-          <div className="featured-banner-wrap">
-            <img
-              src={featuredPost.thumbnail_url}
-              alt={featuredPost.title}
-              className="featured-banner-img"
-              loading="eager"
-              onError={(e) => {
-                const target = e.currentTarget;
-                target.onerror = null;
-                target.src = 'images/banner-philosophy.svg';
-              }}
-            />
-          </div>
+          {featuredPost.thumbnail_url && (
+            <div className="featured-banner-wrap">
+              <img
+                src={featuredPost.thumbnail_url}
+                alt={featuredPost.title}
+                className="featured-banner-img"
+                loading="eager"
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  const parent = target.parentElement;
+                  if (parent) parent.style.display = 'none';
+                }}
+              />
+            </div>
+          )}
         </section>
       )}
 
@@ -165,20 +167,22 @@ export const PostList: React.FC<PostListProps> = ({ posts, onSelectPost, onOpenE
               onClick={() => onSelectPost(post)}
               id={`card-post-${post.id}`}
             >
-              <div className="card-banner-wrap">
-                <img
-                  src={post.thumbnail_url}
-                  alt={post.title}
-                  className="card-banner-img"
-                  loading="lazy"
-                  onError={(e) => {
-                    const target = e.currentTarget;
-                    target.onerror = null;
-                    target.src = 'images/banner-philosophy.svg';
-                  }}
-                />
-                <span className="card-lang-pill" style={{ fontFamily: post.language === "mni" ? "var(--font-meetei)" : undefined }}>{post.language === "mni" ? "ꯃꯤꯇꯩ ꯃꯌꯦꯛ" : post.language.toUpperCase()}</span>
-              </div>
+              {post.thumbnail_url ? (
+                <div className="card-banner-wrap">
+                  <img
+                    src={post.thumbnail_url}
+                    alt={post.title}
+                    className="card-banner-img"
+                    loading="lazy"
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      const parent = target.parentElement;
+                      if (parent) parent.style.display = 'none';
+                    }}
+                  />
+                  <span className="card-lang-pill" style={{ fontFamily: post.language === "mni" ? "var(--font-meetei)" : undefined }}>{post.language === "mni" ? "ꯃꯤꯇꯩ ꯃꯌꯦꯛ" : post.language.toUpperCase()}</span>
+                </div>
+              ) : null}
 
               <div className="card-body">
                 <div className="card-meta-row">

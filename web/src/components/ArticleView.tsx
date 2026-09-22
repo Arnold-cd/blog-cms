@@ -242,8 +242,8 @@ export const ArticleView: React.FC<ArticleViewProps> = ({ post, onBack, onEditDr
               className="reader-hero-img"
               onError={(e) => {
                 const target = e.currentTarget;
-                target.onerror = null;
-                target.src = 'images/banner-philosophy.svg';
+                const parent = target.parentElement;
+                if (parent) parent.style.display = 'none';
               }}
             />
           </div>

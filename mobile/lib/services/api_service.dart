@@ -14,7 +14,7 @@ class ApiService {
   /// Resolves relative paths or GitHub Raw URLs into reliable Vercel CDN URLs
   static String resolveUrl(String? raw) {
     if (raw == null || raw.trim().isEmpty) {
-      return "$baseVercelUrl/images/banner-philosophy.svg";
+      return "";
     }
     final trimmed = raw.trim();
 

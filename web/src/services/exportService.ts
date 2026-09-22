@@ -140,8 +140,10 @@ export async function publishToGitHub(
     // 3. Construct BlogPost object representation for in-app reader & manifest
     const words = (draft.content || "").split(/\s+/).filter(Boolean).length;
     const readingTime = Math.max(1, Math.round(words / 200));
-    const thumbnail = draft.thumbnail || "images/banner-philosophy.svg";
-    const cleanThumbnail = thumbnail.startsWith("http") || thumbnail.startsWith("/")
+    const thumbnail = draft.thumbnail || "";
+    const cleanThumbnail = !thumbnail
+      ? ""
+      : thumbnail.startsWith("http") || thumbnail.startsWith("/")
       ? thumbnail
       : `https://raw.githubusercontent.com/${cleanRepo}/main/${thumbnail.replace(/^\.?\//, "")}`;
 

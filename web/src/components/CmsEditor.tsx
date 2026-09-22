@@ -58,6 +58,10 @@ export const CmsEditor: React.FC<CmsEditorProps> = ({ onPreviewInFeed, onPostPub
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
+        // Clear out old dummy banner SVGs
+        if (parsed.thumbnail === 'images/banner-philosophy.svg' || parsed.thumbnail === 'images/banner-puya.svg') {
+          parsed.thumbnail = '';
+        }
         return { ...parsed, assets: [] };
       } catch {
         // fallback
@@ -70,7 +74,7 @@ export const CmsEditor: React.FC<CmsEditorProps> = ({ onPreviewInFeed, onPostPub
       date: todayStr,
       author: 'Arnold CD',
       category: 'Philosophy',
-      thumbnail: 'images/banner-philosophy.svg',
+      thumbnail: '',
       thumbnailPreviewUrl: '',
       language: 'en',
       featured: false,
@@ -139,7 +143,7 @@ Support for **bold**, *italics*, quotes, and tables:
         date: todayStr,
         author: 'Arnold CD',
         category: 'Philosophy',
-        thumbnail: 'images/banner-philosophy.svg',
+        thumbnail: '',
         thumbnailPreviewUrl: '',
         language: 'en',
         featured: false,
@@ -234,7 +238,7 @@ Support for **bold**, *italics*, quotes, and tables:
       fields.push({ key: 'category', label: 'Category', elementId: 'select-cms-category', drawerField: true });
     }
     if (!draft.thumbnail.trim()) {
-      fields.push({ key: 'thumbnail', label: 'Banner Image', elementId: 'input-cms-thumbnail', drawerField: true });
+      fields.push({ key: 'thumbnail', label: 'Thumbnail Image', elementId: 'input-cms-thumbnail', drawerField: true });
     }
     return fields;
   }, [draft]);
@@ -306,7 +310,7 @@ Support for **bold**, *italics*, quotes, and tables:
           }));
         }
       } catch (err: any) {
-        alert(`Failed to extract banner image from PDF: ${err.message}`);
+        alert(`Failed to extract thumbnail image from PDF: ${err.message}`);
       } finally {
         setIsProcessingPdf(false);
       }
@@ -438,7 +442,7 @@ Support for **bold**, *italics*, quotes, and tables:
       draft.thumbnailPreviewUrl ||
       assetMatch?.previewUrl ||
       draft.thumbnail ||
-      'images/banner-philosophy.svg';
+      '';
 
     const postObj: BlogPost = {
       id: draft.id || 'draft-article',
@@ -576,7 +580,7 @@ Support for **bold**, *italics*, quotes, and tables:
           <button
             onClick={() => setShowSettings(!showSettings)}
             className="btn-secondary"
-            title="Configure category, author, summary, and banner"
+            title="Configure category, author, summary, and thumbnail"
             id="btn-toggle-settings"
             style={{
               background: showSettings ? 'rgba(255, 255, 255, 0.12)' : undefined,
@@ -752,13 +756,13 @@ Support for **bold**, *italics*, quotes, and tables:
           </div>
 
           <div className="form-field">
-            <label className="form-label">Banner Image *</label>
+            <label className="form-label">Thumbnail Image *</label>
             <div style={{ display: 'flex', gap: '0.4rem' }}>
               <input
                 type="text"
                 className="form-input"
                 style={{ flex: 1 }}
-                placeholder="images/banner.png"
+                placeholder="images/thumbnail.png"
                 value={draft.thumbnail}
                 onChange={(e) => setDraft({ ...draft, thumbnail: e.target.value, thumbnailPreviewUrl: '' })}
                 id="input-cms-thumbnail"
@@ -768,7 +772,7 @@ Support for **bold**, *italics*, quotes, and tables:
                 onClick={() => bannerInputRef.current?.click()}
                 className="btn-secondary"
                 style={{ padding: '0 0.75rem', fontSize: '0.78rem' }}
-                title="Browse Image or PDF for Banner"
+                title="Browse Image or PDF for Thumbnail"
               >
                 Browse
               </button>
