@@ -37,8 +37,26 @@ export function resolvePdfAssetUrl(rawUrl: string | undefined): string {
  * Loads the library document manifest from local or GitHub Pages CDN.
  */
 export async function fetchLibraryDocuments(): Promise<PdfDocument[]> {
+  const timestamp = Date.now();
+
+  // 1. Try real-time GitHub raw manifest first (cache-busted) so remote additions/deletions reflect immediately
   try {
-    const res = await fetch(LOCAL_LIBRARY_URL);
+    const rawRes = await fetch(`${GITHUB_RAW_LIBRARY_URL}?t=${timestamp}`, {
+      cache: 'no-store',
+    });
+    if (rawRes.ok) {
+      const data = await rawRes.json();
+      if (Array.isArray(data)) {
+        return data;
+      }
+    }
+  } catch (err) {
+    console.warn('GitHub raw library.json fetch failed, trying local fallback:', err);
+  }
+
+  // 2. Fallback to local library.json (bundled static asset or offline mode)
+  try {
+    const res = await fetch(`${LOCAL_LIBRARY_URL}?t=${timestamp}`);
     if (res.ok) {
       const data = await res.json();
       if (Array.isArray(data)) {
@@ -46,15 +64,10 @@ export async function fetchLibraryDocuments(): Promise<PdfDocument[]> {
       }
     }
   } catch (err) {
-    console.warn('Local library.json fetch failed, falling back to GitHub raw URL', err);
+    console.warn('Local library.json fetch failed:', err);
   }
 
-  // Fallback to GitHub raw
-  const rawRes = await fetch(GITHUB_RAW_LIBRARY_URL);
-  if (!rawRes.ok) {
-    throw new Error(`Failed to load library manifest (HTTP ${rawRes.status})`);
-  }
-  return await rawRes.json();
+  return [];
 }
 
 /**
