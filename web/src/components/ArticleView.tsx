@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import type { BlogPost, PostDraft } from '../types';
-import { fetchArticleMarkdown, stripFrontmatter } from '../services/cmsService';
+import { fetchArticleMarkdown, stripFrontmatter, resolveAssetUrl } from '../services/cmsService';
 import {
   translateMarkdownToMeeteiMayek,
   translateToMeeteiMayekWithVocab,
@@ -69,7 +69,11 @@ export const ArticleView: React.FC<ArticleViewProps> = ({ post, onBack, onEditDr
   const contentHtml = useMemo(() => {
     if (!rawMarkdown) return '';
     try {
-      const unicodeParsed = isTranslated ? translateMarkdownToMeeteiMayek(rawMarkdown) : rawMarkdown;
+      const sanitizedMarkdown = rawMarkdown.replaceAll(
+        'https://raw.githubusercontent.com/Arnold-cd/blog-cms/main/images/',
+        './images/'
+      );
+      const unicodeParsed = isTranslated ? translateMarkdownToMeeteiMayek(sanitizedMarkdown) : sanitizedMarkdown;
       const textToParse = fontMode === 'pukok' && isTranslated ? convertUnicodeToPukokFont(unicodeParsed) : unicodeParsed;
       return marked.parse(textToParse, { gfm: true, breaks: true }) as string;
     } catch (err: any) {
@@ -345,11 +349,19 @@ export const ArticleView: React.FC<ArticleViewProps> = ({ post, onBack, onEditDr
         {post.thumbnail_url && (
           <div className="reader-hero-wrap">
             <img
-              src={post.thumbnail_url}
+              src={resolveAssetUrl(post.thumbnail_url)}
               alt={post.title}
               className="reader-hero-img"
               onError={(e) => {
                 const target = e.currentTarget;
+                if (!target.dataset.triedVercel) {
+                  target.dataset.triedVercel = 'true';
+                  const filename = target.src.split('/').pop()?.split('?')[0];
+                  if (filename) {
+                    target.src = `https://blog-cms-gilt.vercel.app/images/${filename}`;
+                    return;
+                  }
+                }
                 const parent = target.parentElement;
                 if (parent) parent.style.display = 'none';
               }}

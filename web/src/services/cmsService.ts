@@ -4,6 +4,24 @@ const LOCAL_POSTS_URL = './posts.json';
 const GITHUB_RAW_POSTS_URL =
   'https://raw.githubusercontent.com/Arnold-cd/blog-cms/main/posts.json';
 
+/**
+ * Resolves an asset URL (image, thumbnail) to relative './images/...' or Vercel CDN,
+ * bypassing GitHub raw 404s on private repositories.
+ */
+export function resolveAssetUrl(rawUrl: string | undefined): string {
+  if (!rawUrl) return '';
+  const trimmed = rawUrl.trim();
+  const rawBase = 'https://raw.githubusercontent.com/Arnold-cd/blog-cms/main';
+  if (trimmed.startsWith(rawBase)) {
+    const rel = trimmed.slice(rawBase.length).replace(/^\/?/, '');
+    return `./${rel}`;
+  }
+  if (!trimmed.startsWith('http://') && !trimmed.startsWith('https://') && !trimmed.startsWith('./') && !trimmed.startsWith('/')) {
+    return `./${trimmed}`;
+  }
+  return trimmed;
+}
+
 export async function fetchPosts(): Promise<BlogPost[]> {
   const timestamp = Date.now();
 
@@ -15,7 +33,10 @@ export async function fetchPosts(): Promise<BlogPost[]> {
     if (rawRes.ok) {
       const data = await rawRes.json();
       if (Array.isArray(data)) {
-        return data;
+        return data.map((p: BlogPost) => ({
+          ...p,
+          thumbnail_url: resolveAssetUrl(p.thumbnail_url),
+        }));
       }
     }
   } catch (err) {
@@ -28,7 +49,10 @@ export async function fetchPosts(): Promise<BlogPost[]> {
     if (res.ok) {
       const data = await res.json();
       if (Array.isArray(data)) {
-        return data;
+        return data.map((p: BlogPost) => ({
+          ...p,
+          thumbnail_url: resolveAssetUrl(p.thumbnail_url),
+        }));
       }
     }
   } catch (err) {

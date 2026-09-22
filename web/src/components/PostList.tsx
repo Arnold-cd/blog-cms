@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import type { BlogPost } from '../types';
-import { Search, Clock, Sparkles, Plus } from 'lucide-react';
+import { resolveAssetUrl } from '../services/cmsService';
+import { Search, Plus, Sparkles, Clock } from 'lucide-react';
 
 interface PostListProps {
   posts: BlogPost[];
@@ -133,12 +134,20 @@ export const PostList: React.FC<PostListProps> = ({ posts, onSelectPost, onOpenE
           {featuredPost.thumbnail_url && (
             <div className="featured-banner-wrap">
               <img
-                src={featuredPost.thumbnail_url}
+                src={resolveAssetUrl(featuredPost.thumbnail_url)}
                 alt={featuredPost.title}
                 className="featured-banner-img"
                 loading="eager"
                 onError={(e) => {
                   const target = e.currentTarget;
+                  if (!target.dataset.triedVercel) {
+                    target.dataset.triedVercel = 'true';
+                    const filename = target.src.split('/').pop()?.split('?')[0];
+                    if (filename) {
+                      target.src = `https://blog-cms-gilt.vercel.app/images/${filename}`;
+                      return;
+                    }
+                  }
                   const parent = target.parentElement;
                   if (parent) parent.style.display = 'none';
                 }}
@@ -170,12 +179,20 @@ export const PostList: React.FC<PostListProps> = ({ posts, onSelectPost, onOpenE
               {post.thumbnail_url ? (
                 <div className="card-banner-wrap">
                   <img
-                    src={post.thumbnail_url}
+                    src={resolveAssetUrl(post.thumbnail_url)}
                     alt={post.title}
                     className="card-banner-img"
                     loading="lazy"
                     onError={(e) => {
                       const target = e.currentTarget;
+                      if (!target.dataset.triedVercel) {
+                        target.dataset.triedVercel = 'true';
+                        const filename = target.src.split('/').pop()?.split('?')[0];
+                        if (filename) {
+                          target.src = `https://blog-cms-gilt.vercel.app/images/${filename}`;
+                          return;
+                        }
+                      }
                       const parent = target.parentElement;
                       if (parent) parent.style.display = 'none';
                     }}
