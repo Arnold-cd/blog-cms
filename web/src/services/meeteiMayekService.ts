@@ -30,29 +30,29 @@ export interface CheishingEntry {
  */
 export const CHEISHING_THIBA: CheishingEntry[] = [
   { meeteiWord: 'ꯑꯃ', digits: '꯱', romanName: 'Ama', value: '1', meaning: 'One (Units)' },
-  { meeteiWord: 'ꯇꯔꯥ', digits: '꯱꯰', romanName: 'Tara', value: '10', meaning: 'Ten (Tens)' },
+  { meeteiWord: 'ꯇꯂꯥ', digits: '꯱꯰', romanName: 'Tala', value: '10', meaning: 'Ten (Canonical Tala)' },
   { meeteiWord: 'ꯆꯥ', digits: '꯱꯰꯰', romanName: 'Cha', value: '100', meaning: 'Hundred' },
-  { meeteiWord: 'ꯂꯤꯁꯤꯡ', digits: '꯱꯰꯰꯰', romanName: 'Leeshing', value: '1,000', meaning: 'Thousand' },
-  { meeteiWord: 'ꯂꯤꯁꯤꯡ ꯇꯔꯥ', digits: '꯱꯰꯰꯰꯰', romanName: 'Leeshing Tara', value: '10,000', meaning: 'Ten Thousand' },
-  { meeteiWord: 'ꯂꯤꯆꯥ', digits: '꯱꯰꯰꯰꯰꯰', romanName: 'Leecha', value: '100,000', meaning: 'One Lakh (Hundred Thousand)' },
-  { meeteiWord: 'ꯂꯤꯆꯥ ꯇꯔꯥ', digits: '꯱꯰꯰꯰꯰꯰꯰', romanName: 'Leecha Tara', value: '1,000,000', meaning: 'Ten Lakhs (One Million)' },
-  { meeteiWord: 'ꯂꯤꯄꯨꯟ', digits: '꯱꯰꯰꯰꯰꯰꯰꯰', romanName: 'Leepun', value: '10,000,000', meaning: 'One Crore (Ten Million)' },
-  { meeteiWord: 'ꯂꯤꯄꯨꯟ ꯇꯔꯥ', digits: '꯱꯰꯰꯰꯰꯰꯰꯰꯰', romanName: 'Leepun Tara', value: '100,000,000', meaning: 'Ten Crores (Hundred Million)' },
-  { meeteiWord: 'ꯂꯤꯄꯣꯠ', digits: '꯱꯰꯰꯰꯰꯰꯰꯰꯰꯰', romanName: 'Leepot', value: '1,000,000,000', meaning: 'One Billion (Arab)' },
-  { meeteiWord: 'ꯂꯤꯄꯣꯠ ꯇꯔꯥ', digits: '꯱꯰꯰꯰꯰꯰꯰꯰꯰꯰꯰', romanName: 'Leepot Tara', value: '10,000,000,000', meaning: 'Ten Billions' },
-  { meeteiWord: 'ꯂꯤꯀꯩ', digits: '꯱꯰꯰꯰꯰꯰꯰꯰꯰꯰꯰꯰', romanName: 'Leekei', value: '100,000,000,000', meaning: 'Hundred Billions' },
-  { meeteiWord: 'ꯂꯤꯀꯩ ꯇꯔꯥ', digits: '꯱꯰꯰꯰꯰꯰꯰꯰꯰꯰꯰꯰꯰', romanName: 'Leekei Tara', value: '1,000,000,000,000', meaning: 'One Trillion' },
+  { meeteiWord: 'ꯂꯤꯁꯤꯡ', digits: '꯱꯰꯰꯰', romanName: 'Lishing', value: '1,000', meaning: 'Thousand' },
+  { meeteiWord: 'ꯂꯤꯁꯤꯡ ꯇꯂꯥ', digits: '꯱꯰꯰꯰꯰', romanName: 'Lishing Tala', value: '10,000', meaning: 'Ten Thousand' },
+  { meeteiWord: 'ꯂꯤꯆꯥ', digits: '꯱꯰꯰꯰꯰꯰', romanName: 'Licha', value: '100,000', meaning: 'One Lakh (Hundred Thousand)' },
+  { meeteiWord: 'ꯂꯤꯆꯥ ꯇꯂꯥ', digits: '꯱꯰꯰꯰꯰꯰꯰', romanName: 'Licha Tala', value: '1,000,000', meaning: 'Ten Lakhs (One Million)' },
+  { meeteiWord: 'ꯂꯤꯄꯨꯟ', digits: '꯱꯰꯰꯰꯰꯰꯰꯰', romanName: 'Lipun', value: '10,000,000', meaning: 'One Crore (Ten Million)' },
+  { meeteiWord: 'ꯂꯤꯄꯨꯟ ꯇꯂꯥ', digits: '꯱꯰꯰꯰꯰꯰꯰꯰꯰', romanName: 'Lipun Tala', value: '100,000,000', meaning: 'Ten Crores (Hundred Million)' },
+  { meeteiWord: 'ꯂꯤꯄꯣꯛ', digits: '꯱꯰꯰꯰꯰꯰꯰꯰꯰꯰', romanName: 'Lipok', value: '1,000,000,000', meaning: 'One Billion (Lipok)' },
+  { meeteiWord: 'ꯂꯤꯄꯣꯛ ꯇꯂꯥ', digits: '꯱꯰꯰꯰꯰꯰꯰꯰꯰꯰꯰', romanName: 'Lipok Tala', value: '10,000,000,000', meaning: 'Ten Billions' },
+  { meeteiWord: 'ꯂꯤꯀꯩ', digits: '꯱꯰꯰꯰꯰꯰꯰꯰꯰꯰꯰꯰', romanName: 'Likei', value: '100,000,000,000', meaning: 'Hundred Billions' },
+  { meeteiWord: 'ꯂꯤꯀꯩ ꯇꯂꯥ', digits: '꯱꯰꯰꯰꯰꯰꯰꯰꯰꯰꯰꯰꯰', romanName: 'Likei Tala', value: '1,000,000,000,000', meaning: 'One Trillion' },
   { meeteiWord: 'ꯄꯨ ꯑꯃ', digits: '꯱꯰꯰꯰꯰꯰꯰꯰꯰꯰꯰꯰꯰꯰', romanName: 'Puu Ama', value: '10,000,000,000,000', meaning: 'Ten Trillions' },
 ];
 
-// 1. Core 18 Anatomical Letters (Iyek Ipee) - U+ABC0 to U+ABD1
+// 1. Core 18 Anatomical Letters (Iyek Ipee / Eepi-eeyek 18) - Canonical Wakoklon Puya
 export const CORE_18_IPEE: MeeteiUnicodeChar[] = [
   { codePoint: 'U+ABC0', char: 'ꯀ', name: 'Kok', meaning: 'Head (ꯀꯣꯛ)', category: 'core18', ipa: '[kɔk]', latin: 'k' },
   { codePoint: 'U+ABC1', char: 'ꯁ', name: 'Sam', meaning: 'Hair (ꯁꯝ)', category: 'core18', ipa: '[səm]', latin: 's' },
   { codePoint: 'U+ABC2', char: 'ꯂ', name: 'Lai', meaning: 'Forehead (ꯂꯥꯢ)', category: 'core18', ipa: '[lai]', latin: 'l' },
-  { codePoint: 'U+ABC3', char: 'ꯃ', name: 'Mit', meaning: 'Eye (ꯃꯤꯠ)', category: 'core18', ipa: '[mit]', latin: 'm' },
-  { codePoint: 'U+ABC4', char: 'ꯄ', name: 'Pa', meaning: 'Eyebrow / Eyelash (ꯄꯥ)', category: 'core18', ipa: '[pa]', latin: 'p' },
-  { codePoint: 'U+ABC5', char: 'ꯅ', name: 'Na', meaning: 'Ear (ꯅꯥ)', category: 'core18', ipa: '[na]', latin: 'n' },
+  { codePoint: 'U+ABC3', char: 'ꯃ', name: 'Meet', meaning: 'Eye (ꯃꯤꯠ, Canonical Puya: Meet)', category: 'core18', ipa: '[mit]', latin: 'm' },
+  { codePoint: 'U+ABC4', char: 'ꯄ', name: 'Paa', meaning: 'Eyebrow / Eyelash (ꯄꯥ, Canonical Puya: Paa)', category: 'core18', ipa: '[pa]', latin: 'p' },
+  { codePoint: 'U+ABC5', char: 'ꯅ', name: 'Naa', meaning: 'Ear (ꯅꯥ, Canonical Puya: Naa)', category: 'core18', ipa: '[na]', latin: 'n' },
   { codePoint: 'U+ABC6', char: 'ꯆ', name: 'Chil', meaning: 'Lips (ꯆꯤꯜ)', category: 'core18', ipa: '[tʃil]', latin: 'ch' },
   { codePoint: 'U+ABC7', char: 'ꯇ', name: 'Til', meaning: 'Saliva / Tongue (ꯇꯤꯜ)', category: 'core18', ipa: '[til]', latin: 't' },
   { codePoint: 'U+ABC8', char: 'ꯈ', name: 'Khou', meaning: 'Throat (ꯈꯧ)', category: 'core18', ipa: '[kʰəw]', latin: 'kh' },
@@ -61,10 +61,10 @@ export const CORE_18_IPEE: MeeteiUnicodeChar[] = [
   { codePoint: 'U+ABCB', char: 'ꯋ', name: 'Wai', meaning: 'Navel (ꯋꯥꯢ)', category: 'core18', ipa: '[wai]', latin: 'w / v' },
   { codePoint: 'U+ABCC', char: 'ꯌ', name: 'Yang', meaning: 'Spine (ꯌꯥꯡ)', category: 'core18', ipa: '[jaŋ]', latin: 'y' },
   { codePoint: 'U+ABCD', char: 'ꯍ', name: 'Huk', meaning: 'Pelvis / Spine base (ꯍꯨꯛ)', category: 'core18', ipa: '[huk]', latin: 'h' },
-  { codePoint: 'U+ABCE', char: 'ꯎ', name: 'Un', meaning: 'Skin (ꯎꯟ)', category: 'core18', ipa: '[un]', latin: 'u / u:' },
-  { codePoint: 'U+ABCF', char: 'ꯏ', name: 'I', meaning: 'Blood (ꯏ)', category: 'core18', ipa: '[i]', latin: 'i / i:' },
+  { codePoint: 'U+ABCE', char: 'ꯎ', name: 'Oon', meaning: 'Skin (ꯎꯟ, Canonical Puya: Oon)', category: 'core18', ipa: '[un]', latin: 'u / u:' },
+  { codePoint: 'U+ABCF', char: 'ꯏ', name: 'Ee', meaning: 'Blood (ꯏ, Canonical Puya: Ee)', category: 'core18', ipa: '[i]', latin: 'i / i:' },
   { codePoint: 'U+ABD0', char: 'ꯐ', name: 'Pham', meaning: 'Anus / Reproductive (ꯐꝝ)', category: 'core18', ipa: '[pʰəm]', latin: 'ph / f' },
-  { codePoint: 'U+ABD1', char: 'ꯑ', name: 'Atiya', meaning: 'Sky / Cosmos (ꯑꯇꯤꯌꯥ)', category: 'core18', ipa: '[ətija]', latin: 'a' },
+  { codePoint: 'U+ABD1', char: 'ꯑ', name: 'Atingaa', meaning: 'Sky / Cosmos (ꯑꯇꯤꯡꯑꯥ, Canonical Puya: Atingaa)', category: 'core18', ipa: '[ətija]', latin: 'a' },
 ];
 
 // 2. Additional 9 Consonants - U+ABD2 to U+ABDA
@@ -224,8 +224,29 @@ export const NUMERALS_10: MeeteiUnicodeChar[] = [
   { codePoint: 'U+ABF5', char: '꯵', name: 'Manga (5)', meaning: 'Five', category: 'numeral', ipa: '[maŋa]', latin: '5' },
   { codePoint: 'U+ABF6', char: '꯶', name: 'Taruk (6)', meaning: 'Six', category: 'numeral', ipa: '[taruk]', latin: '6' },
   { codePoint: 'U+ABF7', char: '꯷', name: 'Taret (7)', meaning: 'Seven', category: 'numeral', ipa: '[təret]', latin: '7' },
-  { codePoint: 'U+ABF8', char: '꯸', name: 'Nipal (8)', meaning: 'Eight', category: 'numeral', ipa: '[nipal]', latin: '8' },
-  { codePoint: 'U+ABF9', char: '꯹', name: 'Mapal (9)', meaning: 'Nine', category: 'numeral', ipa: '[mapəl]', latin: '9' },
+  { codePoint: 'U+ABF8', char: '꯸', name: 'Nipan (8)', meaning: 'Eight', category: 'numeral', ipa: '[nipan]', latin: '8' },
+  { codePoint: 'U+ABF9', char: '꯹', name: 'Mapan (9)', meaning: 'Nine', category: 'numeral', ipa: '[mapan]', latin: '9' },
+];
+
+/**
+ * 14-Level Ancient Meetei Number Hierarchy from Wakoklon Heelel Thilel Salai Ama-Ilon Pukok Puya
+ * (Documented in Meetei-lang/Pukok Key Layout_QWERTY Keyboard.pdf page 2)
+ */
+export const PUKOK_COUNTING_HIERARCHY = [
+  { level: 1, name: 'Ama', meitei: 'ꯑꯃ', value: '1', zeroes: 0 },
+  { level: 2, name: 'Tara', meitei: 'ꯇꯔꯥ', value: '10', zeroes: 1 },
+  { level: 3, name: 'Chama', meitei: 'ꯆꯥꯃ', value: '100', zeroes: 2 },
+  { level: 4, name: 'Lishing', meitei: 'ꯂꯤꯁꯤꯡ', value: '1,000', zeroes: 3 },
+  { level: 5, name: 'Lishing Tara', meitei: 'ꯂꯤꯁꯤꯡ ꯇꯔꯥ', value: '10,000', zeroes: 4 },
+  { level: 6, name: 'Licha', meitei: 'ꯂꯤꯆꯥ', value: '100,000', zeroes: 5 },
+  { level: 7, name: 'Licha Tara', meitei: 'ꯂꯤꯆꯥ ꯇꯔꯥ', value: '1,000,000', zeroes: 6 },
+  { level: 8, name: 'Lipun', meitei: 'ꯂꯤꯄꯨꯟ', value: '10,000,000', zeroes: 7 },
+  { level: 9, name: 'Lipun Tara', meitei: 'ꯂꯤꯄꯨꯟ ꯇꯔꯥ', value: '100,000,000', zeroes: 8 },
+  { level: 10, name: 'Lipok', meitei: 'ꯂꯤꯄꯣꯛ', value: '1,000,000,000', zeroes: 9 },
+  { level: 11, name: 'Lipok Tara', meitei: 'ꯂꯤꯄꯣꯛ ꯇꯔꯥ', value: '10,000,000,000', zeroes: 10 },
+  { level: 12, name: 'Likei', meitei: 'ꯂꯤꯀꯩ', value: '100,000,000,000', zeroes: 11 },
+  { level: 13, name: 'Likei Tara', meitei: 'ꯂꯤꯀꯩ ꯇꯔꯥ', value: '1,000,000,000,000', zeroes: 12 },
+  { level: 14, name: 'Puu Ama', meitei: 'ꯄꯨ ꯑꯃ', value: '10,000,000,000,000', zeroes: 13 },
 ];
 
 // 7. Meetei Mayek Extensions (U+AAE0 to U+AAFF) from Unicode PDF UAAE0.pdf
@@ -289,6 +310,24 @@ const BENGALI_TO_MEETEI_MAP: Record<string, string> = {
  * Extended English-to-Meetei vocabulary dictionary
  */
 const EXTENDED_VOCABULARY: Record<string, string> = {
+  // SLLK & Canonical Puya Manuscript Terms
+  sllk: 'ꯁꯥꯅꯥꯃꯍꯤ  ꯂꯥꯏꫫꯅꯡ  ꯂꯤꯆꯠ ꫰  ꯀꯪꯂꯩꯄꯥꯛ',
+  sanamahi: 'ꯁꯥꯅꯥꯃꯍꯤ',
+  kangleipak: 'ꯀꯪꯂꯩꯄꯥꯛ',
+  puya: 'ꯄꯨꯌꯥ',
+  puyas: 'ꯄꯨꯌꯥꯁꯤꯡ',
+  pukok: 'ꯄꯨꯀꯣꯛ',
+  wakoklon: 'ꯋꯥꯀꯣꯛꯂꯣꯟ',
+  hilel: 'ꯍꯤꯂꯦꯜ',
+  thilel: 'ꯊꯤꯂꯦꯜ',
+  salai: 'ꯁꯥꯂꯥꯢ',
+  eelon: 'ꯏꯂꯣꯟ',
+  eeyek: 'ꯏꯌꯦꯛ',
+  eepi: 'ꯏꯄꯤ',
+  eepe: 'ꯏꯄꯦ',
+  cheitap: 'ꯆꯩꯇꯥꯞ',
+  lolsum: 'ꯂꯣꯜꯁꯨꯝ',
+  khutam: 'ꯈꯨꯇꯝ',
   // Common Structural & Editorial Terms
   introduction: 'ꯑꯍꯥꯟꯕ ꯋꯥꯔꯣꯜ',
   section: 'ꯁꯔꯨꯛ',
@@ -859,4 +898,79 @@ function translateTextSegments(text: string): string {
 
     return translateToMeeteiMayekWithVocab(part);
   }).join('');
+}
+
+/**
+ * Authentic Pukok Eeyek Keyboard Mapping (Wakoklon Puya Font)
+ * Developed by Wakambam Macha Waanglel for printing:
+ * WAKOKLON HEELEL THILEL SALAI AMA_ILON PUKOK PUYA (from Meetei-lang/Pukok Key Layout_QWERTY Keyboard.pdf)
+ */
+export const UNICODE_TO_PUKOK_KEYMAP: Record<string, string> = {
+  // 18 Indigenous Anatomical Root Letters (Eepi-eeyek 18)
+  'ꯀ': 'k', 'ꯁ': 's', 'ꯂ': 'l', 'ꯃ': 'm', 'ꯄ': 'p',
+  'ꯅ': 'n', 'ꯆ': 'c', 'ꯇ': 't', 'ꯈ': 'x', 'ꯉ': 'q',
+  'ꯊ': 'z', 'ꯋ': 'w', 'ꯌ': 'y', 'ꯍ': 'h', 'ꯎ': 'u',
+  'ꯏ': 'e', 'ꯐ': 'f', 'ꯑ': 'a',
+
+  // 9 Lom Consonants (Meetei Lom Eeyek 9)
+  'ꯒ': 'g', // Gok (Kok Lom)
+  'ꯓ': 'S', // Zam (Sam Lom)
+  'ꯔ': 'R', // Rai (Lai Lom)
+  'ꯕ': 'b', // Bok (Paa Lom)
+  'ꯖ': 'j', // Jhil (Chil Lom)
+  'ꯗ': 'd', // Dil (Til Lom)
+  'ꯘ': 'G', // Ghou (Khou Lom)
+  'ꯙ': 'D', // Dhou (Thou Lom)
+  'ꯚ': 'v', // Bham (Pham Lom)
+
+  // 10 Lolsum Consonants (Meetei Lolsum 10)
+  'ꯛ': 'K', 'ꯜ': 'L', 'ꯝ': 'M', 'ꯞ': 'P', 'ꯟ': 'N',
+  'ꯠ': 'T', 'ꯡ': 'Q', 'ꯢ': 'E',
+
+  // 9 Cheitap Vowel Diacritics (Wakambam Macha Waanglel QWERTY)
+  'ꯥ': 'F', // Takchei / Atep (aa)
+  'ꯤ': 'i', // Inap / Ee (i short)
+  'ꯨ': 'J', // Oon Cheitap (u)
+  'ꯦ': 'Y', // Yenap (e)
+  'ꯣ': 'o', // Otap (o)
+  'ꯩ': 'C', // Cheinap (ei)
+  'ꯧ': 'O', // Sou (ou)
+  'ꯪ': 'H', // Nung (anusvara)
+  '꯭': '',  // Virama / Apun (handled natively)
+
+  // 10 Cheishing Digits (0-9)
+  '꯰': '0', '꯱': '1', '꯲': '2', '꯳': '3', '꯴': '4',
+  '꯵': '5', '꯶': '6', '꯷': '7', '꯸': '8', '꯹': '9',
+
+  // Punctuation & Khutam (from Pukok Key Layout page 2)
+  '꯫': '!',  // Apakpa
+  '꫰': '.',  // Cheikhan (Single Danda)
+  '꫱': ';',  // Cheishei (Double Danda)
+  ':': ':',  // Mannaba (equals/colon)
+  ',': ',',  // Cheikhei
+  'ꫫ': 'I',  // Meetei Mayek Vowel Sign II -> Pukok Eeyek font key 'I' (renders pure ꫫ without dotted circle!)
+  '\u25CC': '', // Dotted circle
+  '\u25CB': '', // White circle
+};
+
+/**
+ * Converts Unicode Meetei Mayek text into ASCII key sequences that render
+ * with authentic Pukok Eeyek calligraphy when styled with `font-family: 'Pukok Eeyek'`.
+ */
+export function convertUnicodeToPukokFont(text: string): string {
+  if (!text) return '';
+  const sanitized = text.replace(/[\u25CC\u25CB]/g, '');
+  let result = '';
+  for (const ch of sanitized) {
+    result += UNICODE_TO_PUKOK_KEYMAP[ch] || ch;
+  }
+  return result.replace(/\u25CC/g, '');
+}
+
+/**
+ * High-level translator: converts Latin/English text into Pukok Eeyek calligraphy font string
+ */
+export function translateToPukokFontWithVocab(input: string): string {
+  const unicodeText = translateToMeeteiMayekWithVocab(input);
+  return convertUnicodeToPukokFont(unicodeText);
 }

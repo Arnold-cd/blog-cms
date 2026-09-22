@@ -25,7 +25,25 @@ class MeeteiMayekService {
   };
 
   static const Map<String, String> extendedVocabulary = {
-  // Common Structural & Editorial Terms
+    // SLLK & Canonical Puya Manuscript Terms
+    "sllk": "ꯁꯥꯅꯥꯃꯍꯤ  ꯂꯥꯏꫫꯅꯡ  ꯂꯤꯆꯠ ꫰  ꯀꯪꯂꯩꯄꯥꯛ",
+    "sanamahi": "ꯁꯥꯅꯥꯃꯍꯤ",
+    "kangleipak": "ꯀꯪꯂꯩꯄꯥꯛ",
+    "puya": "ꯄꯨꯌꯥ",
+    "puyas": "ꯄꯨꯌꯥꯁꯤꯡ",
+    "pukok": "ꯄꯨꯀꯣꯛ",
+    "wakoklon": "ꯋꯥꯀꯣꯛꯂꯣꯟ",
+    "hilel": "ꯍꯤꯂꯦꯜ",
+    "thilel": "ꯊꯤꯂꯦꯜ",
+    "salai": "ꯁꯥꯂꯥꯢ",
+    "eelon": "ꯏꯂꯣꯟ",
+    "eeyek": "ꯏꯌꯦꯛ",
+    "eepi": "ꯏꯄꯤ",
+    "eepe": "ꯏꯄꯦ",
+    "cheitap": "ꯆꯩꯇꯥꯞ",
+    "lolsum": "ꯂꯣꯜꯁꯨꯝ",
+    "khutam": "ꯈꯨꯇꯝ",
+    // Common Structural & Editorial Terms
     "introduction": "ꯑꯍꯥꯟꯕ ꯋꯥꯔꯣꯜ",
     "section": "ꯁꯔꯨꯛ",
     "conclusion": "ꯋꯥꯔꯣꯢꯁꯤꯟ",
@@ -628,5 +646,94 @@ class MeeteiMayekService {
     }
 
     return sb.toString();
+  }
+
+  /// 14-Level Ancient Meetei Number Hierarchy from Wakoklon Heelel Thilel Salai Ama-Ilon Pukok Puya
+  /// (Documented in Meetei-lang/Pukok Key Layout_QWERTY Keyboard.pdf page 2)
+  static const List<Map<String, dynamic>> pukokCountingHierarchy = [
+    {"level": 1, "name": "Ama", "meitei": "ꯑꯃ", "value": "1", "zeroes": 0},
+    {"level": 2, "name": "Tara", "meitei": "ꯇꯔꯥ", "value": "10", "zeroes": 1},
+    {"level": 3, "name": "Chama", "meitei": "ꯆꯥꯃ", "value": "100", "zeroes": 2},
+    {"level": 4, "name": "Lishing", "meitei": "ꯂꯤꯁꯤꯡ", "value": "1,000", "zeroes": 3},
+    {"level": 5, "name": "Lishing Tara", "meitei": "ꯂꯤꯁꯤꯡ ꯇꯔꯥ", "value": "10,000", "zeroes": 4},
+    {"level": 6, "name": "Licha", "meitei": "ꯂꯤꯆꯥ", "value": "100,000", "zeroes": 5},
+    {"level": 7, "name": "Licha Tara", "meitei": "ꯂꯤꯆꯥ ꯇꯔꯥ", "value": "1,000,000", "zeroes": 6},
+    {"level": 8, "name": "Lipun", "meitei": "ꯂꯤꯄꯨꯟ", "value": "10,000,000", "zeroes": 7},
+    {"level": 9, "name": "Lipun Tara", "meitei": "ꯂꯤꯄꯨꯟ ꯇꯔꯥ", "value": "100,000,000", "zeroes": 8},
+    {"level": 10, "name": "Lipok", "meitei": "ꯂꯤꯄꯣꯛ", "value": "1,000,000,000", "zeroes": 9},
+    {"level": 11, "name": "Lipok Tara", "meitei": "ꯂꯤꯄꯣꯛ ꯇꯔꯥ", "value": "10,000,000,000", "zeroes": 10},
+    {"level": 12, "name": "Likei", "meitei": "ꯂꯤꯀꯩ", "value": "100,000,000,000", "zeroes": 11},
+    {"level": 13, "name": "Likei Tara", "meitei": "ꯂꯤꯀꯩ ꯇꯔꯥ", "value": "1,000,000,000,000", "zeroes": 12},
+    {"level": 14, "name": "Puu Ama", "meitei": "ꯄꯨ ꯑꯃ", "value": "10,000,000,000,000", "zeroes": 13},
+  ];
+
+  /// Authentic Pukok Eeyek Keyboard Mapping (Wakoklon Puya Font)
+  /// Developed by Wakambam Macha Waanglel for printing:
+  /// WAKOKLON HEELEL THILEL SALAI AMA_ILON PUKOK PUYA (from Meetei-lang/Pukok Key Layout_QWERTY Keyboard.pdf)
+  static const Map<String, String> unicodeToPukokKeymap = {
+    // 18 Indigenous Anatomical Root Letters (Eepi-eeyek 18)
+    'ꯀ': 'k', 'ꯁ': 's', 'ꯂ': 'l', 'ꯃ': 'm', 'ꯄ': 'p',
+    'ꯅ': 'n', 'ꯆ': 'c', 'ꯇ': 't', 'ꯈ': 'x', 'ꯉ': 'q',
+    'ꯊ': 'z', 'ꯋ': 'w', 'ꯌ': 'y', 'ꯍ': 'h', 'ꯎ': 'u',
+    'ꯏ': 'e', 'ꯐ': 'f', 'ꯑ': 'a',
+
+    // 9 Lom Consonants (Meetei Lom Eeyek 9)
+    'ꯒ': 'g', // Gok (Kok Lom)
+    'ꯓ': 'S', // Zam (Sam Lom)
+    'ꯔ': 'R', // Rai (Lai Lom)
+    'ꯕ': 'b', // Bok (Paa Lom)
+    'ꯖ': 'j', // Jhil (Chil Lom)
+    'ꯗ': 'd', // Dil (Til Lom)
+    'ꯘ': 'G', // Ghou (Khou Lom)
+    'ꯙ': 'D', // Dhou (Thou Lom)
+    'ꯚ': 'v', // Bham (Pham Lom)
+
+    // 10 Lolsum Consonants (Meetei Lolsum 10)
+    'ꯛ': 'K', 'ꯜ': 'L', 'ꯝ': 'M', 'ꯞ': 'P', 'ꯟ': 'N',
+    'ꯠ': 'T', 'ꯡ': 'Q', 'ꯢ': 'E',
+
+    // 9 Cheitap Vowel Diacritics (Wakambam Macha Waanglel QWERTY)
+    'ꯥ': 'F', // Takchei / Atep (aa)
+    'ꯤ': 'i', // Inap / Ee (i short)
+    'ꯨ': 'J', // Oon Cheitap (u)
+    'ꯦ': 'Y', // Yenap (e)
+    'ꯣ': 'o', // Otap (o)
+    'ꯩ': 'C', // Cheinap (ei)
+    'ꯧ': 'O', // Sou (ou)
+    'ꯪ': 'H', // Nung (anusvara)
+    '꯭': '',  // Virama / Apun (handled natively)
+
+    // 10 Cheishing Digits (0-9)
+    '꯰': '0', '꯱': '1', '꯲': '2', '꯳': '3', '꯴': '4',
+    '꯵': '5', '꯶': '6', '꯷': '7', '꯸': '8', '꯹': '9',
+
+    // Punctuation & Khutam (from Pukok Key Layout page 2)
+    '꯫': '!',  // Apakpa
+    '꫰': '.',  // Cheikhan (Single Danda)
+    '꫱': ';',  // Cheishei (Double Danda)
+    ':': ':',  // Mannaba (equals/colon)
+    ',': ',',  // Cheikhei
+    'ꫫ': 'I',  // Meetei Mayek Vowel Sign II -> Pukok Eeyek font key 'I' (renders pure ꫫ without dotted circle!)
+    '\u25CC': '', // Dotted circle
+    '\u25CB': '', // White circle
+  };
+
+  /// Converts Unicode Meetei Mayek text into ASCII character string
+  /// that displays authentic Pukok Eeyek calligraphy when styled with fontFamily: 'PukokEeyek'
+  static String convertUnicodeToPukokFont(String text) {
+    if (text.isEmpty) return '';
+    final sanitized = text.replaceAll('\u25CC', '');
+    final sb = StringBuffer();
+    for (int i = 0; i < sanitized.length; i++) {
+      final ch = sanitized[i];
+      sb.write(unicodeToPukokKeymap[ch] ?? ch);
+    }
+    return sb.toString().replaceAll('\u25CC', '');
+  }
+
+  /// High-level translator: converts English/Latin into Pukok Eeyek calligraphy string
+  static String translateToPukokFontWithVocab(String input) {
+    final unicodeText = translateToMeeteiMayekWithVocab(input);
+    return convertUnicodeToPukokFont(unicodeText);
   }
 }

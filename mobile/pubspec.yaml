@@ -43,3 +43,6 @@ flutter:
         - asset: assets/fonts/NotoSansMeeteiMayek-Regular.ttf
         - asset: assets/fonts/NotoSansMeeteiMayek-Bold.ttf
           weight: 700
+    - family: PukokEeyek
+      fonts:
+        - asset: assets/fonts/PukokEeyek.otf

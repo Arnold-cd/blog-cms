@@ -10,8 +10,9 @@ import {
   CHEISHING_THIBA,
   EXTENSIONS_BLOCK,
   translateToMeeteiMayekWithVocab,
+  convertUnicodeToPukokFont,
 } from '../services/meeteiMayekService';
-import { Languages, Copy, Check, Plus, ExternalLink, X, Download } from 'lucide-react';
+import { Languages, Copy, Check, Plus, ExternalLink, X, Download, Sparkles } from 'lucide-react';
 
 interface MeeteiMayekToolProps {
   onInsertText: (text: string) => void;
@@ -27,7 +28,7 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
   const [inputText, setInputText] = useState('');
   const [convertedText, setConvertedText] = useState('');
   const [copied, setCopied] = useState(false);
-  const [activeTab, setActiveTab] = useState<'translate' | 'vowels' | 'main27' | 'lonsum' | 'cheitap' | 'extensions' | 'numerals'>('vowels');
+  const [activeTab, setActiveTab] = useState<'translate' | 'vowels' | 'puya18' | 'main27' | 'lonsum' | 'cheitap' | 'extensions' | 'numerals'>('vowels');
   const [sampleConsonant, setSampleConsonant] = useState<string>('ꯀ');
   const [showFullMatrix, setShowFullMatrix] = useState<boolean>(false);
   const [matrixFilter, setMatrixFilter] = useState<'all' | 'main' | 'lonsum'>('all');
@@ -61,31 +62,29 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
       zIndex: 1100,
       padding: '1rem',
     }}>
-      <div className="meetei-modal-dialog" style={{
-        background: 'var(--bg-elevated)',
-        border: '1px solid var(--border-active)',
-        borderRadius: 'var(--radius-lg)',
-        maxWidth: '860px',
+      <div className="card" style={{
         width: '100%',
-        maxHeight: '90vh',
-        overflowY: 'auto',
-        padding: '1.75rem',
-        boxShadow: 'var(--shadow-elevated)',
+        maxWidth: '960px',
+        maxHeight: '92vh',
         display: 'flex',
         flexDirection: 'column',
-        gap: '1.25rem',
+        gap: '1rem',
+        overflow: 'hidden',
+        background: 'var(--bg-card)',
+        border: '1px solid var(--border-default)',
+        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.7)',
       }}>
-        {/* Header with Official Unicode Specs */}
-        <div className="meetei-modal-header" style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem' }}>
+        {/* Header */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.75rem', flexWrap: 'wrap', gap: '0.5rem', padding: '1.25rem 1.25rem 0 1.25rem' }}>
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-              <Languages size={20} color="var(--accent-cyan)" />
-              <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)', fontFamily: 'var(--font-heading)' }}>
-                Meetei Mayek Unicode Suite
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <Languages size={20} style={{ color: 'var(--accent-cyan)' }} />
+              <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+                Meetei Mayek Linguistic Studio &amp; Reference
               </h3>
             </div>
-            <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginTop: '0.25rem', lineHeight: 1.5 }}>
-              Official Standards: Standard Block (
+            <p style={{ margin: '0.2rem 0 0', fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
+              Complete Unicode Standard (
               <a
                 href="https://unicode.org/charts/PDF/UABC0.pdf"
                 target="_blank"
@@ -94,7 +93,7 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
               >
                 U+ABC0..U+ABFF
               </a>
-              ) &amp; Extensions Block (
+              ,{' '}
               <a
                 href="https://unicode.org/charts/PDF/UAAE0.pdf"
                 target="_blank"
@@ -132,7 +131,26 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
               id="btn-download-ttf-suite"
             >
               <Download size={13} />
-              <span>Download TTF Fonts (.zip)</span>
+              <span>Download TTF (.zip)</span>
+            </a>
+
+            <a
+              href="fonts/PukokEeyek.otf"
+              download="PukokEeyek.otf"
+              className="btn-secondary"
+              style={{
+                textDecoration: 'none',
+                fontSize: '0.78rem',
+                padding: '0.35rem 0.75rem',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.35rem',
+              }}
+              title="Download Authentic Wakoklon Puya Pukok Eeyek Font (.otf) by Kanglei Eempham"
+              id="btn-download-pukok-suite"
+            >
+              <Download size={13} />
+              <span>Pukok OTF</span>
             </a>
 
             <button onClick={onClose} className="btn-ghost" style={{ padding: '0.35rem' }}>
@@ -142,7 +160,7 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
         </div>
 
         {/* Tab Switcher */}
-        <div className="meetei-modal-tabs" style={{ display: 'flex', gap: '0.4rem', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.5rem', flexWrap: 'wrap' }}>
+        <div className="meetei-modal-tabs" style={{ display: 'flex', gap: '0.4rem', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.5rem', flexWrap: 'wrap', padding: '0 1.25rem' }}>
           <button
             className={`category-chip ${activeTab === 'vowels' ? 'active' : ''}`}
             onClick={() => setActiveTab('vowels')}
@@ -155,6 +173,17 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
             onClick={() => setActiveTab('translate')}
           >
             Translate / Transliterate
+          </button>
+          <button
+            className={`category-chip ${activeTab === 'puya18' ? 'active' : ''}`}
+            onClick={() => setActiveTab('puya18')}
+            style={{
+              borderColor: activeTab === 'puya18' ? 'var(--accent-amber)' : undefined,
+              color: activeTab === 'puya18' ? 'var(--accent-amber)' : undefined,
+            }}
+          >
+            <Sparkles size={12} style={{ display: 'inline', marginRight: '0.25rem' }} />
+            Wakoklon Puya (18 vs 27) &amp; Key Layout
           </button>
           <button
             className={`category-chip ${activeTab === 'main27' ? 'active' : ''}`}
@@ -254,13 +283,46 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
                 </div>
 
                 <div style={{
-                  fontFamily: 'var(--font-meetei)',
                   fontSize: '1.4rem',
-                  lineHeight: 1.85,
-                  color: 'var(--text-primary)',
-                  wordBreak: 'break-word',
+                  fontFamily: 'var(--font-meetei)',
+                  lineHeight: 1.8,
+                  color: '#fff',
+                  userSelect: 'all',
                 }}>
                   {convertedText}
+                </div>
+
+                {/* Authentic Wakoklon Pukok Eeyek Puya Font Rendering */}
+                <div style={{
+                  marginTop: '1rem',
+                  paddingTop: '0.85rem',
+                  borderTop: '1px dashed var(--border-subtle)',
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.4rem' }}>
+                    <span className="form-label" style={{ color: 'var(--accent-amber)', display: 'flex', alignItems: 'center', gap: '0.35rem', marginBottom: 0 }}>
+                      <Sparkles size={13} />
+                      <span>Authentic Wakoklon Pukok Eeyek (Puya Manuscript Calligraphy)</span>
+                    </span>
+                    <button
+                      onClick={() => handleCopy(convertUnicodeToPukokFont(convertedText))}
+                      className="btn-ghost"
+                      style={{ padding: '0.15rem 0.45rem', fontSize: '0.72rem' }}
+                      title="Copy Pukok Eeyek mapped character string"
+                    >
+                      <Copy size={11} />
+                      <span>Copy Pukok Font Keys</span>
+                    </button>
+                  </div>
+                  <div style={{
+                    fontSize: '1.65rem',
+                    fontFamily: 'var(--font-pukok)',
+                    lineHeight: 1.8,
+                    color: 'var(--accent-amber)',
+                    letterSpacing: '0.04em',
+                    userSelect: 'all',
+                  }}>
+                    {convertUnicodeToPukokFont(convertedText)}
+                  </div>
                 </div>
               </div>
             )}
@@ -632,6 +694,340 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
                   </div>
                 </div>
               )}
+            </div>
+          </div>
+        )}
+
+        {/* Tab: Wakoklon Puya 18 vs 27 & Authentic Pukok Keyboard Layout */}
+        {activeTab === 'puya18' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', maxHeight: '580px', overflowY: 'auto', paddingRight: '0.4rem' }}>
+            {/* Header & Source Charter Info */}
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(217, 119, 6, 0.03) 100%)',
+              border: '1px solid rgba(245, 158, 11, 0.3)',
+              borderRadius: 'var(--radius-md)',
+              padding: '1.2rem',
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '0.6rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <Sparkles size={18} style={{ color: 'var(--accent-amber)' }} />
+                  <h4 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+                    Wakoklon Heelel Thilel Salai Ama-Ilon Pukok Puya (18 vs 27 Scripts)
+                  </h4>
+                </div>
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                  <a
+                    href="fonts/PukokEeyek.otf"
+                    download="PukokEeyek.otf"
+                    className="btn-secondary"
+                    style={{ fontSize: '0.75rem', padding: '0.25rem 0.6rem', color: 'var(--accent-amber)' }}
+                  >
+                    <Download size={12} style={{ marginRight: '0.25rem' }} />
+                    Download Pukok Font (.otf)
+                  </a>
+                </div>
+              </div>
+              <p style={{ margin: 0, fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+                Based on canonical manuscripts and research from <strong>Wangkhemcha Chingtamlen</strong> (<em>Discovery of Kangleipak</em>) and the official QWERTY type-foundry specification developed by <strong>Wakambam Macha Waanglel</strong> for publishing the sacred <em>Wakoklon Pukok Puya</em>.
+              </p>
+            </div>
+
+            {/* Core Insights from e1827.pdf */}
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+              gap: '0.85rem',
+            }}>
+              <div style={{
+                background: 'rgba(255, 255, 255, 0.02)',
+                border: '1px solid var(--border-subtle)',
+                borderRadius: 'var(--radius-sm)',
+                padding: '1rem',
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.4rem' }}>
+                  <span style={{ color: 'var(--accent-amber)', fontWeight: 700, fontSize: '0.9rem' }}>꯱ &bull; The Sacred Eelik (Blood Drop)</span>
+                </div>
+                <p style={{ margin: 0, fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+                  In the original Puya (Singthalon Cheising Eeyek Ama), the numeral <strong>1</strong> is written as <strong>$*</strong> with an <strong>Eelik</strong> (dot <code style={{ color: 'var(--accent-amber)' }}>.</code>), representing the sacred blood drop of the Universal Father God Creator, <em>Eapung Loinapa Apakpa</em>.
+                </p>
+              </div>
+
+              <div style={{
+                background: 'rgba(255, 255, 255, 0.02)',
+                border: '1px solid var(--border-subtle)',
+                borderRadius: 'var(--radius-sm)',
+                padding: '1rem',
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.4rem' }}>
+                  <span style={{ color: 'var(--accent-cyan)', fontWeight: 700, fontSize: '0.9rem' }}>18 Indigenous Anatomical Roots</span>
+                </div>
+                <p style={{ margin: 0, fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+                  The 18 Ipi Eeyek roots originate directly from human anatomy and the cosmos (Kok = head, Sam = hair, Lai = forehead, Meet = eye, Paa = ear, Naa = nose, Chil = mouth, Til = neck, Khou = throat, etc.).
+                </p>
+              </div>
+
+              <div style={{
+                background: 'rgba(255, 255, 255, 0.02)',
+                border: '1px solid var(--border-subtle)',
+                borderRadius: 'var(--radius-sm)',
+                padding: '1rem',
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.4rem' }}>
+                  <span style={{ color: 'var(--accent-emerald)', fontWeight: 700, fontSize: '0.9rem' }}>Native Lom (Derivation) vs Borrowing</span>
+                </div>
+                <p style={{ margin: 0, fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+                  In authentic Kanglei grammar, the 9 additional consonant sounds (Gok, Zam, Rai, Ba, Jil, Dil, Ghou, Dhou, Bham) derive naturally from the 18 root letters by adding the <strong>Lom</strong> inflection dot (<code style={{ color: 'var(--accent-emerald)' }}>.</code>), without importing foreign scripts.
+                </p>
+              </div>
+            </div>
+
+            {/* Official QWERTY Pukok-Eeyek Layout Guide */}
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.6rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+                <div>
+                  <h5 style={{ margin: 0, fontSize: '0.95rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+                    Pukok-Eeyek QWERTY Keyboard Mapping (Wakambam Macha Waanglel)
+                  </h5>
+                  <p style={{ margin: '0.15rem 0 0', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                    Type standard keys on any physical QWERTY keyboard with the PukokEeyek font to render sacred calligraphy
+                  </p>
+                </div>
+                <button
+                  onClick={() => handleCopy('k s l m p n c t x q z w y h u e f a')}
+                  className="btn-ghost"
+                  style={{ fontSize: '0.72rem', padding: '0.2rem 0.5rem' }}
+                >
+                  <Copy size={11} style={{ marginRight: '0.25rem' }} />
+                  Copy 18 Root Keys
+                </button>
+              </div>
+
+              {/* 18 Roots Table */}
+              <div style={{ marginBottom: '1rem' }}>
+                <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--accent-amber)', display: 'block', marginBottom: '0.4rem' }}>
+                  18 Ipi Eeyek Roots:
+                </span>
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(95px, 1fr))',
+                  gap: '0.45rem',
+                }}>
+                  {[
+                    { key: 'k', uni: 'ꯀ', name: 'Kok' },
+                    { key: 's', uni: 'ꯁ', name: 'Sam' },
+                    { key: 'l', uni: 'ꯂ', name: 'Lai' },
+                    { key: 'm', uni: 'ꯃ', name: 'Meet' },
+                    { key: 'p', uni: 'ꯄ', name: 'Paa' },
+                    { key: 'n', uni: 'ꯅ', name: 'Naa' },
+                    { key: 'c', uni: 'ꯆ', name: 'Chil' },
+                    { key: 't', uni: 'ꯇ', name: 'Til' },
+                    { key: 'x', uni: 'ꯈ', name: 'Khou' },
+                    { key: 'q', uni: 'ꯉ', name: 'Ngou' },
+                    { key: 'z', uni: 'ꯊ', name: 'Thou' },
+                    { key: 'w', uni: 'ꯋ', name: 'Wai' },
+                    { key: 'y', uni: 'ꯌ', name: 'Yang' },
+                    { key: 'h', uni: 'ꯍ', name: 'Huk' },
+                    { key: 'u', uni: 'ꯎ', name: 'Oon' },
+                    { key: 'e', uni: 'ꯏ', name: 'Ee' },
+                    { key: 'f', uni: 'ꯐ', name: 'Pham' },
+                    { key: 'a', uni: 'ꯑ', name: 'Atingaa' },
+                  ].map((item) => (
+                    <button
+                      key={item.key}
+                      onClick={() => handleInsert(item.uni)}
+                      className="btn-secondary"
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        padding: '0.45rem 0.3rem',
+                        background: 'rgba(255, 255, 255, 0.02)',
+                      }}
+                      title={`Press '${item.key}' in Pukok font or insert ${item.uni}`}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.35rem' }}>
+                        <span style={{ fontFamily: 'var(--font-pukok)', fontSize: '1.45rem', color: 'var(--accent-amber)', lineHeight: 1 }}>
+                          {item.key}
+                        </span>
+                        <span style={{ fontFamily: 'var(--font-meetei)', fontSize: '1rem', color: 'var(--text-muted)' }}>
+                          {item.uni}
+                        </span>
+                      </div>
+                      <span style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--text-primary)', marginTop: '0.2rem' }}>
+                        {item.name}
+                      </span>
+                      <code style={{ fontSize: '0.62rem', color: 'var(--accent-cyan)', background: 'rgba(56, 189, 248, 0.08)', padding: '0.05rem 0.25rem', borderRadius: '3px' }}>
+                        key: {item.key}
+                      </code>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* 9 Lom Consonants Table */}
+              <div style={{ marginBottom: '1rem' }}>
+                <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--accent-emerald)', display: 'block', marginBottom: '0.4rem' }}>
+                  9 Lom Consonants (Chei-eeyek / Lom 9):
+                </span>
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(95px, 1fr))',
+                  gap: '0.45rem',
+                }}>
+                  {[
+                    { key: 'g', uni: 'ꯒ', name: 'Gok' },
+                    { key: 'S', uni: 'ꯓ', name: 'Zam' },
+                    { key: 'R', uni: 'ꯔ', name: 'Rai' },
+                    { key: 'b', uni: 'ꯕ', name: 'Bok' },
+                    { key: 'j', uni: 'ꯖ', name: 'Jhil' },
+                    { key: 'd', uni: 'ꯗ', name: 'Dil' },
+                    { key: 'G', uni: 'ꯘ', name: 'Ghou' },
+                    { key: 'D', uni: 'ꯙ', name: 'Dhou' },
+                    { key: 'v', uni: 'ꯚ', name: 'Bham' },
+                  ].map((item) => (
+                    <button
+                      key={item.key}
+                      onClick={() => handleInsert(item.uni)}
+                      className="btn-secondary"
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        padding: '0.45rem 0.3rem',
+                        background: 'rgba(255, 255, 255, 0.02)',
+                      }}
+                      title={`Press '${item.key}' in Pukok font or insert ${item.uni}`}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.35rem' }}>
+                        <span style={{ fontFamily: 'var(--font-pukok)', fontSize: '1.45rem', color: 'var(--accent-emerald)', lineHeight: 1 }}>
+                          {item.key}
+                        </span>
+                        <span style={{ fontFamily: 'var(--font-meetei)', fontSize: '1rem', color: 'var(--text-muted)' }}>
+                          {item.uni}
+                        </span>
+                      </div>
+                      <span style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--text-primary)', marginTop: '0.2rem' }}>
+                        {item.name}
+                      </span>
+                      <code style={{ fontSize: '0.62rem', color: 'var(--accent-cyan)', background: 'rgba(56, 189, 248, 0.08)', padding: '0.05rem 0.25rem', borderRadius: '3px' }}>
+                        key: {item.key}
+                      </code>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* 10 Lolsum Consonants */}
+              <div style={{ marginBottom: '1rem' }}>
+                <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--accent-cyan)', display: 'block', marginBottom: '0.4rem' }}>
+                  10 Lolsum Consonants (Eeyek Lonsum 10):
+                </span>
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(95px, 1fr))',
+                  gap: '0.45rem',
+                }}>
+                  {[
+                    { key: 'K', uni: 'ꯛ', name: 'Kok Lonsum' },
+                    { key: 'L', uni: 'ꯜ', name: 'Lai Lonsum' },
+                    { key: 'M', uni: 'ꯝ', name: 'Meet Lonsum' },
+                    { key: 'P', uni: 'ꯞ', name: 'Paa Lonsum' },
+                    { key: 'N', uni: 'ꯟ', name: 'Naa Lonsum' },
+                    { key: 'T', uni: 'ꯠ', name: 'Til Lonsum' },
+                    { key: 'Q', uni: 'ꯡ', name: 'Ngou Lonsum' },
+                    { key: 'U', uni: 'ꯎ', name: 'Oon Lonsum' },
+                    { key: 'E', uni: 'ꯢ', name: 'Ee Lonsum' },
+                    { key: 'A', uni: 'ꯑ', name: 'Yei Lonsum' },
+                  ].map((item) => (
+                    <button
+                      key={item.key}
+                      onClick={() => handleInsert(item.uni)}
+                      className="btn-secondary"
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        padding: '0.45rem 0.3rem',
+                        background: 'rgba(255, 255, 255, 0.02)',
+                      }}
+                      title={`Press '${item.key}' in Pukok font or insert ${item.uni}`}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.35rem' }}>
+                        <span style={{ fontFamily: 'var(--font-pukok)', fontSize: '1.45rem', color: 'var(--accent-cyan)', lineHeight: 1 }}>
+                          {item.key}
+                        </span>
+                        <span style={{ fontFamily: 'var(--font-meetei)', fontSize: '1rem', color: 'var(--text-muted)' }}>
+                          {item.uni}
+                        </span>
+                      </div>
+                      <span style={{ fontSize: '0.68rem', fontWeight: 600, color: 'var(--text-primary)', marginTop: '0.2rem' }}>
+                        {item.name}
+                      </span>
+                      <code style={{ fontSize: '0.62rem', color: 'var(--accent-indigo)', background: 'rgba(99, 102, 241, 0.08)', padding: '0.05rem 0.25rem', borderRadius: '3px' }}>
+                        key: {item.key}
+                      </code>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* 9 Cheitap Vowel Diacritics & Punctuation */}
+              <div style={{ marginBottom: '1rem' }}>
+                <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--accent-rose)', display: 'block', marginBottom: '0.4rem' }}>
+                  9 Cheitap Diacritics &amp; Puya Punctuation:
+                </span>
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(110px, 1fr))',
+                  gap: '0.45rem',
+                }}>
+                  {[
+                    { key: 'F', uni: 'ꯥ', name: 'Takchei / Atep (aa)' },
+                    { key: 'i', uni: 'ꯤ', name: 'Inap (i)' },
+                    { key: 'I', uni: 'ꯤ', name: 'Ee Cheitap (ee)' },
+                    { key: 'J', uni: 'ꯨ', name: 'Oon Cheitap (u)' },
+                    { key: 'Y', uni: 'ꯦ', name: 'Yenap (e)' },
+                    { key: 'o', uni: 'ꯣ', name: 'Otap (o)' },
+                    { key: 'O', uni: 'ꯧ', name: 'Sou (ou)' },
+                    { key: 'C', uni: 'ꯩ', name: 'Cheinap (ei)' },
+                    { key: 'H', uni: 'ꯪ', name: 'Nung (anusvara)' },
+                    { key: '#', uni: '꯱', name: 'Sacred 1 (with Eelik)' },
+                    { key: '.', uni: '꫰', name: 'Cheikhan (Danda)' },
+                    { key: ';', uni: '꫱', name: 'Cheishei (Double)' },
+                    { key: ':', uni: '=', name: 'Mannaba (Equals)' },
+                    { key: '!', uni: '꯫', name: 'Apakpa (Khutam)' },
+                  ].map((item) => (
+                    <button
+                      key={item.key}
+                      onClick={() => handleInsert(item.uni)}
+                      className="btn-secondary"
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        padding: '0.45rem 0.3rem',
+                        background: 'rgba(255, 255, 255, 0.02)',
+                      }}
+                      title={`Press '${item.key}' in Pukok font or insert ${item.uni}`}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.35rem' }}>
+                        <span style={{ fontFamily: 'var(--font-pukok)', fontSize: '1.45rem', color: 'var(--accent-rose)', lineHeight: 1 }}>
+                          {item.key}
+                        </span>
+                        <span style={{ fontFamily: 'var(--font-meetei)', fontSize: '1rem', color: 'var(--text-muted)' }}>
+                          {item.uni}
+                        </span>
+                      </div>
+                      <span style={{ fontSize: '0.66rem', fontWeight: 600, color: 'var(--text-primary)', marginTop: '0.2rem' }}>
+                        {item.name}
+                      </span>
+                      <code style={{ fontSize: '0.62rem', color: 'var(--accent-rose)', background: 'rgba(244, 63, 94, 0.08)', padding: '0.05rem 0.25rem', borderRadius: '3px' }}>
+                        key: {item.key}
+                      </code>
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         )}
