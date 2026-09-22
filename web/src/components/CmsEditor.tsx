@@ -32,6 +32,7 @@ import {
   CheckCircle,
   ExternalLink,
   BookOpen,
+  FileText,
 } from 'lucide-react';
 import { marked } from 'marked';
 import { MeeteiMayekTool } from './MeeteiMayekTool';
@@ -925,8 +926,11 @@ Support for **bold**, *italics*, quotes, and tables:
         {/* Editor Pane (Hidden in preview mode) */}
         {viewMode !== 'preview' && (
           <div className="studio-pane">
-            <div className="pane-header">
-              <span>Markdown Source</span>
+            <div className="pane-header editor-pane-header">
+              <div className="pane-title-row">
+                <FileText size={13} style={{ color: 'var(--accent-cyan)' }} />
+                <span>Markdown Source</span>
+              </div>
               <div className="pane-toolbar">
                 <button type="button" onClick={() => insertMarkdownSyntax('# ')} className="pane-tool-btn" title="H1 Heading">H1</button>
                 <button type="button" onClick={() => insertMarkdownSyntax('## ')} className="pane-tool-btn" title="H2 Heading">H2</button>
@@ -978,8 +982,11 @@ Support for **bold**, *italics*, quotes, and tables:
         {/* Live Preview Pane (Hidden in write mode) */}
         {viewMode !== 'write' && (
           <div className="studio-pane">
-            <div className="pane-header">
-              <span>Live Article Preview</span>
+            <div className="pane-header preview-pane-header">
+              <div className="pane-title-row">
+                <Eye size={13} style={{ color: 'var(--accent-emerald)' }} />
+                <span>Live Article Preview</span>
+              </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <div className="studio-view-toggle">
                   <button
