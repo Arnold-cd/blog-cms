@@ -11,7 +11,17 @@
   src: url('/fonts/PukokEeyek.otf') format('opentype'),
        url('./fonts/PukokEeyek.otf') format('opentype'),
        url('fonts/PukokEeyek.otf') format('opentype');
-  font-weight: normal;
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Pukok Eeyek';
+  src: url('/fonts/PukokEeyek.otf') format('opentype'),
+       url('./fonts/PukokEeyek.otf') format('opentype'),
+       url('fonts/PukokEeyek.otf') format('opentype');
+  font-weight: bold;
   font-style: normal;
   font-display: swap;
 }
@@ -2145,19 +2155,33 @@ button {
 
 
 /* ==========================================================================
-   MEETEI MAYEK (NOTO SANS MEETEI MAYEK) STYLING
+   MEETEI MAYEK SCRIPT & PUKOK TYPOGRAPHY SYSTEM
    Official Reference: https://notofonts.github.io/meetei-mayek/
    ========================================================================== */
-[lang="mni"],
-.lang-mni,
+[lang="mni"]:not(.font-pukok),
+.lang-mni:not(.font-pukok),
 .meetei-mayek-text {
   font-family: var(--font-meetei), var(--font-sans) !important;
   line-height: 1.85;
   letter-spacing: 0.015em;
 }
 
+.reader-container.lang-mni:not(.font-pukok) .markdown-body,
+.reader-container.lang-mni:not(.font-pukok) .markdown-body * {
+  font-family: var(--font-meetei), var(--font-sans) !important;
+}
+
+/* Authentic Wakoklon Puya Pukok Calligraphy Mode */
 .font-pukok,
-[data-font="pukok"] {
-  font-family: var(--font-pukok) !important;
+.font-pukok *,
+.reader-container.font-pukok,
+.reader-container.font-pukok *,
+.reader-container.font-pukok .markdown-body,
+.reader-container.font-pukok .markdown-body *,
+.markdown-body.font-pukok,
+.markdown-body.font-pukok *,
+[data-font="pukok"],
+[data-font="pukok"] * {
+  font-family: 'Pukok Eeyek', var(--font-pukok) !important;
   letter-spacing: 0.04em;
 }

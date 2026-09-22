@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import type { BlogPost, PostDraft } from '../types';
-import { fetchArticleMarkdown } from '../services/cmsService';
+import { fetchArticleMarkdown, stripFrontmatter } from '../services/cmsService';
 import {
   translateMarkdownToMeeteiMayek,
   translateToMeeteiMayekWithVocab,
@@ -35,7 +35,7 @@ export const ArticleView: React.FC<ArticleViewProps> = ({ post, onBack, onEditDr
     setError(null);
 
     if (post.content && post.content.trim()) {
-      setRawMarkdown(post.content);
+      setRawMarkdown(stripFrontmatter(post.content));
       setLoading(false);
       return;
     }
@@ -370,7 +370,11 @@ export const ArticleView: React.FC<ArticleViewProps> = ({ post, onBack, onEditDr
           </div>
         ) : (
           <div
-            className="markdown-body"
+            className={`markdown-body ${fontMode === 'pukok' && isTranslated ? 'font-pukok' : ''}`}
+            data-font={fontMode === 'pukok' && isTranslated ? 'pukok' : undefined}
+            style={{
+              fontFamily: fontMode === 'pukok' && isTranslated ? "'Pukok Eeyek', var(--font-pukok)" : undefined,
+            }}
             dangerouslySetInnerHTML={{ __html: contentHtml }}
             id="reader-markdown-content"
           />
