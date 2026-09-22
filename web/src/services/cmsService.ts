@@ -5,25 +5,37 @@ const GITHUB_RAW_POSTS_URL =
   'https://raw.githubusercontent.com/Arnold-cd/blog-cms/main/posts.json';
 
 export async function fetchPosts(): Promise<BlogPost[]> {
+  const timestamp = Date.now();
+
+  // 1. Try real-time GitHub raw manifest first (cache-busted) so remote additions/deletions reflect immediately
   try {
-    // Try relative posts.json first (served by Vite or GitHub Pages)
-    const res = await fetch(LOCAL_POSTS_URL);
-    if (res.ok) {
-      const data = await res.json();
-      if (Array.isArray(data) && data.length > 0) {
+    const rawRes = await fetch(`${GITHUB_RAW_POSTS_URL}?t=${timestamp}`, {
+      cache: 'no-store',
+    });
+    if (rawRes.ok) {
+      const data = await rawRes.json();
+      if (Array.isArray(data)) {
         return data;
       }
     }
   } catch (err) {
-    console.warn('Local posts.json fetch failed, falling back to GitHub raw URL', err);
+    console.warn('GitHub raw posts.json fetch failed, trying local fallback:', err);
   }
 
-  // Fallback to GitHub raw
-  const rawRes = await fetch(GITHUB_RAW_POSTS_URL);
-  if (!rawRes.ok) {
-    throw new Error(`Failed to load posts manifest (HTTP ${rawRes.status})`);
+  // 2. Fallback to local posts.json (bundled static asset or offline mode)
+  try {
+    const res = await fetch(`${LOCAL_POSTS_URL}?t=${timestamp}`);
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        return data;
+      }
+    }
+  } catch (err) {
+    console.warn('Local posts.json fetch failed:', err);
   }
-  return await rawRes.json();
+
+  return [];
 }
 
 export async function fetchArticleMarkdown(contentUrl: string): Promise<string> {

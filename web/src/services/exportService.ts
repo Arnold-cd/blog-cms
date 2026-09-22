@@ -231,28 +231,30 @@ export async function deleteFromGitHub(
 
   const postPath = `posts/${postId}.md`;
 
-  // 1. Get file SHA of posts/<postId>.md
+  // 1. Check file on GitHub and delete if present
   const fileRes = await fetch(`https://api.github.com/repos/${cleanRepo}/contents/${postPath}`, { headers });
-  if (!fileRes.ok) {
+  if (fileRes.ok) {
+    const fileData = await fileRes.json();
+    const fileSha = fileData.sha;
+
+    // 2. Delete the markdown file from GitHub
+    const deleteRes = await fetch(`https://api.github.com/repos/${cleanRepo}/contents/${postPath}`, {
+      method: "DELETE",
+      headers,
+      body: JSON.stringify({
+        message: `chore(cms): delete article ${postId} via CMS Admin`,
+        sha: fileSha,
+      }),
+    });
+
+    if (!deleteRes.ok && deleteRes.status !== 404) {
+      const err = await deleteRes.json().catch(() => ({}));
+      throw new Error(`Failed to delete article: ${err.message || deleteRes.statusText}`);
+    }
+  } else if (fileRes.status !== 404) {
+    // Only throw if it's an auth error (401/403) or rate limit (429), not 404 already deleted
     const err = await fileRes.json().catch(() => ({}));
-    throw new Error(`Article not found on GitHub: ${err.message || fileRes.statusText}`);
-  }
-  const fileData = await fileRes.json();
-  const fileSha = fileData.sha;
-
-  // 2. Delete the markdown file from GitHub
-  const deleteRes = await fetch(`https://api.github.com/repos/${cleanRepo}/contents/${postPath}`, {
-    method: "DELETE",
-    headers,
-    body: JSON.stringify({
-      message: `chore(cms): delete article ${postId} via CMS Admin`,
-      sha: fileSha,
-    }),
-  });
-
-  if (!deleteRes.ok) {
-    const err = await deleteRes.json().catch(() => ({}));
-    throw new Error(`Failed to delete article: ${err.message || deleteRes.statusText}`);
+    throw new Error(`GitHub error: ${err.message || fileRes.statusText}`);
   }
 
   // 3. Update posts.json manifest directly on GitHub
