@@ -5,7 +5,6 @@ summary: "hvbjhvhjbvjh"
 date: "2026-09-20"
 author: "Arnold CD"
 category: "Philosophy"
-thumbnail: "images/banner-philosophy.svg"
 language: "en"
 featured: false
 ---
