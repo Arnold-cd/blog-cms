@@ -14,6 +14,7 @@ import {
   User,
   AlertTriangle,
   Loader2,
+  Key,
 } from 'lucide-react';
 import type { PdfDocument } from '../types';
 import { deletePdfFromGitHub, resolvePdfAssetUrl } from '../services/libraryService';
@@ -40,6 +41,9 @@ export const PdfLibraryView: React.FC<PdfLibraryViewProps> = ({
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [confirmDeleteDoc, setConfirmDeleteDoc] = useState<PdfDocument | null>(null);
+  const [deleteToken, setDeleteToken] = useState<string>(
+    () => localStorage.getItem('github_cms_token') || localStorage.getItem('github_pat') || ''
+  );
 
   // Categories extraction
   const categories = useMemo(() => {
@@ -69,20 +73,26 @@ export const PdfLibraryView: React.FC<PdfLibraryViewProps> = ({
   }, [documents, selectedCategory, searchQuery]);
 
   const handleDelete = async (doc: PdfDocument) => {
-    const token = localStorage.getItem('github_pat') || '';
+    const token =
+      deleteToken.trim() ||
+      localStorage.getItem('github_cms_token') ||
+      localStorage.getItem('github_pat') ||
+      '';
     if (!token) {
-      setDeleteError('Please set your GitHub Personal Access Token in the upload dialog to perform deletions.');
+      setDeleteError('GitHub Personal Access Token is required to perform document deletions.');
       return;
     }
 
+    localStorage.setItem('github_cms_token', token);
+    localStorage.setItem('github_pat', token);
     setDeletingId(doc.id);
     setDeleteError(null);
 
     const res = await deletePdfFromGitHub(token, 'Arnold-cd/blog-cms', doc);
     setDeletingId(null);
-    setConfirmDeleteDoc(null);
 
     if (res.success) {
+      setConfirmDeleteDoc(null);
       onDocumentDeleted(doc.id);
     } else {
       setDeleteError(res.message);
@@ -528,15 +538,19 @@ export const PdfLibraryView: React.FC<PdfLibraryViewProps> = ({
 
                     <button
                       type="button"
-                      className="btn btn-secondary"
-                      onClick={() => setConfirmDeleteDoc(doc)}
+                      className="btn-secondary btn-icon-danger"
+                      onClick={() => {
+                        setConfirmDeleteDoc(doc);
+                        setDeleteError(null);
+                      }}
                       title="Delete from repository"
                       style={{
                         padding: '0.4rem 0.6rem',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        color: '#ef4444',
+                        minWidth: '34px',
+                        height: '32px',
                       }}
                     >
                       <Trash2 size={14} />
@@ -551,70 +565,126 @@ export const PdfLibraryView: React.FC<PdfLibraryViewProps> = ({
 
       {/* Confirmation Modal for Deletion */}
       {confirmDeleteDoc && (
-        <div className="modal-backdrop" onClick={() => setConfirmDeleteDoc(null)}>
+        <div
+          className="modal-backdrop"
+          onClick={() => {
+            if (!deletingId) {
+              setConfirmDeleteDoc(null);
+              setDeleteError(null);
+            }
+          }}
+        >
           <div
             className="modal-dialog"
-            style={{ maxWidth: '440px' }}
+            style={{ maxWidth: '460px', padding: '1.75rem' }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', marginBottom: '1.25rem' }}>
               <div
                 style={{
-                  width: '40px',
-                  height: '40px',
+                  width: '44px',
+                  height: '44px',
                   borderRadius: '50%',
-                  background: 'rgba(239, 68, 68, 0.12)',
-                  color: '#ef4444',
+                  background: 'rgba(244, 63, 94, 0.12)',
+                  color: 'var(--accent-rose)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   flexShrink: 0,
+                  border: '1px solid rgba(244, 63, 94, 0.25)',
                 }}
               >
-                <Trash2 size={20} />
+                <Trash2 size={22} />
               </div>
               <div>
-                <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 600 }}>Delete Document?</h3>
-                <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-                  This will remove the PDF and cover from the GitHub repo.
+                <h3 style={{ margin: 0, fontSize: '1.15rem', fontWeight: 600 }}>Delete Document?</h3>
+                <span style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
+                  This will remove the PDF and cover thumbnail from GitHub.
                 </span>
               </div>
             </div>
 
-            <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', marginBottom: '1.25rem' }}>
-              Are you sure you want to permanently delete <strong>{confirmDeleteDoc.title}</strong>?
+            <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '1.25rem', lineHeight: '1.5' }}>
+              Are you sure you want to permanently delete <strong style={{ color: 'var(--text-primary)' }}>{confirmDeleteDoc.title}</strong>?
             </p>
 
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem' }}>
+            {/* GitHub Token input */}
+            <div style={{ marginBottom: '1.25rem' }}>
+              <label
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.4rem',
+                  fontSize: '0.78rem',
+                  fontWeight: 600,
+                  color: 'var(--text-secondary)',
+                  marginBottom: '0.35rem',
+                }}
+              >
+                <Key size={13} />
+                <span>GitHub Personal Access Token</span>
+              </label>
+              <input
+                type="password"
+                className="input"
+                style={{ width: '100%', fontSize: '0.85rem', padding: '0.5rem 0.75rem' }}
+                placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
+                value={deleteToken}
+                onChange={(e) => setDeleteToken(e.target.value)}
+              />
+              <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', marginTop: '0.3rem' }}>
+                Requires repo permissions to commit deletions to GitHub.
+              </span>
+            </div>
+
+            {deleteError && (
+              <div
+                style={{
+                  padding: '0.7rem 0.9rem',
+                  borderRadius: 'var(--radius-sm)',
+                  fontSize: '0.82rem',
+                  background: 'rgba(244, 63, 94, 0.1)',
+                  color: 'var(--accent-rose)',
+                  border: '1px solid var(--accent-rose)',
+                  marginBottom: '1.25rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                }}
+              >
+                <AlertTriangle size={16} style={{ flexShrink: 0 }} />
+                <span>{deleteError}</span>
+              </div>
+            )}
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '1.5rem' }}>
               <button
                 type="button"
-                className="btn btn-secondary"
-                onClick={() => setConfirmDeleteDoc(null)}
+                className="btn-secondary"
+                onClick={() => {
+                  setConfirmDeleteDoc(null);
+                  setDeleteError(null);
+                }}
                 disabled={deletingId === confirmDeleteDoc.id}
               >
                 Cancel
               </button>
               <button
                 type="button"
-                className="btn"
+                className="btn-danger"
                 onClick={() => handleDelete(confirmDeleteDoc)}
-                disabled={deletingId === confirmDeleteDoc.id}
-                style={{
-                  background: '#ef4444',
-                  color: '#fff',
-                  borderColor: '#dc2626',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.35rem',
-                }}
+                disabled={deletingId === confirmDeleteDoc.id || !deleteToken.trim()}
               >
                 {deletingId === confirmDeleteDoc.id ? (
                   <>
-                    <Loader2 size={14} className="spin" />
-                    <span>Deleting...</span>
+                    <Loader2 size={15} style={{ animation: 'spin 1s linear infinite' }} />
+                    <span>Deleting from Git...</span>
                   </>
                 ) : (
-                  <span>Delete Document</span>
+                  <>
+                    <Trash2 size={15} />
+                    <span>Delete Document</span>
+                  </>
                 )}
               </button>
             </div>
