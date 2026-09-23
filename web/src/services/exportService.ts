@@ -191,6 +191,23 @@ export async function publishToGitHub(
         headers,
         body: JSON.stringify(updatePayload),
       });
+
+      // Also update web/public/posts.json to trigger Vercel deployment and keep public folder synced
+      try {
+        const publicPostsJsonPath = "web/public/posts.json";
+        const publicPostsSha = await getFileSha(publicPostsJsonPath);
+        await fetch(`https://api.github.com/repos/${cleanRepo}/contents/${publicPostsJsonPath}`, {
+          method: "PUT",
+          headers,
+          body: JSON.stringify({
+            message: `chore(cms): sync web/public/posts.json for ${draft.title || draft.id}`,
+            content: encodedPostsJson,
+            ...(publicPostsSha ? { sha: publicPostsSha } : {}),
+          }),
+        });
+      } catch (pubErr) {
+        console.warn("Could not sync web/public/posts.json directly:", pubErr);
+      }
     } catch (manifestErr) {
       console.warn("Direct posts.json update skipped (GitHub Actions will also auto-update):", manifestErr);
     }
@@ -230,6 +247,19 @@ export async function deleteFromGitHub(
   };
 
   const postPath = `posts/${postId}.md`;
+
+  const getFileSha = async (path: string): Promise<string | undefined> => {
+    try {
+      const res = await fetch(`https://api.github.com/repos/${cleanRepo}/contents/${path}`, { headers });
+      if (res.ok) {
+        const data = await res.json();
+        return data.sha;
+      }
+    } catch {
+      // not found
+    }
+    return undefined;
+  };
 
   // 1. Check file on GitHub and delete if present
   const fileRes = await fetch(`https://api.github.com/repos/${cleanRepo}/contents/${postPath}`, { headers });
@@ -282,6 +312,23 @@ export async function deleteFromGitHub(
         headers,
         body: JSON.stringify(updatePayload),
       });
+
+      // Also update web/public/posts.json
+      try {
+        const publicPostsJsonPath = "web/public/posts.json";
+        const publicSha = await getFileSha(publicPostsJsonPath);
+        await fetch(`https://api.github.com/repos/${cleanRepo}/contents/${publicPostsJsonPath}`, {
+          method: "PUT",
+          headers,
+          body: JSON.stringify({
+            message: `chore(cms): remove ${postId} from web/public/posts.json`,
+            content: encodedPostsJson,
+            ...(publicSha ? { sha: publicSha } : {}),
+          }),
+        });
+      } catch (pubErr) {
+        console.warn("Could not sync web/public/posts.json on delete:", pubErr);
+      }
     }
   } catch (manifestErr) {
     console.warn("Could not update posts.json directly via GitHub API, GitHub Actions will handle it:", manifestErr);

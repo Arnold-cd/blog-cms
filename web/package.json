@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "prebuild": "node ./scripts/sync-assets.js",
+    "build": "node ./scripts/sync-assets.js && tsc -b && vite build",
     "deploy": "../scripts/deploy.sh",
     "lint": "oxlint",
     "preview": "vite preview"

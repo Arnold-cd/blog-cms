@@ -334,6 +334,23 @@ export async function publishPdfToGitHub(
       console.warn('Manifest direct update warning, CI will sync:', await manifestUploadRes.text());
     }
 
+    // Also update web/public/library.json to trigger Vercel deployment and keep public folder synced
+    try {
+      const publicManifestPath = 'web/public/library.json';
+      const publicManifestSha = await getFileSha(publicManifestPath);
+      await fetch(`https://api.github.com/repos/${cleanRepo}/contents/${publicManifestPath}`, {
+        method: 'PUT',
+        headers,
+        body: JSON.stringify({
+          message: `chore(library): sync web/public/library.json for ${newDoc.title}`,
+          content: encodedManifest,
+          ...(publicManifestSha ? { sha: publicManifestSha } : {}),
+        }),
+      });
+    } catch (err) {
+      console.warn('Could not sync web/public/library.json directly:', err);
+    }
+
     return {
       success: true,
       message: `"${newDoc.title}" successfully published to PDF Library!`,
@@ -430,6 +447,23 @@ export async function deletePdfFromGitHub(
             sha: manifestSha,
           }),
         });
+
+        // Also update web/public/library.json
+        try {
+          const publicManifestPath = 'web/public/library.json';
+          const publicSha = await getFileSha(publicManifestPath);
+          await fetch(`https://api.github.com/repos/${cleanRepo}/contents/${publicManifestPath}`, {
+            method: 'PUT',
+            headers,
+            body: JSON.stringify({
+              message: `chore(library): remove ${doc.id} from web/public/library.json`,
+              content: encoded,
+              ...(publicSha ? { sha: publicSha } : {}),
+            }),
+          });
+        } catch (pubErr) {
+          console.warn('Could not sync web/public/library.json on delete:', pubErr);
+        }
       }
     }
   } catch (err) {
