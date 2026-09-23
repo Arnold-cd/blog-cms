@@ -25,6 +25,7 @@ class _PdfViewerScreenState extends ConsumerState<PdfViewerScreen> {
   int _currentPage = 0;
   bool _isReady = false;
   String _errorMessage = "";
+  bool _invertColors = false;
 
   @override
   void initState() {
@@ -161,6 +162,18 @@ class _PdfViewerScreenState extends ConsumerState<PdfViewerScreen> {
         actions: [
           IconButton(
             icon: Icon(
+              _invertColors ? Icons.dark_mode_rounded : Icons.light_mode_outlined,
+              color: _invertColors ? const Color(0xFF6366F1) : null,
+            ),
+            tooltip: _invertColors ? "Original Paper Mode" : "Invert Colors (Night Reading)",
+            onPressed: () {
+              setState(() {
+                _invertColors = !_invertColors;
+              });
+            },
+          ),
+          IconButton(
+            icon: Icon(
               isDownloaded ? Icons.download_done_rounded : Icons.download_rounded,
               color: isDownloaded ? const Color(0xFF10B981) : null,
             ),
@@ -221,13 +234,14 @@ class _PdfViewerScreenState extends ConsumerState<PdfViewerScreen> {
                 )
               : _localPath != null
                   ? PDFView(
+                      key: ValueKey("pdf_view_${_localPath}_$_invertColors"),
                       filePath: _localPath,
                       enableSwipe: true,
                       swipeHorizontal: false,
                       autoSpacing: true,
                       pageFling: true,
                       pageSnap: true,
-                      nightMode: isDark,
+                      nightMode: _invertColors,
                       onRender: (pages) {
                         setState(() {
                           _totalPages = pages ?? 0;
