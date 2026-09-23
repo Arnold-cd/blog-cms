@@ -32,7 +32,9 @@ export const PdfUploadModal: React.FC<PdfUploadModalProps> = ({ isOpen, onClose,
   const [tagsInput, setTagsInput] = useState<string>('Puya, History, Manuscript');
 
   // GitHub Auth
-  const [token, setToken] = useState<string>(() => localStorage.getItem('github_pat') || '');
+  const [token, setToken] = useState<string>(
+    () => localStorage.getItem('github_cms_token') || localStorage.getItem('github_pat') || ''
+  );
   const [repo, setRepo] = useState<string>('Arnold-cd/blog-cms');
 
   // Upload state
@@ -110,6 +112,7 @@ export const PdfUploadModal: React.FC<PdfUploadModalProps> = ({ isOpen, onClose,
     setUploading(true);
     setUploadError(null);
     localStorage.setItem('github_pat', token.trim());
+    localStorage.setItem('github_cms_token', token.trim());
 
     const tags = tagsInput
       .split(',')

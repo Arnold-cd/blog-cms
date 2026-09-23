@@ -99,6 +99,103 @@ export const PdfLibraryView: React.FC<PdfLibraryViewProps> = ({
     }
   };
 
+  const handleOpenPdf = async (e: React.MouseEvent, doc: PdfDocument) => {
+    e.preventDefault();
+    const resolved = resolvePdfAssetUrl(doc.pdf_url);
+
+    // 1. Try checking if local/Vercel asset is available
+    try {
+      const res = await fetch(resolved, { method: 'HEAD' });
+      if (res.ok) {
+        window.open(resolved, '_blank', 'noopener,noreferrer');
+        return;
+      }
+    } catch {
+      // not yet deployed or network issue
+    }
+
+    // 2. If 404 (e.g. Vercel deployment still in progress) and admin has token, stream raw from GitHub API directly
+    const token = localStorage.getItem('github_cms_token') || localStorage.getItem('github_pat') || '';
+    if (token) {
+      try {
+        const rawRes = await fetch(
+          `https://api.github.com/repos/Arnold-cd/blog-cms/contents/library/pdfs/${encodeURIComponent(doc.file_name)}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token.trim()}`,
+              Accept: 'application/vnd.github.v3.raw',
+            },
+          }
+        );
+        if (rawRes.ok) {
+          const blob = await rawRes.blob();
+          const blobUrl = URL.createObjectURL(new Blob([blob], { type: 'application/pdf' }));
+          window.open(blobUrl, '_blank', 'noopener,noreferrer');
+          return;
+        }
+      } catch (ghErr) {
+        console.warn('GitHub API direct stream fallback failed:', ghErr);
+      }
+    }
+
+    // 3. Fallback: Open resolved URL directly
+    window.open(resolved, '_blank', 'noopener,noreferrer');
+  };
+
+  const handleDownloadPdf = async (e: React.MouseEvent, doc: PdfDocument) => {
+    e.preventDefault();
+    const resolved = resolvePdfAssetUrl(doc.pdf_url);
+
+    try {
+      const res = await fetch(resolved, { method: 'HEAD' });
+      if (res.ok) {
+        const a = document.createElement('a');
+        a.href = resolved;
+        a.download = doc.file_name;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        return;
+      }
+    } catch {}
+
+    const token = localStorage.getItem('github_cms_token') || localStorage.getItem('github_pat') || '';
+    if (token) {
+      try {
+        const rawRes = await fetch(
+          `https://api.github.com/repos/Arnold-cd/blog-cms/contents/library/pdfs/${encodeURIComponent(doc.file_name)}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token.trim()}`,
+              Accept: 'application/vnd.github.v3.raw',
+            },
+          }
+        );
+        if (rawRes.ok) {
+          const blob = await rawRes.blob();
+          const blobUrl = URL.createObjectURL(new Blob([blob], { type: 'application/pdf' }));
+          const a = document.createElement('a');
+          a.href = blobUrl;
+          a.download = doc.file_name;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setTimeout(() => URL.revokeObjectURL(blobUrl), 10000);
+          return;
+        }
+      } catch (ghErr) {
+        console.warn('GitHub API direct download fallback failed:', ghErr);
+      }
+    }
+
+    const a = document.createElement('a');
+    a.href = resolved;
+    a.download = doc.file_name;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+
   return (
     <div className="feed-container" style={{ paddingBottom: '4rem' }}>
       {/* Top Header Banner */}
@@ -347,8 +444,33 @@ export const PdfLibraryView: React.FC<PdfLibraryViewProps> = ({
                       border: '1px solid rgba(255, 255, 255, 0.1)',
                     }}
                     onError={(e) => {
-                      // fallback to icon if image url not found yet
-                      (e.target as HTMLElement).style.display = 'none';
+                      const img = e.target as HTMLImageElement;
+                      const token = localStorage.getItem('github_cms_token') || localStorage.getItem('github_pat') || '';
+                      if (token && doc.cover_url && !img.dataset.triedGithub) {
+                        img.dataset.triedGithub = 'true';
+                        const coverName = doc.cover_url.split('/').pop();
+                        if (coverName) {
+                          fetch(
+                            `https://api.github.com/repos/Arnold-cd/blog-cms/contents/library/covers/${encodeURIComponent(coverName)}`,
+                            {
+                              headers: {
+                                Authorization: `Bearer ${token.trim()}`,
+                                Accept: 'application/vnd.github.v3.raw',
+                              },
+                            }
+                          )
+                            .then((res) => (res.ok ? res.blob() : null))
+                            .then((blob) => {
+                              if (blob) img.src = URL.createObjectURL(blob);
+                              else img.style.display = 'none';
+                            })
+                            .catch(() => {
+                              img.style.display = 'none';
+                            });
+                          return;
+                        }
+                      }
+                      img.style.display = 'none';
                     }}
                   />
                 ) : (
@@ -507,6 +629,7 @@ export const PdfLibraryView: React.FC<PdfLibraryViewProps> = ({
                     href={resolvePdfAssetUrl(doc.pdf_url)}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={(e) => handleOpenPdf(e, doc)}
                     className="btn btn-secondary"
                     style={{
                       fontSize: '0.8rem',
@@ -524,6 +647,7 @@ export const PdfLibraryView: React.FC<PdfLibraryViewProps> = ({
                     <a
                       href={resolvePdfAssetUrl(doc.pdf_url)}
                       download={doc.file_name}
+                      onClick={(e) => handleDownloadPdf(e, doc)}
                       className="btn btn-secondary"
                       title="Download PDF file"
                       style={{
