@@ -713,7 +713,17 @@ class MeeteiMayekService {
     '꫱': ';',  // Cheishei (Double Danda)
     ':': ':',  // Mannaba (equals/colon)
     ',': ',',  // Cheikhei
-    'ꫫ': 'I',  // Meetei Mayek Vowel Sign II -> Pukok Eeyek font key 'I' (renders pure ꫫ without dotted circle!)
+    'ꫫ': 'I',  // Meetei Mayek Vowel Sign II -> Pukok Eeyek font key 'I'
+    '꯬': '',   // Lum Iyek tone mark
+    'ꫬ': 'J',  // Vowel sign UU -> Oon
+    'ꫭ': 'C',  // Vowel sign AAI -> Cheinap
+    'ꫮ': 'O',  // Vowel sign AU -> Sou
+    'ꫯ': 'O',  // Vowel sign AAU -> Sou
+    'ꫲ': '#',  // Anji (Sacred 1)
+    'ꫳ': '2',  // Syllable repetition
+    'ꫴ': '2',  // Word repetition
+    'ꫵ': ':',  // Visarga
+    '꫶': '',   // Virama
     '\u25CC': '', // Dotted circle
     '\u25CB': '', // White circle
   };
@@ -722,18 +732,26 @@ class MeeteiMayekService {
   /// that displays authentic Pukok Eeyek calligraphy when styled with fontFamily: 'PukokEeyek'
   static String convertUnicodeToPukokFont(String text) {
     if (text.isEmpty) return '';
-    final sanitized = text.replaceAll('\u25CC', '');
+    final sanitized = text.replaceAll('\u25CC', '').replaceAll('\u25CB', '');
     final sb = StringBuffer();
     for (int i = 0; i < sanitized.length; i++) {
       final ch = sanitized[i];
       sb.write(unicodeToPukokKeymap[ch] ?? ch);
     }
-    return sb.toString().replaceAll('\u25CC', '');
+    // Remove any leftover orphaned combining diacritics or dotted circle artifacts
+    // so the text shaper will never insert a dotted circle fallback
+    return sb.toString().replaceAll(RegExp(r'[\u25CC\u25CB\uABE3-\uABEC\uAAEC-\uAAF6]'), '');
   }
 
   /// High-level translator: converts English/Latin into Pukok Eeyek calligraphy string
   static String translateToPukokFontWithVocab(String input) {
     final unicodeText = translateToMeeteiMayekWithVocab(input);
     return convertUnicodeToPukokFont(unicodeText);
+  }
+
+  /// Translates full Markdown text directly into authentic Pukok Eeyek calligraphy
+  static String translateMarkdownToPukok(String markdown) {
+    final unicodeMd = translateMarkdownToMeeteiMayek(markdown);
+    return convertUnicodeToPukokFont(unicodeMd);
   }
 }

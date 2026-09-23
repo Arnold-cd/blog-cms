@@ -28,7 +28,6 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
   late FlutterTts _flutterTts;
   bool _isPlayingTts = false;
   bool _isTranslated = false;
-  bool _isPukokFont = false;
   String _rawMarkdown = "";
 
   @override
@@ -130,10 +129,56 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
     }
   }
 
-  /// Strip YAML frontmatter (e.g. --- ... ---) from markdown so it doesn't pollute article text
+  /// Strip all YAML frontmatters, metadata blocks, and ID fields so they never pollute article text
   String _cleanContent(String markdown) {
-    final frontmatterRegex = RegExp(r'^---\s*[\r\n]+[\s\S]*?[\r\n]+---\s*[\r\n]*');
-    return markdown.replaceFirst(frontmatterRegex, '').trim();
+    var content = markdown.trim();
+
+    // 1. Repeatedly strip all standard frontmatter blocks delimited by --- or +++
+    // (handles multiple/chained frontmatters from multi-saved files)
+    final frontmatterRegex = RegExp(
+      r'^(?:---|\+\+\+)\s*[\r\n]+[\s\S]*?[\r\n]+(?:---|\+\+\+)\s*',
+      multiLine: false,
+    );
+    while (frontmatterRegex.hasMatch(content)) {
+      content = content.replaceFirst(frontmatterRegex, '').trim();
+    }
+
+    // 2. Strip any naked/un-delimited YAML metadata blocks at the start of the article
+    final metadataKeyRegex = RegExp(
+      r'^\s*(?:id|title|summary|date|author|category|thumbnail|language|featured|tags|slug)\s*:\s*.*$',
+      caseSensitive: false,
+    );
+    final lines = content.split(RegExp(r'\r?\n'));
+    int dropUntil = 0;
+    for (int i = 0; i < lines.length; i++) {
+      final line = lines[i].trim();
+      if (line.isEmpty || line == '---' || line == '***' || line == '___' || metadataKeyRegex.hasMatch(line)) {
+        dropUntil = i + 1;
+      } else {
+        break;
+      }
+    }
+    if (dropUntil > 0) {
+      content = lines.sublist(dropUntil).join('\n').trim();
+    }
+
+    // 3. Remove any metadata blocks collapsed onto one or more lines (e.g. id: "..." title: "..." summary: "...")
+    final inlineMetadataBlockRegex = RegExp(
+      r'(?:^|\n)\s*id:\s*["\x27]?[^"\x27\n\r]+["\x27]?(?:\s+(?:title|summary|date|author|category|thumbnail|language|featured|tags):\s*["\x27]?[^"\x27\n\r]+["\x27]?)+[^\n\r]*(?:\r?\n|$)',
+      caseSensitive: false,
+    );
+    content = content.replaceAll(inlineMetadataBlockRegex, '\n');
+
+    // 4. Remove any isolated `id: "..."` or `id: ...` lines throughout the article
+    content = content.replaceAll(
+      RegExp(r'^\s*id\s*:\s*["\x27]?[^"\x27\r\n]*["\x27]?\s*$', multiLine: true, caseSensitive: false),
+      '',
+    );
+
+    // 5. Clean up any leading horizontal dividers (---, ***, ___) left orphaned at the start
+    content = content.replaceFirst(RegExp(r'^(?:(?:\-{3,}|\*{3,}|_{3,})\s*[\r\n]+)+'), '').trim();
+
+    return content;
   }
 
   String _stripMarkdown(String markdown) {
@@ -240,13 +285,13 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
         ? MeeteiMayekService.translateToMeeteiMayekWithVocab(widget.post.author)
         : widget.post.author;
 
-    final effectiveTitle = _isTranslated && _isPukokFont
+    final effectiveTitle = _isTranslated
         ? MeeteiMayekService.convertUnicodeToPukokFont(unicodeTitle)
         : unicodeTitle;
-    final effectiveCategory = _isTranslated && _isPukokFont
+    final effectiveCategory = _isTranslated
         ? MeeteiMayekService.convertUnicodeToPukokFont(unicodeCategory)
         : unicodeCategory;
-    final effectiveAuthor = _isTranslated && _isPukokFont
+    final effectiveAuthor = _isTranslated
         ? MeeteiMayekService.convertUnicodeToPukokFont(unicodeAuthor)
         : unicodeAuthor;
 
@@ -480,7 +525,7 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
                             const SizedBox(width: 6),
                             Expanded(
                               child: Text(
-                                "(Google Noto Sans Meetei Mayek)",
+                                "(Authentic Wakoklon Pukok Eeyek)",
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
                                   fontSize: 10.5,
@@ -596,75 +641,6 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
                     ),
                   ),
 
-                  if (_isTranslated) ...[
-                    const SizedBox(height: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: isDark ? const Color(0xFF141418) : const Color(0xFFF1F5F9),
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color: isDark ? Colors.white.withValues(alpha: 0.08) : Colors.black.withValues(alpha: 0.06),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Script Font:",
-                            style: TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w600,
-                              color: isDark ? Colors.white60 : Colors.black54,
-                            ),
-                          ),
-                          Row(
-                            children: [
-                              GestureDetector(
-                                onTap: () => setState(() => _isPukokFont = false),
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                  decoration: BoxDecoration(
-                                    color: !_isPukokFont ? const Color(0xFF6366F1) : Colors.transparent,
-                                    borderRadius: BorderRadius.circular(6),
-                                  ),
-                                  child: Text(
-                                    "Noto Sans",
-                                    style: TextStyle(
-                                      fontSize: 11,
-                                      fontWeight: !_isPukokFont ? FontWeight.bold : FontWeight.normal,
-                                      color: !_isPukokFont ? Colors.white : (isDark ? Colors.white70 : Colors.black87),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 4),
-                              GestureDetector(
-                                onTap: () => setState(() => _isPukokFont = true),
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                  decoration: BoxDecoration(
-                                    color: _isPukokFont ? const Color(0xFF6366F1) : Colors.transparent,
-                                    borderRadius: BorderRadius.circular(6),
-                                  ),
-                                  child: Text(
-                                    "Pukok Puya",
-                                    style: TextStyle(
-                                      fontSize: 11,
-                                      fontWeight: _isPukokFont ? FontWeight.bold : FontWeight.normal,
-                                      color: _isPukokFont ? Colors.white : (isDark ? Colors.white70 : Colors.black87),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-
-                  // Category & Language Tags
                   // Category & Language Tags
                   Row(
                     children: [
@@ -675,13 +651,13 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: Text(
-                          _isTranslated && _isPukokFont ? effectiveCategory : effectiveCategory.toUpperCase(),
+                          _isTranslated ? effectiveCategory : effectiveCategory.toUpperCase(),
                           style: TextStyle(
                             color: const Color(0xFF6366F1),
                             fontSize: 11,
                             fontWeight: FontWeight.w700,
                             letterSpacing: 0.8,
-                            fontFamily: _isTranslated && _isPukokFont ? "PukokEeyek" : null,
+                            fontFamily: _isTranslated ? "PukokEeyek" : null,
                             fontFamilyFallback: AppTheme.fontFallbacks,
                           ),
                         ),
@@ -696,15 +672,13 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
                           ),
                           child: Text(
                             _isTranslated
-                                ? (_isPukokFont
-                                    ? MeeteiMayekService.convertUnicodeToPukokFont("ꯃꯤꯇꯩ ꯃꯌꯦꯛ")
-                                    : "ꯃꯤꯇꯩ ꯃꯌꯦꯛ")
-                                : (widget.post.language == "mni" ? "ꯃꯤꯇꯩ ꯃꯌꯦꯛ" : widget.post.language.toUpperCase()),
+                                ? MeeteiMayekService.convertUnicodeToPukokFont("ꯃꯤꯇꯩ ꯃꯌꯦꯛ")
+                                : (widget.post.language == "mni" ? MeeteiMayekService.convertUnicodeToPukokFont("ꯃꯤꯇꯩ ꯃꯌꯦꯛ") : widget.post.language.toUpperCase()),
                             style: TextStyle(
                               color: Colors.teal.shade300,
                               fontSize: 11,
                               fontWeight: FontWeight.w600,
-                              fontFamily: _isTranslated && _isPukokFont ? "PukokEeyek" : null,
+                              fontFamily: _isTranslated || widget.post.language == "mni" ? "PukokEeyek" : null,
                               fontFamilyFallback: AppTheme.fontFallbacks,
                             ),
                           ),
@@ -719,10 +693,10 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
                     effectiveTitle,
                     style: theme.textTheme.headlineMedium?.copyWith(
                       color: customTextColor,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: _isTranslated && _isPukokFont ? 0.8 : -0.5,
+                      fontWeight: _isTranslated ? FontWeight.normal : FontWeight.w800,
+                      letterSpacing: _isTranslated ? 0.8 : -0.5,
                       height: 1.3,
-                      fontFamily: _isTranslated && _isPukokFont ? "PukokEeyek" : null,
+                      fontFamily: _isTranslated ? "PukokEeyek" : null,
                       fontFamilyFallback: AppTheme.fontFallbacks,
                     ),
                   ),
@@ -736,13 +710,13 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
                         backgroundColor: const Color(0xFF6366F1).withValues(alpha: 0.2),
                         child: Text(
                           effectiveAuthor.isNotEmpty
-                              ? (_isTranslated && _isPukokFont ? effectiveAuthor[0] : effectiveAuthor[0].toUpperCase())
+                              ? (_isTranslated ? effectiveAuthor[0] : effectiveAuthor[0].toUpperCase())
                               : "A",
                           style: TextStyle(
                             color: const Color(0xFF6366F1),
-                            fontWeight: FontWeight.bold,
+                            fontWeight: _isTranslated ? FontWeight.normal : FontWeight.bold,
                             fontSize: 13,
-                            fontFamily: _isTranslated && _isPukokFont ? "PukokEeyek" : null,
+                            fontFamily: _isTranslated ? "PukokEeyek" : null,
                             fontFamilyFallback: AppTheme.fontFallbacks,
                           ),
                         ),
@@ -755,21 +729,19 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
                             effectiveAuthor,
                             style: theme.textTheme.bodyMedium?.copyWith(
                               color: customTextColor,
-                              fontWeight: FontWeight.w600,
-                              fontFamily: _isTranslated && _isPukokFont ? "PukokEeyek" : null,
+                              fontWeight: _isTranslated ? FontWeight.normal : FontWeight.w600,
+                              fontFamily: _isTranslated ? "PukokEeyek" : null,
                               fontFamilyFallback: AppTheme.fontFallbacks,
                             ),
                           ),
                           Text(
                             _isTranslated
-                                ? (_isPukokFont
-                                    ? "${MeeteiMayekService.convertUnicodeToPukokFont(MeeteiMayekService.translateToMeeteiMayekWithVocab(_formatDate(widget.post.date)))} • ${MeeteiMayekService.convertUnicodeToPukokFont(MeeteiMayekService.translateToMeeteiMayekWithVocab(widget.post.readingTimeMin.toString()))} ${MeeteiMayekService.convertUnicodeToPukokFont("ꯃꯤꯅꯤꯠ ꯄꯥꯕ")}"
-                                    : "${MeeteiMayekService.translateToMeeteiMayekWithVocab(_formatDate(widget.post.date))} • ${MeeteiMayekService.translateToMeeteiMayekWithVocab(widget.post.readingTimeMin.toString())} ꯃꯤꯅꯤꯠ ꯄꯥꯕ")
+                                ? "${MeeteiMayekService.convertUnicodeToPukokFont(MeeteiMayekService.translateToMeeteiMayekWithVocab(_formatDate(widget.post.date)))} • ${MeeteiMayekService.convertUnicodeToPukokFont(MeeteiMayekService.translateToMeeteiMayekWithVocab(widget.post.readingTimeMin.toString()))} ${MeeteiMayekService.convertUnicodeToPukokFont("ꯃꯤꯅꯤꯠ ꯄꯥꯕ")}"
                                 : "${_formatDate(widget.post.date)} • ${widget.post.readingTimeMin} min read",
                             style: TextStyle(
                               color: customSubtitleColor ?? theme.textTheme.bodySmall?.color?.withValues(alpha: 0.6),
                               fontSize: 12,
-                              fontFamily: _isTranslated && _isPukokFont ? "PukokEeyek" : null,
+                              fontFamily: _isTranslated ? "PukokEeyek" : null,
                               fontFamilyFallback: AppTheme.fontFallbacks,
                             ),
                           ),
@@ -843,12 +815,9 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
 
                   final raw = _rawMarkdown.isNotEmpty ? _rawMarkdown : (snapshot.data ?? "");
                   final cleaned = _cleanContent(raw);
-                  final unicodeData = _isTranslated
-                      ? MeeteiMayekService.translateMarkdownToMeeteiMayek(cleaned)
+                  final markdownData = _isTranslated
+                      ? MeeteiMayekService.translateMarkdownToPukok(cleaned)
                       : cleaned;
-                  final markdownData = _isTranslated && _isPukokFont
-                      ? MeeteiMayekService.convertUnicodeToPukokFont(unicodeData)
-                      : unicodeData;
 
                   return MarkdownBody(
                     data: markdownData,
@@ -895,28 +864,28 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
                         fontSize: 16 * fontScale,
                         height: 1.7,
                         color: customTextColor,
-                        fontFamily: _isTranslated && _isPukokFont ? "PukokEeyek" : null,
+                        fontFamily: _isTranslated ? "PukokEeyek" : null,
                         fontFamilyFallback: AppTheme.fontFallbacks,
                       ),
                       h1: theme.textTheme.headlineMedium?.copyWith(
                         fontSize: 24 * fontScale,
-                        fontWeight: FontWeight.bold,
+                        fontWeight: _isTranslated ? FontWeight.normal : FontWeight.bold,
                         color: customTextColor,
-                        fontFamily: _isTranslated && _isPukokFont ? "PukokEeyek" : null,
+                        fontFamily: _isTranslated ? "PukokEeyek" : null,
                         fontFamilyFallback: AppTheme.fontFallbacks,
                       ),
                       h2: theme.textTheme.titleLarge?.copyWith(
                         fontSize: 20 * fontScale,
-                        fontWeight: FontWeight.w700,
+                        fontWeight: _isTranslated ? FontWeight.normal : FontWeight.w700,
                         color: customTextColor,
-                        fontFamily: _isTranslated && _isPukokFont ? "PukokEeyek" : null,
+                        fontFamily: _isTranslated ? "PukokEeyek" : null,
                         fontFamilyFallback: AppTheme.fontFallbacks,
                       ),
                       h3: theme.textTheme.titleMedium?.copyWith(
                         fontSize: 18 * fontScale,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: _isTranslated ? FontWeight.normal : FontWeight.w600,
                         color: customTextColor,
-                        fontFamily: _isTranslated && _isPukokFont ? "PukokEeyek" : null,
+                        fontFamily: _isTranslated ? "PukokEeyek" : null,
                         fontFamilyFallback: AppTheme.fontFallbacks,
                       ),
                       blockquote: theme.textTheme.bodyMedium?.copyWith(
@@ -951,23 +920,23 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
                       ),
                       em: TextStyle(
                         fontStyle: FontStyle.italic,
-                        fontFamily: _isTranslated && _isPukokFont ? "PukokEeyek" : null,
+                        fontFamily: _isTranslated ? "PukokEeyek" : null,
                         fontFamilyFallback: AppTheme.fontFallbacks,
                       ),
                       strong: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontFamily: _isTranslated && _isPukokFont ? "PukokEeyek" : null,
+                        fontWeight: _isTranslated ? FontWeight.normal : FontWeight.bold,
+                        fontFamily: _isTranslated ? "PukokEeyek" : null,
                         fontFamilyFallback: AppTheme.fontFallbacks,
                       ),
                       tableBody: TextStyle(
-                        fontFamily: _isTranslated && _isPukokFont ? "PukokEeyek" : null,
+                        fontFamily: _isTranslated ? "PukokEeyek" : null,
                         color: customTextColor,
                         fontFamilyFallback: AppTheme.fontFallbacks,
                       ),
                       listBullet: TextStyle(
                         fontSize: 16 * fontScale,
                         color: customTextColor,
-                        fontFamily: _isTranslated && _isPukokFont ? "PukokEeyek" : null,
+                        fontFamily: _isTranslated ? "PukokEeyek" : null,
                         fontFamilyFallback: AppTheme.fontFallbacks,
                       ),
                     ),

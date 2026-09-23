@@ -80,13 +80,13 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
                       borderRadius: BorderRadius.circular(10),
                     ),
                     alignment: Alignment.center,
-                    child: const Text(
-                      "ꯃ",
-                      style: TextStyle(
+                    child: Text(
+                      MeeteiMayekService.convertUnicodeToPukokFont("ꯃ"),
+                      style: const TextStyle(
+                        fontFamily: "PukokEeyek",
                         color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        fontFamilyFallback: AppTheme.fontFallbacks,
+                        fontSize: 22,
+                        fontWeight: FontWeight.normal,
                       ),
                     ),
                   ),
@@ -94,14 +94,26 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        "ꯃꯌꯦꯛ Explorer",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: -0.5,
-                          fontFamilyFallback: AppTheme.fontFallbacks,
-                        ),
+                      Row(
+                        children: [
+                          Text(
+                            MeeteiMayekService.convertUnicodeToPukokFont("ꯃꯌꯦꯛ"),
+                            style: const TextStyle(
+                              fontFamily: "PukokEeyek",
+                              fontSize: 22,
+                              fontWeight: FontWeight.normal,
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          const Text(
+                            "Explorer",
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: -0.5,
+                            ),
+                          ),
+                        ],
                       ),
                       Text(
                         "Meetei Mayek Script Guide & Sandbox",
@@ -208,25 +220,21 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF6366F1).withValues(alpha: 0.15),
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        child: const Text(
-                          "MEETEI MAYEK SCRIPT",
-                          style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF6366F1),
-                            letterSpacing: 0.8,
-                          ),
-                        ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF6366F1).withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: const Text(
+                      "AUTHENTIC WAKOKLON PUKOK EEYEK",
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF6366F1),
+                        letterSpacing: 0.8,
                       ),
-                    ],
+                    ),
                   ),
                   IconButton(
                     tooltip: "Copy to Clipboard",
@@ -247,97 +255,16 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
               ),
               const SizedBox(height: 12),
               SelectableText(
-                _translatedOutput.isEmpty ? "..." : _translatedOutput,
+                _translatedOutput.isEmpty
+                    ? "..."
+                    : MeeteiMayekService.convertUnicodeToPukokFont(_translatedOutput),
                 style: TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.w700,
+                  fontFamily: "PukokEeyek",
+                  fontSize: 32,
+                  fontWeight: FontWeight.normal,
                   height: 1.4,
                   fontFamilyFallback: AppTheme.fontFallbacks,
-                  color: isDark ? Colors.white : const Color(0xFF0F172A),
-                ),
-              ),
-              const SizedBox(height: 14),
-              Container(
-                padding: const EdgeInsets.all(14),
-                decoration: BoxDecoration(
-                  color: isDark ? const Color(0xFF16161D) : const Color(0xFFF8FAFC),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: isDark ? Colors.white.withValues(alpha: 0.08) : const Color(0xFFE2E8F0),
-                  ),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 6,
-                                height: 6,
-                                decoration: BoxDecoration(
-                                  color: isDark ? const Color(0xFF38BDF8) : const Color(0xFF0284C7),
-                                  shape: BoxShape.circle,
-                                ),
-                              ),
-                              const SizedBox(width: 6),
-                              Expanded(
-                                child: Text(
-                                  "AUTHENTIC WAKOKLON PUKOK EEYEK (PUYA)",
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w700,
-                                    color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
-                                    letterSpacing: 0.5,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        InkWell(
-                          onTap: () {
-                            final pukok = MeeteiMayekService.convertUnicodeToPukokFont(_translatedOutput);
-                            if (pukok.isNotEmpty) {
-                              Clipboard.setData(ClipboardData(text: pukok));
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  duration: Duration(seconds: 1),
-                                  content: Text("Pukok font keys copied to clipboard!"),
-                                ),
-                              );
-                            }
-                          },
-                          borderRadius: BorderRadius.circular(6),
-                          child: Padding(
-                            padding: const EdgeInsets.all(4),
-                            child: Icon(
-                              Icons.copy_rounded,
-                              size: 14,
-                              color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    SelectableText(
-                      MeeteiMayekService.convertUnicodeToPukokFont(_translatedOutput),
-                      style: TextStyle(
-                        fontFamily: "PukokEeyek",
-                        fontSize: 28,
-                        fontWeight: FontWeight.w700,
-                        height: 1.3,
-                        color: isDark ? const Color(0xFFF1F5F9) : const Color(0xFF0F172A),
-                      ),
-                    ),
-                  ],
+                  color: isDark ? const Color(0xFFF1F5F9) : const Color(0xFF0F172A),
                 ),
               ),
             ],
@@ -744,10 +671,11 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
                         ),
                       ),
                       Text(
-                        tier['meitei'] as String,
+                        MeeteiMayekService.convertUnicodeToPukokFont(tier['meitei'] as String),
                         style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                          fontFamily: "PukokEeyek",
+                          fontSize: 18,
+                          fontWeight: FontWeight.normal,
                           color: isDark ? const Color(0xFF38BDF8) : const Color(0xFF0284C7),
                           fontFamilyFallback: AppTheme.fontFallbacks,
                         ),
@@ -919,10 +847,11 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
                   ),
                   alignment: Alignment.center,
                   child: Text(
-                    "ꯀ${sign.char}",
+                    MeeteiMayekService.convertUnicodeToPukokFont("ꯀ${sign.char}"),
                     style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
+                      fontFamily: "PukokEeyek",
+                      fontSize: 28,
+                      fontWeight: FontWeight.normal,
                       color: Color(0xFF6366F1),
                       fontFamilyFallback: AppTheme.fontFallbacks,
                     ),
@@ -1004,10 +933,11 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    num.char,
+                    MeeteiMayekService.convertUnicodeToPukokFont(num.char),
                     style: const TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
+                      fontFamily: "PukokEeyek",
+                      fontSize: 26,
+                      fontWeight: FontWeight.normal,
                       color: Color(0xFF6366F1),
                       fontFamilyFallback: AppTheme.fontFallbacks,
                     ),
@@ -1072,10 +1002,11 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              MeeteiData.cheishingNumbers[i].meeteiWord,
+                              MeeteiMayekService.convertUnicodeToPukokFont(MeeteiData.cheishingNumbers[i].meeteiWord),
                               style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
+                                fontFamily: "PukokEeyek",
+                                fontSize: 18,
+                                fontWeight: FontWeight.normal,
                                 fontFamilyFallback: AppTheme.fontFallbacks,
                               ),
                             ),
@@ -1161,10 +1092,11 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  c.char,
+                  MeeteiMayekService.convertUnicodeToPukokFont(c.char),
                   style: const TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
+                    fontFamily: "PukokEeyek",
+                    fontSize: 32,
+                    fontWeight: FontWeight.normal,
                     fontFamilyFallback: AppTheme.fontFallbacks,
                   ),
                 ),
@@ -1229,10 +1161,11 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
                       ),
                       alignment: Alignment.center,
                       child: Text(
-                        char.char,
+                        MeeteiMayekService.convertUnicodeToPukokFont(char.char),
                         style: const TextStyle(
-                          fontSize: 36,
-                          fontWeight: FontWeight.bold,
+                          fontFamily: "PukokEeyek",
+                          fontSize: 40,
+                          fontWeight: FontWeight.normal,
                           color: Color(0xFF6366F1),
                           fontFamilyFallback: AppTheme.fontFallbacks,
                         ),
@@ -1290,10 +1223,11 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
                           ),
                         ),
                         child: Text(
-                          "${char.char}${sign.char}",
+                          MeeteiMayekService.convertUnicodeToPukokFont("${char.char}${sign.char}"),
                           style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
+                            fontFamily: "PukokEeyek",
+                            fontSize: 20,
+                            fontWeight: FontWeight.normal,
                             fontFamilyFallback: AppTheme.fontFallbacks,
                           ),
                         ),

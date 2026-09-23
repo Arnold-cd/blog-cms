@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:intl/intl.dart";
 import "../models/post.dart";
+import "../services/meetei_mayek_service.dart";
 import "adaptive_image.dart";
 
 class PostCard extends StatelessWidget {
@@ -89,12 +90,12 @@ class PostCard extends StatelessWidget {
                         const SizedBox(width: 6),
                         const Text("•"),
                         const SizedBox(width: 6),
-                        const Text(
-                          "ꯃꯤꯇꯩ ꯃꯌꯦꯛ",
-                          style: TextStyle(
-                            fontFamily: "NotoSansMeeteiMayek",
-                            fontSize: 11,
-                            fontWeight: FontWeight.w600,
+                        Text(
+                          MeeteiMayekService.convertUnicodeToPukokFont("ꯃꯤꯇꯩ ꯃꯌꯦꯛ"),
+                          style: const TextStyle(
+                            fontFamily: "PukokEeyek",
+                            fontSize: 12,
+                            fontWeight: FontWeight.normal,
                             color: Color(0xFFF43F5E),
                           ),
                         ),
