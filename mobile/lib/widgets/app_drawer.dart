@@ -850,25 +850,19 @@ class AppDrawer extends ConsumerWidget {
             ),
             const SizedBox(height: 12),
             Container(
-              padding: const EdgeInsets.all(10),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
                 color:
                     isDark ? const Color(0xFF22222A) : const Color(0xFFF1F5F9),
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(8),
               ),
-              child: const Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("• Version: 1.0.0 (Build 1)",
-                      style:
-                          TextStyle(fontSize: 11, fontWeight: FontWeight.w600)),
-                  SizedBox(height: 3),
-                  Text("• Platform: Flutter & Git Headless CMS",
-                      style: TextStyle(fontSize: 11)),
-                  SizedBox(height: 3),
-                  Text("• Zero Tracking • 100% Privacy by Design",
-                      style: TextStyle(fontSize: 11)),
-                ],
+              child: Text(
+                "Version 1.0.0",
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: isDark ? Colors.white70 : Colors.black87,
+                ),
               ),
             ),
           ],

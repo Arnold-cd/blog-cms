@@ -25,7 +25,6 @@ class _PdfViewerScreenState extends ConsumerState<PdfViewerScreen> {
   int _currentPage = 0;
   bool _isReady = false;
   String _errorMessage = "";
-  bool _invertColors = false;
 
   @override
   void initState() {
@@ -50,12 +49,14 @@ class _PdfViewerScreenState extends ConsumerState<PdfViewerScreen> {
     // Download to temporary cache directory for instant reading using secure streaming
     setState(() {
       _isLoading = true;
-      _loadingMessage = "Downloading PDF (${widget.document.fileSizeFormatted})...";
+      _loadingMessage =
+          "Downloading PDF (${widget.document.fileSizeFormatted})...";
     });
 
     try {
       final dir = await getTemporaryDirectory();
-      final safeName = PdfDocument.sanitizeFileName(widget.document.fileName, fallbackId: widget.document.id);
+      final safeName = PdfDocument.sanitizeFileName(widget.document.fileName,
+          fallbackId: widget.document.id);
       final tempFile = File("${dir.path}/$safeName");
 
       if (await tempFile.exists()) {
@@ -72,12 +73,13 @@ class _PdfViewerScreenState extends ConsumerState<PdfViewerScreen> {
         widget.document.pdfUrl,
         tempFile,
         maxBytes: ApiService.maxPdfBytes, // 150 MB safe limit
-        verifyPdfHeader: true,             // Verifies %PDF- magic bytes
+        verifyPdfHeader: true, // Verifies %PDF- magic bytes
         onProgress: (progress) {
           if (mounted) {
             setState(() {
               final pct = (progress * 100).toInt();
-              _loadingMessage = "Downloading PDF (${widget.document.fileSizeFormatted}) • $pct%...";
+              _loadingMessage =
+                  "Downloading PDF (${widget.document.fileSizeFormatted}) • $pct%...";
             });
           }
         },
@@ -92,7 +94,8 @@ class _PdfViewerScreenState extends ConsumerState<PdfViewerScreen> {
     } catch (e) {
       if (mounted) {
         setState(() {
-          _errorMessage = "Security/Download Error: ${e.toString().replaceAll('Exception: ', '')}";
+          _errorMessage =
+              "Security/Download Error: ${e.toString().replaceAll('Exception: ', '')}";
           _isLoading = false;
         });
       }
@@ -120,7 +123,10 @@ class _PdfViewerScreenState extends ConsumerState<PdfViewerScreen> {
     final screenW = media.size.width > 0 ? media.size.width : 375.0;
     final screenH = media.size.height > 0 ? media.size.height : 667.0;
     final box = context.findRenderObject() as RenderBox?;
-    final origin = (box != null && box.hasSize && box.size.width > 10 && box.size.height > 10)
+    final origin = (box != null &&
+            box.hasSize &&
+            box.size.width > 10 &&
+            box.size.height > 10)
         ? (box.localToGlobal(Offset.zero) & box.size)
         : Rect.fromLTWH(0, 0, screenW, screenH / 2);
 
@@ -135,7 +141,8 @@ class _PdfViewerScreenState extends ConsumerState<PdfViewerScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final isDownloaded = ref.watch(downloadedPdfsProvider).containsKey(widget.document.fileName);
+    final isDownloaded =
+        ref.watch(downloadedPdfsProvider).containsKey(widget.document.fileName);
 
     return Scaffold(
       appBar: AppBar(
@@ -162,19 +169,9 @@ class _PdfViewerScreenState extends ConsumerState<PdfViewerScreen> {
         actions: [
           IconButton(
             icon: Icon(
-              _invertColors ? Icons.dark_mode_rounded : Icons.light_mode_outlined,
-              color: _invertColors ? const Color(0xFF6366F1) : null,
-            ),
-            tooltip: _invertColors ? "Original Paper Mode" : "Invert Colors (Night Reading)",
-            onPressed: () {
-              setState(() {
-                _invertColors = !_invertColors;
-              });
-            },
-          ),
-          IconButton(
-            icon: Icon(
-              isDownloaded ? Icons.download_done_rounded : Icons.download_rounded,
+              isDownloaded
+                  ? Icons.download_done_rounded
+                  : Icons.download_rounded,
               color: isDownloaded ? const Color(0xFF10B981) : null,
             ),
             tooltip: isDownloaded ? "Saved offline" : "Save for offline",
@@ -211,7 +208,8 @@ class _PdfViewerScreenState extends ConsumerState<PdfViewerScreen> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.error_outline_rounded, color: Colors.redAccent, size: 48),
+                        const Icon(Icons.error_outline_rounded,
+                            color: Colors.redAccent, size: 48),
                         const SizedBox(height: 12),
                         Text(
                           _errorMessage,
@@ -234,14 +232,14 @@ class _PdfViewerScreenState extends ConsumerState<PdfViewerScreen> {
                 )
               : _localPath != null
                   ? PDFView(
-                      key: ValueKey("pdf_view_${_localPath}_$_invertColors"),
+                      key: ValueKey("pdf_view_$_localPath"),
                       filePath: _localPath,
                       enableSwipe: true,
                       swipeHorizontal: false,
                       autoSpacing: true,
                       pageFling: true,
                       pageSnap: true,
-                      nightMode: _invertColors,
+                      nightMode: false,
                       onRender: (pages) {
                         setState(() {
                           _totalPages = pages ?? 0;
