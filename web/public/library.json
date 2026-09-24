@@ -1,36 +1,15 @@
 [
   {
     "id": "wangkhemcha-chingtamlen-",
-    "title": "THE BRAIN WASHING",
-    "description": "THE BRAIN WASHING\n\n(The washing of the brain of the Meitei Race of Kangleipak)",
-    "author": "Sanamahee Laining Leechat Kangleipak",
-    "category": "Philosophy",
-    "language": "mni",
-    "published_date": "2026-09-23",
-    "file_name": "bw-compressed.pdf",
-    "pdf_url": "https://raw.githubusercontent.com/Arnold-cd/blog-cms/main/library/pdfs/bw-compressed.pdf",
-    "cover_url": "https://raw.githubusercontent.com/Arnold-cd/blog-cms/main/library/covers/bw-compressed-cover.png",
-    "page_count": 123,
-    "file_size_bytes": 34038788,
-    "file_size_formatted": "32.5 MB",
-    "featured": true,
-    "tags": [
-      "Puya",
-      "History",
-      "Manuscript"
-    ]
-  },
-  {
-    "id": "senpi-mukaanlei",
-    "title": "Senpi mukaanlei",
-    "description": "Pamheiba Larei Lathup",
+    "title": "Sempi Mukaanlei",
+    "description": "Lairik asi Pamheipa larei lathup haiba lairik aduni\nLairik asi epa angom chaopa ( chaoba)  maichouna lonna eramba\nPamheiba gi punsi wari ni leipna khngpi o.",
     "author": "SLLK",
     "category": "Puya & History",
-    "language": "mni",
-    "published_date": "2026-09-21",
+    "language": "en",
+    "published_date": "2026-09-24",
     "file_name": "Senpi mukaanlei.pdf",
     "pdf_url": "https://raw.githubusercontent.com/Arnold-cd/blog-cms/main/library/pdfs/Senpi mukaanlei.pdf",
-    "cover_url": "https://raw.githubusercontent.com/Arnold-cd/blog-cms/main/library/covers/senpi-mukaanlei.png",
+    "cover_url": "https://raw.githubusercontent.com/Arnold-cd/blog-cms/main/library/covers/senpi-mukaanlei-cover.png",
     "page_count": 43,
     "file_size_bytes": 31060862,
     "file_size_formatted": "29.6 MB",
@@ -39,7 +18,6 @@
       "Puya",
       "History",
       "Manuscript"
-    ],
-    "cover_name": "senpi-mukaanlei.png"
+    ]
   }
 ]
