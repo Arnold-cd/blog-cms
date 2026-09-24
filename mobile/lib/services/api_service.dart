@@ -68,19 +68,22 @@ class ApiService {
     Duration timeout = const Duration(seconds: 90),
     Function(double progress)? onProgress,
     bool verifyPdfHeader = false,
+    http.Client? client,
   }) async {
     final resolvedUrl = resolveUrl(url);
     if (!isAllowedDomain(resolvedUrl)) {
       throw Exception("Security restriction: Host '${Uri.tryParse(resolvedUrl)?.host}' is not in approved allowlist");
     }
 
-    final client = http.Client();
+    final httpClient = client ?? http.Client();
+    final shouldCloseClient = client == null;
     IOSink? sink;
+    File? stagingFile;
     try {
       final request = http.Request("GET", Uri.parse(resolvedUrl));
       request.headers["Accept"] = "*/*";
 
-      final streamedResponse = await client.send(request).timeout(
+      final streamedResponse = await httpClient.send(request).timeout(
         const Duration(seconds: 20),
         onTimeout: () => throw TimeoutException("Connection timed out while reaching server"),
       );
@@ -101,7 +104,9 @@ class ApiService {
         await destinationFile.parent.create(recursive: true);
       }
 
-      sink = destinationFile.openWrite();
+      // Atomic download pattern: stream to a staging part file first
+      stagingFile = File("${destinationFile.path}.part_${DateTime.now().microsecondsSinceEpoch}");
+      sink = stagingFile.openWrite();
       int received = 0;
       bool checkedHeader = false;
 
@@ -129,6 +134,23 @@ class ApiService {
       await sink.flush();
       await sink.close();
       sink = null;
+
+      // Ensure downloaded file has data
+      if (await stagingFile.length() == 0) {
+        throw Exception("Downloaded file is empty");
+      }
+
+      // Atomically replace destinationFile
+      if (await destinationFile.exists()) {
+        await destinationFile.delete();
+      }
+      try {
+        await stagingFile.rename(destinationFile.path);
+      } catch (_) {
+        await stagingFile.copy(destinationFile.path);
+        await stagingFile.delete();
+      }
+
       return destinationFile;
     } catch (e) {
       if (sink != null) {
@@ -136,14 +158,16 @@ class ApiService {
           await sink.close();
         } catch (_) {}
       }
-      if (await destinationFile.exists()) {
+      if (stagingFile != null && await stagingFile.exists()) {
         try {
-          await destinationFile.delete();
+          await stagingFile.delete();
         } catch (_) {}
       }
       rethrow;
     } finally {
-      client.close();
+      if (shouldCloseClient) {
+        httpClient.close();
+      }
     }
   }
 

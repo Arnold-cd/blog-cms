@@ -2,6 +2,7 @@ import "dart:io";
 import "package:flutter/material.dart";
 import "package:flutter_pdfview/flutter_pdfview.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
+import "package:http/http.dart" as http;
 import "package:path_provider/path_provider.dart";
 import "package:share_plus/share_plus.dart";
 import "../models/pdf_document.dart";
@@ -25,6 +26,7 @@ class _PdfViewerScreenState extends ConsumerState<PdfViewerScreen> {
   int _currentPage = 0;
   bool _isReady = false;
   String _errorMessage = "";
+  http.Client? _downloadClient;
 
   @override
   void initState() {
@@ -32,26 +34,49 @@ class _PdfViewerScreenState extends ConsumerState<PdfViewerScreen> {
     _preparePdf();
   }
 
-  Future<void> _preparePdf() async {
-    final downloadedMap = ref.read(downloadedPdfsProvider);
-    final existingLocalPath = downloadedMap[widget.document.fileName];
+  @override
+  void dispose() {
+    _downloadClient?.close();
+    super.dispose();
+  }
 
-    if (existingLocalPath != null && await File(existingLocalPath).exists()) {
-      if (mounted) {
-        setState(() {
-          _localPath = existingLocalPath;
-          _isLoading = false;
-        });
-      }
-      return;
+  /// Verifies file existence, minimum size, and valid %PDF header magic bytes
+  Future<bool> _isValidPdf(File file) async {
+    try {
+      if (!await file.exists()) return false;
+      final length = await file.length();
+      if (length < 100) return false;
+      final header = await file.openRead(0, 5).first;
+      final magic = String.fromCharCodes(header);
+      return magic.startsWith("%PDF");
+    } catch (_) {
+      return false;
     }
+  }
 
-    // Download to temporary cache directory for instant reading using secure streaming
+  Future<void> _preparePdf() async {
     setState(() {
       _isLoading = true;
+      _errorMessage = "";
       _loadingMessage =
           "Downloading PDF (${widget.document.fileSizeFormatted})...";
     });
+
+    final downloadedMap = ref.read(downloadedPdfsProvider);
+    final existingLocalPath = downloadedMap[widget.document.fileName];
+
+    if (existingLocalPath != null) {
+      final existingFile = File(existingLocalPath);
+      if (await _isValidPdf(existingFile)) {
+        if (mounted) {
+          setState(() {
+            _localPath = existingLocalPath;
+            _isLoading = false;
+          });
+        }
+        return;
+      }
+    }
 
     try {
       final dir = await getTemporaryDirectory();
@@ -60,18 +85,30 @@ class _PdfViewerScreenState extends ConsumerState<PdfViewerScreen> {
       final tempFile = File("${dir.path}/$safeName");
 
       if (await tempFile.exists()) {
-        if (mounted) {
-          setState(() {
-            _localPath = tempFile.path;
-            _isLoading = false;
-          });
+        if (await _isValidPdf(tempFile)) {
+          if (mounted) {
+            setState(() {
+              _localPath = tempFile.path;
+              _isLoading = false;
+            });
+          }
+          return;
+        } else {
+          // Stale / partial / corrupted cache file -> purge it
+          try {
+            await tempFile.delete();
+          } catch (_) {}
         }
-        return;
       }
+
+      _downloadClient?.close();
+      final client = http.Client();
+      _downloadClient = client;
 
       await ApiService.downloadFileStreamed(
         widget.document.pdfUrl,
         tempFile,
+        client: client,
         maxBytes: ApiService.maxPdfBytes, // 150 MB safe limit
         verifyPdfHeader: true, // Verifies %PDF- magic bytes
         onProgress: (progress) {
@@ -252,10 +289,30 @@ class _PdfViewerScreenState extends ConsumerState<PdfViewerScreen> {
                           _totalPages = total ?? _totalPages;
                         });
                       },
-                      onError: (error) {
-                        setState(() {
-                          _errorMessage = error.toString();
-                        });
+                      onError: (error) async {
+                        final badPath = _localPath;
+                        if (badPath != null) {
+                          try {
+                            final badFile = File(badPath);
+                            if (await badFile.exists()) {
+                              await badFile.delete();
+                            }
+                          } catch (_) {}
+                        }
+                        if (mounted) {
+                          setState(() {
+                            _errorMessage = error.toString();
+                            _localPath = null;
+                            _isLoading = false;
+                          });
+                        }
+                      },
+                      onPageError: (page, error) {
+                        if (mounted) {
+                          setState(() {
+                            _errorMessage = "Page $page error: $error";
+                          });
+                        }
                       },
                     )
                   : const SizedBox.shrink(),
