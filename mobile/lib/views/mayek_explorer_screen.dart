@@ -142,7 +142,7 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
                     ),
                     alignment: Alignment.center,
                     child: Text(
-                      MeeteiMayekService.convertUnicodeToPukokFont("ꯃ"),
+                      MeeteiMayekService.convertUnicodeToPukokFont("ꯏ"),
                       style: const TextStyle(
                         fontFamily: "PukokEeyek",
                         color: Colors.white,
@@ -158,7 +158,7 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
                       Row(
                         children: [
                           Text(
-                            MeeteiMayekService.convertUnicodeToPukokFont("ꯃꯌꯦꯛ"),
+                            MeeteiMayekService.convertUnicodeToPukokFont("ꯏꯌꯦꯛ"),
                             style: const TextStyle(
                               fontFamily: "PukokEeyek",
                               fontSize: 22,
@@ -224,7 +224,7 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
                 tabs: const [
                   Tab(text: "Sandbox"),
                   Tab(text: "Puya"),
-                  Tab(text: "Letters"),
+                  Tab(text: "Scripts"),
                   Tab(text: "Cheitap"),
                   Tab(text: "Numbers"),
                 ],
@@ -297,40 +297,20 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
                       ),
                     ),
                   ),
-                  Row(
-                    children: [
-                      IconButton(
-                        tooltip: "Copy Pukok Font Keys",
-                        icon: const Icon(Icons.key_rounded, size: 18),
-                        onPressed: () {
-                          if (_translatedOutput.isNotEmpty) {
-                            final pukokKeys = MeeteiMayekService.convertUnicodeToPukokFont(_translatedOutput);
-                            Clipboard.setData(ClipboardData(text: pukokKeys));
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                duration: Duration(seconds: 1),
-                                content: Text("Pukok font keys copied to clipboard!"),
-                              ),
-                            );
-                          }
-                        },
-                      ),
-                      IconButton(
-                        tooltip: "Copy Meetei Unicode",
-                        icon: const Icon(Icons.copy_rounded, size: 18),
-                        onPressed: () {
-                          if (_translatedOutput.isNotEmpty) {
-                            Clipboard.setData(ClipboardData(text: _translatedOutput));
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                duration: Duration(seconds: 1),
-                                content: Text("Meetei Mayek copied to clipboard!"),
-                              ),
-                            );
-                          }
-                        },
-                      ),
-                    ],
+                  IconButton(
+                    tooltip: "Copy Meetei Unicode",
+                    icon: const Icon(Icons.copy_rounded, size: 18),
+                    onPressed: () {
+                      if (_translatedOutput.isNotEmpty) {
+                        Clipboard.setData(ClipboardData(text: _translatedOutput));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            duration: Duration(seconds: 1),
+                            content: Text("Meetei Mayek copied to clipboard!"),
+                          ),
+                        );
+                      }
+                    },
                   ),
                 ],
               ),
@@ -571,7 +551,7 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
               ),
               const SizedBox(height: 8),
               Text(
-                "Authentic ancient Kanglei linguistic science from the sacred Puya manuscript and research by Wangkhemcha Chingtamlen. Includes the official QWERTY layout designed by Wakambam Macha Waanglel.",
+                "Authentic ancient Kanglei linguistic science from the sacred Puya manuscript and research by Wangkhemcha Chingtamlen. Includes the Pukok.otf font layout designed by Wakambam Macha Waanglel.",
                 style: TextStyle(
                   fontSize: 12,
                   height: 1.5,
@@ -585,22 +565,22 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
 
         // 3 Foundational Concepts
         _buildPuyaConceptCard(
-          title: "🩸 Singthalon Cheising Eeyek Ama & The Eelik",
-          desc: "In the Puya, numeral 1 is written with an Eelik (dot '.'), representing the sacred blood drop of the Universal Father God Creator, Eapung Loinapa Apakpa. The 1980 Gazette version removed this dot.",
+          title: "🩸 Singthalon Cheising Eeyek Ama & Keyboard Layout",
+          desc: "In the Puya, numeral 1 is written with an Eelik (꯱), representing the sacred blood drop of the Universal Godfather - Eepung Loinapa Apakpa.",
           color: const Color(0xFF6366F1),
           isDark: isDark,
         ),
         const SizedBox(height: 10),
         _buildPuyaConceptCard(
           title: "🧘 18 Indigenous Anatomical Roots (Ipi Eeyek)",
-          desc: "The 18 core letters correspond to parts of human anatomy: Kok (head/brain), Sam (hair), Lai (forehead), Meet (eye), Paa (eyebrow/eyelash), Naa (ear), Chil (lips), Til (saliva/tongue), Khou (throat), Ngou (uvula/neck), Thou (chest/breast), Wai (navel), Yang (spine), Huk (pelvis/joint), Oon (skin), Ee (blood), Pham (seat/womb/reproductive), and Atingaa (sky/immortality/eternity).",
+          desc: "The 18 core letters correspond to parts of human anatomy (Kok = head, Sam hair, Lai = forehead, Meet eye, Paa ear, Naa = nose, Chil = mouth, etc.) reflecting early cosmological human science.",
           color: const Color(0xFF3B82F6),
           isDark: isDark,
         ),
         const SizedBox(height: 10),
         _buildPuyaConceptCard(
-          title: "🌿 Native Lom (Derivation) vs Borrowed 27 Scripts",
-          desc: "In authentic Kanglei grammar, the 9 additional consonants derive naturally from the 18 root letters with the Lom inflection dot: Ga = (kok lom), Jha = (sam lom), Ra = (lai lom), Ba = (Paa lom), Ja = (chin lom), Da = (Tin lom), Gha = (khou lom), Dha = (thou lom), Bha = (Pham lom), preserving sacred linguistic science without borrowing foreign scripts.",
+          title: "🌿 Native Lom (Derivation)",
+          desc: "In authentic Kanglei grammar, the 9 additional consonants derived naturally from the 18 root letters inflicting an EELIK (dot) under a Eepee Eeyek Laiyek(18 Scripts). For example:- G = ꯀ, R = ꯂ, J = ꯆ etc. preserving the Cultural, philosophical andshistorical backbone.",
           color: const Color(0xFF10B981),
           isDark: isDark,
         ),
