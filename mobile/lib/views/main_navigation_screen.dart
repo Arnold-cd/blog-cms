@@ -3,6 +3,7 @@ import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
 import "../providers/app_providers.dart";
+import "../providers/library_providers.dart";
 import "../theme/app_theme.dart";
 import "../widgets/app_drawer.dart";
 import "bookmarks_screen.dart";
@@ -32,6 +33,7 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final bookmarks = ref.watch(bookmarksProvider);
+    final downloadedMap = ref.watch(downloadedPdfsProvider);
     final currentIndex = ref.watch(selectedNavIndexProvider);
     final scaffoldKey = ref.watch(mainScaffoldKeyProvider);
     final bottomInset = MediaQuery.of(context).padding.bottom;
@@ -115,7 +117,7 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
                             icon: Icons.bookmark_outline_rounded,
                             activeIcon: Icons.bookmark_rounded,
                             label: "Saved",
-                            badgeCount: bookmarks.length,
+                            badgeCount: bookmarks.length + downloadedMap.length,
                             isDark: isDark,
                           ),
                           _buildNavItem(

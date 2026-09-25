@@ -1,9 +1,11 @@
 import "dart:convert";
 import "package:shared_preferences/shared_preferences.dart";
+import "../models/pdf_document.dart";
 import "../models/post.dart";
 
 class CacheService {
   static const String _keyPostsManifest = "sllk_cached_posts_manifest";
+  static const String _keyLibraryManifest = "sllk_cached_library_manifest";
   static const String _keyBookmarks = "sllk_bookmarked_ids";
   static const String _keyThemeMode = "sllk_theme_mode";
   static const String _keyFontSize = "sllk_font_size_scale";
@@ -25,6 +27,30 @@ class CacheService {
       final decoded = json.decode(raw);
       if (decoded is List) {
         return decoded.map((e) => Post.fromJson(e as Map<String, dynamic>)).toList();
+      }
+    } catch (_) {}
+    return [];
+  }
+
+  /// Cache PDF library manifest locally
+  static Future<void> saveLibrary(List<PdfDocument> docs) async {
+    final prefs = await SharedPreferences.getInstance();
+    final jsonList = docs.map((d) => d.toJson()).toList();
+    await prefs.setString(_keyLibraryManifest, json.encode(jsonList));
+  }
+
+  /// Load cached PDF library manifest
+  static Future<List<PdfDocument>> getCachedLibrary() async {
+    final prefs = await SharedPreferences.getInstance();
+    final raw = prefs.getString(_keyLibraryManifest);
+    if (raw == null || raw.isEmpty) return [];
+
+    try {
+      final decoded = json.decode(raw);
+      if (decoded is List) {
+        return decoded
+            .map((e) => PdfDocument.fromJson(e as Map<String, dynamic>))
+            .toList();
       }
     } catch (_) {}
     return [];
@@ -126,7 +152,9 @@ class CacheService {
     final prefs = await SharedPreferences.getInstance();
     final keys = prefs.getKeys();
     for (final key in keys) {
-      if (key.startsWith("sllk_md_") || key == _keyPostsManifest) {
+      if (key.startsWith("sllk_md_") ||
+          key == _keyPostsManifest ||
+          key == _keyLibraryManifest) {
         await prefs.remove(key);
       }
     }

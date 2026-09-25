@@ -671,59 +671,70 @@ class MeeteiMayekService {
   /// Developed by Wakambam Macha Waanglel for printing:
   /// WAKOKLON HEELEL THILEL SALAI AMA_ILON PUKOK PUYA (from Meetei-lang/Pukok Key Layout_QWERTY Keyboard.pdf)
   static const Map<String, String> unicodeToPukokKeymap = {
-    // 18 Indigenous Anatomical Root Letters (Eepi-eeyek 18)
+    // 18 Indigenous Anatomical Root Letters (Meetei Eepi-eeyek laiyek 18)
     'ꯀ': 'k', 'ꯁ': 's', 'ꯂ': 'l', 'ꯃ': 'm', 'ꯄ': 'p',
     'ꯅ': 'n', 'ꯆ': 'c', 'ꯇ': 't', 'ꯈ': 'x', 'ꯉ': 'q',
     'ꯊ': 'z', 'ꯋ': 'w', 'ꯌ': 'y', 'ꯍ': 'h', 'ꯎ': 'u',
     'ꯏ': 'e', 'ꯐ': 'f', 'ꯑ': 'a',
 
-    // 9 Lom Consonants (Meetei Lom Eeyek 9)
-    'ꯒ': 'g', // Gok (Kok Lom)
-    'ꯓ': 'S', // Zam (Sam Lom)
-    'ꯔ': 'R', // Rai (Lai Lom)
-    'ꯕ': 'b', // Bok (Paa Lom)
-    'ꯖ': 'j', // Jhil (Chil Lom)
-    'ꯗ': 'd', // Dil (Til Lom)
-    'ꯘ': 'G', // Ghou (Khou Lom)
-    'ꯙ': 'D', // Dhou (Thou Lom)
-    'ꯚ': 'v', // Bham (Pham Lom)
+    // 9 Lom Consonants (Meetei lom eepe-eyek 9 letters)
+    'ꯒ': 'g', // Ga (kok-lom)
+    'ꯓ': 'S', // Jha (sam-lom)
+    'ꯔ': 'r', // Ra (lai-lom)
+    'ꯕ': 'b', // Ba (paa-lom)
+    'ꯖ': 'j', // Ja (chin-lom)
+    'ꯗ': 'd', // Da (tin-lom)
+    'ꯘ': 'G', // Gha (khou-lom)
+    'ꯙ': 'D', // Dha (thou-lom)
+    'ꯚ': 'v', // Bha (Pham-lom)
 
-    // 10 Lolsum Consonants (Meetei Lolsum 10)
-    'ꯛ': 'K', 'ꯜ': 'L', 'ꯝ': 'M', 'ꯞ': 'P', 'ꯟ': 'N',
-    'ꯠ': 'T', 'ꯡ': 'Q', 'ꯢ': 'E',
+    // 10 Lolsum Consonants (Meetei lolsum eeyek laiyek 10)
+    'ꯛ': 'K', // Kok-lolsum
+    'ꯜ': 'L', // Lai-lolsum
+    'ꯝ': 'M', // Meet-lolsum
+    'ꯞ': 'P', // Paa-lolsum
+    'ꯟ': 'N', // Naa-lolsum
+    'ꯠ': 'T', // Til-lolsum
+    'ꯡ': 'Q', // Ngou-lolsum
+    'ꯢ': 'E', // Ee-lolsum
+    // Note: In Pukok font, 'U' is Oon-lolsum and 'A' is Atingaa-lolsum
 
-    // 9 Cheitap Vowel Diacritics (Wakambam Macha Waanglel QWERTY)
-    'ꯥ': 'F', // Takchei / Atep (aa)
-    'ꯤ': 'i', // Inap / Ee (i short)
-    'ꯨ': 'J', // Oon Cheitap (u)
-    'ꯦ': 'Y', // Yenap (e)
-    'ꯣ': 'o', // Otap (o)
-    'ꯩ': 'C', // Cheinap (ei)
-    'ꯧ': 'O', // Sou (ou)
-    'ꯪ': 'H', // Nung (anusvara)
-    '꯭': '',  // Virama / Apun (handled natively)
+    // 9 Cheitap-Cheinap Vowel Diacritics (from PDF 2 Page 1 & PDF 1 Page 3)
+    'ꯥ': 'J', // Aa-tap
+    'ꯤ': 'i', // E-nap
+    'ꫫ': 'I', // Ee-nap
+    'ꯦ': 'Y', // Yat-nap (sounds like yet-nap)
+    'ꯩ': 'C', // Chei-nap
+    'ꯧ': 'O', // Shou-nap
+    'ꯣ': 'o', // Ot-nap
+    'ꯨ': 'F', // Uu-nap
+    'ꯪ': 'H', // Nung
+    '꯭': '',  // Apun / Virama (handled natively)
 
     // 10 Cheishing Digits (0-9)
     '꯰': '0', '꯱': '1', '꯲': '2', '꯳': '3', '꯴': '4',
     '꯵': '5', '꯶': '6', '꯷': '7', '꯸': '8', '꯹': '9',
 
-    // Punctuation & Khutam (from Pukok Key Layout page 2)
-    '꯫': '!',  // Apakpa
-    '꫰': '.',  // Cheikhan (Single Danda)
-    '꫱': ';',  // Cheishei (Double Danda)
+    // 5-Khutam Arithmetic Operators & Equals
+    '=': ':',  // Mannaba (colon : is equal to = in Meetei Mayek)
+    '+': '/',  // Tinshinpa (+)
+    '-': '\\', // Khaitokpa (-)
+    '*': '-',  // Punpa (*)
+    '/': '|',  // Yenthokpa (/)
+
+    // Khutam Eeyek Shing Punctuation Signs
+    '꯫': ';',  // Cheikhei / sentence terminal
+    '꫰': ',',  // Cheikhan
+    '꫱': ';',  // Cheishei
     ':': ':',  // Mannaba (equals/colon)
-    ',': ',',  // Cheikhei
-    'ꫫ': 'I',  // Meetei Mayek Vowel Sign II -> Pukok Eeyek font key 'I'
-    '꯬': '',   // Lum Iyek tone mark
-    'ꫬ': 'J',  // Vowel sign UU -> Oon
-    'ꫭ': 'C',  // Vowel sign AAI -> Cheinap
-    'ꫮ': 'O',  // Vowel sign AU -> Sou
-    'ꫯ': 'O',  // Vowel sign AAU -> Sou
-    'ꫲ': '#',  // Anji (Sacred 1)
-    'ꫳ': '2',  // Syllable repetition
-    'ꫴ': '2',  // Word repetition
-    'ꫵ': ':',  // Visarga
-    '꫶': '',   // Virama
+    ',': ',',  // Cheikhan
+    '.': '.',  // Kheipa
+    '!': '!',  // Angakpa
+    '?': '?',  // Hangpa
+    '(': '(',  // Sampal
+    ')': ')',  // Sampal
+    '꯬': '',   // Lum Iyek
+    'ꫲ': '#',  // Anji (1)
     '\u25CC': '', // Dotted circle
     '\u25CB': '', // White circle
   };
@@ -750,8 +761,132 @@ class MeeteiMayekService {
   }
 
   /// Translates full Markdown text directly into authentic Pukok Eeyek calligraphy
+  /// while preserving image URLs, link URLs, code blocks, and HTML tags intact.
   static String translateMarkdownToPukok(String markdown) {
     final unicodeMd = translateMarkdownToMeeteiMayek(markdown);
-    return convertUnicodeToPukokFont(unicodeMd);
+    return convertMarkdownToPukok(unicodeMd);
+  }
+
+  /// Converts Unicode Meetei Mayek Markdown into Pukok Eeyek ASCII key sequences
+  /// without corrupting image URLs or link paths.
+  static String convertMarkdownToPukok(String markdown) {
+    if (markdown.isEmpty) return '';
+
+    final lines = markdown.split('\n');
+    bool inCodeBlock = false;
+    final convertedLines = <String>[];
+
+    for (final line in lines) {
+      if (line.trim().startsWith('```')) {
+        inCodeBlock = !inCodeBlock;
+        convertedLines.add(line);
+        continue;
+      }
+
+      if (inCodeBlock) {
+        convertedLines.add(line);
+        continue;
+      }
+
+      if (line.trim().isEmpty || line.trim() == '---' || line.trim() == '***') {
+        convertedLines.add(line);
+        continue;
+      }
+
+      // Headings
+      final headingMatch = RegExp(r'^(#{1,6}\s+)(.*)$').firstMatch(line);
+      if (headingMatch != null) {
+        final hashes = headingMatch.group(1)!;
+        final text = headingMatch.group(2)!;
+        convertedLines.add("$hashes${_convertMarkdownTextSegmentsToPukok(text)}");
+        continue;
+      }
+
+      // Blockquote
+      final quoteMatch = RegExp(r'^(\s*>\s*)(.*)$').firstMatch(line);
+      if (quoteMatch != null) {
+        final quotePrefix = quoteMatch.group(1)!;
+        final text = quoteMatch.group(2)!;
+        convertedLines.add("$quotePrefix${_convertMarkdownTextSegmentsToPukok(text)}");
+        continue;
+      }
+
+      // List items
+      final listMatch = RegExp(r'^(\s*[-*+]\s+|\s*\d+\.\s+)(.*)$').firstMatch(line);
+      if (listMatch != null) {
+        final listPrefix = listMatch.group(1)!;
+        final text = listMatch.group(2)!;
+        convertedLines.add("$listPrefix${_convertMarkdownTextSegmentsToPukok(text)}");
+        continue;
+      }
+
+      // Table rows
+      if (line.trim().startsWith('|') && line.trim().endsWith('|')) {
+        if (RegExp(r'^\|\s*[-:]+[-|\s:]*\|$').hasMatch(line.trim())) {
+          convertedLines.add(line);
+          continue;
+        }
+        final cells = line.split('|');
+        final convertedCells = cells.asMap().entries.map((e) {
+          if (e.key == 0 || e.key == cells.length - 1) return e.value;
+          return _convertMarkdownTextSegmentsToPukok(e.value);
+        }).toList();
+        convertedLines.add(convertedCells.join('|'));
+        continue;
+      }
+
+      // Paragraph text
+      convertedLines.add(_convertMarkdownTextSegmentsToPukok(line));
+    }
+
+    return convertedLines.join('\n');
+  }
+
+  static String _convertMarkdownTextSegmentsToPukok(String text) {
+    final tokenRegex = RegExp(r'(!?\[.*?\]\(.*?\)|`[^`]+`|<[^>]+>)');
+    final matches = tokenRegex.allMatches(text);
+
+    if (matches.isEmpty) {
+      return convertUnicodeToPukokFont(text);
+    }
+
+    final sb = StringBuffer();
+    int lastIndex = 0;
+
+    for (final match in matches) {
+      if (match.start > lastIndex) {
+        sb.write(convertUnicodeToPukokFont(text.substring(lastIndex, match.start)));
+      }
+      final part = match.group(0)!;
+
+      // Images: ![alt](url) -> only convert alt, keep url intact!
+      final imgMatch = RegExp(r'^!\[(.*?)\]\((.*?)\)$').firstMatch(part);
+      if (imgMatch != null) {
+        final alt = imgMatch.group(1)!;
+        final url = imgMatch.group(2)!;
+        sb.write("![");
+        sb.write(convertUnicodeToPukokFont(alt));
+        sb.write("]($url)");
+      } else {
+        // Links: [label](url) -> only convert label, keep url intact!
+        final linkMatch = RegExp(r'^\[(.*?)\]\((.*?)\)$').firstMatch(part);
+        if (linkMatch != null) {
+          final label = linkMatch.group(1)!;
+          final url = linkMatch.group(2)!;
+          sb.write("[");
+          sb.write(convertUnicodeToPukokFont(label));
+          sb.write("]($url)");
+        } else {
+          sb.write(part);
+        }
+      }
+      lastIndex = match.end;
+    }
+
+    if (lastIndex < text.length) {
+      sb.write(convertUnicodeToPukokFont(text.substring(lastIndex)));
+    }
+
+    return sb.toString();
   }
 }

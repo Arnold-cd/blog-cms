@@ -273,46 +273,108 @@ class _PdfLibraryScreenState extends ConsumerState<PdfLibraryScreen> {
                     ),
                   ),
                 ),
-                error: (err, _) => SliverFillRemaining(
-                  hasScrollBody: false,
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(24.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(Icons.cloud_off_rounded, size: 48, color: Colors.redAccent),
-                          const SizedBox(height: 12),
-                          const Text(
-                            "Unable to load PDF Library",
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(height: 6),
-                          Text(
-                            err.toString(),
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: isDark ? Colors.white54 : Colors.black54,
+                error: (err, _) {
+                  if (downloadedMap.isNotEmpty) {
+                    final downloadedDocs = ref.watch(downloadedDocumentsProvider);
+                    return SliverMainAxisGroup(
+                      slivers: [
+                        SliverToBoxAdapter(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 8),
+                            child: Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF10B981)
+                                    .withValues(alpha: 0.12),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: const Color(0xFF10B981)
+                                      .withValues(alpha: 0.3),
+                                ),
+                              ),
+                              child: Row(
+                                children: [
+                                  const Icon(Icons.wifi_off_rounded,
+                                      color: Color(0xFF10B981), size: 20),
+                                  const SizedBox(width: 10),
+                                  Expanded(
+                                    child: Text(
+                                      "Offline Mode • Showing ${downloadedDocs.length} downloaded document${downloadedDocs.length == 1 ? '' : 's'}",
+                                      style: const TextStyle(
+                                        fontSize: 12.5,
+                                        fontWeight: FontWeight.w600,
+                                        color: Color(0xFF10B981),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                          const SizedBox(height: 16),
-                          ElevatedButton.icon(
-                            onPressed: () {
-                              ref.read(libraryProvider.notifier).refresh(showLoadingIfEmpty: true);
-                            },
-                            icon: const Icon(Icons.refresh),
-                            label: const Text("Retry"),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFFD97706),
-                              foregroundColor: Colors.white,
+                        ),
+                        SliverPadding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 6),
+                          sliver: SliverList(
+                            delegate: SliverChildBuilderDelegate(
+                              (context, index) {
+                                final doc = downloadedDocs[index];
+                                return _buildPdfCard(context, doc, isDark, true);
+                              },
+                              childCount: downloadedDocs.length,
                             ),
                           ),
-                        ],
+                        ),
+                      ],
+                    );
+                  }
+
+                  return SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(24.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.cloud_off_rounded,
+                                size: 48, color: Colors.redAccent),
+                            const SizedBox(height: 12),
+                            const Text(
+                              "Unable to load PDF Library",
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              "You are currently offline and have no saved documents. Connect to the internet to browse manuscripts.",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: isDark ? Colors.white54 : Colors.black54,
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            ElevatedButton.icon(
+                              onPressed: () {
+                                ref
+                                    .read(libraryProvider.notifier)
+                                    .refresh(showLoadingIfEmpty: true);
+                              },
+                              icon: const Icon(Icons.refresh),
+                              label: const Text("Retry"),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFFD97706),
+                                foregroundColor: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ),
+                  );
+                },
               ),
               const SliverToBoxAdapter(child: SizedBox(height: 24)),
             ],

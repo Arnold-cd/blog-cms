@@ -2,7 +2,7 @@ import "package:flutter/material.dart";
 import "package:google_fonts/google_fonts.dart";
 
 class AppTheme {
-  static const List<String> fontFallbacks = ["NotoSansMeeteiMayek"];
+  static const List<String> fontFallbacks = ["PukokEeyek"];
 
   // Dark Palette
   static const Color darkBg = Color(0xFF09090B);

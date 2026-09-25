@@ -11,9 +11,11 @@ export interface MeeteiUnicodeChar {
   char: string;
   name: string;
   meaning?: string;
-  category: 'core18' | 'consonant9' | 'lonsum' | 'cheitap' | 'special' | 'numeral' | 'extension';
+  category: 'core18' | 'consonant9' | 'lom9' | 'lolsum' | 'lonsum' | 'cheitap' | 'special' | 'numeral' | 'extension' | 'khutam5' | 'khutamsign';
   ipa?: string;
   latin?: string;
+  pukokKey?: string;
+  pukokWord?: string;
 }
 
 export interface CheishingEntry {
@@ -22,6 +24,24 @@ export interface CheishingEntry {
   romanName: string;
   value: string;
   meaning: string;
+  pukokKey?: string;
+  pukokWord?: string;
+}
+
+export interface KhutamItem {
+  name: string;
+  mathSymbol: string;
+  pukokKey: string;
+  pukokWord?: string;
+  description: string;
+}
+
+export interface KhutamSignItem {
+  name: string;
+  sign: string;
+  pukokKey: string;
+  pukokWord?: string;
+  description: string;
 }
 
 /**
@@ -29,9 +49,9 @@ export interface CheishingEntry {
  * Preserved in indigenous Manipuri Puya manuscripts
  */
 export const CHEISHING_THIBA: CheishingEntry[] = [
-  { meeteiWord: 'ꯑꯃ', digits: '꯱', romanName: 'Ama', value: '1', meaning: 'One (Units)' },
-  { meeteiWord: 'ꯇꯂꯥ', digits: '꯱꯰', romanName: 'Tala', value: '10', meaning: 'Ten (Canonical Tala)' },
-  { meeteiWord: 'ꯆꯥ', digits: '꯱꯰꯰', romanName: 'Cha', value: '100', meaning: 'Hundred' },
+  { meeteiWord: 'ꯑꯃ', digits: '꯱', romanName: 'Ama', value: '1', meaning: 'One (Units)', pukokKey: '#' },
+  { meeteiWord: 'ꯇꯂꯥ', digits: '꯱꯰', romanName: 'Tala', value: '10', meaning: 'Ten (Canonical Tala)', pukokKey: '10' },
+  { meeteiWord: 'ꯆꯥ', digits: '꯱꯰꯰', romanName: 'Cha', value: '100', meaning: 'Hundred', pukokKey: '100' },
   { meeteiWord: 'ꯂꯤꯁꯤꯡ', digits: '꯱꯰꯰꯰', romanName: 'Lishing', value: '1,000', meaning: 'Thousand' },
   { meeteiWord: 'ꯂꯤꯁꯤꯡ ꯇꯂꯥ', digits: '꯱꯰꯰꯰꯰', romanName: 'Lishing Tala', value: '10,000', meaning: 'Ten Thousand' },
   { meeteiWord: 'ꯂꯤꯆꯥ', digits: '꯱꯰꯰꯰꯰꯰', romanName: 'Licha', value: '100,000', meaning: 'One Lakh (Hundred Thousand)' },
@@ -45,69 +65,104 @@ export const CHEISHING_THIBA: CheishingEntry[] = [
   { meeteiWord: 'ꯄꯨ ꯑꯃ', digits: '꯱꯰꯰꯰꯰꯰꯰꯰꯰꯰꯰꯰꯰꯰', romanName: 'Puu Ama', value: '10,000,000,000,000', meaning: 'Ten Trillions' },
 ];
 
-// 1. Core 18 Anatomical Letters (Iyek Ipee / Eepi-eeyek 18) - Canonical Wakoklon Puya
+// 1. Core 18 Anatomical Letters (Meetei Eepi-eeyek laiyek 18) - Canonical Wakoklon Puya & SLLK
 export const CORE_18_IPEE: MeeteiUnicodeChar[] = [
-  { codePoint: 'U+ABC0', char: 'ꯀ', name: 'Kok', meaning: 'Head (ꯀꯣꯛ)', category: 'core18', ipa: '[kɔk]', latin: 'k' },
-  { codePoint: 'U+ABC1', char: 'ꯁ', name: 'Sam', meaning: 'Hair (ꯁꯝ)', category: 'core18', ipa: '[səm]', latin: 's' },
-  { codePoint: 'U+ABC2', char: 'ꯂ', name: 'Lai', meaning: 'Forehead (ꯂꯥꯢ)', category: 'core18', ipa: '[lai]', latin: 'l' },
-  { codePoint: 'U+ABC3', char: 'ꯃ', name: 'Meet', meaning: 'Eye (ꯃꯤꯠ, Canonical Puya: Meet)', category: 'core18', ipa: '[mit]', latin: 'm' },
-  { codePoint: 'U+ABC4', char: 'ꯄ', name: 'Paa', meaning: 'Eyebrow / Eyelash (ꯄꯥ, Canonical Puya: Paa)', category: 'core18', ipa: '[pa]', latin: 'p' },
-  { codePoint: 'U+ABC5', char: 'ꯅ', name: 'Naa', meaning: 'Ear (ꯅꯥ, Canonical Puya: Naa)', category: 'core18', ipa: '[na]', latin: 'n' },
-  { codePoint: 'U+ABC6', char: 'ꯆ', name: 'Chil', meaning: 'Lips (ꯆꯤꯜ)', category: 'core18', ipa: '[tʃil]', latin: 'ch' },
-  { codePoint: 'U+ABC7', char: 'ꯇ', name: 'Til', meaning: 'Saliva / Tongue (ꯇꯤꯜ)', category: 'core18', ipa: '[til]', latin: 't' },
-  { codePoint: 'U+ABC8', char: 'ꯈ', name: 'Khou', meaning: 'Throat (ꯈꯧ)', category: 'core18', ipa: '[kʰəw]', latin: 'kh' },
-  { codePoint: 'U+ABC9', char: 'ꯉ', name: 'Ngou', meaning: 'Uvula / Neck (ꯉꯧ)', category: 'core18', ipa: '[ŋəw]', latin: 'ng' },
-  { codePoint: 'U+ABCA', char: 'ꯊ', name: 'Thou', meaning: 'Chest / Breast (ꯊꯧ)', category: 'core18', ipa: '[tʰəw]', latin: 'th' },
-  { codePoint: 'U+ABCB', char: 'ꯋ', name: 'Wai', meaning: 'Navel (ꯋꯥꯢ)', category: 'core18', ipa: '[wai]', latin: 'w / v' },
-  { codePoint: 'U+ABCC', char: 'ꯌ', name: 'Yang', meaning: 'Spine (ꯌꯥꯡ)', category: 'core18', ipa: '[jaŋ]', latin: 'y' },
-  { codePoint: 'U+ABCD', char: 'ꯍ', name: 'Huk', meaning: 'Pelvis / Spine base (ꯍꯨꯛ)', category: 'core18', ipa: '[huk]', latin: 'h' },
-  { codePoint: 'U+ABCE', char: 'ꯎ', name: 'Oon', meaning: 'Skin (ꯎꯟ, Canonical Puya: Oon)', category: 'core18', ipa: '[un]', latin: 'u / u:' },
-  { codePoint: 'U+ABCF', char: 'ꯏ', name: 'Ee', meaning: 'Blood (ꯏ, Canonical Puya: Ee)', category: 'core18', ipa: '[i]', latin: 'i / i:' },
-  { codePoint: 'U+ABD0', char: 'ꯐ', name: 'Pham', meaning: 'Anus / Reproductive (ꯐꝝ)', category: 'core18', ipa: '[pʰəm]', latin: 'ph / f' },
-  { codePoint: 'U+ABD1', char: 'ꯑ', name: 'Atingaa', meaning: 'Sky / Cosmos (ꯑꯇꯤꯡꯑꯥ, Canonical Puya: Atingaa)', category: 'core18', ipa: '[ətija]', latin: 'a' },
+  { codePoint: 'U+ABC0', char: 'ꯀ', name: 'Kok', meaning: 'Head / Brain', category: 'core18', ipa: '[kɔk]', latin: 'k', pukokKey: 'k', pukokWord: 'koK' },
+  { codePoint: 'U+ABC1', char: 'ꯁ', name: 'Sam', meaning: 'Hair', category: 'core18', ipa: '[səm]', latin: 's', pukokKey: 's', pukokWord: 'sM' },
+  { codePoint: 'U+ABC2', char: 'ꯂ', name: 'Lai', meaning: 'Forehead', category: 'core18', ipa: '[lai]', latin: 'l', pukokKey: 'l', pukokWord: 'lJe' },
+  { codePoint: 'U+ABC3', char: 'ꯃ', name: 'Meet', meaning: 'Eye', category: 'core18', ipa: '[mit]', latin: 'm', pukokKey: 'm', pukokWord: 'imT' },
+  { codePoint: 'U+ABC4', char: 'ꯄ', name: 'Paa', meaning: 'Eyebrow / Eyelash', category: 'core18', ipa: '[pa]', latin: 'p', pukokKey: 'p', pukokWord: 'pJ' },
+  { codePoint: 'U+ABC5', char: 'ꯅ', name: 'Naa', meaning: 'Ear', category: 'core18', ipa: '[na]', latin: 'n', pukokKey: 'n', pukokWord: 'nJ' },
+  { codePoint: 'U+ABC6', char: 'ꯆ', name: 'Chil', meaning: 'Lips', category: 'core18', ipa: '[tʃil]', latin: 'ch', pukokKey: 'c', pukokWord: 'ciL' },
+  { codePoint: 'U+ABC7', char: 'ꯇ', name: 'Til', meaning: 'Saliva / Tongue', category: 'core18', ipa: '[til]', latin: 't', pukokKey: 't', pukokWord: 'itL' },
+  { codePoint: 'U+ABC8', char: 'ꯈ', name: 'Khou', meaning: 'Throat', category: 'core18', ipa: '[kʰəw]', latin: 'kh', pukokKey: 'x', pukokWord: 'xH' },
+  { codePoint: 'U+ABC9', char: 'ꯉ', name: 'Ngou', meaning: 'Uvula / Neck', category: 'core18', ipa: '[ŋəw]', latin: 'ng', pukokKey: 'q', pukokWord: 'qH' },
+  { codePoint: 'U+ABCA', char: 'ꯊ', name: 'Thou', meaning: 'Chest / Breast', category: 'core18', ipa: '[tʰəw]', latin: 'th', pukokKey: 'z', pukokWord: 'zH' },
+  { codePoint: 'U+ABCB', char: 'ꯋ', name: 'Wai', meaning: 'Navel', category: 'core18', ipa: '[wai]', latin: 'w', pukokKey: 'w', pukokWord: 'wJe' },
+  { codePoint: 'U+ABCC', char: 'ꯌ', name: 'Yang', meaning: 'Spine / Vertebrae', category: 'core18', ipa: '[jaŋ]', latin: 'y', pukokKey: 'y', pukokWord: 'yJQ' },
+  { codePoint: 'U+ABCD', char: 'ꯍ', name: 'Huk', meaning: 'Pelvis / Joint', category: 'core18', ipa: '[huk]', latin: 'h', pukokKey: 'h', pukokWord: 'hFK' },
+  { codePoint: 'U+ABCE', char: 'ꯎ', name: 'Oon', meaning: 'Skin', category: 'core18', ipa: '[un]', latin: 'u', pukokKey: 'u', pukokWord: 'uN' },
+  { codePoint: 'U+ABCF', char: 'ꯏ', name: 'Ee', meaning: 'Blood', category: 'core18', ipa: '[i]', latin: 'e', pukokKey: 'e', pukokWord: 'e' },
+  { codePoint: 'U+ABD0', char: 'ꯐ', name: 'Pham', meaning: 'Seat / Womb', category: 'core18', ipa: '[pʰəm]', latin: 'ph / f', pukokKey: 'f', pukokWord: 'fM' },
+  { codePoint: 'U+ABD1', char: 'ꯑ', name: 'Atingaa', meaning: 'Sky / Eternity', category: 'core18', ipa: '[ətija]', latin: 'a', pukokKey: 'a', pukokWord: 'atInJ' },
 ];
 
-// 2. Additional 9 Consonants - U+ABD2 to U+ABDA
-export const ADDITIONAL_9_CONSONANTS: MeeteiUnicodeChar[] = [
-  { codePoint: 'U+ABD2', char: 'ꯒ', name: 'Gok', meaning: 'Voiced velar /g/', category: 'consonant9', ipa: '[gɔk]', latin: 'g' },
-  { codePoint: 'U+ABD3', char: 'ꯓ', name: 'Jham', meaning: 'Voiced aspirate /jh/', category: 'consonant9', ipa: '[dʒʱəm]', latin: 'jh' },
-  { codePoint: 'U+ABD4', char: 'ꯔ', name: 'Rai', meaning: 'Alveolar liquid /r/', category: 'consonant9', ipa: '[rai]', latin: 'r' },
-  { codePoint: 'U+ABD5', char: 'ꯕ', name: 'Ba', meaning: 'Voiced bilabial /b/', category: 'consonant9', ipa: '[ba]', latin: 'b' },
-  { codePoint: 'U+ABD6', char: 'ꯖ', name: 'Jil', meaning: 'Voiced palatal /j/', category: 'consonant9', ipa: '[dʒil]', latin: 'j / z' },
-  { codePoint: 'U+ABD7', char: 'ꯗ', name: 'Dil', meaning: 'Voiced dental /d/', category: 'consonant9', ipa: '[dil]', latin: 'd' },
-  { codePoint: 'U+ABD8', char: 'ꯘ', name: 'Ghou', meaning: 'Voiced aspirate /gh/', category: 'consonant9', ipa: '[gʱəw]', latin: 'gh' },
-  { codePoint: 'U+ABD9', char: 'ꯙ', name: 'Dhou', meaning: 'Voiced aspirate /dh/', category: 'consonant9', ipa: '[dʱəw]', latin: 'dh' },
-  { codePoint: 'U+ABDA', char: 'ꯚ', name: 'Bham', meaning: 'Voiced aspirate /bh/', category: 'consonant9', ipa: '[bʱəm]', latin: 'bh / v' },
+// 2. Meetei lom eepe-eyek 9 letters (9 additional consonants for non-indigenous loanwords)
+export const LOM_9_CONSONANTS: MeeteiUnicodeChar[] = [
+  { codePoint: 'U+ABD2', char: 'ꯒ', name: 'Ga', meaning: 'kok lom', category: 'lom9', ipa: '[gɔk]', latin: 'g', pukokKey: 'g', pukokWord: 'k loM' },
+  { codePoint: 'U+ABD3', char: 'ꯓ', name: 'Jha', meaning: 'sam lom', category: 'lom9', ipa: '[dʒʱəm]', latin: 'jh', pukokKey: 'S', pukokWord: 's loM' },
+  { codePoint: 'U+ABD4', char: 'ꯔ', name: 'Ra', meaning: 'lai lom', category: 'lom9', ipa: '[rai]', latin: 'r', pukokKey: 'r', pukokWord: 'l loM' },
+  { codePoint: 'U+ABD5', char: 'ꯕ', name: 'Ba', meaning: 'Paa lom', category: 'lom9', ipa: '[ba]', latin: 'b', pukokKey: 'b', pukokWord: 'p loM' },
+  { codePoint: 'U+ABD6', char: 'ꯖ', name: 'Ja', meaning: 'chin lom', category: 'lom9', ipa: '[dʒil]', latin: 'j', pukokKey: 'j', pukokWord: 'c loM' },
+  { codePoint: 'U+ABD7', char: 'ꯗ', name: 'Da', meaning: 'Tin lom', category: 'lom9', ipa: '[dil]', latin: 'd', pukokKey: 'd', pukokWord: 't loM' },
+  { codePoint: 'U+ABD8', char: 'ꯘ', name: 'Gha', meaning: 'khou lom', category: 'lom9', ipa: '[gʱəw]', latin: 'gh', pukokKey: 'G', pukokWord: 'x loM' },
+  { codePoint: 'U+ABD9', char: 'ꯙ', name: 'Dha', meaning: 'thou lom', category: 'lom9', ipa: '[dʱəw]', latin: 'dh', pukokKey: 'D', pukokWord: 'z loM' },
+  { codePoint: 'U+ABDA', char: 'ꯚ', name: 'Bha', meaning: 'Pham lom', category: 'lom9', ipa: '[bʱəm]', latin: 'bh / v', pukokKey: 'v', pukokWord: 'f loM' },
 ];
 
-// All 27 Modern Alphabets (18 Core + 9 Additional)
-export const ALL_27_MAIN_LETTERS = [...CORE_18_IPEE, ...ADDITIONAL_9_CONSONANTS];
+export const ADDITIONAL_9_CONSONANTS = LOM_9_CONSONANTS;
 
-// 3. 8 Dependent Final Consonants (Lonsum) - U+ABDB to U+ABE2
-export const LONSUM_8: MeeteiUnicodeChar[] = [
-  { codePoint: 'U+ABDB', char: 'ꯛ', name: 'Kok Lonsum', meaning: 'Final -k', category: 'lonsum', ipa: '[-k]', latin: '-k' },
-  { codePoint: 'U+ABDC', char: 'ꯜ', name: 'Lai Lonsum', meaning: 'Final -l', category: 'lonsum', ipa: '[-l]', latin: '-l' },
-  { codePoint: 'U+ABDD', char: 'ꯝ', name: 'Mit Lonsum', meaning: 'Final -m', category: 'lonsum', ipa: '[-m]', latin: '-m' },
-  { codePoint: 'U+ABDE', char: 'ꯞ', name: 'Pa Lonsum', meaning: 'Final -p', category: 'lonsum', ipa: '[-p]', latin: '-p' },
-  { codePoint: 'U+ABDF', char: 'ꯟ', name: 'Na Lonsum', meaning: 'Final -n', category: 'lonsum', ipa: '[-n]', latin: '-n' },
-  { codePoint: 'U+ABE0', char: 'ꯠ', name: 'Til Lonsum', meaning: 'Final -t', category: 'lonsum', ipa: '[-t]', latin: '-t' },
-  { codePoint: 'U+ABE1', char: 'ꯡ', name: 'Ngou Lonsum', meaning: 'Final -ng', category: 'lonsum', ipa: '[-ŋ]', latin: '-ng' },
-  { codePoint: 'U+ABE2', char: 'ꯢ', name: 'I Lonsum', meaning: 'Final -i', category: 'lonsum', ipa: '[-i]', latin: '-i' },
+// All 27 Modern Alphabets (18 Core + 9 Lom)
+export const ALL_27_MAIN_LETTERS = [...CORE_18_IPEE, ...LOM_9_CONSONANTS];
+
+// 3. Meetei lolsum (not lonsum) eeyek laiyek 10 (10 lolsum final consonants)
+export const LOLSUM_10: MeeteiUnicodeChar[] = [
+  { codePoint: 'U+ABDB', char: 'ꯛ', name: 'kok-lolsum', meaning: 'Kok lolsum (Final -k)', category: 'lolsum', ipa: '[-k]', latin: '-k', pukokKey: 'K', pukokWord: 'k loLsuM' },
+  { codePoint: 'U+ABDC', char: 'ꯜ', name: 'lai-lolsum', meaning: 'Lai lolsum (Final -l)', category: 'lolsum', ipa: '[-l]', latin: '-l', pukokKey: 'L', pukokWord: 'l loLsuM' },
+  { codePoint: 'U+ABDD', char: 'ꯝ', name: 'meet-lolsum', meaning: 'Meet lolsum (Final -m)', category: 'lolsum', ipa: '[-m]', latin: '-m', pukokKey: 'M', pukokWord: 'm loLsuM' },
+  { codePoint: 'U+ABDE', char: 'ꯞ', name: 'paa-lolsum', meaning: 'Paa lolsum (Final -p)', category: 'lolsum', ipa: '[-p]', latin: '-p', pukokKey: 'P', pukokWord: 'p loLsuM' },
+  { codePoint: 'U+ABDF', char: 'ꯟ', name: 'Naa-lolsum', meaning: 'Naa lolsum (Final -n)', category: 'lolsum', ipa: '[-n]', latin: '-n', pukokKey: 'N', pukokWord: 'n loLsuM' },
+  { codePoint: 'U+ABE0', char: 'ꯠ', name: 'til-lolsum', meaning: 'Til lolsum (Final -t)', category: 'lolsum', ipa: '[-t]', latin: '-t', pukokKey: 'T', pukokWord: 't loLsuM' },
+  { codePoint: 'U+ABE1', char: 'ꯡ', name: 'Ngou-lolsum', meaning: 'Ngou lolsum (Final -ng)', category: 'lolsum', ipa: '[-ŋ]', latin: '-ng', pukokKey: 'Q', pukokWord: 'q loLsuM' },
+  { codePoint: 'U+ABCE', char: 'ꯎ', name: 'Oon-lolsum', meaning: 'Oon lolsum (Final -u)', category: 'lolsum', ipa: '[-u]', latin: '-u', pukokKey: 'U', pukokWord: 'u loLsuM' },
+  { codePoint: 'U+ABE2', char: 'ꯢ', name: 'Ee-lolsum', meaning: 'Ee lolsum (Final -i)', category: 'lolsum', ipa: '[-i]', latin: '-i', pukokKey: 'E', pukokWord: 'e loLsuM' },
+  { codePoint: 'U+ABD1', char: 'ꯑ', name: 'Atingaa-lolsum', meaning: 'Atingaa lolsum (Final -a)', category: 'lolsum', ipa: '[-a]', latin: '-a', pukokKey: 'A', pukokWord: 'a loLsuM' },
 ];
 
-// All 35 Letters (27 Main Letters + 8 Lonsum Letters) capable of taking Cheitap diacritics
-export const ALL_LETTERS_MAIN_AND_LONSUM: MeeteiUnicodeChar[] = [...ALL_27_MAIN_LETTERS, ...LONSUM_8];
+export const LONSUM_8: MeeteiUnicodeChar[] = LOLSUM_10.slice(0, 8);
 
-// 4. 8 Dependent Vowel Diacritics (Cheitap Eeyek) - Official Unicode U+ABE3 to U+ABEA
-export const CHEITAP_8: MeeteiUnicodeChar[] = [
-  { codePoint: 'U+ABE5', char: 'ꯥ', name: 'aa-tap', meaning: 'Vowel sign -aa (e.g. ꯀꯥ = ka)', category: 'cheitap', ipa: '/a/', latin: 'ā / aa' },
-  { codePoint: 'U+ABE4', char: 'ꯤ', name: 'ee-nap', meaning: 'Vowel sign -i / -ee (e.g. ꯀꯤ = ki)', category: 'cheitap', ipa: '/i/', latin: 'i / ee' },
-  { codePoint: 'U+ABE8', char: 'ꯨ', name: "uu-nap", meaning: 'Vowel sign -u / -uu (e.g. ꯀꯨ = ku)', category: 'cheitap', ipa: '/u/', latin: 'u / uu' },
-  { codePoint: 'U+ABE6', char: 'ꯦ', name: 'yet-nap', meaning: 'Vowel sign -e (e.g. ꯀꯦ = ke)', category: 'cheitap', ipa: '/e/', latin: 'e' },
-  { codePoint: 'U+ABE3', char: 'ꯣ', name: 'ot-nap', meaning: 'Vowel sign -o (e.g. ꯀꯣ = ko)', category: 'cheitap', ipa: '/o/', latin: 'o' },
-  { codePoint: 'U+ABE9', char: 'ꯩ', name: 'chei-nap', meaning: 'Vowel sign -ei / -ai (e.g. ꯀꯩ = kei)', category: 'cheitap', ipa: '/ej/ or /ai/', latin: 'ei / ai' },
-  { codePoint: 'U+ABE7', char: 'ꯧ', name: 'sou-nap', meaning: 'Vowel sign -ou / -au (e.g. ꯀꯧ = kou)', category: 'cheitap', ipa: '/ew/ or /ou/', latin: 'ou / au' },
-  { codePoint: 'U+ABEA', char: 'ꯪ', name: 'nung', meaning: 'Anusvara nasal sign -ng (e.g. ꯀꯪ = kang)', category: 'cheitap', ipa: '/əŋ/', latin: 'ng' },
+// All 37 Letters (27 Main Letters + 10 Lolsum Letters) capable of taking Cheitap diacritics
+export const ALL_LETTERS_MAIN_AND_LONSUM: MeeteiUnicodeChar[] = [...ALL_27_MAIN_LETTERS, ...LOLSUM_10];
+
+// 4. Meetei cheitap-chenap 9 (9 cheitap-cheinap vowel diacritics) - SLLK & Wakambam QWERTY
+export const CHEITAP_9: MeeteiUnicodeChar[] = [
+  { codePoint: 'U+ABE5', char: 'ꯥ', name: 'Aa-tap', meaning: 'Vowel sign -aa (e.g. ꯀꯥ = ka)', category: 'cheitap', ipa: '/a/', latin: 'J', pukokKey: 'J', pukokWord: 'atJp' },
+  { codePoint: 'U+ABE4', char: 'ꯤ', name: 'E-nap', meaning: 'Vowel sign -i / -e (e.g. ꯀꯤ = ki)', category: 'cheitap', ipa: '/i/', latin: 'i', pukokKey: 'i', pukokWord: 'EnJp' },
+  { codePoint: 'U+AAEB', char: 'ꫫ', name: 'Ee-nap', meaning: 'Long vowel sign -ee (Puya Ee-nap)', category: 'cheitap', ipa: '/iː/', latin: 'I', pukokKey: 'I', pukokWord: 'enJp' },
+  { codePoint: 'U+ABE6', char: 'ꯦ', name: 'Yat-nap', meaning: 'Vowel sign -e (sounds like yet-nap, e.g. ꯀꯦ = ke)', category: 'cheitap', ipa: '/e/', latin: 'Y', pukokKey: 'Y', pukokWord: 'yYTnJp' },
+  { codePoint: 'U+ABE9', char: 'ꯩ', name: 'Chei-nap', meaning: 'Vowel sign -ei (e.g. ꯀꯩ = kei)', category: 'cheitap', ipa: '/ei/', latin: 'C', pukokKey: 'C', pukokWord: 'cCnJp' },
+  { codePoint: 'U+ABE7', char: 'ꯧ', name: 'Shou-nap', meaning: 'Vowel sign -ou (e.g. ꯀꯧ = kou)', category: 'cheitap', ipa: '/ou/', latin: 'O', pukokKey: 'O', pukokWord: 'sOnJp' },
+  { codePoint: 'U+ABE3', char: 'ꯣ', name: 'Ot-nap', meaning: 'Vowel sign -o (e.g. ꯀꯣ = ko)', category: 'cheitap', ipa: '/o/', latin: 'o', pukokKey: 'o', pukokWord: 'aoTnJp' },
+  { codePoint: 'U+ABE8', char: 'ꯨ', name: 'Uu-nap', meaning: 'Vowel sign -u / -uu (e.g. ꯀꯨ = ku)', category: 'cheitap', ipa: '/u/', latin: 'F', pukokKey: 'F', pukokWord: 'uFnJp' },
+  { codePoint: 'U+ABEA', char: 'ꯪ', name: 'Nung', meaning: 'Anusvara nasal sign -ng (e.g. ꯀꯪ = kang)', category: 'cheitap', ipa: '/əŋ/', latin: 'H', pukokKey: 'H', pukokWord: 'nFC' },
+];
+
+export const CHEITAP_8: MeeteiUnicodeChar[] = CHEITAP_9.filter(c => c.char !== 'ꫫ');
+
+// 5. 5-Khutam (Arithmetic Operators with Equal Sign)
+export const KHUTAM_5: KhutamItem[] = [
+  { name: 'khaitokpa', mathSymbol: '-', pukokKey: '\\', pukokWord: 'xEtYkpJ', description: '-(minus) Subtraction' },
+  { name: 'tinshinpa', mathSymbol: '+', pukokKey: '/', pukokWord: 'tinsinpJ', description: '+(plus) Addition' },
+  { name: 'punpa', mathSymbol: 'x / *', pukokKey: '-', pukokWord: 'punpJ', description: 'x(multiply) Multiplication' },
+  { name: 'yenthokpa', mathSymbol: '/', pukokKey: '|', pukokWord: 'yentYkpJ', description: '/(division) Division' },
+  { name: 'mannapa', mathSymbol: '=', pukokKey: ':', pukokWord: 'mJnnJpJ', description: '=(equal) Equal To • (:) is MANNABA in Meetei Mayek' },
+];
+
+// 6. Khutam Eeyek Shing (Dedicated Punctuation & Sign Symbols)
+export const KHUTAM_SIGNS: KhutamSignItem[] = [
+  { name: 'khakpa', sign: '(', pukokKey: 'i', pukokWord: 'xJkpJ', description: 'Sentence delimiter / Pause' },
+  { name: 'cheikhan', sign: '|', pukokKey: ',', pukokWord: 'cexJn', description: 'Comma / Single stroke' },
+  { name: 'kheipa', sign: '||', pukokKey: '.', pukokWord: 'xEpJ', description: 'Full stop / Double stroke' },
+  { name: 'cheikhei', sign: '||', pukokKey: ';', pukokWord: 'cexE', description: 'Sentence end / Double danda' },
+  { name: 'lompa', sign: '.', pukokKey: ']', pukokWord: 'lYmpJ', description: 'Lom inflection mark (dot)' },
+  { name: 'lumpa', sign: '..', pukokKey: '[', pukokWord: 'lumpJ', description: 'Double dot mark' },
+  { name: 'punpa', sign: '-', pukokKey: '-', pukokWord: 'punpJ', description: 'Hyphen / Joining mark' },
+  { name: 'apun', sign: '--', pukokKey: ':', pukokWord: 'apun', description: 'Apun conjunct underline' },
+  { name: 'angakpa', sign: '!', pukokKey: '!', pukokWord: 'a.qJkpJ', description: 'Exclamation mark' },
+  { name: 'hangpa', sign: '?', pukokKey: '?', pukokWord: 'hQpJ', description: 'Question mark' },
+  { name: 'sampal', sign: '( )', pukokKey: '()', pukokWord: 'sMpl', description: 'Parentheses / Brackets' },
+  { name: 'leihoulon pulon 5', sign: '.....', pukokKey: 'V', pukokWord: 'le.hHlYn pulYn 5', description: 'Leihoulon pulon sign (5 dots)' },
+  { name: 'eemulon 6', sign: '......', pukokKey: 'X', pukokWord: 'e.mulYn 6', description: 'Eemulon sign (6 dots)' },
 ];
 
 /**
@@ -216,16 +271,17 @@ export const SPECIAL_MARKS_3: MeeteiUnicodeChar[] = [
 
 // 6. 10 Digits - U+ABF0 to U+ABF9
 export const NUMERALS_10: MeeteiUnicodeChar[] = [
-  { codePoint: 'U+ABF0', char: '꯰', name: 'Phun (0)', meaning: 'Zero', category: 'numeral', ipa: '[pʰun]', latin: '0' },
-  { codePoint: 'U+ABF1', char: '꯱', name: 'Ama (1)', meaning: 'One', category: 'numeral', ipa: '[əma]', latin: '1' },
-  { codePoint: 'U+ABF2', char: '꯲', name: 'Ani (2)', meaning: 'Two', category: 'numeral', ipa: '[əni]', latin: '2' },
-  { codePoint: 'U+ABF3', char: '꯳', name: 'Ahum (3)', meaning: 'Three', category: 'numeral', ipa: '[əhum]', latin: '3' },
-  { codePoint: 'U+ABF4', char: '꯴', name: 'Mari (4)', meaning: 'Four', category: 'numeral', ipa: '[məri]', latin: '4' },
-  { codePoint: 'U+ABF5', char: '꯵', name: 'Manga (5)', meaning: 'Five', category: 'numeral', ipa: '[maŋa]', latin: '5' },
-  { codePoint: 'U+ABF6', char: '꯶', name: 'Taruk (6)', meaning: 'Six', category: 'numeral', ipa: '[taruk]', latin: '6' },
-  { codePoint: 'U+ABF7', char: '꯷', name: 'Taret (7)', meaning: 'Seven', category: 'numeral', ipa: '[təret]', latin: '7' },
-  { codePoint: 'U+ABF8', char: '꯸', name: 'Nipan (8)', meaning: 'Eight', category: 'numeral', ipa: '[nipan]', latin: '8' },
-  { codePoint: 'U+ABF9', char: '꯹', name: 'Mapan (9)', meaning: 'Nine', category: 'numeral', ipa: '[mapan]', latin: '9' },
+  { codePoint: 'U+ABF0', char: '꯰', name: 'phun (0)', meaning: 'Zero / Phun', category: 'numeral', ipa: '[pʰun]', latin: '0', pukokKey: '0', pukokWord: 'fuN' },
+  { codePoint: 'U+ABF1', char: '꯱', name: 'ama (1)', meaning: 'One / Ama', category: 'numeral', ipa: '[əma]', latin: '1', pukokKey: '1', pukokWord: 'a.mJ' },
+  { codePoint: 'U+ABF2', char: '꯲', name: 'ani (2)', meaning: 'Two / Ani', category: 'numeral', ipa: '[əni]', latin: '2', pukokKey: '2', pukokWord: 'a.ni' },
+  { codePoint: 'U+ABF3', char: '꯳', name: 'ahum (3)', meaning: 'Three / Ahum', category: 'numeral', ipa: '[əhum]', latin: '3', pukokKey: '3', pukokWord: 'a.huM' },
+  { codePoint: 'U+ABF4', char: '꯴', name: 'mali (4)', meaning: 'Four / Mali', category: 'numeral', ipa: '[məli]', latin: '4', pukokKey: '4', pukokWord: 'm.li' },
+  { codePoint: 'U+ABF5', char: '꯵', name: 'maga (5)', meaning: 'Five / Maga', category: 'numeral', ipa: '[maŋa]', latin: '5', pukokKey: '5', pukokWord: 'm.qJ' },
+  { codePoint: 'U+ABF6', char: '꯶', name: 'taluk (6)', meaning: 'Six / Taluk', category: 'numeral', ipa: '[taluk]', latin: '6', pukokKey: '6', pukokWord: 't.luK' },
+  { codePoint: 'U+ABF7', char: '꯷', name: 'talet (7)', meaning: 'Seven / Talet', category: 'numeral', ipa: '[təlet]', latin: '7', pukokKey: '7', pukokWord: 't.leT' },
+  { codePoint: 'U+ABF8', char: '꯸', name: 'nepal (8)', meaning: 'Eight / Nepal (sound like nee-pal)', category: 'numeral', ipa: '[nepal]', latin: '8', pukokKey: '8', pukokWord: 'ne.pJN' },
+  { codePoint: 'U+ABF9', char: '꯹', name: 'Mapan (9)', meaning: 'Nine / Mapan', category: 'numeral', ipa: '[mapan]', latin: '9', pukokKey: '9', pukokWord: 'm.pJN' },
+  { codePoint: 'U+ABF1_ABF0', char: '꯱꯰', name: 'Tala (10)', meaning: 'Ten / Tala', category: 'numeral', ipa: '[təla]', latin: '10', pukokKey: '10', pukokWord: 't.lJ' },
 ];
 
 /**
@@ -906,49 +962,70 @@ function translateTextSegments(text: string): string {
  * WAKOKLON HEELEL THILEL SALAI AMA_ILON PUKOK PUYA (from Meetei-lang/Pukok Key Layout_QWERTY Keyboard.pdf)
  */
 export const UNICODE_TO_PUKOK_KEYMAP: Record<string, string> = {
-  // 18 Indigenous Anatomical Root Letters (Eepi-eeyek 18)
+  // 18 Indigenous Anatomical Root Letters (Meetei Eepi-eeyek laiyek 18)
   'ꯀ': 'k', 'ꯁ': 's', 'ꯂ': 'l', 'ꯃ': 'm', 'ꯄ': 'p',
   'ꯅ': 'n', 'ꯆ': 'c', 'ꯇ': 't', 'ꯈ': 'x', 'ꯉ': 'q',
   'ꯊ': 'z', 'ꯋ': 'w', 'ꯌ': 'y', 'ꯍ': 'h', 'ꯎ': 'u',
   'ꯏ': 'e', 'ꯐ': 'f', 'ꯑ': 'a',
 
-  // 9 Lom Consonants (Meetei Lom Eeyek 9)
-  'ꯒ': 'g', // Gok (Kok Lom)
-  'ꯓ': 'S', // Zam (Sam Lom)
-  'ꯔ': 'R', // Rai (Lai Lom)
-  'ꯕ': 'b', // Bok (Paa Lom)
-  'ꯖ': 'j', // Jhil (Chil Lom)
-  'ꯗ': 'd', // Dil (Til Lom)
-  'ꯘ': 'G', // Ghou (Khou Lom)
-  'ꯙ': 'D', // Dhou (Thou Lom)
-  'ꯚ': 'v', // Bham (Pham Lom)
+  // 9 Lom Consonants (Meetei lom eepe-eyek 9 letters)
+  'ꯒ': 'g', // Ga (kok-lom)
+  'ꯓ': 'S', // Jha (sam-lom)
+  'ꯔ': 'r', // Ra (lai-lom)
+  'ꯕ': 'b', // Ba (paa-lom)
+  'ꯖ': 'j', // Ja (chin-lom)
+  'ꯗ': 'd', // Da (tin-lom)
+  'ꯘ': 'G', // Gha (khou-lom)
+  'ꯙ': 'D', // Dha (thou-lom)
+  'ꯚ': 'v', // Bha (Pham-lom)
 
-  // 10 Lolsum Consonants (Meetei Lolsum 10)
-  'ꯛ': 'K', 'ꯜ': 'L', 'ꯝ': 'M', 'ꯞ': 'P', 'ꯟ': 'N',
-  'ꯠ': 'T', 'ꯡ': 'Q', 'ꯢ': 'E',
+  // 10 Lolsum Consonants (Meetei lolsum eeyek laiyek 10)
+  'ꯛ': 'K', // Kok-lolsum
+  'ꯜ': 'L', // Lai-lolsum
+  'ꯝ': 'M', // Meet-lolsum
+  'ꯞ': 'P', // Paa-lolsum
+  'ꯟ': 'N', // Naa-lolsum
+  'ꯠ': 'T', // Til-lolsum
+  'ꯡ': 'Q', // Ngou-lolsum
+  'ꯢ': 'E', // Ee-lolsum
+  // Note: In Pukok font, 'U' is Oon-lolsum and 'A' is Atingaa-lolsum
 
-  // 9 Cheitap Vowel Diacritics (Wakambam Macha Waanglel QWERTY)
-  'ꯥ': 'F', // Takchei / Atep (aa)
-  'ꯤ': 'i', // Inap / Ee (i short)
-  'ꯨ': 'J', // Oon Cheitap (u)
-  'ꯦ': 'Y', // Yenap (e)
-  'ꯣ': 'o', // Otap (o)
-  'ꯩ': 'C', // Cheinap (ei)
-  'ꯧ': 'O', // Sou (ou)
-  'ꯪ': 'H', // Nung (anusvara)
-  '꯭': '',  // Virama / Apun (handled natively)
+  // 9 Cheitap-Cheinap Vowel Diacritics (from PDF 2 Page 1 & PDF 1 Page 3)
+  'ꯥ': 'J', // Aa-tap
+  'ꯤ': 'i', // E-nap
+  'ꫫ': 'I', // Ee-nap
+  'ꯦ': 'Y', // Yat-nap (sounds like yet-nap)
+  'ꯩ': 'C', // Chei-nap
+  'ꯧ': 'O', // Shou-nap
+  'ꯣ': 'o', // Ot-nap
+  'ꯨ': 'F', // Uu-nap
+  'ꯪ': 'H', // Nung
+  '꯭': '',  // Apun / Virama (handled natively)
 
   // 10 Cheishing Digits (0-9)
   '꯰': '0', '꯱': '1', '꯲': '2', '꯳': '3', '꯴': '4',
   '꯵': '5', '꯶': '6', '꯷': '7', '꯸': '8', '꯹': '9',
 
-  // Punctuation & Khutam (from Pukok Key Layout page 2)
-  '꯫': '!',  // Apakpa
-  '꫰': '.',  // Cheikhan (Single Danda)
-  '꫱': ';',  // Cheishei (Double Danda)
+  // 5-Khutam Arithmetic Operators & Equals
+  '=': ':',  // Mannaba (colon : is equal to = in Meetei Mayek)
+  '+': '/',  // Tinshinpa (+)
+  '-': '\\', // Khaitokpa (-)
+  '*': '-',  // Punpa (*)
+  '/': '|',  // Yenthokpa (/)
+
+  // Khutam Eeyek Shing Punctuation Signs
+  '꯫': ';',  // Cheikhei / sentence terminal
+  '꫰': ',',  // Cheikhan
+  '꫱': ';',  // Cheishei
   ':': ':',  // Mannaba (equals/colon)
-  ',': ',',  // Cheikhei
-  'ꫫ': 'I',  // Meetei Mayek Vowel Sign II -> Pukok Eeyek font key 'I' (renders pure ꫫ without dotted circle!)
+  ',': ',',  // Cheikhan
+  '.': '.',  // Kheipa
+  '!': '!',  // Angakpa
+  '?': '?',  // Hangpa
+  '(': '(',  // Sampal
+  ')': ')',  // Sampal
+  '꯬': '',   // Lum Iyek
+  'ꫲ': '#',  // Anji (1)
   '\u25CC': '', // Dotted circle
   '\u25CB': '', // White circle
 };
@@ -968,9 +1045,125 @@ export function convertUnicodeToPukokFont(text: string): string {
 }
 
 /**
+ * Converts Unicode Meetei Mayek Markdown into Pukok Eeyek ASCII key sequences
+ * while strictly preserving all image URLs `![alt](URL)`, link URLs `[text](URL)`,
+ * code blocks, and HTML tags intact so images and links never break.
+ */
+export function convertMarkdownToPukokFont(markdown: string): string {
+  if (!markdown) return '';
+
+  const lines = markdown.split('\n');
+  let inCodeBlock = false;
+  const convertedLines: string[] = [];
+
+  for (const line of lines) {
+    if (line.trim().startsWith('```')) {
+      inCodeBlock = !inCodeBlock;
+      convertedLines.push(line);
+      continue;
+    }
+
+    if (inCodeBlock) {
+      convertedLines.push(line);
+      continue;
+    }
+
+    if (!line.trim() || line.trim() === '---' || line.trim() === '***') {
+      convertedLines.push(line);
+      continue;
+    }
+
+    // Headings
+    const headingMatch = line.match(/^(#{1,6}\s+)(.*)$/);
+    if (headingMatch) {
+      const hashes = headingMatch[1];
+      const text = headingMatch[2];
+      convertedLines.push(`${hashes}${convertMarkdownTextSegmentsToPukok(text)}`);
+      continue;
+    }
+
+    // Blockquote
+    const quoteMatch = line.match(/^(\s*>\s*)(.*)$/);
+    if (quoteMatch) {
+      const quotePrefix = quoteMatch[1];
+      const text = quoteMatch[2];
+      convertedLines.push(`${quotePrefix}${convertMarkdownTextSegmentsToPukok(text)}`);
+      continue;
+    }
+
+    // List items
+    const listMatch = line.match(/^(\s*[-*+]\s+|\s*\d+\.\s+)(.*)$/);
+    if (listMatch) {
+      const listPrefix = listMatch[1];
+      const text = listMatch[2];
+      convertedLines.push(`${listPrefix}${convertMarkdownTextSegmentsToPukok(text)}`);
+      continue;
+    }
+
+    // Table rows
+    if (line.trim().startsWith('|') && line.trim().endsWith('|')) {
+      if (/^\|\s*[-:]+[-|\s:]*\|$/.test(line.trim())) {
+        convertedLines.push(line);
+        continue;
+      }
+      const cells = line.split('|');
+      const convertedCells = cells.map((cell, idx) => {
+        if (idx === 0 || idx === cells.length - 1) return cell;
+        return convertMarkdownTextSegmentsToPukok(cell);
+      });
+      convertedLines.push(convertedCells.join('|'));
+      continue;
+    }
+
+    // Paragraph text
+    convertedLines.push(convertMarkdownTextSegmentsToPukok(line));
+  }
+
+  return convertedLines.join('\n');
+}
+
+function convertMarkdownTextSegmentsToPukok(text: string): string {
+  const tokenRegex = /(!?\[.*?\]\(.*?\)|`[^`]+`|<[^>]+>)/g;
+  const parts = text.split(tokenRegex);
+
+  return parts.map((part) => {
+    // Images: ![alt](url) -> only convert alt text to Pukok, NEVER touch the url!
+    const imgMatch = part.match(/^!\[(.*?)\]\((.*?)\)$/);
+    if (imgMatch) {
+      const alt = imgMatch[1];
+      const url = imgMatch[2];
+      return `![${convertUnicodeToPukokFont(alt)}](${url})`;
+    }
+
+    // Links: [label](url) -> only convert label text to Pukok, NEVER touch the url!
+    const linkMatch = part.match(/^\[(.*?)\]\((.*?)\)$/);
+    if (linkMatch) {
+      const label = linkMatch[1];
+      const url = linkMatch[2];
+      return `[${convertUnicodeToPukokFont(label)}](${url})`;
+    }
+
+    // Code or HTML
+    if (part.startsWith('`') || part.startsWith('<')) {
+      return part;
+    }
+
+    return convertUnicodeToPukokFont(part);
+  }).join('');
+}
+
+/**
  * High-level translator: converts Latin/English text into Pukok Eeyek calligraphy font string
  */
 export function translateToPukokFontWithVocab(input: string): string {
   const unicodeText = translateToMeeteiMayekWithVocab(input);
   return convertUnicodeToPukokFont(unicodeText);
+}
+
+/**
+ * Translates full Markdown text into Pukok Eeyek font string while keeping all image URLs and links intact
+ */
+export function translateMarkdownToPukok(markdown: string): string {
+  const unicodeMd = translateMarkdownToMeeteiMayek(markdown);
+  return convertMarkdownToPukokFont(unicodeMd);
 }

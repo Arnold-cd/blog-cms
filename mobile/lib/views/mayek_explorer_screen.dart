@@ -16,6 +16,8 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
   late TabController _tabController;
   final TextEditingController _typeController = TextEditingController(text: "kmdwrige nungaiiribo");
   String _translatedOutput = "";
+  String _cheitapGroup = 'core18';
+  int _cheitapBaseIndex = 0;
 
   @override
   void initState() {
@@ -50,6 +52,65 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
       _typeController.text += char;
     }
     _updateTranslation(_typeController.text);
+  }
+
+  Widget _buildPukokFormula(
+    String keyChar,
+    String word, {
+    double fontSize = 18,
+    Color? color,
+  }) {
+    if (word.isEmpty) {
+      return Text(
+        keyChar,
+        style: TextStyle(
+          fontFamily: "PukokEeyek",
+          fontSize: fontSize,
+          fontWeight: FontWeight.normal,
+          color: color,
+          height: 1.1,
+        ),
+      );
+    }
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text(
+          keyChar,
+          style: TextStyle(
+            fontFamily: "PukokEeyek",
+            fontSize: fontSize,
+            fontWeight: FontWeight.normal,
+            color: color,
+            height: 1.1,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 2.5),
+          child: Text(
+            ":",
+            style: TextStyle(
+              fontSize: fontSize * 0.72,
+              fontWeight: FontWeight.bold,
+              color: color?.withValues(alpha: 0.6) ?? Colors.grey,
+              height: 1.1,
+            ),
+          ),
+        ),
+        Text(
+          word,
+          style: TextStyle(
+            fontFamily: "PukokEeyek",
+            fontSize: fontSize,
+            fontWeight: FontWeight.normal,
+            color: color,
+            height: 1.1,
+          ),
+        ),
+      ],
+    );
   }
 
   @override
@@ -236,20 +297,40 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
                       ),
                     ),
                   ),
-                  IconButton(
-                    tooltip: "Copy to Clipboard",
-                    icon: const Icon(Icons.copy_rounded, size: 18),
-                    onPressed: () {
-                      if (_translatedOutput.isNotEmpty) {
-                        Clipboard.setData(ClipboardData(text: _translatedOutput));
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            duration: Duration(seconds: 1),
-                            content: Text("Meetei Mayek copied to clipboard!"),
-                          ),
-                        );
-                      }
-                    },
+                  Row(
+                    children: [
+                      IconButton(
+                        tooltip: "Copy Pukok Font Keys",
+                        icon: const Icon(Icons.key_rounded, size: 18),
+                        onPressed: () {
+                          if (_translatedOutput.isNotEmpty) {
+                            final pukokKeys = MeeteiMayekService.convertUnicodeToPukokFont(_translatedOutput);
+                            Clipboard.setData(ClipboardData(text: pukokKeys));
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                duration: Duration(seconds: 1),
+                                content: Text("Pukok font keys copied to clipboard!"),
+                              ),
+                            );
+                          }
+                        },
+                      ),
+                      IconButton(
+                        tooltip: "Copy Meetei Unicode",
+                        icon: const Icon(Icons.copy_rounded, size: 18),
+                        onPressed: () {
+                          if (_translatedOutput.isNotEmpty) {
+                            Clipboard.setData(ClipboardData(text: _translatedOutput));
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                duration: Duration(seconds: 1),
+                                content: Text("Meetei Mayek copied to clipboard!"),
+                              ),
+                            );
+                          }
+                        },
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -263,10 +344,34 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
                   fontSize: 32,
                   fontWeight: FontWeight.normal,
                   height: 1.4,
-                  fontFamilyFallback: AppTheme.fontFallbacks,
                   color: isDark ? const Color(0xFFF1F5F9) : const Color(0xFF0F172A),
                 ),
               ),
+              if (_translatedOutput.isNotEmpty) ...[
+                const SizedBox(height: 10),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: isDark ? Colors.white.withValues(alpha: 0.04) : Colors.black.withValues(alpha: 0.03),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    children: [
+                      const Text(
+                        "Pukok keys: ",
+                        style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.grey),
+                      ),
+                      Expanded(
+                        child: Text(
+                          MeeteiMayekService.convertUnicodeToPukokFont(_translatedOutput),
+                          style: const TextStyle(fontSize: 12, fontFamily: "monospace", color: Color(0xFF6366F1), fontWeight: FontWeight.bold),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ],
           ),
         ),
@@ -278,7 +383,7 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "QUICK CHEITAP DIACRITICS",
+              "QUICK CHEITAP DIACRITICS (DIRECT SCRIPT)",
               style: TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.w700,
@@ -292,31 +397,25 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
               physics: const BouncingScrollPhysics(),
               child: Row(
                 children: [
-                  for (final item in [
-                    ["ꯥ", "onap (aa)"],
-                    ["ꯤ", "inap (i)"],
-                    ["ꯨ", "unap (u)"],
-                    ["ꯦ", "yetnap (e)"],
-                    ["ꯣ", "otnap (o)"],
-                    ["ꯩ", "cheinap (ei)"],
-                    ["ꯧ", "sounap (ou)"],
-                    ["ꯪ", "nung (ng)"],
-                    ["꯭", "apun (virama)"],
-                    ["꯫", "cheikhei (.)"],
-                  ])
+                  for (final sign in MeeteiData.cheitap9Signs)
                     Padding(
                       padding: const EdgeInsets.only(right: 8),
                       child: ActionChip(
-                        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                         backgroundColor: isDark ? const Color(0xFF1B1B21) : const Color(0xFFF1F5F9),
-                        label: Text(
-                          "${item[0]} ${item[1]}",
+                        avatar: Text(
+                          sign.pukokKey,
                           style: const TextStyle(
-                            fontSize: 12,
-                            fontFamilyFallback: AppTheme.fontFallbacks,
+                            fontFamily: "PukokEeyek",
+                            fontSize: 16,
+                            color: Color(0xFF6366F1),
                           ),
                         ),
-                        onPressed: () => _insertChar(item[0]),
+                        label: Text(
+                          "${sign.pukokKey} (${sign.name})",
+                          style: const TextStyle(fontSize: 12),
+                        ),
+                        onPressed: () => _insertChar(sign.char),
                       ),
                     ),
                 ],
@@ -494,14 +593,14 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
         const SizedBox(height: 10),
         _buildPuyaConceptCard(
           title: "🧘 18 Indigenous Anatomical Roots (Ipi Eeyek)",
-          desc: "The 18 core letters correspond to parts of human anatomy (Kok = head, Sam = hair, Lai = forehead, Meet = eye, Paa = ear, Naa = nose, Chil = mouth, etc.) reflecting early cosmological human science.",
+          desc: "The 18 core letters correspond to parts of human anatomy: Kok (head/brain), Sam (hair), Lai (forehead), Meet (eye), Paa (eyebrow/eyelash), Naa (ear), Chil (lips), Til (saliva/tongue), Khou (throat), Ngou (uvula/neck), Thou (chest/breast), Wai (navel), Yang (spine), Huk (pelvis/joint), Oon (skin), Ee (blood), Pham (seat/womb/reproductive), and Atingaa (sky/immortality/eternity).",
           color: const Color(0xFF3B82F6),
           isDark: isDark,
         ),
         const SizedBox(height: 10),
         _buildPuyaConceptCard(
           title: "🌿 Native Lom (Derivation) vs Borrowed 27 Scripts",
-          desc: "In authentic Kanglei grammar, the 9 additional consonants derive naturally from the 18 root letters with the Lom inflection dot (Gok from Kok, Zam from Sam, Rai from Lai, etc.), preserving linguistic integrity.",
+          desc: "In authentic Kanglei grammar, the 9 additional consonants derive naturally from the 18 root letters with the Lom inflection dot: Ga = (kok lom), Jha = (sam lom), Ra = (lai lom), Ba = (Paa lom), Ja = (chin lom), Da = (Tin lom), Gha = (khou lom), Dha = (thou lom), Bha = (Pham lom), preserving sacred linguistic science without borrowing foreign scripts.",
           color: const Color(0xFF10B981),
           isDark: isDark,
         ),
@@ -524,26 +623,14 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
           ),
         ),
         const SizedBox(height: 8),
-        _buildPukokKeyGrid([
-          {"key": "k", "uni": "ꯀ", "name": "Kok"},
-          {"key": "s", "uni": "ꯁ", "name": "Sam"},
-          {"key": "l", "uni": "ꯂ", "name": "Lai"},
-          {"key": "m", "uni": "ꯃ", "name": "Meet"},
-          {"key": "p", "uni": "ꯄ", "name": "Paa"},
-          {"key": "n", "uni": "ꯅ", "name": "Naa"},
-          {"key": "c", "uni": "ꯆ", "name": "Chil"},
-          {"key": "t", "uni": "ꯇ", "name": "Til"},
-          {"key": "x", "uni": "ꯈ", "name": "Khou"},
-          {"key": "q", "uni": "ꯉ", "name": "Ngou"},
-          {"key": "z", "uni": "ꯊ", "name": "Thou"},
-          {"key": "w", "uni": "ꯋ", "name": "Wai"},
-          {"key": "y", "uni": "ꯌ", "name": "Yang"},
-          {"key": "h", "uni": "ꯍ", "name": "Huk"},
-          {"key": "u", "uni": "ꯎ", "name": "Oon"},
-          {"key": "e", "uni": "ꯏ", "name": "Ee"},
-          {"key": "f", "uni": "ꯐ", "name": "Pham"},
-          {"key": "a", "uni": "ꯑ", "name": "Atingaa"},
-        ], isDark),
+        _buildPukokKeyGrid(
+          MeeteiData.core18Letters.map((c) => {
+            "key": c.pukokKey,
+            "word": c.pukokWord,
+            "name": "(${c.name})",
+          }).toList(),
+          isDark,
+        ),
         const SizedBox(height: 18),
 
         // 9 Lom Consonants Key Grid
@@ -552,61 +639,78 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
           style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFF10B981)),
         ),
         const SizedBox(height: 8),
-        _buildPukokKeyGrid([
-          {"key": "g", "uni": "ꯒ", "name": "Gok"},
-          {"key": "S", "uni": "ꯓ", "name": "Zam"},
-          {"key": "R", "uni": "ꯔ", "name": "Rai"},
-          {"key": "b", "uni": "ꯕ", "name": "Bok"},
-          {"key": "j", "uni": "ꯖ", "name": "Jhil"},
-          {"key": "d", "uni": "ꯗ", "name": "Dil"},
-          {"key": "G", "uni": "ꯘ", "name": "Ghou"},
-          {"key": "D", "uni": "ꯙ", "name": "Dhou"},
-          {"key": "v", "uni": "ꯚ", "name": "Bham"},
-        ], isDark),
+        _buildPukokKeyGrid(
+          MeeteiData.lom9Letters.map((c) => {
+            "key": c.pukokKey,
+            "word": c.pukokWord,
+            "name": "(${c.name})",
+          }).toList(),
+          isDark,
+        ),
         const SizedBox(height: 18),
 
         // 10 Lolsum Consonants Key Grid
         const Text(
-          "10 Lolsum Consonants (Eeyek Lonsum 10):",
+          "10 Lolsum Consonants (Meetei lolsum 10):",
           style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFF6366F1)),
         ),
         const SizedBox(height: 8),
-        _buildPukokKeyGrid([
-          {"key": "K", "uni": "ꯛ", "name": "Kok L."},
-          {"key": "L", "uni": "ꯜ", "name": "Lai L."},
-          {"key": "M", "uni": "ꯝ", "name": "Meet L."},
-          {"key": "P", "uni": "ꯞ", "name": "Paa L."},
-          {"key": "N", "uni": "ꯟ", "name": "Naa L."},
-          {"key": "T", "uni": "ꯠ", "name": "Til L."},
-          {"key": "Q", "uni": "ꯡ", "name": "Ngou L."},
-          {"key": "U", "uni": "ꯎ", "name": "Oon L."},
-          {"key": "E", "uni": "ꯢ", "name": "Ee L."},
-          {"key": "A", "uni": "ꯑ", "name": "Yei L."},
-        ], isDark),
+        _buildPukokKeyGrid(
+          MeeteiData.lolsum10Letters.map((c) => {
+            "key": c.pukokKey,
+            "word": c.pukokWord,
+            "name": "(${c.name})",
+          }).toList(),
+          isDark,
+        ),
         const SizedBox(height: 18),
 
-        // 9 Cheitap Diacritics & Punctuation Key Grid
+        // 9 Cheitap Diacritics Key Grid (from PDF 3)
         const Text(
-          "9 Cheitap Diacritics & Puya Punctuation:",
+          "9 Cheitap-Cheinap Vowel Diacritics (from PDF 3):",
           style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFFEC4899)),
         ),
         const SizedBox(height: 8),
-        _buildPukokKeyGrid([
-          {"key": "F", "uni": "ꯥ", "name": "Takchei"},
-          {"key": "i", "uni": "ꯤ", "name": "Inap"},
-          {"key": "I", "uni": "ꯤ", "name": "Ee Ch."},
-          {"key": "J", "uni": "ꯨ", "name": "Oon Ch."},
-          {"key": "Y", "uni": "ꯦ", "name": "Yenap"},
-          {"key": "o", "uni": "ꯣ", "name": "Otap"},
-          {"key": "O", "uni": "ꯧ", "name": "Sou"},
-          {"key": "C", "uni": "ꯩ", "name": "Cheinap"},
-          {"key": "H", "uni": "ꯪ", "name": "Nung"},
-          {"key": "#", "uni": "꯱", "name": "Sacred 1"},
-          {"key": ".", "uni": "꫰", "name": "Cheikhan"},
-          {"key": ";", "uni": "꫱", "name": "Cheishei"},
-          {"key": ":", "uni": "=", "name": "Mannaba"},
-          {"key": "!", "uni": "꯫", "name": "Apakpa"},
-        ], isDark),
+        _buildPukokKeyGrid(
+          MeeteiData.cheitap9Signs.map((s) => {
+            "key": s.pukokKey,
+            "word": s.pukokWord,
+            "name": "(${s.name})",
+          }).toList(),
+          isDark,
+        ),
+        const SizedBox(height: 18),
+
+        // 5-Khutam Arithmetic Operators Key Grid
+        const Text(
+          "5-Khutam (Arithmetic Operators) • ':' is MANNABA (=):",
+          style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFFF59E0B)),
+        ),
+        const SizedBox(height: 8),
+        _buildPukokKeyGrid(
+          MeeteiData.khutam5Operators.map((op) => {
+            "key": op.pukokKey,
+            "word": op.pukokWord,
+            "name": "(${op.name})",
+          }).toList(),
+          isDark,
+        ),
+        const SizedBox(height: 18),
+
+        // Khutam Eeyek Shing Punctuation Key Grid
+        const Text(
+          "Khutam Eeyek Shing (Punctuation Signs):",
+          style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFF06B6D4)),
+        ),
+        const SizedBox(height: 8),
+        _buildPukokKeyGrid(
+          MeeteiData.khutamSigns.map((s) => {
+            "key": s.pukokKey,
+            "word": s.pukokWord,
+            "name": "(${s.name})",
+          }).toList(),
+          isDark,
+        ),
         const SizedBox(height: 24),
 
         // 14-Tier Ancient Counting System Table
@@ -731,11 +835,11 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
       runSpacing: 8,
       children: keys.map((item) {
         final keyChar = item['key']!;
-        final uniChar = item['uni']!;
+        final word = item['word'] ?? '';
         final name = item['name']!;
 
         return Container(
-          width: 72,
+          width: 82,
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
           decoration: BoxDecoration(
             color: isDark ? const Color(0xFF141419) : const Color(0xFFF8FAFC),
@@ -747,40 +851,37 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                keyChar,
-                style: TextStyle(
-                  fontFamily: 'PukokEeyek',
-                  fontSize: 22,
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: _buildPukokFormula(
+                  keyChar,
+                  word,
+                  fontSize: 20,
                   color: isDark ? const Color(0xFFF1F5F9) : const Color(0xFF0F172A),
-                  height: 1.1,
                 ),
               ),
-              const SizedBox(height: 2),
-              Text(
-                uniChar,
-                style: const TextStyle(
-                  fontSize: 11,
-                  color: Colors.grey,
-                  fontFamilyFallback: AppTheme.fontFallbacks,
+              const SizedBox(height: 4),
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  name,
+                  style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
-              Text(
-                name,
-                style: const TextStyle(fontSize: 9.5, fontWeight: FontWeight.bold),
-                overflow: TextOverflow.ellipsis,
-              ),
-              const SizedBox(height: 2),
+              const SizedBox(height: 3),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1.5),
                 decoration: BoxDecoration(
                   color: const Color(0xFF6366F1).withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
-                  keyChar,
+                  "key: $keyChar",
                   style: const TextStyle(
-                    fontSize: 9,
+                    fontSize: 8.5,
                     fontFamily: "monospace",
                     fontWeight: FontWeight.bold,
                     color: Color(0xFF6366F1),
@@ -794,38 +895,361 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
     );
   }
 
-  // 3. Letters Tab (Core 18 + Additional 9 + Lonsum 8 = 35)
+  // 3. Letters Tab (Core 18 + Lom 9 + Lolsum 10)
   Widget _buildLettersTab(BuildContext context, bool isDark) {
     return ListView(
       physics: const BouncingScrollPhysics(),
       padding: const EdgeInsets.all(20),
       children: [
-        _buildSectionHeader("18 CORE ANATOMICAL LETTERS (ꯏꯌꯦꯛ ꯏꯄꯤ)", "Derived from parts of the human body"),
+        _buildSectionHeader("18 CORE ANATOMICAL LETTERS (ꯏꯌꯦꯛ ꯏꯄꯤ ꯱꯸)", "kok, sam, lai, Meet, pa, Na, Chil, til, khou, Ngou, thou, Wai, yang, huk, Oon, Ee, Pham, Atingaa"),
         const SizedBox(height: 10),
         _buildCharacterGrid(context, MeeteiData.core18Letters, isDark),
 
         const SizedBox(height: 24),
-        _buildSectionHeader("9 ADDITIONAL CONSONANTS", "Voiced and aspirate consonants"),
+        _buildSectionHeader("9 LOM CONSONANTS (ꯏꯄꯦ ꯏꯌꯦꯛ ꯹)", "Ga (kok-lom), Jha (sam-lom), Ra (lai-lom), Ba (paa-lom), Ja (chin-lom), Da (tin-lom), Gha (khou-lom), Dha (thou-lom), Bha (Pham-lom)"),
         const SizedBox(height: 10),
-        _buildCharacterGrid(context, MeeteiData.additional9Letters, isDark),
+        _buildCharacterGrid(context, MeeteiData.lom9Letters, isDark),
 
         const SizedBox(height: 24),
-        _buildSectionHeader("8 LONSUM FINAL CONSONANTS (ꯂꯣꯟꯁꯨꯝ)", "Syllable-coda consonants with inherent vowel suppressed"),
+        _buildSectionHeader("10 LOLSUM FINAL CONSONANTS (ꯂꯣꯜꯁꯨꯝ ꯱꯰)", "kok, lai, meet, paa, Naa, til, Ngou, Oon, Ee, Atingaa lolsum"),
         const SizedBox(height: 10),
-        _buildCharacterGrid(context, MeeteiData.lonsum8Letters, isDark),
+        _buildCharacterGrid(context, MeeteiData.lolsum10Letters, isDark),
       ],
+    );
+  }
+
+  Widget _buildCheitapGroupChip(String label, String groupKey, bool isDark) {
+    final isSelected = _cheitapGroup == groupKey;
+    return Expanded(
+      child: InkWell(
+        borderRadius: BorderRadius.circular(8),
+        onTap: () {
+          setState(() {
+            _cheitapGroup = groupKey;
+            _cheitapBaseIndex = 0;
+          });
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: isSelected
+                ? const Color(0xFF6366F1)
+                : (isDark ? const Color(0xFF1E1E26) : const Color(0xFFF1F5F9)),
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: isSelected
+                  ? const Color(0xFF6366F1)
+                  : (isDark ? Colors.white.withValues(alpha: 0.08) : Colors.black.withValues(alpha: 0.06)),
+            ),
+          ),
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+              color: isSelected ? Colors.white : (isDark ? Colors.white70 : Colors.black87),
+            ),
+          ),
+        ),
+      ),
     );
   }
 
   // 3. Cheitap Tab
   Widget _buildCheitapTab(BuildContext context, bool isDark) {
+    List<MeeteiCharacter> currentGroupList;
+    String groupTitle;
+    switch (_cheitapGroup) {
+      case 'lom9':
+        currentGroupList = MeeteiData.lom9Letters;
+        groupTitle = "9 Lom Consonants (ꯂꯣꯝ ꯏꯌꯦꯛ ꯹)";
+        break;
+      case 'lolsum10':
+        currentGroupList = MeeteiData.lolsum10Letters;
+        groupTitle = "10 Lolsum Consonants (ꯂꯣꯜꯁꯨꯝ ꯱꯰)";
+        break;
+      case 'core18':
+      default:
+        currentGroupList = MeeteiData.core18Letters;
+        groupTitle = "18 Core Roots (ꯏꯄꯤ ꯏꯌꯦꯛ ꯱꯸)";
+        break;
+    }
+
+    final safeIndex = (_cheitapBaseIndex >= 0 && _cheitapBaseIndex < currentGroupList.length)
+        ? _cheitapBaseIndex
+        : 0;
+    final selectedBase = currentGroupList[safeIndex];
+
     return ListView(
       physics: const BouncingScrollPhysics(),
       padding: const EdgeInsets.all(20),
       children: [
-        _buildSectionHeader("8 CHEITAP VOWEL SIGNS (ꯆꯩꯇꯥꯞ)", "Diacritic vowel modifiers attaching to any letter"),
+        _buildSectionHeader(
+          "9 CHEITAP-CHENAP VOWEL DIACRITICS (ꯆꯩꯇꯥꯞ ꯹)",
+          "Aa-tap, E-nap, Ee-nap, Yat-nap, Chei-nap, Shou-nap, Ot-nap, Uu-nap, Nung",
+        ),
         const SizedBox(height: 12),
-        for (final sign in MeeteiData.cheitap8Signs)
+
+        // Interactive Syllable Generator Card
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: isDark ? const Color(0xFF141419) : Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: isDark ? const Color(0xFF6366F1).withValues(alpha: 0.3) : const Color(0xFF6366F1).withValues(alpha: 0.2),
+              width: 1.5,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF6366F1).withValues(alpha: isDark ? 0.08 : 0.05),
+                blurRadius: 16,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF6366F1).withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Icon(Icons.hub_outlined, color: Color(0xFF6366F1), size: 18),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "Syllable Combinations Across Families",
+                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          "Combine Cheitap diacritics with 18 Core, 9 Lom, or 10 Lolsum",
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.7),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 14),
+
+              // Group Selector Chips
+              Row(
+                children: [
+                  _buildCheitapGroupChip("18 Core", 'core18', isDark),
+                  const SizedBox(width: 8),
+                  _buildCheitapGroupChip("9 Lom", 'lom9', isDark),
+                  const SizedBox(width: 8),
+                  _buildCheitapGroupChip("10 Lolsum", 'lolsum10', isDark),
+                ],
+              ),
+              const SizedBox(height: 14),
+
+              // Base Letter Horizontal Selector
+              Text(
+                "Select Base Letter ($groupTitle):",
+                style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w600, color: Color(0xFF6366F1)),
+              ),
+              const SizedBox(height: 8),
+              SizedBox(
+                height: 58,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: currentGroupList.length,
+                  separatorBuilder: (_, __) => const SizedBox(width: 8),
+                  itemBuilder: (context, idx) {
+                    final char = currentGroupList[idx];
+                    final isSelected = idx == safeIndex;
+                    return InkWell(
+                      borderRadius: BorderRadius.circular(10),
+                      onTap: () {
+                        setState(() {
+                          _cheitapBaseIndex = idx;
+                        });
+                      },
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 180),
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? const Color(0xFF6366F1)
+                              : (isDark ? const Color(0xFF1E1E26) : const Color(0xFFF1F5F9)),
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
+                            color: isSelected
+                                ? const Color(0xFF6366F1)
+                                : (isDark ? Colors.white.withValues(alpha: 0.08) : Colors.black.withValues(alpha: 0.06)),
+                          ),
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              char.pukokKey,
+                              style: TextStyle(
+                                fontFamily: "PukokEeyek",
+                                fontSize: 18,
+                                color: isSelected ? Colors.white : (isDark ? Colors.white : Colors.black87),
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              char.name.split("-")[0],
+                              style: TextStyle(
+                                fontSize: 9.5,
+                                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                                color: isSelected ? Colors.white.withValues(alpha: 0.9) : (isDark ? Colors.white60 : Colors.black54),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Active Base Letter Summary Banner
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: BoxDecoration(
+                  color: isDark ? const Color(0xFF1E1E26) : const Color(0xFFF8FAFC),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  children: [
+                    Text(
+                      selectedBase.pukokKey,
+                      style: const TextStyle(fontFamily: "PukokEeyek", fontSize: 22, color: Color(0xFF6366F1)),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        "${selectedBase.name} (${selectedBase.char}) • Key: '${selectedBase.pukokKey}' • ${selectedBase.meaning}",
+                        style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w600),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 14),
+
+              // 9-Syllable Combinations Grid (3x3)
+              GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
+                  mainAxisSpacing: 10,
+                  crossAxisSpacing: 10,
+                  childAspectRatio: 0.88,
+                ),
+                itemCount: MeeteiData.cheitap9Signs.length,
+                itemBuilder: (context, idx) {
+                  final sign = MeeteiData.cheitap9Signs[idx];
+                  final pukokCombo = "${selectedBase.pukokKey}${sign.pukokKey}";
+                  final unicodeCombo = "${selectedBase.char}${sign.char}";
+                  return InkWell(
+                    borderRadius: BorderRadius.circular(12),
+                    onTap: () {
+                      _insertChar(unicodeCombo);
+                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("Inserted '$unicodeCombo' ($pukokCombo) into sandbox"),
+                          duration: const Duration(seconds: 1),
+                          behavior: SnackBarBehavior.floating,
+                        ),
+                      );
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: isDark ? const Color(0xFF1E1E28) : const Color(0xFFF8FAFC),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: isDark ? Colors.white.withValues(alpha: 0.08) : Colors.black.withValues(alpha: 0.06),
+                        ),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            pukokCombo,
+                            style: const TextStyle(
+                              fontFamily: "PukokEeyek",
+                              fontSize: 26,
+                              fontWeight: FontWeight.normal,
+                              color: Color(0xFF6366F1),
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            unicodeCombo,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            sign.name,
+                            style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w600,
+                              color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.8),
+                            ),
+                            textAlign: TextAlign.center,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 2),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF6366F1).withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: Text(
+                              "${selectedBase.pukokKey}+${sign.pukokKey}",
+                              style: const TextStyle(
+                                fontSize: 9,
+                                fontFamily: "monospace",
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF6366F1),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+
+        const SizedBox(height: 24),
+        _buildSectionHeader("9 INDIVIDUAL CHEITAP-CHEINAP SIGNS", "Standard diacritic keys and formulas from Wakoklon Puya"),
+        const SizedBox(height: 12),
+        for (final sign in MeeteiData.cheitap9Signs)
           Container(
             margin: const EdgeInsets.only(bottom: 12),
             padding: const EdgeInsets.all(16),
@@ -839,22 +1263,17 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
             child: Row(
               children: [
                 Container(
-                  width: 50,
-                  height: 50,
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                   decoration: BoxDecoration(
                     color: const Color(0xFF6366F1).withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   alignment: Alignment.center,
-                  child: Text(
-                    MeeteiMayekService.convertUnicodeToPukokFont("ꯀ${sign.char}"),
-                    style: const TextStyle(
-                      fontFamily: "PukokEeyek",
-                      fontSize: 28,
-                      fontWeight: FontWeight.normal,
-                      color: Color(0xFF6366F1),
-                      fontFamilyFallback: AppTheme.fontFallbacks,
-                    ),
+                  child: _buildPukokFormula(
+                    sign.pukokKey,
+                    sign.pukokWord,
+                    fontSize: 22,
+                    color: const Color(0xFF6366F1),
                   ),
                 ),
                 const SizedBox(width: 14),
@@ -872,12 +1291,12 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                             decoration: BoxDecoration(
-                              color: Colors.grey.withValues(alpha: 0.15),
+                              color: const Color(0xFF6366F1).withValues(alpha: 0.12),
                               borderRadius: BorderRadius.circular(4),
                             ),
                             child: Text(
-                              sign.codePoint,
-                              style: const TextStyle(fontSize: 10, fontFamily: "monospace"),
+                              "key: ${sign.pukokKey}",
+                              style: const TextStyle(fontSize: 10, fontFamily: "monospace", color: Color(0xFF6366F1), fontWeight: FontWeight.bold),
                             ),
                           ),
                         ],
@@ -888,7 +1307,6 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
                         style: TextStyle(
                           fontSize: 12,
                           color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.7),
-                          fontFamilyFallback: AppTheme.fontFallbacks,
                         ),
                       ),
                     ],
@@ -901,63 +1319,190 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
     );
   }
 
-  // 4. Numbers & Cheishing Tab
+  // 4. Numbers, 5-Khutam & Signs Tab
   Widget _buildNumbersTab(BuildContext context, bool isDark) {
     return ListView(
       physics: const BouncingScrollPhysics(),
       padding: const EdgeInsets.all(20),
       children: [
-        _buildSectionHeader("10 MEETEI NUMERALS (ꯆꯩꯁꯤꯡ ꯃꯌꯦꯛ)", "Indigenous base-10 numerical digits"),
+        _buildSectionHeader("10 CHEISHING DIGITS (ꯆꯩꯁꯤꯡ ꯱꯰)", "ama-1, ani-2, ahum-3, mali-4, maga-5, taluk-6, talet-7, nepal-8, Mapan-9, Tala-10, phun-0"),
         const SizedBox(height: 10),
         GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 5,
-            mainAxisSpacing: 10,
-            crossAxisSpacing: 10,
-            childAspectRatio: 0.85,
+            mainAxisSpacing: 8,
+            crossAxisSpacing: 8,
+            childAspectRatio: 0.72,
           ),
-          itemCount: MeeteiData.numerals10.length,
+          itemCount: MeeteiData.cheishing10Numerals.length,
           itemBuilder: (context, index) {
-            final num = MeeteiData.numerals10[index];
+            final num = MeeteiData.cheishing10Numerals[index];
             return Container(
+              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
               decoration: BoxDecoration(
                 color: isDark ? const Color(0xFF141418) : Colors.white,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(10),
                 border: Border.all(
                   color: isDark ? Colors.white.withValues(alpha: 0.07) : Colors.black.withValues(alpha: 0.06),
                 ),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    MeeteiMayekService.convertUnicodeToPukokFont(num.char),
-                    style: const TextStyle(
-                      fontFamily: "PukokEeyek",
-                      fontSize: 26,
-                      fontWeight: FontWeight.normal,
-                      color: Color(0xFF6366F1),
-                      fontFamilyFallback: AppTheme.fontFallbacks,
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: _buildPukokFormula(
+                      num.pukokKey,
+                      num.pukokWord,
+                      fontSize: 15,
+                      color: const Color(0xFF6366F1),
                     ),
                   ),
                   const SizedBox(height: 2),
-                  Text(
-                    num.latin ?? "$index",
-                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      "(${num.name.split(' ').first})",
+                      style: const TextStyle(fontSize: 10.5, fontWeight: FontWeight.w600),
+                    ),
                   ),
                   Text(
-                    num.name.split(" ").first,
+                    "key: ${num.pukokKey}",
                     style: TextStyle(
-                      fontSize: 9,
+                      fontSize: 8.5,
                       color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.6),
+                      fontFamily: "monospace",
                     ),
                   ),
                 ],
               ),
             );
           },
+        ),
+
+        const SizedBox(height: 24),
+        _buildSectionHeader(
+          "5-KHUTAM ARITHMETIC OPERATORS (ꯈꯨꯇꯝ ꯵)",
+          "khaitokpa (-), tinshinpa (+), punpa (*), yenthokpa (/), mannapa (=) • (:) is MANNABA in Meetei Mayek",
+        ),
+        const SizedBox(height: 10),
+        Column(
+          children: [
+            for (final op in MeeteiData.khutam5Operators)
+              Container(
+                margin: const EdgeInsets.only(bottom: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                decoration: BoxDecoration(
+                  color: isDark ? const Color(0xFF141418) : Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: isDark ? Colors.white.withValues(alpha: 0.07) : Colors.black.withValues(alpha: 0.06),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF59E0B).withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      alignment: Alignment.center,
+                      child: _buildPukokFormula(
+                        op.pukokKey,
+                        op.pukokWord,
+                        fontSize: 20,
+                        color: const Color(0xFFF59E0B),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "${op.name} (${op.mathSymbol})",
+                            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            op.description,
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.7),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF59E0B).withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(
+                        "key: ${op.pukokKey}",
+                        style: const TextStyle(fontSize: 10.5, fontFamily: "monospace", fontWeight: FontWeight.bold, color: Color(0xFFF59E0B)),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+          ],
+        ),
+
+        const SizedBox(height: 24),
+        _buildSectionHeader(
+          "KHUTAM EEYEK SHING (PUNCTUATION SIGNS)",
+          "Dedicated sign symbols from SLLK page 4 & Pukok Key Layout page 2",
+        ),
+        const SizedBox(height: 10),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            for (final s in MeeteiData.khutamSigns)
+              Container(
+                width: 108,
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: isDark ? const Color(0xFF141418) : Colors.white,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: isDark ? Colors.white.withValues(alpha: 0.07) : Colors.black.withValues(alpha: 0.06),
+                  ),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: _buildPukokFormula(
+                        s.pukokKey,
+                        s.pukokWord,
+                        fontSize: 16,
+                        color: const Color(0xFF06B6D4),
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      "(${s.name})",
+                      style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Text(
+                      "key: ${s.pukokKey}",
+                      style: const TextStyle(fontSize: 9, fontFamily: "monospace", color: Colors.grey),
+                    ),
+                  ],
+                ),
+              ),
+          ],
         ),
 
         const SizedBox(height: 28),
@@ -1007,7 +1552,6 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
                                 fontFamily: "PukokEeyek",
                                 fontSize: 18,
                                 fontWeight: FontWeight.normal,
-                                fontFamilyFallback: AppTheme.fontFallbacks,
                               ),
                             ),
                             Text(
@@ -1049,7 +1593,6 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
             fontSize: 12,
             fontWeight: FontWeight.w800,
             letterSpacing: 0.8,
-            fontFamilyFallback: AppTheme.fontFallbacks,
           ),
         ),
         const SizedBox(height: 2),
@@ -1072,7 +1615,7 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
         crossAxisCount: 3,
         mainAxisSpacing: 10,
         crossAxisSpacing: 10,
-        childAspectRatio: 0.95,
+        childAspectRatio: 0.82,
       ),
       itemCount: chars.length,
       itemBuilder: (context, index) {
@@ -1080,7 +1623,7 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
         return GestureDetector(
           onTap: () => _showCharacterDetails(context, c),
           child: Container(
-            padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
             decoration: BoxDecoration(
               color: isDark ? const Color(0xFF141418) : Colors.white,
               borderRadius: BorderRadius.circular(14),
@@ -1090,27 +1633,33 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  MeeteiMayekService.convertUnicodeToPukokFont(c.char),
-                  style: const TextStyle(
-                    fontFamily: "PukokEeyek",
-                    fontSize: 32,
-                    fontWeight: FontWeight.normal,
-                    fontFamilyFallback: AppTheme.fontFallbacks,
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: _buildPukokFormula(
+                    c.pukokKey,
+                    c.pukokWord,
+                    fontSize: 19,
+                    color: isDark ? const Color(0xFFF1F5F9) : const Color(0xFF0F172A),
                   ),
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  c.name,
-                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
+                const SizedBox(height: 3),
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    "(${c.name})",
+                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
+                  ),
                 ),
+                const SizedBox(height: 2),
                 Text(
                   c.meaning.split("(").first.trim(),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 10,
+                    fontSize: 9.5,
                     color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.6),
                   ),
                 ),
@@ -1153,22 +1702,17 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
                 Row(
                   children: [
                     Container(
-                      width: 64,
-                      height: 64,
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                       decoration: BoxDecoration(
                         color: const Color(0xFF6366F1).withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(16),
                       ),
                       alignment: Alignment.center,
-                      child: Text(
-                        MeeteiMayekService.convertUnicodeToPukokFont(char.char),
-                        style: const TextStyle(
-                          fontFamily: "PukokEeyek",
-                          fontSize: 40,
-                          fontWeight: FontWeight.normal,
-                          color: Color(0xFF6366F1),
-                          fontFamilyFallback: AppTheme.fontFallbacks,
-                        ),
+                      child: _buildPukokFormula(
+                        char.pukokKey,
+                        char.pukokWord,
+                        fontSize: 28,
+                        color: const Color(0xFF6366F1),
                       ),
                     ),
                     const SizedBox(width: 16),
@@ -1177,11 +1721,10 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "${char.name} (${char.char})",
+                            "(${char.name})",
                             style: const TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
-                              fontFamilyFallback: AppTheme.fontFallbacks,
                             ),
                           ),
                           Text(
@@ -1189,12 +1732,11 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
                             style: TextStyle(
                               fontSize: 13,
                               color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.7),
-                              fontFamilyFallback: AppTheme.fontFallbacks,
                             ),
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            "${char.codePoint} • Sound: ${char.ipa ?? char.latin ?? ''}",
+                            "Direct key: ${char.pukokKey} • ${char.codePoint}",
                             style: const TextStyle(fontSize: 11, fontFamily: "monospace"),
                           ),
                         ],
@@ -1204,7 +1746,7 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
                 ),
                 const SizedBox(height: 20),
                 const Text(
-                  "Cheitap Vowel Combinations:",
+                  "Cheitap Vowel Combinations (Direct Script):",
                   style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 10),
@@ -1212,7 +1754,7 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
                   spacing: 8,
                   runSpacing: 8,
                   children: [
-                    for (final sign in MeeteiData.cheitap8Signs)
+                    for (final sign in MeeteiData.cheitap9Signs)
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                         decoration: BoxDecoration(
@@ -1223,12 +1765,11 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
                           ),
                         ),
                         child: Text(
-                          MeeteiMayekService.convertUnicodeToPukokFont("${char.char}${sign.char}"),
+                          "${char.pukokKey}${sign.pukokKey}",
                           style: const TextStyle(
                             fontFamily: "PukokEeyek",
-                            fontSize: 20,
+                            fontSize: 22,
                             fontWeight: FontWeight.normal,
-                            fontFamilyFallback: AppTheme.fontFallbacks,
                           ),
                         ),
                       ),

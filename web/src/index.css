@@ -3,25 +3,13 @@
    Inspired by Linear, Raycast, and Notion
    ========================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+Meetei+Mayek:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 /* Authentic Wakoklon Puya Pukok Eeyek Font by Kanglei Eempham */
 @font-face {
   font-family: 'Pukok Eeyek';
-  src: url('/fonts/PukokEeyek.otf') format('opentype'),
-       url('./fonts/PukokEeyek.otf') format('opentype'),
-       url('fonts/PukokEeyek.otf') format('opentype');
+  src: url('/fonts/PukokEeyek.otf') format('opentype');
   font-weight: 100 900;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Pukok Eeyek';
-  src: url('/fonts/PukokEeyek.otf') format('opentype'),
-       url('./fonts/PukokEeyek.otf') format('opentype'),
-       url('fonts/PukokEeyek.otf') format('opentype');
-  font-weight: bold;
   font-style: normal;
   font-display: swap;
 }
@@ -83,11 +71,11 @@
   --shadow-elevated: 0 20px 40px -8px rgba(0, 0, 0, 0.7), 0 8px 16px -4px rgba(0, 0, 0, 0.5);
   --shadow-glow: 0 0 25px rgba(255, 255, 255, 0.06);
 
-  /* Fonts */
-  --font-meetei: 'Noto Sans Meetei Mayek', sans-serif;
-  --font-pukok: 'Pukok Eeyek', 'Noto Sans Meetei Mayek', sans-serif;
-  --font-sans: 'Inter', 'Noto Sans Meetei Mayek', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-heading: 'Inter', 'Noto Sans Meetei Mayek', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  /* Fonts - Authentic Wakoklon Puya Pukok Eeyek Font */
+  --font-meetei: 'Pukok Eeyek', sans-serif;
+  --font-pukok: 'Pukok Eeyek', sans-serif;
+  --font-sans: 'Inter', 'Pukok Eeyek', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-heading: 'Inter', 'Pukok Eeyek', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 
   /* Transitions */

@@ -5,6 +5,7 @@ import {
   translateMarkdownToMeeteiMayek,
   translateToMeeteiMayekWithVocab,
   convertUnicodeToPukokFont,
+  convertMarkdownToPukokFont,
 } from '../services/meeteiMayekService';
 import { ArrowLeft, Clock, Share2, Check, PenLine, Sparkles, Languages, Trash2, AlertTriangle, Key, Loader2, Download } from 'lucide-react';
 import { marked } from 'marked';
@@ -23,7 +24,7 @@ export const ArticleView: React.FC<ArticleViewProps> = ({ post, onBack, onEditDr
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState<boolean>(false);
   const [isTranslated, setIsTranslated] = useState<boolean>(post.language === 'mni');
-  const [fontMode, setFontMode] = useState<'noto' | 'pukok'>('noto');
+  const fontMode = 'pukok';
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
   const [deleteToken, setDeleteToken] = useState<string>(() => localStorage.getItem('github_cms_token') || '');
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
@@ -69,12 +70,15 @@ export const ArticleView: React.FC<ArticleViewProps> = ({ post, onBack, onEditDr
   const contentHtml = useMemo(() => {
     if (!rawMarkdown) return '';
     try {
-      const sanitizedMarkdown = rawMarkdown.replaceAll(
-        'https://raw.githubusercontent.com/Arnold-cd/blog-cms/main/images/',
-        './images/'
-      );
+      // Normalize image paths so that relative images/ and ./images/ cleanly resolve to /images/
+      const sanitizedMarkdown = rawMarkdown
+        .replaceAll(
+          'https://raw.githubusercontent.com/Arnold-cd/blog-cms/main/images/',
+          '/images/'
+        )
+        .replace(/\((?:\.\/)?images\//g, '(/images/');
       const unicodeParsed = isTranslated ? translateMarkdownToMeeteiMayek(sanitizedMarkdown) : sanitizedMarkdown;
-      const textToParse = fontMode === 'pukok' && isTranslated ? convertUnicodeToPukokFont(unicodeParsed) : unicodeParsed;
+      const textToParse = fontMode === 'pukok' && isTranslated ? convertMarkdownToPukokFont(unicodeParsed) : unicodeParsed;
       return marked.parse(textToParse, { gfm: true, breaks: true }) as string;
     } catch (err: any) {
       return `<p>Error rendering article content: ${err.message}</p>`;
@@ -235,9 +239,7 @@ export const ArticleView: React.FC<ArticleViewProps> = ({ post, onBack, onEditDr
           <Languages size={15} color="var(--accent-cyan)" />
           <span className="reader-lang-title">Language View:</span>
           <span className="reader-lang-subtitle">
-            {fontMode === 'pukok' && isTranslated
-              ? '(Powered by Authentic Wakoklon Pukok Eeyek Font)'
-              : '(Powered by Google Noto Sans Meetei Mayek)'}
+            (Powered by Authentic Wakoklon Pukok Eeyek Font)
           </span>
         </div>
 
@@ -248,48 +250,16 @@ export const ArticleView: React.FC<ArticleViewProps> = ({ post, onBack, onEditDr
               href="fonts/PukokEeyek.otf"
               download="PukokEeyek.otf"
               className="btn-ghost reader-download-ttf"
+              style={{ color: 'var(--accent-amber)', borderColor: 'rgba(245, 158, 11, 0.3)' }}
               title="Download Authentic Puya Pukok Eeyek Font (.otf) by Kanglei Eempham"
               id="link-download-pukok-otf"
             >
               <Download size={13} />
-              <span>Pukok OTF</span>
-            </a>
-            <a
-              href="fonts/NotoSansMeeteiMayek-Regular.ttf"
-              download="NotoSansMeeteiMayek-Regular.ttf"
-              className="btn-ghost reader-download-ttf"
-              title="Download Meetei Mayek TrueType Font (.ttf)"
-              id="link-download-ttf"
-            >
-              <Download size={13} />
-              <span>Noto TTF</span>
+              <span>Pukok Eeyek OTF</span>
             </a>
           </div>
 
-          {/* Script / Font Family Mode Selector (visible when Meetei Mayek is active) */}
-          {isTranslated && (
-            <div className="studio-view-toggle">
-              <button
-                type="button"
-                className={`view-toggle-btn ${fontMode === 'noto' ? 'active' : ''}`}
-                onClick={() => setFontMode('noto')}
-                title="Google Noto Sans Meetei Mayek (Unicode standard)"
-                id="btn-font-noto"
-              >
-                <span>Noto Sans</span>
-              </button>
-              <button
-                type="button"
-                className={`view-toggle-btn ${fontMode === 'pukok' ? 'active' : ''}`}
-                onClick={() => setFontMode('pukok')}
-                title="Authentic Wakoklon Pukok Eeyek Font by Kanglei Eempham"
-                id="btn-font-pukok"
-              >
-                <span style={{ fontFamily: 'var(--font-pukok)', fontSize: '1rem', lineHeight: 1 }}>pFyJ</span>
-                <span>Pukok Puya</span>
-              </button>
-            </div>
-          )}
+          {/* Language Toggle */}
 
           {/* Language Toggle */}
           <div className="studio-view-toggle">

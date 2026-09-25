@@ -204,13 +204,13 @@ export function App() {
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
             <a
-              href="fonts/NotoSansMeeteiMayek-Regular.ttf"
-              download="NotoSansMeeteiMayek-Regular.ttf"
+              href="fonts/PukokEeyek.otf"
+              download="PukokEeyek.otf"
               style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', color: 'var(--text-muted)', textDecoration: 'none', fontSize: '0.78rem' }}
-              title="Download official Meetei Mayek TrueType Font (.ttf) for offline typing and translation"
+              title="Download Authentic Puya Pukok Eeyek OpenType Font (.otf) by Kanglei Eempham"
             >
               <Download size={12} />
-              <span>Meetei Mayek Font (.ttf)</span>
+              <span>Authentic Pukok Eeyek Font (.otf)</span>
             </a>
             <span>Push markdown to <code>posts/</code> &bull; Auto-deployed via GitHub Actions</span>
           </div>

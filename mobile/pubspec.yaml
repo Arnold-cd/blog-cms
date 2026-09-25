@@ -1,7 +1,7 @@
 name: sllk
 description: "SLLK - Modern Content & Article Reader powered by Git Headless CMS"
 publish_to: "none"
-version: 1.0.0+5
+version: 1.0.0+7
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
@@ -36,13 +36,9 @@ flutter:
   assets:
     - assets/fonts/
     - assets/images/
+    - assets/library.json
 
   fonts:
-    - family: NotoSansMeeteiMayek
-      fonts:
-        - asset: assets/fonts/NotoSansMeeteiMayek-Regular.ttf
-        - asset: assets/fonts/NotoSansMeeteiMayek-Bold.ttf
-          weight: 700
     - family: PukokEeyek
       fonts:
         - asset: assets/fonts/PukokEeyek.otf

@@ -1,11 +1,14 @@
+import "dart:convert";
 import "dart:io";
+import "package:flutter/services.dart" show rootBundle;
 import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:path_provider/path_provider.dart";
 import "../models/pdf_document.dart";
 import "../services/api_service.dart";
+import "../services/cache_service.dart";
 import "app_providers.dart";
 
-/// State Notifier for PDF Library documents
+/// State Notifier for PDF Library documents (Offline-First)
 class LibraryNotifier extends StateNotifier<AsyncValue<List<PdfDocument>>> {
   final Ref _ref;
 
@@ -14,7 +17,36 @@ class LibraryNotifier extends StateNotifier<AsyncValue<List<PdfDocument>>> {
   }
 
   Future<void> loadInitial() async {
-    await refresh(showLoadingIfEmpty: true);
+    // 1. Instantly display cached library if available from previous sessions
+    var cached = await CacheService.getCachedLibrary();
+
+    // 2. If no cache yet (first run / offline), load pre-bundled library.json asset
+    if (cached.isEmpty) {
+      cached = await _loadBundledLibrary();
+      if (cached.isNotEmpty) {
+        await CacheService.saveLibrary(cached);
+      }
+    }
+
+    if (cached.isNotEmpty) {
+      state = AsyncValue.data(cached);
+    }
+
+    // 3. Fetch fresh manifest from GitHub in background
+    await refresh(showLoadingIfEmpty: cached.isEmpty);
+  }
+
+  Future<List<PdfDocument>> _loadBundledLibrary() async {
+    try {
+      final raw = await rootBundle.loadString("assets/library.json");
+      final decoded = json.decode(raw);
+      if (decoded is List) {
+        return decoded
+            .map((item) => PdfDocument.fromJson(item as Map<String, dynamic>))
+            .toList();
+      }
+    } catch (_) {}
+    return [];
   }
 
   Future<void> refresh({bool showLoadingIfEmpty = false}) async {
@@ -25,12 +57,26 @@ class LibraryNotifier extends StateNotifier<AsyncValue<List<PdfDocument>>> {
     try {
       final api = _ref.read(apiServiceProvider);
       final remoteDocs = await api.fetchLibraryDocuments();
+
+      // Save to offline cache
+      await CacheService.saveLibrary(remoteDocs);
       state = AsyncValue.data(remoteDocs);
     } catch (err, stack) {
+      // Offline fallback: keep existing data or restore from cache/bundle
       if (state.valueOrNull != null && state.valueOrNull!.isNotEmpty) {
-        // Keep existing documents in view
+        // Keep cached data in view
       } else {
-        state = AsyncValue.error(err, stack);
+        final cached = await CacheService.getCachedLibrary();
+        if (cached.isNotEmpty) {
+          state = AsyncValue.data(cached);
+        } else {
+          final bundled = await _loadBundledLibrary();
+          if (bundled.isNotEmpty) {
+            state = AsyncValue.data(bundled);
+          } else {
+            state = AsyncValue.error(err, stack);
+          }
+        }
       }
     }
   }
@@ -195,4 +241,39 @@ class DownloadedPdfsNotifier extends StateNotifier<Map<String, String>> {
 final downloadedPdfsProvider =
     StateNotifierProvider<DownloadedPdfsNotifier, Map<String, String>>((ref) {
   return DownloadedPdfsNotifier();
+});
+
+/// Provider for list of all offline downloaded PDF documents with full metadata
+final downloadedDocumentsProvider = Provider<List<PdfDocument>>((ref) {
+  final downloadedMap = ref.watch(downloadedPdfsProvider);
+  final allDocs = ref.watch(libraryProvider).valueOrNull ?? [];
+
+  final list = <PdfDocument>[];
+  for (final entry in downloadedMap.entries) {
+    final fileName = entry.key;
+    final match = allDocs.where((d) => d.fileName == fileName).firstOrNull;
+    if (match != null) {
+      list.add(match);
+    } else {
+      final cleanTitle = fileName
+          .replaceAll(RegExp(r'\.pdf$', caseSensitive: false), '')
+          .replaceAll('_', ' ');
+      list.add(PdfDocument(
+        id: fileName,
+        title: cleanTitle,
+        description: "Saved for offline reading",
+        author: "Downloaded Document",
+        category: "Offline",
+        language: "mni",
+        publishedDate: "",
+        fileName: fileName,
+        pdfUrl: "",
+        coverUrl: "",
+        pageCount: 1,
+        fileSizeBytes: 0,
+        fileSizeFormatted: "Offline",
+      ));
+    }
+  }
+  return list;
 });
