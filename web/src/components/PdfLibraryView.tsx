@@ -781,7 +781,7 @@ export const PdfLibraryView: React.FC<PdfLibraryViewProps> = ({
               </div>
             )}
 
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '1.5rem' }}>
+            <div className="modal-actions-row">
               <button
                 type="button"
                 className="btn-secondary"

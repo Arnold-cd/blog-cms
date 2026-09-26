@@ -365,26 +365,11 @@ export const ArticleView: React.FC<ArticleViewProps> = ({ post, onBack, onEditDr
     
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
-        <div className="modal-backdrop" style={{
-          position: 'fixed',
-          inset: 0,
-          background: 'rgba(0,0,0,0.8)',
-          backdropFilter: 'blur(12px)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 1000,
-          padding: '1rem',
-        }}>
+        <div className="modal-backdrop" onClick={() => !isDeleting && setShowDeleteModal(false)}>
           <div className="modal-dialog" style={{
-            background: 'var(--bg-elevated)',
             border: '1px solid rgba(244, 63, 94, 0.4)',
-            borderRadius: 'var(--radius-lg)',
             maxWidth: '480px',
-            width: '100%',
-            padding: '2rem',
-            boxShadow: 'var(--shadow-elevated)',
-          }}>
+          }} onClick={(e) => e.stopPropagation()}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.75rem', color: 'var(--accent-rose)' }}>
               <AlertTriangle size={20} />
               <h3 style={{ fontSize: '1.2rem', fontWeight: 700, margin: 0 }}>Delete Article from GitHub</h3>
@@ -428,7 +413,7 @@ export const ArticleView: React.FC<ArticleViewProps> = ({ post, onBack, onEditDr
               </div>
             )}
 
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem' }}>
+            <div className="modal-actions-row">
               <button
                 type="button"
                 className="btn-secondary"

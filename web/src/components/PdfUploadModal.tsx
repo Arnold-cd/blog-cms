@@ -307,7 +307,7 @@ export const PdfUploadModal: React.FC<PdfUploadModalProps> = ({ isOpen, onClose,
     <div className="modal-backdrop" onClick={onClose}>
       <div
         className="modal-dialog"
-        style={{ maxWidth: '660px', width: '92%' }}
+        style={{ maxWidth: '660px' }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -351,35 +351,15 @@ export const PdfUploadModal: React.FC<PdfUploadModalProps> = ({ isOpen, onClose,
         </div>
 
         {/* Source Selector Pills */}
-        <div
-          style={{
-            display: 'flex',
-            gap: '0.4rem',
-            padding: '0.3rem',
-            background: 'rgba(255, 255, 255, 0.04)',
-            borderRadius: '10px',
-            marginBottom: '1.25rem',
-            border: '1px solid var(--border-subtle)',
-          }}
-        >
+        <div className="source-selector-bar">
           <button
             type="button"
             onClick={() => handleTabChange('archive')}
+            className="source-selector-btn"
             style={{
-              flex: 1,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '0.4rem',
-              padding: '0.45rem 0.75rem',
-              fontSize: '0.8rem',
-              fontWeight: sourceType === 'archive' ? 600 : 400,
-              borderRadius: '7px',
-              border: 'none',
-              cursor: 'pointer',
               background: sourceType === 'archive' ? '#d97706' : 'transparent',
               color: sourceType === 'archive' ? '#fff' : 'var(--text-secondary)',
-              transition: 'all 0.15s ease',
+              fontWeight: sourceType === 'archive' ? 600 : 400,
             }}
           >
             <Globe size={14} />
@@ -389,21 +369,11 @@ export const PdfUploadModal: React.FC<PdfUploadModalProps> = ({ isOpen, onClose,
           <button
             type="button"
             onClick={() => handleTabChange('gdrive')}
+            className="source-selector-btn"
             style={{
-              flex: 1,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '0.4rem',
-              padding: '0.45rem 0.75rem',
-              fontSize: '0.8rem',
-              fontWeight: sourceType === 'gdrive' ? 600 : 400,
-              borderRadius: '7px',
-              border: 'none',
-              cursor: 'pointer',
               background: sourceType === 'gdrive' ? '#d97706' : 'transparent',
               color: sourceType === 'gdrive' ? '#fff' : 'var(--text-secondary)',
-              transition: 'all 0.15s ease',
+              fontWeight: sourceType === 'gdrive' ? 600 : 400,
             }}
           >
             <HardDrive size={14} />
@@ -413,21 +383,11 @@ export const PdfUploadModal: React.FC<PdfUploadModalProps> = ({ isOpen, onClose,
           <button
             type="button"
             onClick={() => handleTabChange('local')}
+            className="source-selector-btn"
             style={{
-              flex: 1,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '0.4rem',
-              padding: '0.45rem 0.75rem',
-              fontSize: '0.8rem',
-              fontWeight: sourceType === 'local' ? 600 : 400,
-              borderRadius: '7px',
-              border: 'none',
-              cursor: 'pointer',
               background: sourceType === 'local' ? '#d97706' : 'transparent',
               color: sourceType === 'local' ? '#fff' : 'var(--text-secondary)',
-              transition: 'all 0.15s ease',
+              fontWeight: sourceType === 'local' ? 600 : 400,
             }}
           >
             <UploadCloud size={14} />
@@ -596,7 +556,7 @@ export const PdfUploadModal: React.FC<PdfUploadModalProps> = ({ isOpen, onClose,
                 </p>
               </div>
 
-              <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <div className="fetch-input-row">
                 <input
                   type="text"
                   className="input"
@@ -665,7 +625,7 @@ export const PdfUploadModal: React.FC<PdfUploadModalProps> = ({ isOpen, onClose,
                 </p>
               </div>
 
-              <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <div className="fetch-input-row">
                 <input
                   type="text"
                   className="input"
@@ -746,7 +706,7 @@ export const PdfUploadModal: React.FC<PdfUploadModalProps> = ({ isOpen, onClose,
           )}
 
           {/* Metadata Fields (Always Editable by Admin!) */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.85rem', marginBottom: '0.85rem' }}>
+          <div className="modal-form-grid">
             <div>
               <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, marginBottom: '0.35rem' }}>
                 Document Title * (Editable)
@@ -777,7 +737,7 @@ export const PdfUploadModal: React.FC<PdfUploadModalProps> = ({ isOpen, onClose,
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.85rem', marginBottom: '0.85rem' }}>
+          <div className="modal-form-grid">
             <div>
               <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, marginBottom: '0.35rem' }}>
                 Author / Organization
@@ -811,7 +771,7 @@ export const PdfUploadModal: React.FC<PdfUploadModalProps> = ({ isOpen, onClose,
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.85rem', marginBottom: '0.85rem' }}>
+          <div className="modal-form-grid">
             <div>
               <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, marginBottom: '0.35rem' }}>
                 Language
@@ -882,7 +842,7 @@ export const PdfUploadModal: React.FC<PdfUploadModalProps> = ({ isOpen, onClose,
             <div style={{ fontSize: '0.78rem', fontWeight: 600, marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>
               Target Repository & GitHub Token
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+            <div className="modal-form-grid" style={{ marginBottom: 0 }}>
               <input
                 type="text"
                 className="input"
@@ -903,7 +863,7 @@ export const PdfUploadModal: React.FC<PdfUploadModalProps> = ({ isOpen, onClose,
           </div>
 
           {/* Action Buttons */}
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', alignItems: 'center' }}>
+          <div className="modal-actions-row">
             {uploading && (
               <span style={{ fontSize: '0.8rem', color: '#d97706', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
                 <Loader2 size={14} className="spin" />

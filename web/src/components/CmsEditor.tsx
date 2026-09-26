@@ -1066,26 +1066,10 @@ Support for **bold**, *italics*, quotes, and tables:
 
       {/* GitHub Direct Publish Modal */}
       {showGitHubModal && (
-        <div className="modal-backdrop" style={{
-          position: 'fixed',
-          inset: 0,
-          background: 'rgba(0,0,0,0.8)',
-          backdropFilter: 'blur(12px)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 1000,
-          padding: '1rem',
-        }}>
+        <div className="modal-backdrop" onClick={() => !publishStatus.loading && setShowGitHubModal(false)}>
           <div className="modal-dialog" style={{
-            background: 'var(--bg-elevated)',
-            border: '1px solid var(--border-active)',
-            borderRadius: 'var(--radius-lg)',
             maxWidth: '520px',
-            width: '100%',
-            padding: '2rem',
-            boxShadow: 'var(--shadow-elevated)',
-          }}>
+          }} onClick={(e) => e.stopPropagation()}>
             {publishStatus.success && publishResult?.postObj ? (
               <div>
                 <div style={{ textAlign: 'center', padding: '0.5rem 0 1rem' }}>
@@ -1126,7 +1110,7 @@ Support for **bold**, *italics*, quotes, and tables:
                   Any red <code>404 (Not Found)</code> seen in DevTools console was only GitHub checking if the article already existed before creating it. Your post has been published and added to the reader!
                 </div>
 
-                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem' }}>
+                <div className="modal-actions-row">
                   {publishResult.postUrl && (
                     <a
                       href={publishResult.postUrl}
@@ -1225,7 +1209,7 @@ Support for **bold**, *italics*, quotes, and tables:
                   </div>
                 )}
 
-                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem' }}>
+                <div className="modal-actions-row">
                   <button
                     type="button"
                     onClick={() => {

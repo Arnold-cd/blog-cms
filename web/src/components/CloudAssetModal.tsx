@@ -109,7 +109,7 @@ export const CloudAssetModal: React.FC<CloudAssetModalProps> = ({ isOpen, onClos
     <div className="modal-backdrop" onClick={onClose} style={{ zIndex: 1100 }}>
       <div
         className="modal-dialog"
-        style={{ maxWidth: '580px', width: '92%' }}
+        style={{ maxWidth: '580px' }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -153,35 +153,15 @@ export const CloudAssetModal: React.FC<CloudAssetModalProps> = ({ isOpen, onClos
         </div>
 
         {/* Provider Tabs */}
-        <div
-          style={{
-            display: 'flex',
-            gap: '0.4rem',
-            padding: '0.3rem',
-            background: 'rgba(255, 255, 255, 0.04)',
-            borderRadius: '10px',
-            marginBottom: '1.25rem',
-            border: '1px solid var(--border-subtle)',
-          }}
-        >
+        <div className="source-selector-bar">
           <button
             type="button"
             onClick={() => handleProviderChange('gdrive')}
+            className="source-selector-btn"
             style={{
-              flex: 1,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '0.4rem',
-              padding: '0.45rem 0.75rem',
-              fontSize: '0.82rem',
-              fontWeight: provider === 'gdrive' ? 600 : 400,
-              borderRadius: '7px',
-              border: 'none',
-              cursor: 'pointer',
               background: provider === 'gdrive' ? 'var(--accent-cyan)' : 'transparent',
               color: provider === 'gdrive' ? '#000' : 'var(--text-secondary)',
-              transition: 'all 0.15s ease',
+              fontWeight: provider === 'gdrive' ? 600 : 400,
             }}
           >
             <HardDrive size={15} />
@@ -191,21 +171,11 @@ export const CloudAssetModal: React.FC<CloudAssetModalProps> = ({ isOpen, onClos
           <button
             type="button"
             onClick={() => handleProviderChange('archive')}
+            className="source-selector-btn"
             style={{
-              flex: 1,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '0.4rem',
-              padding: '0.45rem 0.75rem',
-              fontSize: '0.82rem',
-              fontWeight: provider === 'archive' ? 600 : 400,
-              borderRadius: '7px',
-              border: 'none',
-              cursor: 'pointer',
               background: provider === 'archive' ? '#d97706' : 'transparent',
               color: provider === 'archive' ? '#fff' : 'var(--text-secondary)',
-              transition: 'all 0.15s ease',
+              fontWeight: provider === 'archive' ? 600 : 400,
             }}
           >
             <Globe size={15} />
@@ -219,7 +189,7 @@ export const CloudAssetModal: React.FC<CloudAssetModalProps> = ({ isOpen, onClos
             <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, marginBottom: '0.4rem' }}>
               Asset Type
             </label>
-            <div style={{ display: 'flex', gap: '0.75rem' }}>
+            <div className="asset-type-selector">
               <button
                 type="button"
                 onClick={() => setAssetType('image')}
@@ -405,7 +375,7 @@ export const CloudAssetModal: React.FC<CloudAssetModalProps> = ({ isOpen, onClos
           )}
 
           {/* Action Buttons */}
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', alignItems: 'center' }}>
+          <div className="modal-actions-row">
             <button
               type="button"
               className="btn btn-secondary"

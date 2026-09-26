@@ -5,6 +5,7 @@ dist-ssr/
 *.local
 web/dist/
 web/node_modules/
+web/public/library/
 
 # Python
 __pycache__/
