@@ -54,6 +54,7 @@ export interface PdfDocument {
   file_size_formatted: string;
   featured: boolean;
   tags: string[];
+  source_type?: 'local' | 'archive' | 'gdrive';
 }
 
 export interface PdfUploadPayload {
@@ -72,4 +73,23 @@ export interface PdfUploadPayload {
   file_size_formatted: string;
   featured: boolean;
   tags: string[];
+}
+
+export interface ExternalPdfPayload {
+  id: string;
+  title: string;
+  description: string;
+  author: string;
+  category: string;
+  language: string;
+  published_date: string;
+  file_name: string;
+  pdf_url: string;
+  cover_url: string;
+  page_count: number;
+  file_size_bytes: number;
+  file_size_formatted: string;
+  featured: boolean;
+  tags: string[];
+  source_type?: 'local' | 'archive' | 'gdrive';
 }

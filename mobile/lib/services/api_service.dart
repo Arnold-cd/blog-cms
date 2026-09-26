@@ -13,18 +13,21 @@ class ApiService {
   static const int maxMarkdownBytes = 100 * 1024 * 1024; // 100 MB for markdown articles
   static const int maxPdfBytes = 150 * 1024 * 1024;      // 150 MB for library PDF documents
 
-  /// Strict Domain Allowlist for CDN & Git repository
+  /// Strict Domain Allowlist for CDN, Git repository, and Cloud Storage
   static const Set<String> allowedDomains = {
     "blog-cms-gilt.vercel.app",
     "raw.githubusercontent.com",
     "github.com",
+    "archive.org",
+    "drive.google.com",
+    "docs.google.com",
   };
 
   final http.Client _client;
 
   ApiService({http.Client? client}) : _client = client ?? http.Client();
 
-  /// Verifies if a given URL belongs to approved CDN/Git hosts
+  /// Verifies if a given URL belongs to approved CDN/Git/Cloud hosts
   static bool isAllowedDomain(String rawUrl) {
     if (rawUrl.isEmpty) return false;
     final uri = Uri.tryParse(rawUrl);
@@ -33,7 +36,10 @@ class ApiService {
     if (host.isEmpty) return true; // Relative URLs will resolve to baseVercelUrl
     return allowedDomains.contains(host) ||
         host.endsWith(".vercel.app") ||
-        host.endsWith(".githubusercontent.com");
+        host.endsWith(".githubusercontent.com") ||
+        host.endsWith(".archive.org") ||
+        host.endsWith(".google.com") ||
+        host.endsWith(".googleusercontent.com");
   }
 
   /// Resolves relative paths or GitHub Raw URLs into reliable Vercel CDN URLs

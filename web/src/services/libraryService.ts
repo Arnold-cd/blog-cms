@@ -1,4 +1,4 @@
-import type { PdfDocument, PdfUploadPayload } from '../types';
+import type { PdfDocument, PdfUploadPayload, ExternalPdfPayload } from '../types';
 import * as pdfjsLib from 'pdfjs-dist';
 
 const LOCAL_LIBRARY_URL = './library.json';
@@ -474,4 +474,129 @@ export async function deletePdfFromGitHub(
     success: true,
     message: `Document "${doc.title}" removed from repository.`,
   };
+}
+
+/**
+ * Registers an externally hosted PDF document (Internet Archive, Google Drive)
+ * directly into library.json without uploading binary files to Git repository.
+ * Keeps Git repo clean and avoids Vercel deployment storage consumption!
+ */
+export async function publishExternalPdfToGitHub(
+  token: string,
+  repo: string,
+  payload: ExternalPdfPayload,
+  onProgress?: (msg: string) => void
+): Promise<{ success: boolean; message: string; doc?: PdfDocument }> {
+  if (!token.trim()) {
+    throw new Error('GitHub Personal Access Token is required to commit to repository.');
+  }
+
+  const cleanRepo = repo.replace(/^https:\/\/github\.com\//, '').replace(/\.git$/, '');
+  const headers = {
+    Authorization: `Bearer ${token.trim()}`,
+    Accept: 'application/vnd.github.v3+json',
+    'Content-Type': 'application/json',
+  };
+
+  const getFileSha = async (path: string): Promise<string | undefined> => {
+    try {
+      const res = await fetch(`https://api.github.com/repos/${cleanRepo}/contents/${path}`, { headers });
+      if (res.ok) {
+        const data = await res.json();
+        return data.sha;
+      }
+    } catch {
+      // not found
+    }
+    return undefined;
+  };
+
+  try {
+    onProgress?.('Fetching existing library manifest from GitHub...');
+    const manifestPath = 'library.json';
+    const manifestSha = await getFileSha(manifestPath);
+
+    let existingDocs: PdfDocument[] = [];
+    if (manifestSha) {
+      try {
+        const res = await fetch(`https://api.github.com/repos/${cleanRepo}/contents/${manifestPath}`, { headers });
+        if (res.ok) {
+          const data = await res.json();
+          const decoded = decodeURIComponent(escape(atob(data.content.replace(/\s/g, ''))));
+          existingDocs = JSON.parse(decoded);
+        }
+      } catch (err) {
+        console.warn('Could not read existing library.json:', err);
+      }
+    }
+
+    const newDoc: PdfDocument = {
+      id: payload.id,
+      title: payload.title,
+      description: payload.description,
+      author: payload.author,
+      category: payload.category,
+      language: payload.language,
+      published_date: payload.published_date,
+      file_name: payload.file_name,
+      pdf_url: payload.pdf_url,
+      cover_url: payload.cover_url,
+      page_count: payload.page_count,
+      file_size_bytes: payload.file_size_bytes,
+      file_size_formatted: payload.file_size_formatted,
+      featured: payload.featured,
+      tags: payload.tags,
+      source_type: payload.source_type,
+    };
+
+    const updatedDocs = [
+      newDoc,
+      ...existingDocs.filter((d) => d.id !== payload.id),
+    ];
+
+    onProgress?.('Updating library.json catalog manifest...');
+    const encodedManifest = btoa(unescape(encodeURIComponent(JSON.stringify(updatedDocs, null, 2))));
+    const manifestUploadRes = await fetch(`https://api.github.com/repos/${cleanRepo}/contents/${manifestPath}`, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify({
+        message: `chore(library): register external document ${newDoc.title} in library.json`,
+        content: encodedManifest,
+        ...(manifestSha ? { sha: manifestSha } : {}),
+      }),
+    });
+
+    if (!manifestUploadRes.ok) {
+      const err = await manifestUploadRes.json().catch(() => ({}));
+      throw new Error(`Failed to update library.json: ${err.message || manifestUploadRes.statusText}`);
+    }
+
+    // Also update web/public/library.json to sync live Vercel deployments
+    try {
+      const publicManifestPath = 'web/public/library.json';
+      const publicManifestSha = await getFileSha(publicManifestPath);
+      await fetch(`https://api.github.com/repos/${cleanRepo}/contents/${publicManifestPath}`, {
+        method: 'PUT',
+        headers,
+        body: JSON.stringify({
+          message: `chore(library): sync web/public/library.json for ${newDoc.title}`,
+          content: encodedManifest,
+          ...(publicManifestSha ? { sha: publicManifestSha } : {}),
+        }),
+      });
+    } catch (err) {
+      console.warn('Could not sync web/public/library.json directly:', err);
+    }
+
+    return {
+      success: true,
+      message: `Document "${newDoc.title}" registered in library catalog!`,
+      doc: newDoc,
+    };
+  } catch (err: any) {
+    return {
+      success: false,
+      message: err.message || 'Failed to update library catalog on GitHub',
+    };
+  }
 }

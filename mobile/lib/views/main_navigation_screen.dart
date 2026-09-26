@@ -2,9 +2,9 @@ import "dart:ui";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
+import "package:google_fonts/google_fonts.dart";
 import "../providers/app_providers.dart";
 import "../providers/library_providers.dart";
-import "../theme/app_theme.dart";
 import "../widgets/app_drawer.dart";
 import "bookmarks_screen.dart";
 import "home_screen.dart";
@@ -109,7 +109,6 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
                             icon: Icons.translate_rounded,
                             activeIcon: Icons.translate_rounded,
                             label: "Explorer",
-                            meeteiLabel: "ꯃꯌꯦꯛ",
                             isDark: isDark,
                           ),
                           _buildNavItem(
@@ -145,7 +144,6 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
     required IconData icon,
     required IconData activeIcon,
     required String label,
-    String? meeteiLabel,
     int badgeCount = 0,
     required bool isDark,
   }) {
@@ -237,18 +235,19 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
               ),
               const SizedBox(height: 3.5),
 
-              // Refined Minimalist Typography
+              // Clean English Typography
               AnimatedDefaultTextStyle(
                 duration: const Duration(milliseconds: 180),
-                style: TextStyle(
+                style: GoogleFonts.inter(
                   fontSize: 10.5,
                   fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                  letterSpacing: -0.2,
+                  letterSpacing: -0.1,
                   color: isSelected ? activeColor : inactiveColor,
-                  fontFamilyFallback: AppTheme.fontFallbacks,
                 ),
                 child: Text(
-                  isSelected && meeteiLabel != null ? meeteiLabel : label,
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],

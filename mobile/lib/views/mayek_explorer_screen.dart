@@ -327,31 +327,6 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
                   color: isDark ? const Color(0xFFF1F5F9) : const Color(0xFF0F172A),
                 ),
               ),
-              if (_translatedOutput.isNotEmpty) ...[
-                const SizedBox(height: 10),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: isDark ? Colors.white.withValues(alpha: 0.04) : Colors.black.withValues(alpha: 0.03),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Row(
-                    children: [
-                      const Text(
-                        "Pukok keys: ",
-                        style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.grey),
-                      ),
-                      Expanded(
-                        child: Text(
-                          MeeteiMayekService.convertUnicodeToPukokFont(_translatedOutput),
-                          style: const TextStyle(fontSize: 12, fontFamily: "monospace", color: Color(0xFF6366F1), fontWeight: FontWeight.bold),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
             ],
           ),
         ),
@@ -572,8 +547,8 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
         ),
         const SizedBox(height: 10),
         _buildPuyaConceptCard(
-          title: "🧘 18 Indigenous Anatomical Roots (Ipi Eeyek)",
-          desc: "The 18 core letters correspond to parts of human anatomy (Kok = head, Sam hair, Lai = forehead, Meet eye, Paa ear, Naa = nose, Chil = mouth, etc.) reflecting early cosmological human science.",
+          title: "🧘 18 Indigenous Anatomical Roots (Eepee Eeyek)",
+          desc: "The 18 core letters correspond to parts of human anatomy (Kok = head, Sam = hair, Lai = forehead, Meet = eye, Paa = eyebrow, Naa = ear, Chil = mouth, etc.) reflecting early cosmological human science.",
           color: const Color(0xFF3B82F6),
           isDark: isDark,
         ),
@@ -595,7 +570,7 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen> with SingleTi
 
         // 18 Roots Key Grid
         Text(
-          "18 Ipi Eeyek Roots (k - a):",
+          "18 Eepee Eeyek Roots (k - a):",
           style: TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.bold,

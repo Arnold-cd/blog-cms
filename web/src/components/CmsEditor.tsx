@@ -33,9 +33,11 @@ import {
   ExternalLink,
   BookOpen,
   FileText,
+  Cloud,
 } from 'lucide-react';
 import { marked } from 'marked';
 import { MeeteiMayekTool } from './MeeteiMayekTool';
+import { CloudAssetModal } from './CloudAssetModal';
 import { translateMarkdownToMeeteiMayek, translateToMeeteiMayekWithVocab } from '../services/meeteiMayekService';
 
 interface CmsEditorProps {
@@ -115,6 +117,7 @@ Support for **bold**, *italics*, quotes, and tables:
     message: '',
   });
   const [publishResult, setPublishResult] = useState<{ postUrl?: string; postObj?: BlogPost } | null>(null);
+  const [isCloudAssetModalOpen, setIsCloudAssetModalOpen] = useState<boolean>(false);
 
   // Persist draft text in localStorage
   useEffect(() => {
@@ -859,26 +862,40 @@ Support for **bold**, *italics*, quotes, and tables:
             </span>
           </div>
 
-          <button
-            type="button"
-            onClick={() => fileInputRef.current?.click()}
-            disabled={isProcessingPdf}
-            className="btn-secondary"
-            style={{ padding: '0.35rem 0.75rem', fontSize: '0.78rem', gap: '0.35rem' }}
-            id="btn-upload-media"
-          >
-            {isProcessingPdf ? (
-              <>
-                <Loader2 size={13} style={{ animation: 'spin 1s linear infinite' }} />
-                <span>Rasterizing PDF Pages...</span>
-              </>
-            ) : (
-              <>
-                <FileUp size={13} />
-                <span>Upload PDF or Image</span>
-              </>
-            )}
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <button
+              type="button"
+              onClick={() => setIsCloudAssetModalOpen(true)}
+              className="btn-secondary"
+              style={{ padding: '0.35rem 0.75rem', fontSize: '0.78rem', gap: '0.35rem', color: 'var(--accent-cyan)' }}
+              title="Embed high-res image or attach PDF from Google Drive or Internet Archive"
+              id="btn-cloud-asset"
+            >
+              <Cloud size={13} />
+              <span>Add Cloud Asset (Drive / Archive)</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isProcessingPdf}
+              className="btn-secondary"
+              style={{ padding: '0.35rem 0.75rem', fontSize: '0.78rem', gap: '0.35rem' }}
+              id="btn-upload-media"
+            >
+              {isProcessingPdf ? (
+                <>
+                  <Loader2 size={13} style={{ animation: 'spin 1s linear infinite' }} />
+                  <span>Rasterizing PDF Pages...</span>
+                </>
+              ) : (
+                <>
+                  <FileUp size={13} />
+                  <span>Upload Local PDF or Image</span>
+                </>
+              )}
+            </button>
+          </div>
         </div>
 
         {isProcessingPdf && (
@@ -955,6 +972,15 @@ Support for **bold**, *italics*, quotes, and tables:
                 <button type="button" onClick={() => insertMarkdownSyntax('```\n', '\n```')} className="pane-tool-btn" title="Code Block">Block</button>
                 <button type="button" onClick={() => insertMarkdownSyntax('- ')} className="pane-tool-btn" title="Bullet List">&bull; List</button>
                 <button type="button" onClick={() => insertMarkdownSyntax('[', '](https://)')} className="pane-tool-btn" title="Link">Link</button>
+                <button
+                  type="button"
+                  onClick={() => setIsCloudAssetModalOpen(true)}
+                  className="pane-tool-btn"
+                  title="Attach Cloud Image or PDF (Google Drive / Internet Archive)"
+                  style={{ color: 'var(--accent-cyan)', fontWeight: 600 }}
+                >
+                  ☁️ Cloud
+                </button>
               </div>
             </div>
 
@@ -1255,6 +1281,13 @@ Support for **bold**, *italics*, quotes, and tables:
           }}
         />
       )}
+
+      {/* Cloud Asset Insertion Modal */}
+      <CloudAssetModal
+        isOpen={isCloudAssetModalOpen}
+        onClose={() => setIsCloudAssetModalOpen(false)}
+        onInsert={(snippet) => insertMarkdownSyntax(snippet)}
+      />
     </div>
   );
 };
