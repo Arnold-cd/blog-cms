@@ -64,26 +64,5 @@
       "Manuscript"
     ],
     "source_type": "archive"
-  },
-  {
-    "id": "wangkhemcha-chingtamlen-",
-    "title": "Meetei Waheising ge Eenat ke Wahanthok",
-    "description": "Meetei Waheising ge Eenat ke Wahanthok.\nVol 2",
-    "author": "SLLK",
-    "category": "Philosophy",
-    "language": "en",
-    "published_date": "2026-09-25",
-    "file_name": "mw2.pdf",
-    "pdf_url": "https://raw.githubusercontent.com/Arnold-cd/blog-cms/main/library/pdfs/mw2.pdf",
-    "cover_url": "https://raw.githubusercontent.com/Arnold-cd/blog-cms/main/library/covers/mw2-cover.png",
-    "page_count": 64,
-    "file_size_bytes": 25731096,
-    "file_size_formatted": "24.5 MB",
-    "featured": false,
-    "tags": [
-      "Puya",
-      "History",
-      "Manuscript"
-    ]
   }
 ]
