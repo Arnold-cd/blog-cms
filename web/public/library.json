@@ -1,5 +1,27 @@
 [
   {
+    "id": "bengali-script-",
+    "title": "Wakoklon Heelel Thilel Salai Ama-ilon Pukok",
+    "description": "Wakoklon Heelel Thilel Salai Ama Eelon Pukok Puya . By : Wannngkhemcha Chingtamlen",
+    "author": "Wangkhemcha Chingtamlen",
+    "category": "Puya & History",
+    "language": "mni",
+    "published_date": "2026-09-26",
+    "file_name": "bengali-script-.pdf",
+    "pdf_url": "https://archive.org/download/puyac/puyac.pdf",
+    "cover_url": "https://archive.org/services/img/puyac",
+    "page_count": 38,
+    "file_size_bytes": 7012100,
+    "file_size_formatted": "6.7 MB",
+    "featured": false,
+    "tags": [
+      "Puya",
+      "History",
+      "Manuscript"
+    ],
+    "source_type": "archive"
+  },
+  {
     "id": "sempi-mukaanlei-",
     "title": "Sempi Mukaanlei",
     "description": "Sanamahee Laining Leechat Kangleipak",
