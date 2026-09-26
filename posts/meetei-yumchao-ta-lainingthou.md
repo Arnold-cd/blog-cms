@@ -11,7 +11,7 @@ featured: false
 ---
 
 #![article-thumbnail-200kb.jpg](images/article-thumbnail-200kb.jpg)
-MEETEI YUMCHAO TA LAININGTHOU 
+# MEETEI YUMCHAO TA LAININGTHOU 
 
 Kangleicha meetei eikhoigi thainagi 'meetei yumchao' haina khangnaba leinaba 
 yumjao asi ahingba laishangni. Ahingba laishang 'yumchao' asigi manungda yamna maru 
