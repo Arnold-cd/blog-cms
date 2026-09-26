@@ -1,5 +1,27 @@
 [
   {
+    "id": "sempi-mukaanlei-",
+    "title": "Sempi Mukaanlei",
+    "description": "Sanamahee Laining Leechat Kangleipak",
+    "author": "Wangkhemcha Chingtamlen",
+    "category": "Puya & History",
+    "language": "en",
+    "published_date": "2026-09-26",
+    "file_name": "sempi-mukaanlei-.pdf",
+    "pdf_url": "https://archive.org/download/senpi-mukaanlei_202508/Senpi%20mukaanlei.pdf",
+    "cover_url": "https://archive.org/services/img/senpi-mukaanlei_202508",
+    "page_count": 0,
+    "file_size_bytes": 31060862,
+    "file_size_formatted": "29.6 MB",
+    "featured": false,
+    "tags": [
+      "Puya",
+      "History",
+      "Manuscript"
+    ],
+    "source_type": "archive"
+  },
+  {
     "id": "wakoklon-heelel-thilel-salai-ama-ilon-pukok-puya",
     "title": "Wakoklon Heelel Thilel Salai Ama-ilon Pukok puya",
     "description": "Wakoklon Heelel Thilel Salai Ama-ilon Pukok puya",
