@@ -1,5 +1,27 @@
 [
   {
+    "id": "meetambal",
+    "title": "Meetambal",
+    "description": "Pamheiba Larei Lathup \nSanamahee Laining Leechat Kangleipak",
+    "author": "Wangkhemcha Chingtamlen",
+    "category": "Puya & History",
+    "language": "mni",
+    "published_date": "2026-09-26",
+    "file_name": "meetambal.pdf",
+    "pdf_url": "https://archive.org/download/Meetambal/Meetambal.pdf",
+    "cover_url": "https://archive.org/services/img/Meetambal",
+    "page_count": 80,
+    "file_size_bytes": 10412246,
+    "file_size_formatted": "9.9 MB",
+    "featured": false,
+    "tags": [
+      "Puya",
+      "History",
+      "Manuscript"
+    ],
+    "source_type": "archive"
+  },
+  {
     "id": "bengali-script-",
     "title": "Wakoklon Heelel Thilel Salai Ama-ilon Pukok",
     "description": "Wakoklon Heelel Thilel Salai Ama Eelon Pukok Puya . By : Wannngkhemcha Chingtamlen",
