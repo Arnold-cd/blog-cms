@@ -5,13 +5,12 @@ summary: "Meetei Yumchao Ta Lainingthou Sanamahee"
 date: "2026-09-26"
 author: "Arnold CD"
 category: "Philosophy"
-thumbnail: "images/article-thumbnail-200kb.jpg"
+thumbnail: "./images/article-thumbnail-200kb.jpg"
 language: "en"
 featured: false
 ---
 
-#![article-thumbnail-200kb.jpg](images/article-thumbnail-200kb.jpg)
-#![article-thumbnail-200kb.jpg](images/article-thumbnail-200kb.jpg)MEETEI YUMCHAO TA LAININGTHOU 
+MEETEI YUMCHAO TA LAININGTHOU 
 
 Kangleicha meetei eikhoigi thainagi 'meetei yumchao' haina khangnaba leinaba 
 yumjao asi ahingba laishangni. Ahingba laishang 'yumchao' asigi manungda yamna maru 
