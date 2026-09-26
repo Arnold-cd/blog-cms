@@ -85,26 +85,5 @@
       "History",
       "Manuscript"
     ]
-  },
-  {
-    "id": "sempi-mukaanlei",
-    "title": "Sempi mukaanlei",
-    "description": "Lairik asi Pamheipa larei lathup haiba lairik aduni\nLairik asi epa angom chaopa ( chaoba)  maichouna lonna eramba\nPamheiba gi punsi wari ni leipna khngpi o.",
-    "author": "Sanamahee Laining Leechat Kangleipak",
-    "category": "Puya & History",
-    "language": "en",
-    "published_date": "2026-09-25",
-    "file_name": "Senpi mukaanlei.pdf",
-    "pdf_url": "https://raw.githubusercontent.com/Arnold-cd/blog-cms/main/library/pdfs/Senpi mukaanlei.pdf",
-    "cover_url": "https://raw.githubusercontent.com/Arnold-cd/blog-cms/main/library/covers/senpi-mukaanlei-cover.png",
-    "page_count": 43,
-    "file_size_bytes": 31060862,
-    "file_size_formatted": "29.6 MB",
-    "featured": false,
-    "tags": [
-      "Puya",
-      "History",
-      "Manuscript"
-    ]
   }
 ]
