@@ -1,9 +1,10 @@
 ---
 id: "introduction"
 title: "Introduction"
-summary: "DISCOVERY OF KANGLEIPAK 28"
+summary: "MEITEI CHEIRAOBA BU KAMDOUNA KANBA NGAMGANI 
+DISCOVERY OF KANGLEIPAK 28"
 date: "2026-09-29"
-author: "Arnold CD"
+author: "Wangkhemcha Chingtamlen"
 category: "Philosophy"
 thumbnail: "./images/image-200kb.jpg"
 language: "en"
