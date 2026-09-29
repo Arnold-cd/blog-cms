@@ -5,12 +5,12 @@ summary: "DISCOVERY OF KANGLEIPAK 28"
 date: "2026-09-29"
 author: "Arnold CD"
 category: "Philosophy"
-thumbnail: "images/image-200kb.jpg"
+thumbnail: "./images/image-200kb.jpg"
 language: "en"
 featured: false
 ---
 
-## MEITEI CHEIRAOBA KAMDOUNA KANBA NGAMGANI.
+#MEITEI CHEIRAOBA KAMDOUNA KANBA NGAMGANI.
 
 
 MEITEI CHEIRAOBA' BU KARAMNA KANBA NGAMGANI?
