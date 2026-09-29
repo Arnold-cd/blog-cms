@@ -3,9 +3,9 @@ id: "kha-nganpa"
 title: "KHA NGANPA"
 summary: "SLLK"
 date: "2026-09-29"
-author: "Arnold CD"
+author: "Yawol Khongthang Kangleipak"
 category: "Philosophy"
-thumbnail: "images/save-20260929-151141.jpg"
+thumbnail: "./images/save-20260929-151141.jpg"
 language: "en"
 featured: false
 ---
