@@ -1,5 +1,27 @@
 [
   {
+    "id": "sanamahee-laining-lichat-laipao",
+    "title": "A SHORT HISTORY OF KANGLEIPAK (MANIPUR)  PART - I",
+    "description": "A SHORT HISTORY OF KANGLEIPAK (MANIPUR)\n\nPART - I",
+    "author": "Wangkhemcha Chingtamlen",
+    "category": "Puya & History",
+    "language": "en",
+    "published_date": "2026-09-29",
+    "file_name": "sanamahee-laining-lichat-laipao.pdf",
+    "pdf_url": "https://drive.google.com/uc?export=download&id=1nRUCGpvapTEUFlDB5HEq1Namg2T1tp-Y&confirm=t",
+    "cover_url": "https://drive.google.com/thumbnail?id=1nRUCGpvapTEUFlDB5HEq1Namg2T1tp-Y&sz=w800",
+    "page_count": 0,
+    "file_size_bytes": 0,
+    "file_size_formatted": "Google Drive Cloud",
+    "featured": false,
+    "tags": [
+      "Puya",
+      "History",
+      "Manuscript"
+    ],
+    "source_type": "gdrive"
+  },
+  {
     "id": "yawol-khongthang-kangleipak-",
     "title": "A SHORT HISTORY OF KANGLEIPAK (MANIPUR)  PART - 2",
     "description": "A SHORT HISTORY OF KANGLEIPAK (MANIPUR)\n\nPART - 2",
@@ -152,27 +174,5 @@
       "Manuscript"
     ],
     "source_type": "archive"
-  },
-  {
-    "id": "sanamahee-laining-lichat-laipao",
-    "title": "Kangla Warep 2009",
-    "description": "Kangla warep 2009",
-    "author": "Sanamahee Laining Lichat Laipao",
-    "category": "Puya & History",
-    "language": "en",
-    "published_date": "2026-09-26",
-    "file_name": "sanamahee-laining-lichat-laipao.pdf",
-    "pdf_url": "https://drive.google.com/uc?export=download&id=1F80IhBZSsARTgoNcLUdIsGfrd4j5NYbH&confirm=t",
-    "cover_url": "https://drive.google.com/thumbnail?id=1F80IhBZSsARTgoNcLUdIsGfrd4j5NYbH&sz=w800",
-    "page_count": 0,
-    "file_size_bytes": 0,
-    "file_size_formatted": "Google Drive Cloud",
-    "featured": false,
-    "tags": [
-      "Puya",
-      "History",
-      "Manuscript"
-    ],
-    "source_type": "gdrive"
   }
 ]
