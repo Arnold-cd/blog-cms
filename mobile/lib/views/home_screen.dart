@@ -3,6 +3,8 @@ import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:shimmer/shimmer.dart";
 import "../providers/app_providers.dart";
+import "../providers/monetization_provider.dart";
+import "../services/ad_service.dart";
 import "../widgets/post_card.dart";
 import "post_detail_screen.dart";
 import "settings_screen.dart";
@@ -41,9 +43,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final categories = ref.watch(categoriesProvider);
     final selectedCategory = ref.watch(selectedCategoryProvider);
 
+    final isAdFree = ref.watch(monetizationProvider).isAdFreeActive;
+
     return Scaffold(
       body: SafeArea(
-        child: NestedScrollView(
+        child: Column(
+          children: [
+            Expanded(
+              child: NestedScrollView(
           headerSliverBuilder: (context, innerBoxIsScrolled) => [
             SliverToBoxAdapter(
               child: Padding(
@@ -295,7 +302,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
         ),
       ),
-    );
+      if (!isAdFree) const BannerAdWidget(),
+    ],
+  ),
+),
+);
   }
 
   Widget _buildLoadingList(bool isDark) {

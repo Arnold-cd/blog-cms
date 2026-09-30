@@ -6,11 +6,13 @@ import "package:path_provider/path_provider.dart";
 import "package:share_plus/share_plus.dart";
 import "../providers/app_providers.dart";
 import "../providers/library_providers.dart";
+import "../providers/monetization_provider.dart";
 import "../services/cache_service.dart";
 import "../widgets/donation_modal.dart";
 import "../widgets/inquiry_modal.dart";
 import "../widgets/privacy_modal.dart";
 import "../widgets/rating_modal.dart";
+import "../widgets/monetization_modal.dart";
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -199,6 +201,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final downloadedPdfs = ref.watch(downloadedPdfsProvider);
     final totalStorageBytes =
         ref.read(downloadedPdfsProvider.notifier).getTotalStorageBytes();
+    final monState = ref.watch(monetizationProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -261,6 +264,59 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   ),
                 ),
               ],
+            ),
+          ),
+
+          const SizedBox(height: 24),
+
+          // Section: Monetization & Ad-Free
+          _buildSectionHeader("Monetization & Ad-Free", Icons.workspace_premium_outlined),
+          _buildCard(
+            isDark: isDark,
+            child: ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: (monState.isAdFreeActive
+                          ? const Color(0xFF10B981)
+                          : const Color(0xFFF59E0B))
+                      .withValues(alpha: 0.15),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  monState.isLifetimeAdFree
+                      ? Icons.diamond_rounded
+                      : (monState.isAdFreeActive
+                          ? Icons.verified_rounded
+                          : Icons.star_rounded),
+                  color: monState.isAdFreeActive
+                      ? const Color(0xFF10B981)
+                      : const Color(0xFFF59E0B),
+                  size: 22,
+                ),
+              ),
+              title: Text(
+                monState.isLifetimeAdFree
+                    ? "Lifetime Pro Active"
+                    : (monState.isAdFreeActive
+                        ? "24h Ad-Free Pass Active"
+                        : "Remove Ads / 24h Pass"),
+                style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+              ),
+              subtitle: Text(
+                monState.isLifetimeAdFree
+                    ? "All ads are permanently disabled."
+                    : (monState.isAdFreeActive && monState.remainingRewardedTime != null
+                        ? "${monState.remainingRewardedTime!.inHours}h ${monState.remainingRewardedTime!.inMinutes % 60}m remaining on pass."
+                        : "Watch video or unlock lifetime ad-free."),
+                style: TextStyle(
+                  fontSize: 12,
+                  color: isDark ? Colors.white54 : Colors.black54,
+                ),
+              ),
+              trailing: const Icon(Icons.chevron_right_rounded),
+              onTap: () => MonetizationModal.show(context),
             ),
           ),
 

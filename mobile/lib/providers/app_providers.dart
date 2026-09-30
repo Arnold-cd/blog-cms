@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
+import "package:flutter_riverpod/legacy.dart";
 import "../models/post.dart";
 import "../services/api_service.dart";
 import "../services/cache_service.dart";
@@ -26,7 +27,7 @@ class PostsNotifier extends StateNotifier<AsyncValue<List<Post>>> {
   }
 
   Future<void> refresh({bool showLoadingIfEmpty = false}) async {
-    if (showLoadingIfEmpty && state.valueOrNull == null) {
+    if (showLoadingIfEmpty && state.value == null) {
       state = const AsyncValue.loading();
     }
 
@@ -39,7 +40,7 @@ class PostsNotifier extends StateNotifier<AsyncValue<List<Post>>> {
       state = AsyncValue.data(remotePosts);
     } catch (err, stack) {
       // If we already had cached posts, keep them intact
-      if (state.valueOrNull != null && state.valueOrNull!.isNotEmpty) {
+      if (state.value != null && state.value!.isNotEmpty) {
         // Keep cached data
       } else {
         state = AsyncValue.error(err, stack);

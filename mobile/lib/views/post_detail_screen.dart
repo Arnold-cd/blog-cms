@@ -7,6 +7,8 @@ import "package:share_plus/share_plus.dart";
 import "package:url_launcher/url_launcher.dart";
 import "../models/post.dart";
 import "../providers/app_providers.dart";
+import "../providers/monetization_provider.dart";
+import "../services/ad_service.dart";
 import "../services/api_service.dart";
 import "../services/cache_service.dart";
 import "../services/meetei_mayek_service.dart";
@@ -56,6 +58,10 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
   @override
   void dispose() {
     _flutterTts.stop();
+    final isAdFree = ref.read(monetizationProvider).isAdFreeActive;
+    if (!isAdFree) {
+      AdService.instance.showInterstitialIfEligible();
+    }
     super.dispose();
   }
 

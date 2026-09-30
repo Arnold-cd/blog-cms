@@ -2,26 +2,26 @@
 /// Faithfully ported from web/src/services/meeteiMayekService.ts
 class MeeteiMayekService {
   static const Map<String, String> bengaliToMeeteiMap = {
-    "ক": "ꯀ', 'খ': 'ꯈ', 'গ': 'ꯒ', 'ঘ': 'ꯘ', 'ঙ': 'ꯉ",
-    "চ": "ꯆ', 'ছ': 'ꯆ', 'জ': 'ꯖ', 'ঝ': 'ꯓ', 'ঞ': 'ꯅ",
-    "ট": "ꯇ', 'ঠ': 'ꯊ', 'ড': 'ꯗ', 'ঢ': 'ꯙ', 'ণ': 'ꯟ",
-    "ত": "ꯇ', 'থ': 'ꯊ', 'দ': 'ꯗ', 'ধ': 'ꯙ', 'ন': 'ꯅ",
-    "প": "ꯄ', 'ফ': 'ꯐ', 'ব': 'ꯕ', 'ভ': 'ꯚ', 'ম': 'ꯃ",
-    "য": "ꯌ', 'র': 'ꯔ', 'ল': 'ꯂ', 'ৱ': 'ꯋ', 'শ': 'ꯁ",
-    "ষ": "ꯁ', 'স': 'ꯁ', 'হ': 'ꯍ', 'ড়': 'ꯔ', 'ঢ়': 'ꯔ",
-    "য়": "ꯌ', 'ৎ': 'ꯠ",
-  // Vowels independent
-    "অ": "ꯑ', 'আ': 'ꯑꯥ', 'ই': 'ꯏ', 'ঈ': 'ꯏ', 'উ': 'ꯎ', 'ঊ': 'ꯎ",
-    "ঋ": "ꯔꯤ', 'এ': 'ꯑꯦ', 'ঐ': 'ꯑꯩ', 'ও': 'ꯑꯣ', 'ঔ': 'ꯑꯧ",
-  // Matras / Vowel signs
-    "া": "ꯥ', 'ি': 'ꯤ', 'ী': 'ꯤ', 'ু': 'ꯨ', 'ূ': 'ꯨ",
-    "ৃ": "ꯔꯤ', 'ে': 'ꯦ', 'ৈ': 'ꯩ', 'ো': 'ꯣ', 'ৌ': 'ꯧ",
-    "ং": "ꯪ', 'ঃ': '꯬', '্': '꯭",
-  // Punctuation & digits
-    "।": "꯫", "॥": "꯫꯫",
-    "?": "꫱", ",": "꫰",
-    "০": "꯰', '১': '꯱', '২': '꯲', '৩': '꯳', '৪': '꯴",
-    "৫": "꯵', '৬': '꯶', '৭': '꯷', '৮': '꯸', '৯': '꯹",
+    'ক': 'ꯀ', 'খ': 'ꯈ', 'গ': 'ꯒ', 'ঘ': 'ꯘ', 'ঙ': 'ꯉ',
+    'চ': 'ꯆ', 'ছ': 'ꯆ', 'জ': 'ꯖ', 'ঝ': 'ꯓ', 'ঞ': 'ꯅ',
+    'ট': 'ꯇ', 'ঠ': 'ꯊ', 'ড': 'ꯗ', 'ঢ': 'ꯙ', 'ণ': 'ꯟ',
+    'ত': 'ꯇ', 'থ': 'ꯊ', 'দ': 'ꯗ', 'ধ': 'ꯙ', 'ন': 'ꯅ',
+    'প': 'ꯄ', 'ফ': 'ꯐ', 'ব': 'ꯕ', 'ভ': 'ꯚ', 'ম': 'ꯃ',
+    'য': 'ꯌ', 'র': 'ꯔ', 'ল': 'ꯂ', 'ৱ': 'ꯋ', 'শ': 'ꯁ',
+    'ষ': 'ꯁ', 'স': 'ꯁ', 'হ': 'ꯍ', 'ড়': 'ꯔ', 'ঢ়': 'ꯔ',
+    'য়': 'ꯌ', 'ৎ': 'ꯠ',
+    // Vowels independent
+    'অ': 'ꯑ', 'আ': 'ꯑꯥ', 'ই': 'ꯏ', 'ঈ': 'ꯏ', 'উ': 'ꯎ', 'ঊ': 'ꯎ',
+    'ঋ': 'ꯔꯤ', 'এ': 'ꯑꯦ', 'ঐ': 'ꯑꯩ', 'ও': 'ꯑꯣ', 'ঔ': 'ꯑꯧ',
+    // Matras / Vowel signs
+    'া': 'ꯥ', 'ি': 'ꯤ', 'ী': 'ꯤ', 'ু': 'ꯨ', 'ূ': 'ꯨ',
+    'ৃ': 'ꯔꯤ', 'ে': 'ꯦ', 'ৈ': 'ꯩ', 'ো': 'ꯣ', 'ৌ': 'ꯧ',
+    'ং': 'ꯪ', 'ঃ': '꯬', '্': '꯭',
+    // Punctuation & digits
+    '।': '꯫', '॥': '꯫꯫',
+    '?': '꫱', ',': '꫰',
+    '০': '꯰', '১': '꯱', '২': '꯲', '৩': '꯳', '৪': '꯴',
+    '৫': '꯵', '৬': '꯶', '৭': '꯷', '৮': '꯸', '৯': '꯹',
   };
 
   static const Map<String, String> extendedVocabulary = {
@@ -273,25 +273,114 @@ class MeeteiMayekService {
   };
 
   static const Map<String, String> commonPhoneticWords = {
-    "oina": "ꯑꯣꯏꯅ",
-    "oja": "ꯑꯣꯖꯥ",
+    // Common greetings & questions
+    "ei": "ꯑꯩ",
+    "khngebo": "ꯈꯡꯉꯦꯕꯣ",
+    "khangebo": "ꯈꯡꯉꯦꯕꯣ",
+    "khnge": "ꯈꯡꯉꯦ",
+    "khange": "ꯈꯡꯉꯦ",
+    "khngdrabo": "ꯈꯡꯗꯔꯥꯕꯣ",
+    "khangdrabo": "ꯈꯡꯗꯔꯥꯕꯣ",
+    "khngdraba": "ꯈꯡꯗꯔꯥꯕ",
+    "khangdraba": "ꯈꯡꯗꯔꯥꯕ",
+    "khngde": "ꯈꯡꯗꯦ",
+    "khangde": "ꯈꯡꯗꯦ",
+    "khngdre": "ꯈꯡꯗ꯭ꯔꯦ",
+    "khangdre": "ꯈꯡꯗ꯭ꯔꯦ",
+    "khngba": "ꯈꯡꯕ",
+    "khangba": "ꯈꯡꯕ",
+    "khngi": "ꯈꯡꯉꯤ",
+    "khangi": "ꯈꯡꯉꯤ",
+    "khngibo": "ꯈꯡꯉꯤꯕꯣ",
+    "khangibo": "ꯈꯡꯉꯤꯕꯣ",
+    "khngle": "ꯈꯡꯂꯦ",
+    "khangle": "ꯈꯡꯂꯦ",
+    "khngledo": "ꯈꯡꯂꯦꯗꯣ",
+    "khangledo": "ꯈꯡꯂꯦꯗꯣ",
+    "khngliba": "ꯈꯡꯂꯤꯕ",
+    "khangliba": "ꯈꯡꯂꯤꯕ",
+    "khnglibo": "ꯈꯡꯂꯤꯕꯣ",
+    "khanglibo": "ꯈꯡꯂꯤꯕꯣ",
+    "khngjaribo": "ꯈꯡꯖꯔꯤꯕꯣ",
+    "khangjaribo": "ꯈꯡꯖꯔꯤꯕꯣ",
+    "khngjare": "ꯈꯡꯖꯔꯦ",
+    "khangjare": "ꯈꯡꯖꯔꯦ",
+    "angang": "ꯑꯉꯥꯡ",
     "kmdwrige": "ꯀꯃꯗꯧꯔꯤꯒꯦ",
     "kamdwrige": "ꯀꯃꯗꯧꯔꯤꯒꯦ",
     "kamdourige": "ꯀꯃꯗꯧꯔꯤꯒꯦ",
-    "kmdwba": "ꯀꯃꯗꯧꯕ",
-    "kamdwba": "ꯀꯃꯗꯧꯕ",
-    "kmdwre": "ꯀꯃꯗꯧꯔꯦ",
     "kmdwri": "ꯀꯃꯗꯧꯔꯤ",
-    "twrige": "ꯇꯧꯔꯤꯒꯦ",
-    "tourige": "ꯇꯧꯔꯤꯒꯦ",
-    "twba": "ꯇꯧꯕ",
+    "kamdouri": "ꯀꯃꯗꯧꯔꯤ",
+    "kmdwre": "ꯀꯃꯗꯧꯔꯦ",
+    "kamdoure": "ꯀꯃꯗꯧꯔꯦ",
+    "kmdwba": "ꯀꯃꯗꯧꯕ",
+    "kamdouba": "ꯀꯃꯗꯧꯕ",
+    "kamdwba": "ꯀꯃꯗꯧꯕ",
+    "kmdwribo": "ꯀꯃꯗꯧꯔꯤꯕꯣ",
+    "kamdouribo": "ꯀꯃꯗꯧꯔꯤꯕꯣ",
+    "karamba": "ꯀꯔꯝꯕ",
+    "karamna": "ꯀꯔꯝꯅ",
+    "karmna": "ꯀꯔꯝꯅ",
+    "kari": "ꯀꯔꯤ",
+    "karigi": "ꯀꯔꯤꯒꯤ",
+    "kanano": "ꯀꯅꯥꯅꯣ",
+    "kana": "ꯀꯅꯥ",
+    "kadaida": "ꯀꯗꯥꯏꯗ",
+    "nungaiiribo": "ꯅꯨꯡꯉꯥꯏꯔꯤꯕꯣ",
+    "nungairibo": "ꯅꯨꯡꯉꯥꯏꯔꯤꯕꯣ",
+    "nungaijaribo": "ꯅꯨꯡꯉꯥꯏꯖꯔꯤꯕꯣ",
+    "nungaijare": "ꯅꯨꯡꯉꯥꯏꯖꯔꯦ",
+    "nungaire": "ꯅꯨꯡꯉꯥꯏꯔꯦ",
+    "nungairi": "ꯅꯨꯡꯉꯥꯏꯔꯤ",
+    "nungairiba": "ꯅꯨꯡꯉꯥꯏꯔꯤꯕ",
+    "nungai": "ꯅꯨꯡꯉꯥꯏ",
+    "nungshiba": "ꯅꯨꯡꯁꯤꯕ",
+    "nungshi": "ꯅꯨꯡꯁꯤ",
+    "nungshiribi": "ꯅꯨꯡꯁꯤꯔꯤꯕꯤ",
+    "nungshiriba": "ꯅꯨꯡꯁꯤꯔꯤꯕ",
+    "pukning": "ꯄꯨꯛꯅꯤꯡ",
+    "pukninggi": "ꯄꯨꯛꯅꯤꯡꯒꯤ",
+    "warol": "ꯋꯥꯔꯣꯜ",
+    "warolshing": "ꯋꯥꯔꯣꯜꯁꯤꯡ",
+    "wakhallon": "ꯋꯥꯈꯜꯂꯣꯟ",
+    "wakhal": "ꯋꯥꯈꯜ",
+    "chakhum": "ꯆꯥꯈꯨꯝ",
+    "yum": "ꯌꯨꯝ",
+    "yumnak": "ꯌꯨꯝꯅꯥꯛ",
+    "laishang": "ꯂꯥꯏꯁꯪ",
+    "leibak": "ꯂꯩꯕꯥꯛ",
+    "thabak": "ꯊꯕꯥꯛ",
+    "singtha": "ꯁꯤꯡꯊ",
+    "haiba": "ꯍꯥꯏꯕ",
+    "hainingba": "ꯍꯥꯏꯅꯤꯡꯕ",
+    "haire": "ꯍꯥꯏꯔꯦ",
+    "hairi": "ꯍꯥꯏꯔꯤ",
+    "toure": "ꯇꯧꯔꯦ",
     "touba": "ꯇꯧꯕ",
+    "tourige": "ꯇꯧꯔꯤꯒꯦ",
+    "touri": "ꯇꯧꯔꯤ",
+    "twrige": "ꯇꯧꯔꯤꯒꯦ",
+    "twba": "ꯇꯧꯕ",
+    "twri": "ꯇꯧꯔꯤ",
     "dwge": "ꯗꯧꯒꯦ",
     "douge": "ꯗꯧꯒꯦ",
+    "taibang": "ꯇꯥꯏꯕꯪ",
+    "malem": "ꯃꯥꯂꯦꯝ",
+    "punshi": "ꯄꯨꯟꯁꯤ",
+    "meeoiba": "ꯃꯤꯑꯣꯏꯕ",
+    "meeoi": "ꯃꯤꯑꯣꯏ",
+    "shumang": "ꯁꯨꯃꯥꯡ",
+    "leela": "ꯂꯤꯂꯥ",
+    "panthoibi": "ꯄꯥꯟꯊꯣꯏꯕꯤ",
+    "oina": "ꯑꯣꯏꯅ",
+    "oja": "ꯑꯣꯖꯥ",
     "kangleipak": "ꯀꯪꯂꯩꯄꯥꯛ",
     "manipur": "ꯃꯅꯤꯄꯨꯔ",
     "meetei": "ꯃꯤꯇꯩ",
+    "meeteilon": "ꯃꯤꯇꯩꯂꯣꯟ",
+    "meeteilol": "ꯃꯤꯇꯩꯂꯣꯜ",
     "meitei": "ꯃꯤꯇꯩ",
+    "metei": "ꯃꯤꯇꯩ",
     "mayek": "ꯃꯌꯦꯛ",
     "puya": "ꯄꯨꯌꯥ",
     "khunung": "ꯈꯨꯅꯨꯡ",
@@ -310,28 +399,28 @@ class MeeteiMayekService {
   };
 
   static const Map<String, String> greekTransliteration = {
-  // Common Greek philosophical terms
+    // Common Greek philosophical terms
     "Χρόνος": "ꯈ꯭ꯔꯣꯅꯣꯁ",
     "χρόνος": "ꯈ꯭ꯔꯣꯅꯣꯁ",
     "Καιρός": "ꯀꯥꯏꯔꯣꯁ",
     "καιρός": "ꯀꯥꯏꯔꯣꯁ",
-  // Greek Uppercase (e.g. Χ and Κ which look identical to Latin X and K)
-    "Α": "ꯑ', 'Β': 'ꯕ', 'Γ': 'ꯒ', 'Δ': 'ꯗ', 'Ε': 'ꯑꯦ",
-    "Ζ": "ꯖ', 'Η': 'ꯑꯦ', 'Θ': 'ꯊ', 'Ι': 'ꯏ', 'Κ': 'ꯀ",
-    "Λ": "ꯂ', 'Μ': 'ꯃ', 'Ν': 'ꯅ', 'Ξ': 'ꯛꯁ', 'Ο': 'ꯑꯣ",
-    "Π": "ꯄ', 'Ρ': 'ꯔ', 'Σ': 'ꯁ', 'Τ': 'ꯇ', 'Υ': 'ꯎ",
-    "Φ": "ꯐ', 'Χ': 'ꯈ', 'Ψ': 'ꯄꯁ', 'Ω': 'ꯑꯣ",
-  // Greek Lowercase
-    "α": "ꯑ', 'β': 'ꯕ', 'γ': 'ꯒ', 'δ': 'ꯗ', 'ε': 'ꯑꯦ",
-    "ζ": "ꯖ', 'η': 'ꯑꯦ', 'θ': 'ꯊ', 'ι': 'ꯏ', 'κ': 'ꯀ",
-    "λ": "ꯂ', 'μ': 'ꯃ', 'ν': 'ꯅ', 'ξ': 'ꯛꯁ', 'ο': 'ꯑꯣ",
-    "π": "ꯄ', 'ρ': 'ꯔ', 'σ': 'ꯁ', 'ς': 'ꯁ', 'τ': 'ꯇ",
-    "υ": "ꯎ', 'φ': 'ꯐ', 'χ': 'ꯈ', 'ψ': 'ꯄꯁ', 'ω': 'ꯑꯣ",
-  // Greek with accents / tonos / dialytika
-    "ά": "ꯑꯥ', 'έ': 'ꯑꯦ', 'ή': 'ꯑꯦ', 'ί': 'ꯏ', 'ό': 'ꯑꯣ",
-    "ύ": "ꯎ', 'ώ': 'ꯑꯣ', 'Ά': 'ꯑꯥ', 'Έ': 'ꯑꯦ', 'Ή': 'ꯑꯦ",
-    "Ί": "ꯏ', 'Ό': 'ꯑꯣ', 'Ύ': 'ꯎ', 'Ώ': 'ꯑꯣ",
-    "ϊ": "ꯏ', 'ϋ': 'ꯎ', 'ΐ': 'ꯏ', 'ΰ': 'ꯎ",
+    // Greek Uppercase
+    'Α': 'ꯑ', 'Β': 'ꯕ', 'Γ': 'ꯒ', 'Δ': 'ꯗ', 'Ε': 'ꯑꯦ',
+    'Ζ': 'ꯖ', 'Η': 'ꯑꯦ', 'Θ': 'ꯊ', 'Ι': 'ꯏ', 'Κ': 'ꯀ',
+    'Λ': 'ꯂ', 'Μ': 'ꯃ', 'Ν': 'ꯅ', 'Ξ': 'ꯛꯁ', 'Ο': 'ꯑꯣ',
+    'Π': 'ꯄ', 'Ρ': 'ꯔ', 'Σ': 'ꯁ', 'Τ': 'ꯇ', 'Υ': 'ꯎ',
+    'Φ': 'ꯐ', 'Χ': 'ꯈ', 'Ψ': 'ꯄꯁ', 'Ω': 'ꯑꯣ',
+    // Greek Lowercase
+    'α': 'ꯑ', 'β': 'ꯕ', 'γ': 'ꯒ', 'δ': 'ꯗ', 'ε': 'ꯑꯦ',
+    'ζ': 'ꯖ', 'η': 'ꯑꯦ', 'θ': 'ꯊ', 'ι': 'ꯏ', 'κ': 'ꯀ',
+    'λ': 'ꯂ', 'μ': 'ꯃ', 'ν': 'ꯅ', 'ξ': 'ꯛꯁ', 'ο': 'ꯑꯣ',
+    'π': 'ꯄ', 'ρ': 'ꯔ', 'σ': 'ꯁ', 'ς': 'ꯁ', 'τ': 'ꯇ',
+    'υ': 'ꯎ', 'φ': 'ꯐ', 'χ': 'ꯈ', 'ψ': 'ꯄꯁ', 'ω': 'ꯑꯣ',
+    // Greek with accents / tonos / dialytika
+    'ά': 'ꯑꯥ', 'έ': 'ꯑꯦ', 'ή': 'ꯑꯦ', 'ί': 'ꯏ', 'ό': 'ꯑꯣ',
+    'ύ': 'ꯎ', 'ώ': 'ꯑꯣ', 'Ά': 'ꯑꯥ', 'Έ': 'ꯑꯦ', 'Ή': 'ꯑꯦ',
+    'Ί': 'ꯏ', 'Ό': 'ꯑꯣ', 'Ύ': 'ꯎ', 'Ώ': 'ꯑꯣ',
+    'ϊ': 'ꯏ', 'ϋ': 'ꯎ', 'ΐ': 'ꯏ', 'ΰ': 'ꯎ',
   };
 
   static const List<List<String>> meeteiDigits = [
@@ -340,11 +429,11 @@ class MeeteiMayekService {
   ];
 
   static const Map<String, String> latinLetterFallback = {
-    "a": "ꯑ', b: 'ꯕ', c: 'ꯀ', d: 'ꯗ', e: 'ꯑꯦ', f: 'ꯐ",
-    "g": "ꯒ', h: 'ꯍ', i: 'ꯏ', j: 'ꯖ', k: 'ꯀ', l: 'ꯂ",
-    "m": "ꯃ', n: 'ꯅ', o: 'ꯑꯣ', p: 'ꯄ', q: 'ꯀ', r: 'ꯔ",
-    "s": "ꯁ', t: 'ꯇ', u: 'ꯎ', v: 'ꯋ', w: 'ꯋ', x: 'ꯛꯁ",
-    "y": "ꯌ', z: 'ꯖ",
+    'a': 'ꯑ', 'b': 'ꯕ', 'c': 'ꯀ', 'd': 'ꯗ', 'e': 'ꯏ', 'f': 'ꯐ',
+    'g': 'ꯒ', 'h': 'ꯍ', 'i': 'ꯏ', 'j': 'ꯖ', 'k': 'ꯀ', 'l': 'ꯂ',
+    'm': 'ꯃ', 'n': 'ꯅ', 'o': 'ꯑꯣ', 'p': 'ꯄ', 'q': 'ꯀ', 'r': 'ꯔ',
+    's': 'ꯁ', 't': 'ꯇ', 'u': 'ꯎ', 'v': 'ꯋ', 'w': 'ꯋ', 'x': 'ꯛꯁ',
+    'y': 'ꯌ', 'z': 'ꯖ',
   };
 
   static String transliterateLatinWord(String token) {
@@ -352,6 +441,8 @@ class MeeteiMayekService {
     for (final entry in greekTransliteration.entries) {
       word = word.replaceAll(entry.key, entry.value);
     }
+    // Capital 'I' or 'EE' phonetically maps to long Ee-nap (ꫫ / Pukok 'I')
+    word = word.replaceAll('I', 'ee');
     word = word.toLowerCase();
 
     // Manipuri phonetic typing rule: consonant + 'w' represents sou-nap (ꯧ /ou/)
@@ -365,6 +456,18 @@ class MeeteiMayekService {
       (m) => "${m[1]}ou",
     );
 
+    // Manipuri phonetic nungai/nungshi rule: nung + vowel/consonant
+    word = word.replaceAllMapped(RegExp(r'nung(?=[aeiou])'), (m) => "ꯅꯨꯡꯉ");
+    word = word.replaceAllMapped(RegExp(r'nung'), (m) => "ꯅꯨꯡ");
+
+    // Manipuri phonetic khng (khang) and thng (thang) roots:
+    // When followed by a vowel (-e, -i, -a), it geminates to coda ꯡ + onset ꯉ:
+    // e.g. khngebo -> ꯈꯡꯉꯦꯕꯣ, khnge -> ꯈꯡꯉꯦ, khngi -> ꯈꯡꯉꯤ
+    word = word.replaceAllMapped(RegExp(r'khng(?=[aeiou])'), (m) => "ꯈꯡꯉ");
+    word = word.replaceAllMapped(RegExp(r'khng(?=[b-df-hj-np-tv-zꯀ-ꯢ\s]|$)'), (m) => "ꯈꯡ");
+    word = word.replaceAllMapped(RegExp(r'thng(?=[aeiou])'), (m) => "ꯊꯡꯉ");
+    word = word.replaceAllMapped(RegExp(r'thng(?=[b-df-hj-np-tv-zꯀ-ꯢ\s]|$)'), (m) => "ꯊꯡ");
+
     const clusters = [
       ["sch", "ꯁ꯭ꯀ"],
       ["tch", "ꯆ"],
@@ -372,6 +475,12 @@ class MeeteiMayekService {
       ["sion", "ꯁꯟ"],
       ["ight", "ꯑꯥꯏꯠ"],
       ["ous", "ꯑꯁ"],
+      ["eeng", "ꫫꯡ"],
+      ["iing", "ꫫꯡ"],
+      ["yeng", "ꯌꯦꯡ"],
+      ["yatng", "ꯌꯦꯡ"],
+      ["yetng", "ꯌꯦꯡ"],
+      ["eng", "ꯤꯡ"],
       ["ing", "ꯤꯡ"],
       ["all", "ꯑꯣꯜ"],
       ["ell", "ꯑꯦꯜ"],
@@ -389,7 +498,6 @@ class MeeteiMayekService {
       ["jh", "ꯓ"],
       ["bh", "ꯚ"],
       ["kh", "ꯈ"],
-      ["ng", "ꯉ"],
     ];
 
     for (final pair in clusters) {
@@ -399,6 +507,54 @@ class MeeteiMayekService {
     // Soft c before e, i, y -> Sam (ꯁ); hard c elsewhere -> Kok (ꯀ)
     word = word.replaceAllMapped(RegExp(r'c([eiy])'), (m) => "ꯁ${m[1]}");
     word = word.replaceAll('c', 'ꯀ');
+
+    // Yat-nap handling after consonants or at onset:
+    // e.g. kye -> k + ꯦ (ꯀꯦ), mye -> m + ꯦ (ꯃꯦ), ye -> ꯌꯦ
+    word = word.replaceAllMapped(
+      RegExp(r'([b-df-hj-np-tv-z]|kh|th|ph|ch|sh|dh|gh|jh|bh)(?:yat|yet|ye)'),
+      (m) => "${m[1]}ꯦ",
+    );
+    word = word.replaceAllMapped(
+      RegExp(r'(^|\s)ye(?=[b-df-hj-np-tv-zꯀ-ꯢ\s]|$)'),
+      (m) => "${m[1]}ꯌꯦ",
+    );
+    word = word.replaceAllMapped(RegExp(r'(^|\s)ye'), (m) => "${m[1]}ꯌꯦ");
+
+    // Coda / Syllable-final lolsum identification:
+    // If ng, k, l, m, p, n (NOT followed by g), t is followed by another consonant, a Meetei character, or end-of-string
+    // Convert them to their authentic lolsum form!
+    word = word.replaceAllMapped(
+      RegExp(r'ng(?=[b-df-hj-np-tv-zꯀ-ꯢ\s]|$)'),
+      (m) => "ꯡ",
+    );
+    word = word.replaceAllMapped(
+      RegExp(r'k(?=[b-df-hj-np-tv-zꯀ-ꯢ\s]|$)'),
+      (m) => "ꯛ",
+    );
+    word = word.replaceAllMapped(
+      RegExp(r'l(?=[b-df-hj-np-tv-zꯀ-ꯢ\s]|$)'),
+      (m) => "ꯜ",
+    );
+    word = word.replaceAllMapped(
+      RegExp(r'm(?=[b-df-hj-np-tv-zꯀ-ꯢ\s]|$)'),
+      (m) => "ꯝ",
+    );
+    word = word.replaceAllMapped(
+      RegExp(r'p(?=[b-df-hj-np-tv-zꯀ-ꯢ\s]|$)'),
+      (m) => "ꯞ",
+    );
+    // CRITICAL: n must NOT match if followed by g (digraph 'ng')!
+    word = word.replaceAllMapped(
+      RegExp(r'n(?!g)(?=[b-df-hj-np-tv-zꯀ-ꯢ\s]|$)'),
+      (m) => "ꯟ",
+    );
+    word = word.replaceAllMapped(
+      RegExp(r't(?=[b-df-hj-np-tv-zꯀ-ꯢ\s]|$)'),
+      (m) => "ꯠ",
+    );
+
+    // Onset ng
+    word = word.replaceAll("ng", "ꯉ");
 
     const consonants = [
       ["k", "ꯀ"], ["s", "ꯁ"], ["l", "ꯂ"], ["m", "ꯃ"],
@@ -413,10 +569,26 @@ class MeeteiMayekService {
     }
 
     // Initial independent vowels
+    // Authentic Puya orthography: 'e' produces E-nap (ꯏ), 'ye' / 'yat' produces Yat-nap (ꯑꯦ)
     final initialVowels = [
-      [RegExp(r'^aa'), 'ꯑꯥ'], [RegExp(r'^ee'), 'ꯏ'], [RegExp(r'^ei'), 'ꯑꯩ'], [RegExp(r'^ai'), 'ꯑꯩ'],
-      [RegExp(r'^ou'), 'ꯑꯧ'], [RegExp(r'^au'), 'ꯑꯧ'], [RegExp(r'^oo'), 'ꯎ'],
-      [RegExp(r'^a'), 'ꯑ'], [RegExp(r'^i'), 'ꯏ'], [RegExp(r'^u'), 'ꯎ'], [RegExp(r'^e'), 'ꯑꯦ'], [RegExp(r'^o'), 'ꯑꯣ'],
+      [RegExp(r'^yat'), 'ꯑꯦ'],
+      [RegExp(r'^yet'), 'ꯑꯦ'],
+      [RegExp(r'^ye'), 'ꯑꯦ'],
+      [RegExp(r'^aa'), 'ꯑꯥ'],
+      [RegExp(r'^ee'), 'ꯏ'],
+      [RegExp(r'^ii'), 'ꯏ'],
+      [RegExp(r'^ei'), 'ꯑꯩ'],
+      [RegExp(r'^ai'), 'ꯑꯥꯏ'],
+      [RegExp(r'^oi'), 'ꯑꯣꯏ'],
+      [RegExp(r'^ui'), 'ꯎꯏ'],
+      [RegExp(r'^ou'), 'ꯑꯧ'],
+      [RegExp(r'^au'), 'ꯑꯧ'],
+      [RegExp(r'^oo'), 'ꯎ'],
+      [RegExp(r'^a'), 'ꯑ'],
+      [RegExp(r'^i'), 'ꯏ'],
+      [RegExp(r'^e'), 'ꯏ'],
+      [RegExp(r'^u'), 'ꯎ'],
+      [RegExp(r'^o'), 'ꯑꯣ'],
     ];
 
     for (final iv in initialVowels) {
@@ -424,10 +596,28 @@ class MeeteiMayekService {
     }
 
     // Dependent vowel signs (Cheitap)
+    // Orthography rule: 'e' -> E-nap (ꯤ / 'i'), 'ee' -> Ee-nap (ꫫ / 'I'), 'ye'/'yat' -> Yat-nap (ꯦ / 'Y')
     const dependentVowels = [
-      ["aa", "ꯥ"], ["ee", "ꯤ"], ["ei", "ꯩ"], ["ai", "ꯩ"],
-      ["ou", "ꯧ"], ["au", "ꯧ"], ["oo", "ꯨ"],
-      ["a", "ꯥ"], ["i", "ꯤ"], ["u", "ꯨ"], ["e", "ꯦ"], ["o", "ꯣ"],
+      ["yat", "ꯦ"],
+      ["yet", "ꯦ"],
+      ["ye", "ꯦ"],
+      ["aii", "ꯥꯏ"],
+      ["ai", "ꯥꯏ"],
+      ["aai", "ꯥꯏ"],
+      ["aa", "ꯥ"],
+      ["ee", "ꫫ"], // Ee-nap (ꫫ / Pukok 'I')
+      ["ii", "ꫫ"], // Ee-nap (ꫫ / Pukok 'I')
+      ["ei", "ꯩ"], // Chei-nap (ꯩ / Pukok 'C')
+      ["oi", "ꯣꯏ"],
+      ["ui", "ꯨꯏ"],
+      ["ou", "ꯧ"],
+      ["au", "ꯧ"],
+      ["oo", "ꯨ"],
+      ["a", "ꯥ"],
+      ["e", "ꯤ"], // E-nap (ꯤ / Pukok 'i')
+      ["i", "ꯤ"], // E-nap (ꯤ / Pukok 'i')
+      ["u", "ꯨ"],
+      ["o", "ꯣ"],
     ];
 
     for (final pair in dependentVowels) {
@@ -446,12 +636,13 @@ class MeeteiMayekService {
 
   static String cleanupOrphanedVowels(String text) {
     String clean = text;
-    final pattern = RegExp(r'(^|[^ꯀ-ꯢꫠ-ꫪ])([ꯣ-ꯪ꯬])');
+    final pattern = RegExp(r'(^|[^ꯀ-ꯢꫠ-ꫪ])([\uABE3-\uABEA\uABEC\uAAEB])');
     while (pattern.hasMatch(clean)) {
       clean = clean.replaceAllMapped(pattern, (m) => "${m[1]}ꯑ${m[2]}");
     }
 
     clean = clean.replaceAll('ꯑꯤ', 'ꯏ');
+    clean = clean.replaceAll('ꯑꫫ', 'ꯏ');
     clean = clean.replaceAll('ꯑꯨ', 'ꯎ');
     return clean;
   }

@@ -22,30 +22,51 @@ const renderPukokFormula = (
   pukokWord?: string,
   accentColor: string = 'var(--accent-indigo)',
   fontSize: string = '1.35rem'
-) => (
-  <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.2rem', lineHeight: 1 }}>
-    <span style={{ fontFamily: 'var(--font-pukok)', fontSize, color: accentColor }}>
-      {pukokKey || ''}
-    </span>
-    {pukokWord && (
-      <>
-        <span style={{
-          fontFamily: 'system-ui, -apple-system, sans-serif',
-          fontSize: '0.9rem',
-          fontWeight: 700,
-          color: 'var(--text-muted)',
-          padding: '0 0.1rem',
-          lineHeight: 1,
-        }}>
-          :
-        </span>
+) => {
+  if (!pukokKey && pukokWord) {
+    return (
+      <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', lineHeight: 1 }}>
         <span style={{ fontFamily: 'var(--font-pukok)', fontSize, color: accentColor }}>
           {pukokWord}
         </span>
-      </>
-    )}
-  </div>
-);
+      </div>
+    );
+  }
+  if (!pukokWord && pukokKey) {
+    return (
+      <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', lineHeight: 1 }}>
+        <span style={{ fontFamily: 'var(--font-pukok)', fontSize, color: accentColor }}>
+          {pukokKey}
+        </span>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.2rem', lineHeight: 1 }}>
+      <span style={{ fontFamily: 'var(--font-pukok)', fontSize, color: accentColor }}>
+        {pukokKey}
+      </span>
+      {pukokWord && (
+        <>
+          <span style={{
+            fontFamily: 'system-ui, -apple-system, sans-serif',
+            fontSize: '0.9rem',
+            fontWeight: 700,
+            color: 'var(--text-muted)',
+            padding: '0 0.1rem',
+            lineHeight: 1,
+          }}>
+            :
+          </span>
+          <span style={{ fontFamily: 'var(--font-pukok)', fontSize, color: accentColor }}>
+            {pukokWord}
+          </span>
+        </>
+      )}
+    </div>
+  );
+};
 
 interface MeeteiMayekToolProps {
   onInsertText: (text: string) => void;
@@ -921,7 +942,7 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
               {/* 18 Roots Table */}
               <div style={{ marginBottom: '1rem' }}>
                 <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-secondary)', display: 'block', marginBottom: '0.4rem' }}>
-                  18 Core Anatomical Roots (Meetei Eepi-eeyek laiyek 18):
+                  SCRIPTS (ꯏꯄꯤ ꯏꯌꯦꯛ ꯱꯸) - 18 Core Letters:
                 </span>
                 <div style={{
                   display: 'grid',
@@ -1354,11 +1375,11 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
                 </span>
               </div>
 
-              {/* Clean 10-column layout: perfectly balances 0 to 9 */}
+              {/* Clean layout: perfectly balances 1 to 10 */}
               <div style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(88px, 1fr))',
-                gap: '0.55rem',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
+                gap: '0.65rem',
               }}>
                 {NUMERALS_10.map((item) => (
                   <div
@@ -1370,17 +1391,25 @@ export const MeeteiMayekTool: React.FC<MeeteiMayekToolProps> = ({
                       flexDirection: 'column',
                       alignItems: 'center',
                       justifyContent: 'space-between',
-                      minHeight: '110px',
-                      padding: '0.6rem 0.35rem',
+                      minHeight: '115px',
+                      padding: '0.65rem 0.5rem',
                       boxSizing: 'border-box',
                     }}
                     title={`Click to insert ${item.char} (${item.name} - ${item.codePoint})`}
                   >
-                    {renderPukokFormula(item.pukokKey, item.pukokWord, 'var(--accent-indigo)')}
-                    <span style={{ fontSize: '0.74rem', fontWeight: 700, color: 'var(--text-primary)', marginTop: '0.2rem' }}>
+                    <div style={{
+                      fontFamily: 'var(--font-pukok)',
+                      fontSize: '1.5rem',
+                      lineHeight: 1.1,
+                      color: 'var(--accent-indigo)',
+                      whiteSpace: 'nowrap',
+                    }}>
+                      {item.pukokWord}
+                    </div>
+                    <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-primary)', marginTop: '0.2rem' }}>
                       ({item.name.split(' ')[0]})
                     </span>
-                    <code style={{ fontSize: '0.62rem', color: 'var(--accent-cyan)', background: 'rgba(56, 189, 248, 0.08)', padding: '0.05rem 0.35rem', borderRadius: '3px', marginTop: '0.2rem' }}>
+                    <code style={{ fontSize: '0.68rem', color: 'var(--accent-cyan)', background: 'rgba(56, 189, 248, 0.08)', padding: '0.08rem 0.4rem', borderRadius: '3px', marginTop: '0.2rem' }}>
                       key: {item.pukokKey}
                     </code>
                   </div>

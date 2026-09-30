@@ -2,6 +2,7 @@ import "dart:convert";
 import "dart:io";
 import "package:flutter/services.dart" show rootBundle;
 import "package:flutter_riverpod/flutter_riverpod.dart";
+import "package:flutter_riverpod/legacy.dart";
 import "package:path_provider/path_provider.dart";
 import "../models/pdf_document.dart";
 import "../services/api_service.dart";
@@ -50,7 +51,7 @@ class LibraryNotifier extends StateNotifier<AsyncValue<List<PdfDocument>>> {
   }
 
   Future<void> refresh({bool showLoadingIfEmpty = false}) async {
-    if (showLoadingIfEmpty && state.valueOrNull == null) {
+    if (showLoadingIfEmpty && state.value == null) {
       state = const AsyncValue.loading();
     }
 
@@ -63,7 +64,7 @@ class LibraryNotifier extends StateNotifier<AsyncValue<List<PdfDocument>>> {
       state = AsyncValue.data(remoteDocs);
     } catch (err, stack) {
       // Offline fallback: keep existing data or restore from cache/bundle
-      if (state.valueOrNull != null && state.valueOrNull!.isNotEmpty) {
+      if (state.value != null && state.value!.isNotEmpty) {
         // Keep cached data in view
       } else {
         final cached = await CacheService.getCachedLibrary();
@@ -246,7 +247,7 @@ final downloadedPdfsProvider =
 /// Provider for list of all offline downloaded PDF documents with full metadata
 final downloadedDocumentsProvider = Provider<List<PdfDocument>>((ref) {
   final downloadedMap = ref.watch(downloadedPdfsProvider);
-  final allDocs = ref.watch(libraryProvider).valueOrNull ?? [];
+  final allDocs = ref.watch(libraryProvider).value ?? [];
 
   final list = <PdfDocument>[];
   for (final entry in downloadedMap.entries) {

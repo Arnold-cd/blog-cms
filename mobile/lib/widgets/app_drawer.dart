@@ -12,6 +12,8 @@ import "donation_modal.dart";
 import "inquiry_modal.dart";
 import "privacy_modal.dart";
 import "rating_modal.dart";
+import "monetization_modal.dart";
+import "../providers/monetization_provider.dart";
 
 class AppDrawer extends ConsumerWidget {
   final int currentIndex;
@@ -30,10 +32,11 @@ class AppDrawer extends ConsumerWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     final drawerWidth = math.min(screenWidth * 0.82, 335.0);
 
-    final posts = ref.watch(postsProvider).valueOrNull ?? [];
-    final libraryDocs = ref.watch(libraryProvider).valueOrNull ?? [];
+    final posts = ref.watch(postsProvider).value ?? [];
+    final libraryDocs = ref.watch(libraryProvider).value ?? [];
     final bookmarks = ref.watch(bookmarksProvider);
     final currentPaperTone = ref.watch(paperToneProvider);
+    final monState = ref.watch(monetizationProvider);
 
     return Drawer(
       width: drawerWidth,
@@ -82,9 +85,9 @@ class AppDrawer extends ConsumerWidget {
                 _buildDrawerItem(
                   icon: Icons.translate_rounded,
                   activeIcon: Icons.translate_rounded,
-                  title: "Mayek Explorer",
-                  subtitle: "English ↔ Meetei Mayek converter",
-                  badge: "ꯃꯌꯦꯛ",
+                  title: "Eeyek Explorer",
+                  subtitle: "English ↔ Meetei Eeyek converter",
+                  badge: "ꯏꯌꯦꯛ",
                   isSelected: currentIndex == 2,
                   isDark: isDark,
                   onTap: () => onSelectIndex(2),
@@ -123,6 +126,29 @@ class AppDrawer extends ConsumerWidget {
 
                 const SizedBox(height: 14),
                 _buildSectionHeader("PROJECT & TRUST", isDark),
+
+                _buildDrawerItem(
+                  icon: monState.isAdFreeActive
+                      ? Icons.workspace_premium_rounded
+                      : Icons.star_outline_rounded,
+                  activeIcon: Icons.workspace_premium_rounded,
+                  title: monState.isLifetimeAdFree
+                      ? "Lifetime Pro Active"
+                      : (monState.isAdFreeActive ? "Ad-Free Pass Active" : "Remove Ads / 24h Pass"),
+                  subtitle: monState.isAdFreeActive
+                      ? "Zero ads • Pure reading experience"
+                      : "Watch video or unlock lifetime pro",
+                  badge: monState.isLifetimeAdFree
+                      ? "PRO"
+                      : (monState.isAdFreeActive ? "ACTIVE" : "FREE PASS"),
+                  accentColor: const Color(0xFFF59E0B),
+                  isSelected: false,
+                  isDark: isDark,
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    MonetizationModal.show(context);
+                  },
+                ),
 
                 _buildDrawerItem(
                   icon: Icons.volunteer_activism_outlined,
@@ -779,7 +805,7 @@ class AppDrawer extends ConsumerWidget {
                   size: 12, color: Color(0xFFF43F5E)),
               const SizedBox(width: 6),
               Text(
-                "Dedicated to Manipuri Cultural Preservation",
+                "Dedicated to Kanglei Meetei's Cultural Preservation",
                 style: TextStyle(
                   fontSize: 10.5,
                   fontWeight: FontWeight.w500,
@@ -845,7 +871,7 @@ class AppDrawer extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              "SLLK (Sanamahi Laining Leechat Kangleipak • ꯁꯥꯅꯥꯃꯍꯤ  ꯂꯥꯏꫫꯅꯡ  ꯂꯤꯆꯠ ꫰  ꯀꯪꯂꯩꯄꯥꯛ) is a digital publication and e-library designed to read, preserve, and celebrate indigenous Manipuri literature, ancient Puya manuscripts, and cultural essays in both Meetei Mayek and English scripts.",
+              "ꯁꯂꯂꯀ SLLK (Sanamahi Laining Leechat Kangleipak • ꯁꯥꯅꯥꯃꯍꯤ  ꯂꯥꯏꫫꯅꯡ  ꯂꯤꯆꯠ ꫰  ꯀꯪꯂꯩꯄꯥꯛ) is a digital publication and e-library designed to read, preserve, and celebrate indigenous Manipuri literature, ancient Puya manuscripts, and cultural essays in both Meetei Mayek and English scripts.",
               style: TextStyle(fontSize: 13, height: 1.5),
             ),
             const SizedBox(height: 12),
