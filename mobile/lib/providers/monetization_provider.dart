@@ -21,7 +21,7 @@ class MonetizationState {
     return false;
   }
 
-  /// Remaining duration of 24h rewarded ad pass
+  /// Remaining duration of rewarded ad pass
   Duration? get remainingRewardedTime {
     if (rewardedAdFreeUntil == null) return null;
     final diff = rewardedAdFreeUntil!.difference(DateTime.now());
@@ -84,8 +84,8 @@ class MonetizationNotifier extends StateNotifier<MonetizationState> {
     await prefs.setBool(_prefLifetimeKey, value);
   }
 
-  /// Grant 24-hour ad-free pass from rewarded video
-  Future<void> grantRewardedPass({Duration duration = const Duration(hours: 24)}) async {
+  /// Grant 1-hour ad-free pass from rewarded video
+  Future<void> grantRewardedPass({Duration duration = const Duration(hours: 1)}) async {
     final expiry = DateTime.now().add(duration);
     state = state.copyWith(rewardedAdFreeUntil: expiry);
     final prefs = await SharedPreferences.getInstance();

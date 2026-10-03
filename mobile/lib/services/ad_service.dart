@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 /// Centralized Google AdMob Service for SLLK
-/// Handles Banner, Interstitial, and Rewarded Video Ads
+/// Handles Banner, Interstitial, and Rewarded Video Ads with smart test fallback
 class AdService {
   AdService._();
   static final AdService instance = AdService._();
@@ -20,44 +20,44 @@ class AdService {
   static const int interstitialInterval = 3; // Show every 3 articles read
 
   // -------------------------------------------------------------
-  // AdMob Ad Unit IDs (Official Google Test IDs for Development)
-  // Replace these with your real AdMob IDs before publishing
+  // Official Google Sample Test Ad Unit IDs (Always 100% Fill)
   // -------------------------------------------------------------
-  static String get bannerAdUnitId {
-    if (kDebugMode) {
-      return Platform.isAndroid
-          ? 'ca-app-pub-3940256099942544/6300978111'
-          : 'ca-app-pub-3940256099942544/2934735716';
-    }
-    // Production IDs
-    return Platform.isAndroid
-        ? 'ca-app-pub-8232094123741508/8818970850'
-        : 'ca-app-pub-3940256099942544/2934735716';
-  }
+  static String get testBannerAdUnitId => Platform.isAndroid
+      ? 'ca-app-pub-3940256099942544/6300978111'
+      : 'ca-app-pub-3940256099942544/2934735716';
 
-  static String get interstitialAdUnitId {
-    if (kDebugMode) {
-      return Platform.isAndroid
-          ? 'ca-app-pub-3940256099942544/1033173712'
-          : 'ca-app-pub-3940256099942544/4411468910';
-    }
-    // Production IDs
-    return Platform.isAndroid
-        ? 'ca-app-pub-8232094123741508/8323223393'
-        : 'ca-app-pub-3940256099942544/4411468910';
-  }
+  static String get testInterstitialAdUnitId => Platform.isAndroid
+      ? 'ca-app-pub-3940256099942544/1033173712'
+      : 'ca-app-pub-3940256099942544/4411468910';
 
-  static String get rewardedAdUnitId {
-    if (kDebugMode) {
-      return Platform.isAndroid
-          ? 'ca-app-pub-3940256099942544/5224354917'
-          : 'ca-app-pub-3940256099942544/1712485313';
-    }
-    // Production IDs
-    return Platform.isAndroid
-        ? 'ca-app-pub-8232094123741508/9748909140'
-        : 'ca-app-pub-3940256099942544/1712485313';
-  }
+  static String get testRewardedAdUnitId => Platform.isAndroid
+      ? 'ca-app-pub-3940256099942544/5224354917'
+      : 'ca-app-pub-3940256099942544/1712485313';
+
+  // -------------------------------------------------------------
+  // Production Ad Unit IDs
+  // -------------------------------------------------------------
+  static String get productionBannerAdUnitId => Platform.isAndroid
+      ? 'ca-app-pub-8232094123741508/8818970850'
+      : testBannerAdUnitId;
+
+  static String get productionInterstitialAdUnitId => Platform.isAndroid
+      ? 'ca-app-pub-8232094123741508/8323223393'
+      : testInterstitialAdUnitId;
+
+  static String get productionRewardedAdUnitId => Platform.isAndroid
+      ? 'ca-app-pub-8232094123741508/9748909140'
+      : testRewardedAdUnitId;
+
+  // Active default IDs (Debug mode uses test IDs; Release uses production)
+  static String get bannerAdUnitId =>
+      kDebugMode ? testBannerAdUnitId : productionBannerAdUnitId;
+
+  static String get interstitialAdUnitId =>
+      kDebugMode ? testInterstitialAdUnitId : productionInterstitialAdUnitId;
+
+  static String get rewardedAdUnitId =>
+      kDebugMode ? testRewardedAdUnitId : productionRewardedAdUnitId;
 
   /// Initialize AdMob SDK
   Future<void> initialize() async {
@@ -76,24 +76,32 @@ class AdService {
   // INTERSTITIAL ADS
   // =============================================================
 
-  void loadInterstitialAd() {
+  void loadInterstitialAd({bool useFallback = false}) {
     if (_isInterstitialLoading || _interstitialAd != null) return;
     _isInterstitialLoading = true;
 
+    final adUnitId = kDebugMode || useFallback
+        ? testInterstitialAdUnitId
+        : productionInterstitialAdUnitId;
+
     InterstitialAd.load(
-      adUnitId: interstitialAdUnitId,
+      adUnitId: adUnitId,
       request: const AdRequest(),
       adLoadCallback: InterstitialAdLoadCallback(
         onAdLoaded: (ad) {
           _interstitialAd = ad;
           _isInterstitialLoading = false;
-          _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
+          debugPrint(
+              '[AdService] Interstitial loaded (${useFallback ? "Test Fallback" : "Live"}).');
+          _interstitialAd!.fullScreenContentCallback =
+              FullScreenContentCallback(
             onAdDismissedFullScreenContent: (ad) {
               ad.dispose();
               _interstitialAd = null;
               loadInterstitialAd(); // Preload next
             },
             onAdFailedToShowFullScreenContent: (ad, error) {
+              debugPrint('[AdService] Interstitial failed to show: $error');
               ad.dispose();
               _interstitialAd = null;
               loadInterstitialAd();
@@ -101,9 +109,24 @@ class AdService {
           );
         },
         onAdFailedToLoad: (error) {
-          debugPrint('[AdService] Interstitial failed to load: $error');
+          debugPrint(
+              '[AdService] Interstitial failed to load (Code ${error.code}): ${error.message}');
           _interstitialAd = null;
           _isInterstitialLoading = false;
+
+          // If production ad fails with No Fill (Code 3) or error, fallback to test ad so testers aren't blocked
+          if (!useFallback && !kDebugMode) {
+            debugPrint(
+                '[AdService] Production interstitial unavailable. Falling back to test unit for testers...');
+            loadInterstitialAd(useFallback: true);
+          } else {
+            // Auto-retry in 30 seconds
+            Future.delayed(const Duration(seconds: 30), () {
+              if (_interstitialAd == null) {
+                loadInterstitialAd();
+              }
+            });
+          }
         },
       ),
     );
@@ -113,8 +136,10 @@ class AdService {
   /// Shows ad every [interstitialInterval] times.
   void showInterstitialIfEligible({VoidCallback? onDismissed}) {
     _articlesReadCount++;
-    if (_articlesReadCount % interstitialInterval == 0 && _interstitialAd != null) {
-      _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
+    if (_articlesReadCount % interstitialInterval == 0 &&
+        _interstitialAd != null) {
+      _interstitialAd!.fullScreenContentCallback =
+          FullScreenContentCallback(
         onAdDismissedFullScreenContent: (ad) {
           ad.dispose();
           _interstitialAd = null;
@@ -130,6 +155,9 @@ class AdService {
       );
       _interstitialAd!.show();
     } else {
+      if (_interstitialAd == null) {
+        loadInterstitialAd();
+      }
       onDismissed?.call();
     }
   }
@@ -140,22 +168,43 @@ class AdService {
 
   bool get isRewardedAdReady => _rewardedAd != null;
 
-  void loadRewardedAd() {
+  void loadRewardedAd({bool useFallback = false}) {
     if (_isRewardedLoading || _rewardedAd != null) return;
     _isRewardedLoading = true;
 
+    final adUnitId = kDebugMode || useFallback
+        ? testRewardedAdUnitId
+        : productionRewardedAdUnitId;
+
     RewardedAd.load(
-      adUnitId: rewardedAdUnitId,
+      adUnitId: adUnitId,
       request: const AdRequest(),
       rewardedAdLoadCallback: RewardedAdLoadCallback(
         onAdLoaded: (ad) {
           _rewardedAd = ad;
           _isRewardedLoading = false;
+          debugPrint(
+              '[AdService] Rewarded ad loaded (${useFallback ? "Test Fallback" : "Live"}).');
         },
         onAdFailedToLoad: (error) {
-          debugPrint('[AdService] Rewarded ad failed to load: $error');
+          debugPrint(
+              '[AdService] Rewarded ad failed to load (Code ${error.code}): ${error.message}');
           _rewardedAd = null;
           _isRewardedLoading = false;
+
+          // If production ad fails with No Fill (Code 3) or error, fallback to test ad so testers can earn pass
+          if (!useFallback && !kDebugMode) {
+            debugPrint(
+                '[AdService] Production rewarded ad unavailable. Falling back to test unit for testers...');
+            loadRewardedAd(useFallback: true);
+          } else {
+            // Auto-retry in 30 seconds
+            Future.delayed(const Duration(seconds: 30), () {
+              if (_rewardedAd == null) {
+                loadRewardedAd();
+              }
+            });
+          }
         },
       ),
     );
@@ -183,6 +232,7 @@ class AdService {
         onAdClosed?.call();
       },
       onAdFailedToShowFullScreenContent: (ad, error) {
+        debugPrint('[AdService] Rewarded ad failed to show: $error');
         ad.dispose();
         _rewardedAd = null;
         loadRewardedAd();
@@ -200,7 +250,7 @@ class AdService {
   }
 }
 
-/// A clean Banner Ad Widget that handles creation, display, and disposal
+/// A clean Banner Ad Widget with automatic test fallback on error
 class BannerAdWidget extends StatefulWidget {
   final AdSize adSize;
   const BannerAdWidget({
@@ -222,9 +272,13 @@ class _BannerAdWidgetState extends State<BannerAdWidget> {
     _loadAd();
   }
 
-  void _loadAd() {
+  void _loadAd({bool useFallback = false}) {
+    final adUnitId = kDebugMode || useFallback
+        ? AdService.testBannerAdUnitId
+        : AdService.bannerAdUnitId;
+
     _bannerAd = BannerAd(
-      adUnitId: AdService.bannerAdUnitId,
+      adUnitId: adUnitId,
       size: widget.adSize,
       request: const AdRequest(),
       listener: BannerAdListener(
@@ -236,12 +290,16 @@ class _BannerAdWidgetState extends State<BannerAdWidget> {
           }
         },
         onAdFailedToLoad: (ad, error) {
-          debugPrint('[BannerAd] Failed to load: $error');
+          debugPrint(
+              '[BannerAd] Failed to load (code ${error.code}): ${error.message}');
           ad.dispose();
           if (mounted) {
             setState(() {
               _isLoaded = false;
             });
+          }
+          if (!useFallback && !kDebugMode) {
+            _loadAd(useFallback: true);
           }
         },
       ),

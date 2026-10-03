@@ -300,15 +300,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 monState.isLifetimeAdFree
                     ? "Lifetime Pro Active"
                     : (monState.isAdFreeActive
-                        ? "24h Ad-Free Pass Active"
-                        : "Remove Ads / 24h Pass"),
+                        ? "1h Ad-Free Pass Active"
+                        : "Remove Ads / 1h Pass"),
                 style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
               ),
               subtitle: Text(
                 monState.isLifetimeAdFree
                     ? "All ads are permanently disabled."
                     : (monState.isAdFreeActive && monState.remainingRewardedTime != null
-                        ? "${monState.remainingRewardedTime!.inHours}h ${monState.remainingRewardedTime!.inMinutes % 60}m remaining on pass."
+                        ? "${monState.remainingRewardedTime!.inHours > 0 ? '${monState.remainingRewardedTime!.inHours}h ' : ''}${monState.remainingRewardedTime!.inMinutes % 60}m remaining on pass."
                         : "Watch video or unlock lifetime ad-free."),
                 style: TextStyle(
                   fontSize: 12,

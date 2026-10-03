@@ -12,6 +12,9 @@ class PurchaseService {
 
   // The Product ID configured in Google Play Console & Apple App Store Connect
   static const String lifetimeAdFreeProductId = 'sllk_lifetime_ad_free';
+  static const Set<String> supportedProductIds = {
+    'sllk_lifetime_ad_free'
+  };
 
   ProductDetails? lifetimeProduct;
   bool _isAvailable = false;
@@ -47,15 +50,12 @@ class PurchaseService {
   Future<void> loadProducts() async {
     if (!_isAvailable) return;
     try {
-      final response = await _iap.queryProductDetails({lifetimeAdFreeProductId});
+      final response = await _iap.queryProductDetails(supportedProductIds);
       if (response.notFoundIDs.isNotEmpty) {
         debugPrint('[PurchaseService] Products not found: ${response.notFoundIDs}');
       }
       if (response.productDetails.isNotEmpty) {
-        lifetimeProduct = response.productDetails.firstWhere(
-          (p) => p.id == lifetimeAdFreeProductId,
-          orElse: () => response.productDetails.first,
-        );
+        lifetimeProduct = response.productDetails.first;
       }
     } catch (e) {
       debugPrint('[PurchaseService] Failed to query product details: $e');
@@ -110,7 +110,7 @@ class PurchaseService {
       } else if (purchaseDetails.status == PurchaseStatus.purchased ||
           purchaseDetails.status == PurchaseStatus.restored) {
         // Verify and grant
-        if (purchaseDetails.productID == lifetimeAdFreeProductId) {
+        if (supportedProductIds.contains(purchaseDetails.productID)) {
           onPurchaseSuccess?.call(true);
         }
       }

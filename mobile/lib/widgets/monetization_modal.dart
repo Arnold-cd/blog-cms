@@ -110,7 +110,7 @@ class _MonetizationModalState extends ConsumerState<MonetizationModal> {
               isLifetime
                   ? "Thank you for supporting our cultural archive! All ads are permanently removed across the entire app."
                   : (isAdFree && remainingTime != null
-                      ? "You have ${remainingTime.inHours}h ${remainingTime.inMinutes % 60}m of ad-free reading remaining from your rewarded pass."
+                      ? "You have ${remainingTime.inHours > 0 ? '${remainingTime.inHours}h ' : ''}${remainingTime.inMinutes % 60}m of ad-free reading remaining from your rewarded pass."
                       : "Enjoy reading ancient manuscripts & cultural essays with zero distractions. Choose how you'd like to remove ads:"),
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: isDark ? Colors.grey[400] : Colors.grey[600],
@@ -121,7 +121,7 @@ class _MonetizationModalState extends ConsumerState<MonetizationModal> {
             const SizedBox(height: 24),
 
             if (!isLifetime) ...[
-              // Option 1: Watch Rewarded Video for 24h Pass
+              // Option 1: Watch Rewarded Video for 1-Hour Pass
               Container(
                 decoration: BoxDecoration(
                   color: isDark
@@ -161,7 +161,7 @@ class _MonetizationModalState extends ConsumerState<MonetizationModal> {
                           ),
                           const SizedBox(height: 2),
                           Text(
-                            "Free 24 Hours Ad-Free Pass",
+                            "Free 1 Hour Ad-Free Pass",
                             style: TextStyle(
                               fontSize: 12,
                               color: isDark ? Colors.grey[400] : Colors.grey[600],
@@ -190,7 +190,7 @@ class _MonetizationModalState extends ConsumerState<MonetizationModal> {
                                   monNotifier.grantRewardedPass();
                                   messenger.showSnackBar(
                                     const SnackBar(
-                                      content: Text("🎉 24-Hour Ad-Free Pass Activated!"),
+                                      content: Text("🎉 1-Hour Ad-Free Pass Activated!"),
                                       backgroundColor: Color(0xFF10B981),
                                     ),
                                   );

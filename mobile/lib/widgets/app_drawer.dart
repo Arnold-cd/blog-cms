@@ -134,7 +134,7 @@ class AppDrawer extends ConsumerWidget {
                   activeIcon: Icons.workspace_premium_rounded,
                   title: monState.isLifetimeAdFree
                       ? "Lifetime Pro Active"
-                      : (monState.isAdFreeActive ? "Ad-Free Pass Active" : "Remove Ads / 24h Pass"),
+                      : (monState.isAdFreeActive ? "Ad-Free Pass Active" : "Remove Ads / 1h Pass"),
                   subtitle: monState.isAdFreeActive
                       ? "Zero ads • Pure reading experience"
                       : "Watch video or unlock lifetime pro",
