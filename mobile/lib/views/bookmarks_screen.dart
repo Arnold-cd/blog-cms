@@ -404,7 +404,7 @@ class BookmarksScreen extends ConsumerWidget {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                "${doc.author} • ${doc.fileSizeFormatted}",
+                                "${doc.author} • ${doc.displayFileSize}",
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(

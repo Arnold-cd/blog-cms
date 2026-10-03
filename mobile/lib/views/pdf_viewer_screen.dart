@@ -67,7 +67,7 @@ class _PdfViewerScreenState extends ConsumerState<PdfViewerScreen> {
       _isLoading = true;
       _errorMessage = "";
       _loadingMessage =
-          "Downloading PDF (${widget.document.fileSizeFormatted})...";
+          "Downloading PDF (${widget.document.displayFileSize})...";
     });
 
     final downloadedMap = ref.read(downloadedPdfsProvider);
@@ -124,7 +124,7 @@ class _PdfViewerScreenState extends ConsumerState<PdfViewerScreen> {
             setState(() {
               final pct = (progress * 100).toInt();
               _loadingMessage =
-                  "Downloading PDF (${widget.document.fileSizeFormatted}) • $pct%...";
+                  "Downloading PDF (${widget.document.displayFileSize}) • $pct%...";
             });
           }
         },

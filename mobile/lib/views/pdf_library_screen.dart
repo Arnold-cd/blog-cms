@@ -458,22 +458,27 @@ class _PdfLibraryScreenState extends ConsumerState<PdfLibraryScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFD97706).withValues(alpha: 0.12),
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          child: Text(
-                            doc.category,
-                            style: const TextStyle(
-                              color: Color(0xFFD97706),
-                              fontSize: 10.5,
-                              fontWeight: FontWeight.bold,
+                        Flexible(
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFD97706).withValues(alpha: 0.12),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Text(
+                              doc.category,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                color: Color(0xFFD97706),
+                                fontSize: 10.5,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                         ),
-                        if (isDownloaded)
+                        if (isDownloaded) ...[
+                          const SizedBox(width: 8),
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                             decoration: BoxDecoration(
@@ -496,6 +501,7 @@ class _PdfLibraryScreenState extends ConsumerState<PdfLibraryScreen> {
                               ],
                             ),
                           ),
+                        ],
                       ],
                     ),
 
@@ -517,7 +523,11 @@ class _PdfLibraryScreenState extends ConsumerState<PdfLibraryScreen> {
 
                     // Author & Date
                     Text(
-                      "${doc.author} • ${doc.publishedDate}",
+                      doc.publishedDate.isNotEmpty
+                          ? "${doc.author} • ${doc.publishedDate}"
+                          : doc.author,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         fontSize: 11,
                         color: isDark ? Colors.white54 : Colors.black54,
@@ -528,16 +538,20 @@ class _PdfLibraryScreenState extends ConsumerState<PdfLibraryScreen> {
 
                     // Metrics (Pages & Size) & Read CTA
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          "📄 ${doc.pageCount} pages • ${doc.fileSizeFormatted}",
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w500,
-                            color: isDark ? Colors.white38 : Colors.black45,
+                        Expanded(
+                          child: Text(
+                            _formatDocMetrics(doc),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w500,
+                              color: isDark ? Colors.white38 : Colors.black45,
+                            ),
                           ),
                         ),
+                        const SizedBox(width: 8),
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                           decoration: BoxDecoration(
@@ -570,6 +584,18 @@ class _PdfLibraryScreenState extends ConsumerState<PdfLibraryScreen> {
         ),
       ),
     );
+  }
+
+  String _formatDocMetrics(PdfDocument doc) {
+    final sizeOrSource = doc.displayFileSize;
+    if (doc.pageCount > 0) {
+      return "📄 ${doc.pageCount} pages • $sizeOrSource";
+    } else {
+      final isCloud = sizeOrSource.toLowerCase().contains("drive") ||
+          sizeOrSource.toLowerCase().contains("archive") ||
+          sizeOrSource.toLowerCase().contains("cloud");
+      return "${isCloud ? '☁️' : '📄'} $sizeOrSource";
+    }
   }
 
   Widget _buildShimmerCard(bool isDark) {

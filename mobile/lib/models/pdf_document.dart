@@ -75,6 +75,14 @@ class PdfDocument {
     );
   }
 
+  /// Normalized human-friendly file size or source label
+  String get displayFileSize {
+    if (fileSizeFormatted.toLowerCase().contains("google drive")) {
+      return "Google Drive";
+    }
+    return fileSizeFormatted;
+  }
+
   Map<String, dynamic> toJson() {
     return {
       "id": id,
