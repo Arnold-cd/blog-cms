@@ -159,10 +159,40 @@ export async function fetchArticleMarkdown(contentUrl: string): Promise<string> 
 }
 
 export function stripFrontmatter(rawMarkdown: string): string {
-  // Regex to remove YAML block: leading --- ... ---
-  const pattern = /^---\s*\n[\s\S]*?\n---\s*\n/;
-  return rawMarkdown.replace(pattern, '').trim();
+  let content = rawMarkdown.trim();
+
+  // 1. Repeatedly strip all standard frontmatter blocks delimited by --- or +++
+  const frontmatterRegex = /^(?:---|(?:\+\+\+))\s*[\r\n]+[\s\S]*?[\r\n]+(?:---|(?:\+\+\+))\s*/;
+  while (frontmatterRegex.test(content)) {
+    content = content.replace(frontmatterRegex, '').trim();
+  }
+
+  // 2. Strip any naked/un-delimited YAML metadata blocks at the start of the article
+  const metadataKeyRegex = /^\s*(?:id|title|summary|date|author|category|thumbnail|language|featured|tags|slug)\s*:\s*.*$/i;
+  const lines = content.split(/\r?\n/);
+  let dropUntil = 0;
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (line === '' || line === '---' || line === '***' || line === '___' || metadataKeyRegex.test(line)) {
+      dropUntil = i + 1;
+    } else {
+      break;
+    }
+  }
+  if (dropUntil > 0) {
+    content = lines.slice(dropUntil).join('\n').trim();
+  }
+
+  // 3. Remove any metadata blocks collapsed onto one line
+  const inlineMetadataBlockRegex = /(?:^|\n)\s*id:\s*["']?[^"'\n\r]+["']?(?:\s+(?:title|summary|date|author|category|thumbnail|language|featured|tags):\s*["']?[^"'\n\r]+["']?)+[^\n\r]*(?:\r?\n|$)/gi;
+  content = content.replace(inlineMetadataBlockRegex, '\n');
+
+  // 4. Remove any isolated id: "..." lines
+  content = content.replace(/^\s*id\s*:\s*["']?[^"'\r\n]*["']?\s*$/gmi, '');
+
+  return content.trim();
 }
+
 
 export function calculateReadingTime(markdownText: string): { words: number; minutes: number } {
   const clean = markdownText

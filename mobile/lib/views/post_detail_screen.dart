@@ -15,6 +15,7 @@ import "../services/meetei_mayek_service.dart";
 import "../theme/app_theme.dart";
 import "../widgets/adaptive_image.dart";
 import "../widgets/donation_modal.dart";
+import "../widgets/monetization_modal.dart";
 
 class PostDetailScreen extends ConsumerStatefulWidget {
   final Post post;
@@ -58,10 +59,12 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
   @override
   void dispose() {
     _flutterTts.stop();
-    final isAdFree = ref.read(monetizationProvider).isAdFreeActive;
-    if (!isAdFree) {
-      AdService.instance.showInterstitialIfEligible();
-    }
+    try {
+      final isAdFree = ref.read(monetizationProvider).isAdFreeActive;
+      if (!isAdFree) {
+        AdService.instance.showInterstitialIfEligible();
+      }
+    } catch (_) {}
     super.dispose();
   }
 
@@ -238,6 +241,7 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final isAdFree = ref.watch(monetizationProvider).isAdFreeActive;
     final bookmarks = ref.watch(bookmarksProvider);
     final isBookmarked = bookmarks.contains(widget.post.id);
     final fontScale = ref.watch(fontSizeProvider);
@@ -326,6 +330,23 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
               onPressed: () => Navigator.of(context).pop(),
             ),
             actions: [
+              // Free Ad-Free Pass / Rewarded Ad
+              IconButton(
+                tooltip: "Free Ad-Free Pass (Watch Ad)",
+                icon: Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: isDark ? Colors.black.withValues(alpha: 0.5) : Colors.white.withValues(alpha: 0.85),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.stars_rounded,
+                    color: Color(0xFFF59E0B),
+                    size: 20,
+                  ),
+                ),
+                onPressed: () => MonetizationModal.show(context),
+              ),
               // Quick Translation Toggle Button in AppBar
               IconButton(
                 tooltip: _isTranslated ? "Switch to English" : "Translate to Meetei Mayek",
@@ -1036,6 +1057,7 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
           ),
         ],
       ),
+      bottomNavigationBar: !isAdFree ? const SafeArea(top: false, child: BannerAdWidget()) : null,
     );
   }
 

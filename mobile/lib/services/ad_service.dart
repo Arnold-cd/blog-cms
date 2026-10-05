@@ -16,9 +16,6 @@ class AdService {
   RewardedAd? _rewardedAd;
   bool _isRewardedLoading = false;
 
-  int _articlesReadCount = 0;
-  static const int interstitialInterval = 3; // Show every 3 articles read
-
   // -------------------------------------------------------------
   // Official Google Sample Test Ad Unit IDs (Always 100% Fill)
   // -------------------------------------------------------------
@@ -132,12 +129,18 @@ class AdService {
     );
   }
 
-  /// Call this when an article is finished or dismissed.
-  /// Shows ad every [interstitialInterval] times.
+  DateTime? _lastInterstitialShownAt;
+  static const int minInterstitialCooldownSeconds = 15; // Smooth 15-second interval between interstitials
+
+  /// Shows interstitial ad on page transitions, reading articles, or switching screens.
+  /// Enforces a 15-second cooldown to respect user experience and AdMob policies.
   void showInterstitialIfEligible({VoidCallback? onDismissed}) {
-    _articlesReadCount++;
-    if (_articlesReadCount % interstitialInterval == 0 &&
-        _interstitialAd != null) {
+    final now = DateTime.now();
+    final cooldownPassed = _lastInterstitialShownAt == null ||
+        now.difference(_lastInterstitialShownAt!).inSeconds >= minInterstitialCooldownSeconds;
+
+    if (cooldownPassed && _interstitialAd != null) {
+      _lastInterstitialShownAt = now;
       _interstitialAd!.fullScreenContentCallback =
           FullScreenContentCallback(
         onAdDismissedFullScreenContent: (ad) {
@@ -147,6 +150,7 @@ class AdService {
           onDismissed?.call();
         },
         onAdFailedToShowFullScreenContent: (ad, error) {
+          debugPrint('[AdService] Interstitial failed to show: $error');
           ad.dispose();
           _interstitialAd = null;
           loadInterstitialAd();

@@ -8,7 +8,10 @@ import "package:path_provider/path_provider.dart";
 import "package:share_plus/share_plus.dart";
 import "../models/pdf_document.dart";
 import "../providers/library_providers.dart";
+import "../providers/monetization_provider.dart";
+import "../services/ad_service.dart";
 import "../services/api_service.dart";
+import "../widgets/monetization_modal.dart";
 
 enum ReadingTheme { normal, sepia, night }
 
@@ -45,6 +48,12 @@ class _PdfViewerScreenState extends ConsumerState<PdfViewerScreen> {
   @override
   void dispose() {
     _downloadClient?.close();
+    try {
+      final isAdFree = ref.read(monetizationProvider).isAdFreeActive;
+      if (!isAdFree) {
+        AdService.instance.showInterstitialIfEligible();
+      }
+    } catch (_) {}
     super.dispose();
   }
 
@@ -252,6 +261,7 @@ class _PdfViewerScreenState extends ConsumerState<PdfViewerScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final isAdFree = ref.watch(monetizationProvider).isAdFreeActive;
     final isDownloaded =
         ref.watch(downloadedPdfsProvider).containsKey(widget.document.fileName);
 
@@ -292,6 +302,15 @@ class _PdfViewerScreenState extends ConsumerState<PdfViewerScreen> {
                 ],
               ),
               actions: [
+                // Free Ad-Free Pass / Rewarded Ad
+                IconButton(
+                  tooltip: "Free Ad-Free Pass (Watch Ad)",
+                  icon: const Icon(
+                    Icons.stars_rounded,
+                    color: Color(0xFFF59E0B),
+                  ),
+                  onPressed: () => MonetizationModal.show(context),
+                ),
                 IconButton(
                   icon: Icon(
                     isDownloaded
@@ -512,7 +531,7 @@ class _PdfViewerScreenState extends ConsumerState<PdfViewerScreen> {
                         Positioned(
                           left: 16,
                           right: 16,
-                          bottom: 24,
+                          bottom: !isAdFree ? 70 : 24,
                           child: AnimatedSlide(
                             duration: const Duration(milliseconds: 250),
                             offset: _showControls
@@ -680,6 +699,7 @@ class _PdfViewerScreenState extends ConsumerState<PdfViewerScreen> {
                       ],
                     )
                   : const SizedBox.shrink(),
+      bottomNavigationBar: !isAdFree ? const SafeArea(top: false, child: BannerAdWidget()) : null,
     );
   }
 }

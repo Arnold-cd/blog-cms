@@ -4,6 +4,7 @@ import "../models/meetei_character.dart";
 import "../services/meetei_data.dart";
 import "../services/meetei_mayek_service.dart";
 import "../theme/app_theme.dart";
+import "../widgets/monetization_modal.dart";
 
 class MayekExplorerScreen extends StatefulWidget {
   const MayekExplorerScreen({super.key});
@@ -15,9 +16,8 @@ class MayekExplorerScreen extends StatefulWidget {
 class _MayekExplorerScreenState extends State<MayekExplorerScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  final TextEditingController _typeController =
-      TextEditingController(text: "ei khngebo");
-  String _translatedOutput = "";
+  final TextEditingController _typeController = TextEditingController();
+  String _pukokOutput = "";
   String _cheitapGroup = 'core18';
   int _cheitapBaseIndex = 0;
 
@@ -25,7 +25,8 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 5, vsync: this);
-    _updateTranslation(_typeController.text);
+    final unicode = MeeteiMayekService.translateToMeeteiMayekWithVocab(_typeController.text);
+    _pukokOutput = MeeteiMayekService.convertUnicodeToPukokFont(unicode);
   }
 
   @override
@@ -35,12 +36,18 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen>
     super.dispose();
   }
 
+  // Local Pukok-to-Unicode mapping for Wakambam Macha Waanglel QWERTY keymap
+
   void _updateTranslation(String input) {
+    if (!mounted) return;
     setState(() {
-      _translatedOutput =
+      final unicode =
           MeeteiMayekService.translateToMeeteiMayekWithVocab(input);
+      _pukokOutput =
+          MeeteiMayekService.convertUnicodeToPukokFont(unicode);
     });
   }
+
 
   void _insertChar(String char) {
     final text = _typeController.text;
@@ -171,40 +178,54 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen>
                     ),
                   ),
                   const SizedBox(width: 12),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Text(
-                            MeeteiMayekService.convertUnicodeToPukokFont(
-                                "ꯏꯌꯦꯛ"),
-                            style: const TextStyle(
-                              fontFamily: "PukokEeyek",
-                              fontSize: 22,
-                              fontWeight: FontWeight.normal,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              MeeteiMayekService.convertUnicodeToPukokFont(
+                                  "ꯏꯌꯦꯛ"),
+                              style: const TextStyle(
+                                fontFamily: "PukokEeyek",
+                                fontSize: 22,
+                                fontWeight: FontWeight.normal,
+                              ),
                             ),
-                          ),
-                          const SizedBox(width: 4),
-                          const Text(
-                            "Explorer",
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w800,
-                              letterSpacing: -0.5,
+                            const SizedBox(width: 4),
+                            const Text(
+                              "Explorer",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w800,
+                                letterSpacing: -0.5,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                      Text(
-                        "Meetei Mayek Script Guide & Sandbox",
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          fontSize: 11,
-                          color: theme.textTheme.bodySmall?.color
-                              ?.withValues(alpha: 0.7),
+                          ],
                         ),
-                      ),
-                    ],
+                        Text(
+                          "Meetei Mayek Script Guide & Sandbox",
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            fontSize: 11,
+                            color: theme.textTheme.bodySmall?.color
+                                ?.withValues(alpha: 0.7),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    tooltip: "Free Ad-Free Pass (Watch Ad)",
+                    visualDensity: VisualDensity.compact,
+                    padding: const EdgeInsets.all(6),
+                    constraints: const BoxConstraints(),
+                    icon: const Icon(
+                      Icons.stars_rounded,
+                      color: Color(0xFFF59E0B),
+                      size: 22,
+                    ),
+                    onPressed: () => MonetizationModal.show(context),
                   ),
                 ],
               ),
@@ -311,34 +332,39 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen>
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF6366F1).withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    child: const Text(
-                      "AUTHENTIC WAKOKLON PUKOK EEYEK",
-                      style: TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF6366F1),
-                        letterSpacing: 0.8,
+                  Flexible(
+                    child: Container(
+                      padding:
+                          const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF6366F1).withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: const Text(
+                        "AUTHENTIC WAKOKLON PUKOK EEYEK",
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 9.5,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF6366F1),
+                          letterSpacing: 0.8,
+                        ),
                       ),
                     ),
                   ),
+                  const SizedBox(width: 6),
                   IconButton(
-                    tooltip: "Copy Meetei Unicode",
+                    tooltip: "Copy Pukok Text",
                     icon: const Icon(Icons.copy_rounded, size: 18),
                     onPressed: () {
-                      if (_translatedOutput.isNotEmpty) {
+                      if (_pukokOutput.isNotEmpty) {
                         Clipboard.setData(
-                            ClipboardData(text: _translatedOutput));
+                            ClipboardData(text: _pukokOutput));
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             duration: Duration(seconds: 1),
-                            content: Text("Meetei Mayek copied to clipboard!"),
+                            content:
+                                Text("Pukok Eeyek text copied to clipboard!"),
                           ),
                         );
                       }
@@ -347,79 +373,56 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen>
                 ],
               ),
               const SizedBox(height: 12),
-              SelectableText(
-                _translatedOutput.isEmpty
-                    ? "..."
-                    : MeeteiMayekService.convertUnicodeToPukokFont(
-                        _translatedOutput),
-                style: TextStyle(
-                  fontFamily: "PukokEeyek",
-                  fontSize: 32,
-                  fontWeight: FontWeight.normal,
-                  height: 1.4,
-                  color: isDark
-                      ? const Color(0xFFF1F5F9)
-                      : const Color(0xFF0F172A),
+              // Pukok Calligraphy Display
+              if (_pukokOutput.isEmpty)
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 8),
+                  alignment: Alignment.center,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.keyboard_outlined,
+                        size: 18,
+                        color: theme.textTheme.bodyMedium?.color
+                            ?.withValues(alpha: 0.4),
+                      ),
+                      const SizedBox(width: 8),
+                      Flexible(
+                        child: Text(
+                          "Type English / Meeteilol text below",
+                          style: TextStyle(
+                            fontSize: 12.5,
+                            color: theme.textTheme.bodyMedium?.color
+                                ?.withValues(alpha: 0.5),
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              else
+                SelectableText(
+                  _pukokOutput,
+                  style: TextStyle(
+                    fontFamily: "PukokEeyek",
+                    fontSize: 32,
+                    fontWeight: FontWeight.normal,
+                    height: 1.4,
+                    color: isDark
+                        ? const Color(0xFFF1F5F9)
+                        : const Color(0xFF0F172A),
+                  ),
                 ),
-              ),
+
             ],
           ),
         ),
 
         const SizedBox(height: 16),
 
-        // Cheitap Quick Diacritic Inserter
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "QUICK CHEITAP-CHEINAP DIACRITICS",
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w700,
-                color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.6),
-                letterSpacing: 0.8,
-              ),
-            ),
-            const SizedBox(height: 8),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              physics: const BouncingScrollPhysics(),
-              child: Row(
-                children: [
-                  for (final sign in MeeteiData.cheitap9Signs)
-                    Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: ActionChip(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 6, vertical: 2),
-                        backgroundColor: isDark
-                            ? const Color(0xFF1B1B21)
-                            : const Color(0xFFF1F5F9),
-                        avatar: Text(
-                          sign.pukokKey,
-                          style: const TextStyle(
-                            fontFamily: "PukokEeyek",
-                            fontSize: 16,
-                            color: Color(0xFF6366F1),
-                          ),
-                        ),
-                        label: Text(
-                          "${sign.latin} (${sign.name})",
-                          style: const TextStyle(fontSize: 12),
-                        ),
-                        onPressed: () => _insertChar(sign.char),
-                      ),
-                    ),
-                ],
-              ),
-            ),
-          ],
-        ),
-
-        const SizedBox(height: 16),
-
-        // Input Text Area
+        // Input Text Area (Standard English Alphabet)
         Container(
           decoration: BoxDecoration(
             color: isDark ? const Color(0xFF1B1B21) : const Color(0xFFF1F1F5),
@@ -438,7 +441,7 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen>
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "TYPE IN ENGLISH OR PHONETIC MEETEILOL",
+                    "TYPE IN ENGLISH / MEETEILOL",
                     style: TextStyle(
                       fontSize: 10,
                       fontWeight: FontWeight.w700,
@@ -467,13 +470,16 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen>
               const SizedBox(height: 8),
               TextField(
                 controller: _typeController,
-                maxLines: 4,
-                style: const TextStyle(fontSize: 15, height: 1.5),
+                maxLines: 3,
+                style: TextStyle(
+                  fontSize: 16,
+                  height: 1.4,
+                  color: isDark ? const Color(0xFFF1F5F9) : const Color(0xFF0F172A),
+                ),
                 decoration: InputDecoration(
-                  hintText:
-                      "e.g. kmdwrige nungaiiribo, kangleipak, pukninggi warol...",
+                  hintText: "Type in English (e.g. Ei nangpu nungshii, kangleipak, sanamahi)...",
                   hintStyle: TextStyle(
-                    fontSize: 14,
+                    fontSize: 13,
                     color: theme.textTheme.bodyMedium?.color
                         ?.withValues(alpha: 0.4),
                   ),
@@ -487,7 +493,7 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen>
 
         const SizedBox(height: 16),
 
-        // Sample Prompts Chips
+        // Contextual Examples Chips
         Text(
           "TRY EXAMPLES",
           style: TextStyle(
@@ -502,18 +508,24 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen>
           spacing: 8,
           runSpacing: 8,
           children: [
-            for (final ex in [
-              "kmdwrige nungaiiribo",
-              "pukninggi warol",
+            for (final ex in const [
+              "Ei nangpu nungshii",
               "kangleipak",
-              "eikhoi meetei mayek",
-              "cha ama leeshing tara",
-              "new article philosophy",
+              "sanamahi",
+              "wakoklon",
+              "puya",
+              "nungaiiribo",
+              "kmdwrige",
+              "pukninggi warol",
+              "meetei",
             ])
               ActionChip(
                 backgroundColor:
                     isDark ? const Color(0xFF1B1B21) : const Color(0xFFEAEAF0),
-                label: Text(ex, style: const TextStyle(fontSize: 12)),
+                label: Text(
+                  ex,
+                  style: const TextStyle(fontSize: 12),
+                ),
                 onPressed: () {
                   _typeController.text = ex;
                   _updateTranslation(ex);

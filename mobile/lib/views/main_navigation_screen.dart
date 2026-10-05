@@ -5,6 +5,8 @@ import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:google_fonts/google_fonts.dart";
 import "../providers/app_providers.dart";
 import "../providers/library_providers.dart";
+import "../providers/monetization_provider.dart";
+import "../services/ad_service.dart";
 import "../widgets/app_drawer.dart";
 import "bookmarks_screen.dart";
 import "home_screen.dart";
@@ -36,6 +38,7 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
     final downloadedMap = ref.watch(downloadedPdfsProvider);
     final currentIndex = ref.watch(selectedNavIndexProvider);
     final scaffoldKey = ref.watch(mainScaffoldKeyProvider);
+    final isAdFree = ref.watch(monetizationProvider).isAdFreeActive;
     final bottomInset = MediaQuery.of(context).padding.bottom;
 
     return Scaffold(
@@ -43,38 +46,51 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
       drawer: AppDrawer(
         currentIndex: currentIndex,
         onSelectIndex: (index) {
+          if (currentIndex != index && !isAdFree) {
+            AdService.instance.showInterstitialIfEligible();
+          }
           ref.read(selectedNavIndexProvider.notifier).state = index;
           scaffoldKey.currentState?.closeDrawer();
         },
       ),
       body: Stack(
         children: [
-          // Screen contents with bottom clearance for frosted nav bar
+          // Screen contents with bottom clearance for frosted nav bar and banner ad
           Padding(
-            padding: EdgeInsets.only(bottom: 58 + bottomInset),
+            padding: EdgeInsets.only(bottom: (isAdFree ? 58 : 110) + bottomInset),
             child: IndexedStack(
               index: currentIndex,
               children: _screens,
             ),
           ),
 
-          // Floating Frosted Glass Bottom Navigation Bar
+          // Floating Frosted Glass Bottom Navigation Bar with Banner Ad
           Positioned(
             left: 0,
             right: 0,
             bottom: 0,
-            child: ClipRect(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 25, sigmaY: 25),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: isDark ? const Color(0xE6121216) : const Color(0xF5FFFFFF),
-                    border: Border(
-                      top: BorderSide(
-                        color: isDark ? Colors.white.withOpacity(0.08) : Colors.black.withOpacity(0.06),
-                        width: 0.5,
-                      ),
-                    ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (!isAdFree)
+                  Container(
+                    width: double.infinity,
+                    color: isDark ? const Color(0xFF121216) : Colors.white,
+                    alignment: Alignment.center,
+                    child: const BannerAdWidget(),
+                  ),
+                ClipRect(
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 25, sigmaY: 25),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: isDark ? const Color(0xE6121216) : const Color(0xF5FFFFFF),
+                        border: Border(
+                          top: BorderSide(
+                            color: isDark ? Colors.white.withOpacity(0.08) : Colors.black.withOpacity(0.06),
+                            width: 0.5,
+                          ),
+                        ),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withOpacity(isDark ? 0.3 : 0.04),
@@ -133,10 +149,12 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    );
+    ],
+  ),
+);
   }
 
   Widget _buildNavItem({
@@ -148,6 +166,7 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
     required bool isDark,
   }) {
     final isSelected = ref.watch(selectedNavIndexProvider) == index;
+    final isAdFree = ref.watch(monetizationProvider).isAdFreeActive;
     final activeColor = isDark ? Colors.white : const Color(0xFF0F172A);
     final inactiveColor = isDark ? const Color(0xFF71717A) : const Color(0xFF94A3B8);
     const accentIndicator = Color(0xFF0284C7);
@@ -156,6 +175,10 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
       child: GestureDetector(
         onTap: () {
           HapticFeedback.selectionClick();
+          final prevIndex = ref.read(selectedNavIndexProvider);
+          if (prevIndex != index && !isAdFree) {
+            AdService.instance.showInterstitialIfEligible();
+          }
           ref.read(selectedNavIndexProvider.notifier).state = index;
         },
         behavior: HitTestBehavior.opaque,

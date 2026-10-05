@@ -945,6 +945,74 @@ class MeeteiMayekService {
     return sb.toString().replaceAll(RegExp(r'[\u25CC\u25CB\uABE3-\uABEC\uAAEC-\uAAF6]'), '');
   }
 
+  /// Inverse mapping: converts Pukok Eeyek ASCII keys back into standard Meetei Mayek Unicode
+  static const Map<String, String> pukokToUnicodeMap = {
+    // 18 Indigenous Anatomical Root Letters
+    'k': 'ꯀ', 's': 'ꯁ', 'l': 'ꯂ', 'm': 'ꯃ', 'p': 'ꯄ',
+    'n': 'ꯅ', 'c': 'ꯆ', 't': 'ꯇ', 'x': 'ꯈ', 'q': 'ꯉ',
+    'z': 'ꯊ', 'w': 'ꯋ', 'y': 'ꯌ', 'h': 'ꯍ', 'u': 'ꯎ',
+    'e': 'ꯏ', 'f': 'ꯐ', 'a': 'ꯑ',
+
+    // 9 Lom Consonants
+    'g': 'ꯒ', // Ga (kok-lom)
+    'S': 'ꯓ', // Jha (sam-lom)
+    'r': 'ꯔ', // Ra (lai-lom)
+    'R': 'ꯔ', // Ra (lai-lom variant)
+    'b': 'ꯕ', // Ba (paa-lom)
+    'j': 'ꯖ', // Ja (chin-lom)
+    'd': 'ꯗ', // Da (tin-lom)
+    'G': 'ꯘ', // Gha (khou-lom)
+    'D': 'ꯙ', // Dha (thou-lom)
+    'v': 'ꯚ', // Bha (pham-lom)
+
+    // 10 Lolsum Consonants
+    'K': 'ꯛ', // Kok-lolsum
+    'L': 'ꯜ', // Lai-lolsum
+    'M': 'ꯝ', // Meet-lolsum
+    'P': 'ꯞ', // Paa-lolsum
+    'N': 'ꯟ', // Naa-lolsum
+    'T': 'ꯠ', // Til-lolsum
+    'Q': 'ꯡ', // Ngou-lolsum
+    'E': 'ꯢ', // Ee-lolsum
+    'U': 'ꯎ', // Oon-lolsum
+    'A': 'ꯑ', // Atingaa-lolsum
+
+    // 9 Cheitap-Cheinap Vowel Diacritics
+    'J': 'ꯥ', // Aa-tap
+    'i': 'ꯤ', // E-nap
+    'I': 'ꫫ', // Ee-nap
+    'Y': 'ꯦ', // Yat-nap
+    'C': 'ꯩ', // Chei-nap
+    'O': 'ꯧ', // Shou-nap
+    'o': 'ꯣ', // Ot-nap
+    'F': 'ꯨ', // Uu-nap
+    'H': 'ꯪ', // Nung
+
+    // 10 Cheishing Digits (0-9)
+    '0': '꯰', '1': '꯱', '2': '꯲', '3': '꯳', '4': '꯴',
+    '5': '꯵', '6': '꯶', '7': '꯷', '8': '꯸', '9': '꯹',
+
+    // Khutam & Punctuation Signs
+    '#': 'ꫲ', // Anji
+    ';': '꯫', // Cheikhei (||)
+    ',': '꫰', // Cheikhan (,)
+    ':': '=', // Mannaba
+    '=': '=', // Mannaba
+    '!': '!',
+    '?': '꫱', // Cheishei
+  };
+
+  /// Converts Pukok Eeyek ASCII text (typed on QWERTY layout) into standard Unicode Meetei Mayek
+  static String convertPukokToUnicode(String text) {
+    if (text.isEmpty) return '';
+    final sb = StringBuffer();
+    for (int i = 0; i < text.length; i++) {
+      final ch = text[i];
+      sb.write(pukokToUnicodeMap[ch] ?? ch);
+    }
+    return sb.toString();
+  }
+
   /// High-level translator: converts English/Latin into Pukok Eeyek calligraphy string
   static String translateToPukokFontWithVocab(String input) {
     final unicodeText = translateToMeeteiMayekWithVocab(input);

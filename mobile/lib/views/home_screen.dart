@@ -1,4 +1,5 @@
 import "../widgets/donation_modal.dart";
+import "../widgets/monetization_modal.dart";
 import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:shimmer/shimmer.dart";
@@ -120,6 +121,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
+                            // Watch Ad / Free Pass
+                            IconButton(
+                              tooltip: "Free Ad-Free Pass (Watch Ad)",
+                              visualDensity: VisualDensity.compact,
+                              padding: const EdgeInsets.all(6),
+                              constraints: const BoxConstraints(),
+                              icon: const Icon(
+                                Icons.stars_rounded,
+                                color: Color(0xFFF59E0B),
+                                size: 21,
+                              ),
+                              onPressed: () => MonetizationModal.show(context),
+                            ),
+                            const SizedBox(width: 6),
                             // Donate / Support Button
                             IconButton(
                               tooltip: "Support & Donate",
@@ -288,6 +303,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       post: post,
                       isFeatured: isFeatured,
                       onTap: () {
+                        if (!isAdFree) {
+                          AdService.instance.showInterstitialIfEligible();
+                        }
                         Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (_) => PostDetailScreen(post: post),
@@ -302,7 +320,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
         ),
       ),
-      if (!isAdFree) const BannerAdWidget(),
     ],
   ),
 ),

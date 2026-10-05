@@ -856,14 +856,14 @@ function transliterateLatinWord(token: string): string {
   // Coda / Syllable-final lolsum identification:
   // If ng, k, l, m, p, n (NOT followed by g), t is followed by another consonant, a Meetei character, or end-of-string
   // Convert them to their authentic lolsum form!
-  word = word.replace(/ng(?=[b-df-hj-np-tv-z\uABC0-\uABED\s]|$)/g, 'ꯡ');
-  word = word.replace(/k(?=[b-df-hj-np-tv-z\uABC0-\uABED\s]|$)/g, 'ꯛ');
-  word = word.replace(/l(?=[b-df-hj-np-tv-z\uABC0-\uABED\s]|$)/g, 'ꯜ');
-  word = word.replace(/m(?=[b-df-hj-np-tv-z\uABC0-\uABED\s]|$)/g, 'ꯝ');
-  word = word.replace(/p(?=[b-df-hj-np-tv-z\uABC0-\uABED\s]|$)/g, 'ꯞ');
+  word = word.replace(/ng(?=[b-df-hj-np-tv-zꯀ-ꯢ\s]|$)/g, 'ꯡ');
+  word = word.replace(/k(?=[b-df-hj-np-tv-zꯀ-ꯢ\s]|$)/g, 'ꯛ');
+  word = word.replace(/l(?=[b-df-hj-np-tv-zꯀ-ꯢ\s]|$)/g, 'ꯜ');
+  word = word.replace(/m(?=[b-df-hj-np-tv-zꯀ-ꯢ\s]|$)/g, 'ꯝ');
+  word = word.replace(/p(?=[b-df-hj-np-tv-zꯀ-ꯢ\s]|$)/g, 'ꯞ');
   // CRITICAL: n must NOT match if followed by g (digraph 'ng')!
-  word = word.replace(/n(?!g)(?=[b-df-hj-np-tv-z\uABC0-\uABED\s]|$)/g, 'ꯟ');
-  word = word.replace(/t(?=[b-df-hj-np-tv-z\uABC0-\uABED\s]|$)/g, 'ꯠ');
+  word = word.replace(/n(?!g)(?=[b-df-hj-np-tv-zꯀ-ꯢ\s]|$)/g, 'ꯟ');
+  word = word.replace(/t(?=[b-df-hj-np-tv-zꯀ-ꯢ\s]|$)/g, 'ꯠ');
 
   // Onset ng
   word = word.split('ng').join('ꯉ');
@@ -1133,7 +1133,7 @@ export const UNICODE_TO_PUKOK_KEYMAP: Record<string, string> = {
   'ꯀ': 'k', 'ꯁ': 's', 'ꯂ': 'l', 'ꯃ': 'm', 'ꯄ': 'p',
   'ꯅ': 'n', 'ꯆ': 'c', 'ꯇ': 't', 'ꯈ': 'x', 'ꯉ': 'q',
   'ꯊ': 'z', 'ꯋ': 'w', 'ꯌ': 'y', 'ꯍ': 'h', 'ꯎ': 'u',
-  'ꯏ': 'e', 'ꯐ': 'f', 'ꯑ': 'atIHaJ',
+  'ꯏ': 'e', 'ꯐ': 'f', 'ꯑ': 'a',
 
   // 9 Lom Consonants (Meetei lom eepe-eyek 9 letters)
   'ꯒ': 'g', // Ga (kok-lom)
@@ -1206,9 +1206,48 @@ export function convertUnicodeToPukokFont(text: string): string {
   const sanitized = text.replace(/[\u25CC\u25CB]/g, '');
   let result = '';
   for (const ch of sanitized) {
-    result += UNICODE_TO_PUKOK_KEYMAP[ch] || ch;
+    result += UNICODE_TO_PUKOK_KEYMAP[ch] ?? ch;
   }
-  return result.replace(/\u25CC/g, '');
+  return result.replace(/[\u25CC\u25CB\uABE3-\uABEC\uAAEC-\uAAF6]/g, '');
+}
+
+export const PUKOK_TO_UNICODE_MAP: Record<string, string> = {
+  // 18 Indigenous Anatomical Root Letters
+  'k': 'ꯀ', 's': 'ꯁ', 'l': 'ꯂ', 'm': 'ꯃ', 'p': 'ꯄ',
+  'n': 'ꯅ', 'c': 'ꯆ', 't': 'ꯇ', 'x': 'ꯈ', 'q': 'ꯉ',
+  'z': 'ꯊ', 'w': 'ꯋ', 'y': 'ꯌ', 'h': 'ꯍ', 'u': 'ꯎ',
+  'e': 'ꯏ', 'f': 'ꯐ', 'a': 'ꯑ',
+
+  // 9 Lom Consonants
+  'g': 'ꯒ', 'S': 'ꯓ', 'r': 'ꯔ', 'R': 'ꯔ', 'b': 'ꯕ',
+  'j': 'ꯖ', 'd': 'ꯗ', 'G': 'ꯘ', 'D': 'ꯙ', 'v': 'ꯚ',
+
+  // 10 Lolsum Consonants
+  'K': 'ꯛ', 'L': 'ꯜ', 'M': 'ꯝ', 'P': 'ꯞ', 'N': 'ꯟ',
+  'T': 'ꯠ', 'Q': 'ꯡ', 'E': 'ꯢ', 'U': 'ꯎ', 'A': 'ꯑ',
+
+  // 9 Cheitap-Cheinap Vowel Diacritics
+  'J': 'ꯥ', 'i': 'ꯤ', 'I': 'ꫫ', 'Y': 'ꯦ', 'C': 'ꯩ',
+  'O': 'ꯧ', 'o': 'ꯣ', 'F': 'ꯨ', 'H': 'ꯪ',
+
+  // 10 Cheishing Digits (0-9)
+  '0': '꯰', '1': '꯱', '2': '꯲', '3': '꯳', '4': '꯴',
+  '5': '꯵', '6': '꯶', '7': '꯷', '8': '꯸', '9': '꯹',
+
+  // Khutam & Punctuation Signs
+  '#': 'ꫲ', ';': '꯫', ',': '꫰', ':': '=', '=': '=', '!': '!', '?': '꫱',
+};
+
+/**
+ * Converts Pukok Eeyek ASCII text (typed on QWERTY layout) into standard Unicode Meetei Mayek.
+ */
+export function convertPukokToUnicode(text: string): string {
+  if (!text) return '';
+  let result = '';
+  for (const ch of text) {
+    result += PUKOK_TO_UNICODE_MAP[ch] || ch;
+  }
+  return result;
 }
 
 /**

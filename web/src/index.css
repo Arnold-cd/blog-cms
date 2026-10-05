@@ -1469,7 +1469,22 @@ button {
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-full);
   box-shadow: var(--shadow-subtle);
+  transition: all var(--transition-fast);
 }
+
+.reader-lang-bar.active-mni {
+  border-color: rgba(99, 102, 241, 0.35);
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, var(--bg-card) 100%);
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.08);
+}
+
+.reader-lang-bar .view-toggle-btn.active {
+  background: var(--accent-indigo);
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.35);
+}
+
 
 .reader-lang-bar-left {
   display: flex;
@@ -2372,22 +2387,99 @@ button {
   letter-spacing: 0.015em;
 }
 
-.reader-container.lang-mni:not(.font-pukok) .markdown-body,
-.reader-container.lang-mni:not(.font-pukok) .markdown-body * {
-  font-family: var(--font-meetei), var(--font-sans) !important;
+.reader-container.lang-mni:not(.font-pukok) .markdown-body {
+  font-family: var(--font-meetei), var(--font-sans);
 }
 
 /* Authentic Wakoklon Puya Pukok Calligraphy Mode */
 .font-pukok,
-.font-pukok *,
-.reader-container.font-pukok,
-.reader-container.font-pukok *,
-.reader-container.font-pukok .markdown-body,
-.reader-container.font-pukok .markdown-body *,
+.font-pukok-text,
+.reader-title.font-pukok,
+.author-name.font-pukok,
+.publish-date.font-pukok,
+.reader-category-badge.font-pukok,
+.reader-reading-time.font-pukok,
+.reader-meta-item.font-pukok,
+.author-avatar-fallback.font-pukok,
 .markdown-body.font-pukok,
-.markdown-body.font-pukok *,
-[data-font="pukok"],
-[data-font="pukok"] * {
+.markdown-body.font-pukok p,
+.markdown-body.font-pukok h1,
+.markdown-body.font-pukok h2,
+.markdown-body.font-pukok h3,
+.markdown-body.font-pukok h4,
+.markdown-body.font-pukok h5,
+.markdown-body.font-pukok h6,
+.markdown-body.font-pukok li,
+.markdown-body.font-pukok blockquote,
+.markdown-body.font-pukok th,
+.markdown-body.font-pukok td,
+.markdown-body.font-pukok strong,
+.markdown-body.font-pukok em,
+[data-font="pukok"] {
   font-family: 'Pukok Eeyek', var(--font-pukok) !important;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.035em;
 }
+
+/* Pukok Typography Scale & Line Heights */
+.reader-title.font-pukok {
+  font-size: 2.35rem;
+  line-height: 1.35;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  margin-bottom: 1.25rem;
+}
+
+.markdown-body.font-pukok p,
+.markdown-body.font-pukok li {
+  font-size: 1.18rem;
+  line-height: 1.85;
+  letter-spacing: 0.035em;
+}
+
+.markdown-body.font-pukok h1 {
+  font-size: 2.1rem;
+  line-height: 1.35;
+  font-weight: 500;
+  margin-top: 2rem;
+  margin-bottom: 0.85rem;
+}
+
+.markdown-body.font-pukok h2 {
+  font-size: 1.65rem;
+  line-height: 1.35;
+  font-weight: 500;
+  margin-top: 1.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.markdown-body.font-pukok h3 {
+  font-size: 1.35rem;
+  line-height: 1.35;
+  font-weight: 500;
+  margin-top: 1.5rem;
+  margin-bottom: 0.65rem;
+}
+
+.markdown-body.font-pukok blockquote {
+  font-size: 1.12rem;
+  line-height: 1.8;
+  font-style: normal;
+}
+
+/* Ensure code blocks, numbers, and chrome UI are never corrupted by Pukok */
+.markdown-body.font-pukok pre,
+.markdown-body.font-pukok pre *,
+.markdown-body.font-pukok code {
+  font-family: var(--font-mono) !important;
+  letter-spacing: normal;
+}
+
+.reader-nav-bar,
+.reader-nav-bar *,
+.reader-lang-bar,
+.reader-lang-bar *,
+.modal-backdrop,
+.modal-backdrop * {
+  font-family: var(--font-sans);
+}
+

@@ -270,7 +270,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           const SizedBox(height: 24),
 
           // Section: Monetization & Ad-Free
-          _buildSectionHeader("Monetization & Ad-Free", Icons.workspace_premium_outlined),
+          _buildSectionHeader("Lifetime Ad-Free", Icons.workspace_premium_outlined),
           _buildCard(
             isDark: isDark,
             child: ListTile(
