@@ -11,6 +11,7 @@ import "../providers/library_providers.dart";
 import "../providers/monetization_provider.dart";
 import "../services/ad_service.dart";
 import "../services/api_service.dart";
+import "../services/reader_interstitial_manager.dart";
 import "../widgets/monetization_modal.dart";
 
 enum ReadingTheme { normal, sepia, night }
@@ -48,12 +49,6 @@ class _PdfViewerScreenState extends ConsumerState<PdfViewerScreen> {
   @override
   void dispose() {
     _downloadClient?.close();
-    try {
-      final isAdFree = ref.read(monetizationProvider).isAdFreeActive;
-      if (!isAdFree) {
-        AdService.instance.showInterstitialIfEligible();
-      }
-    } catch (_) {}
     super.dispose();
   }
 
@@ -257,6 +252,17 @@ class _PdfViewerScreenState extends ConsumerState<PdfViewerScreen> {
     });
   }
 
+  void _handleExit(BuildContext context, bool isAdFree) {
+    ReaderInterstitialManager.instance.showExitInterstitialIfEligible(
+      isAdFree: isAdFree,
+      onProceed: () {
+        if (context.mounted) {
+          Navigator.of(context).pop();
+        }
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -265,20 +271,30 @@ class _PdfViewerScreenState extends ConsumerState<PdfViewerScreen> {
     final isDownloaded =
         ref.watch(downloadedPdfsProvider).containsKey(widget.document.fileName);
 
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(kToolbarHeight),
-        child: AnimatedSlide(
-          duration: const Duration(milliseconds: 250),
-          offset: _showControls ? Offset.zero : const Offset(0, -1.2),
-          child: AnimatedOpacity(
-            duration: const Duration(milliseconds: 200),
-            opacity: _showControls ? 1.0 : 0.0,
-            child: AppBar(
-              backgroundColor: isDark
-                  ? const Color(0xEE121214)
-                  : const Color(0xEEFFFFFF),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
+        _handleExit(context, isAdFree);
+      },
+      child: Scaffold(
+        extendBodyBehindAppBar: true,
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(kToolbarHeight),
+          child: AnimatedSlide(
+            duration: const Duration(milliseconds: 250),
+            offset: _showControls ? Offset.zero : const Offset(0, -1.2),
+            child: AnimatedOpacity(
+              duration: const Duration(milliseconds: 200),
+              opacity: _showControls ? 1.0 : 0.0,
+              child: AppBar(
+                leading: IconButton(
+                  icon: const Icon(Icons.arrow_back_rounded),
+                  onPressed: () => _handleExit(context, isAdFree),
+                ),
+                backgroundColor: isDark
+                    ? const Color(0xEE121214)
+                    : const Color(0xEEFFFFFF),
               elevation: 1,
               title: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -700,6 +716,7 @@ class _PdfViewerScreenState extends ConsumerState<PdfViewerScreen> {
                     )
                   : const SizedBox.shrink(),
       bottomNavigationBar: !isAdFree ? const SafeArea(top: false, child: BannerAdWidget()) : null,
+      ),
     );
   }
 }

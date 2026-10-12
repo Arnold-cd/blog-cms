@@ -14,7 +14,7 @@ class MeeteiMayekService {
     'অ': 'ꯑ', 'আ': 'ꯑꯥ', 'ই': 'ꯏ', 'ঈ': 'ꯏ', 'উ': 'ꯎ', 'ঊ': 'ꯎ',
     'ঋ': 'ꯔꯤ', 'এ': 'ꯑꯦ', 'ঐ': 'ꯑꯩ', 'ও': 'ꯑꯣ', 'ঔ': 'ꯑꯧ',
     // Matras / Vowel signs
-    'া': 'ꯥ', 'ি': 'ꯤ', 'ী': 'ꯤ', 'ু': 'ꯨ', 'ূ': 'ꯨ',
+    'া': 'ꯥ', 'ি': 'ꫫ', 'ী': 'ꯤ', 'ু': 'ꯨ', 'ূ': 'ꯨ',
     'ৃ': 'ꯔꯤ', 'ে': 'ꯦ', 'ৈ': 'ꯩ', 'ো': 'ꯣ', 'ৌ': 'ꯧ',
     'ং': 'ꯪ', 'ঃ': '꯬', '্': '꯭',
     // Punctuation & digits
@@ -289,57 +289,68 @@ class MeeteiMayekService {
     "khangdre": "ꯈꯡꯗ꯭ꯔꯦ",
     "khngba": "ꯈꯡꯕ",
     "khangba": "ꯈꯡꯕ",
-    "khngi": "ꯈꯡꯉꯤ",
-    "khangi": "ꯈꯡꯉꯤ",
-    "khngibo": "ꯈꯡꯉꯤꯕꯣ",
-    "khangibo": "ꯈꯡꯉꯤꯕꯣ",
+    "khngi": "ꯈꯡꯉꫫ",
+    "khangi": "ꯈꯡꯉꫫ",
+    "khngibo": "ꯈꯡꯉꫫꯕꯣ",
+    "khangibo": "ꯈꯡꯉꫫꯕꯣ",
     "khngle": "ꯈꯡꯂꯦ",
     "khangle": "ꯈꯡꯂꯦ",
     "khngledo": "ꯈꯡꯂꯦꯗꯣ",
     "khangledo": "ꯈꯡꯂꯦꯗꯣ",
-    "khngliba": "ꯈꯡꯂꯤꯕ",
-    "khangliba": "ꯈꯡꯂꯤꯕ",
-    "khnglibo": "ꯈꯡꯂꯤꯕꯣ",
-    "khanglibo": "ꯈꯡꯂꯤꯕꯣ",
-    "khngjaribo": "ꯈꯡꯖꯔꯤꯕꯣ",
-    "khangjaribo": "ꯈꯡꯖꯔꯤꯕꯣ",
+    "khngliba": "ꯈꯡꯂꫫꯕ",
+    "khangliba": "ꯈꯡꯂꫫꯕ",
+    "khnglibo": "ꯈꯡꯂꫫꯕꯣ",
+    "khanglibo": "ꯈꯡꯂꫫꯕꯣ",
+    "khngjaribo": "ꯈꯡꯖꯔꫫꯕꯣ",
+    "khangjaribo": "ꯈꯡꯖꯔꫫꯕꯣ",
     "khngjare": "ꯈꯡꯖꯔꯦ",
     "khangjare": "ꯈꯡꯖꯔꯦ",
     "angang": "ꯑꯉꯥꯡ",
-    "kmdwrige": "ꯀꯃꯗꯧꯔꯤꯒꯦ",
-    "kamdwrige": "ꯀꯃꯗꯧꯔꯤꯒꯦ",
-    "kamdourige": "ꯀꯃꯗꯧꯔꯤꯒꯦ",
-    "kmdwri": "ꯀꯃꯗꯧꯔꯤ",
-    "kamdouri": "ꯀꯃꯗꯧꯔꯤ",
+    "kmdwrige": "ꯀꯃꯗꯧꯔꫫꯒꯦ",
+    "kamdwrige": "ꯀꯃꯗꯧꯔꫫꯒꯦ",
+    "kamdourige": "ꯀꯃꯗꯧꯔꫫꯒꯦ",
+    "kmdwri": "ꯀꯃꯗꯧꯔꫫ",
+    "kamdouri": "ꯀꯃꯗꯧꯔꫫ",
     "kmdwre": "ꯀꯃꯗꯧꯔꯦ",
     "kamdoure": "ꯀꯃꯗꯧꯔꯦ",
     "kmdwba": "ꯀꯃꯗꯧꯕ",
     "kamdouba": "ꯀꯃꯗꯧꯕ",
     "kamdwba": "ꯀꯃꯗꯧꯕ",
-    "kmdwribo": "ꯀꯃꯗꯧꯔꯤꯕꯣ",
-    "kamdouribo": "ꯀꯃꯗꯧꯔꯤꯕꯣ",
+    "kmdwribo": "ꯀꯃꯗꯧꯔꫫꯕꯣ",
+    "kamdouribo": "ꯀꯃꯗꯧꯔꫫꯕꯣ",
     "karamba": "ꯀꯔꯝꯕ",
     "karamna": "ꯀꯔꯝꯅ",
     "karmna": "ꯀꯔꯝꯅ",
-    "kari": "ꯀꯔꯤ",
-    "karigi": "ꯀꯔꯤꯒꯤ",
+    "kari": "ꯀꯔꫫ",
+    "karigi": "ꯀꯔꫫꯒꫫ",
     "kanano": "ꯀꯅꯥꯅꯣ",
     "kana": "ꯀꯅꯥ",
     "kadaida": "ꯀꯗꯥꯏꯗ",
-    "nungaiiribo": "ꯅꯨꯡꯉꯥꯏꯔꯤꯕꯣ",
-    "nungairibo": "ꯅꯨꯡꯉꯥꯏꯔꯤꯕꯣ",
-    "nungaijaribo": "ꯅꯨꯡꯉꯥꯏꯖꯔꯤꯕꯣ",
+    "nungaiiribo": "ꯅꯨꯡꯉꯥꯏꯔꫫꯕꯣ",
+    "nungairibo": "ꯅꯨꯡꯉꯥꯏꯔꫫꯕꯣ",
+    "nungairiibo": "ꯅꯨꯡꯉꯥꯏꯔꫫꯕꯣ",
+    "nungaireebo": "ꯅꯨꯡꯉꯥꯏꯔꯤꯕꯣ",
+    "nungaijaribo": "ꯅꯨꯡꯉꯥꯏꯖꯔꫫꯕꯣ",
+    "nungaijareebo": "ꯅꯨꯡꯉꯥꯏꯖꯔꯤꯕꯣ",
     "nungaijare": "ꯅꯨꯡꯉꯥꯏꯖꯔꯦ",
     "nungaire": "ꯅꯨꯡꯉꯥꯏꯔꯦ",
-    "nungairi": "ꯅꯨꯡꯉꯥꯏꯔꯤ",
-    "nungairiba": "ꯅꯨꯡꯉꯥꯏꯔꯤꯕ",
+    "nungairi": "ꯅꯨꯡꯉꯥꯏꯔꫫ",
+    "nungairee": "ꯅꯨꯡꯉꯥꯏꯔꯤ",
+    "nungairiba": "ꯅꯨꯡꯉꯥꯏꯔꫫꯕ",
+    "nungaireeba": "ꯅꯨꯡꯉꯥꯏꯔꯤꯕ",
     "nungai": "ꯅꯨꯡꯉꯥꯏ",
-    "nungshiba": "ꯅꯨꯡꯁꯤꯕ",
-    "nungshi": "ꯅꯨꯡꯁꯤ",
-    "nungshiribi": "ꯅꯨꯡꯁꯤꯔꯤꯕꯤ",
-    "nungshiriba": "ꯅꯨꯡꯁꯤꯔꯤꯕ",
-    "pukning": "ꯄꯨꯛꯅꯤꯡ",
-    "pukninggi": "ꯄꯨꯛꯅꯤꯡꯒꯤ",
+    "nungshiba": "ꯅꯨꯡꯁꫫꯕ",
+    "nungsheeba": "ꯅꯨꯡꯁꯤꯕ",
+    "nungshi": "ꯅꯨꯡꯁꫫ",
+    "nungshee": "ꯅꯨꯡꯁꯤ",
+    "nungshiribi": "ꯅꯨꯡꯁꫫꯔꫫꯕꫫ",
+    "nungsheereebee": "ꯅꯨꯡꯁꯤꯔꯤꯕꯤ",
+    "nungshiriba": "ꯅꯨꯡꯁꫫꯔꫫꯕ",
+    "nungsheereeba": "ꯅꯨꯡꯁꯤꯔꯤꯕ",
+    "pukning": "ꯄꯨꯛꯅꫫꯡ",
+    "pukneeng": "ꯄꯨꯛꯅꯤꯡ",
+    "pukninggi": "ꯄꯨꯛꯅꫫꯡꯒꫫ",
+    "pukneenggi": "ꯄꯨꯛꯅꯤꯡꯒꯤ",
     "warol": "ꯋꯥꯔꯣꯜ",
     "warolshing": "ꯋꯥꯔꯣꯜꯁꯤꯡ",
     "wakhallon": "ꯋꯥꯈꯜꯂꯣꯟ",
@@ -350,32 +361,42 @@ class MeeteiMayekService {
     "laishang": "ꯂꯥꯏꯁꯪ",
     "leibak": "ꯂꯩꯕꯥꯛ",
     "thabak": "ꯊꯕꯥꯛ",
-    "singtha": "ꯁꯤꯡꯊ",
+    "singtha": "ꯁꫫꯡꯊ",
+    "seengtha": "ꯁꯤꯡꯊ",
     "haiba": "ꯍꯥꯏꯕ",
-    "hainingba": "ꯍꯥꯏꯅꯤꯡꯕ",
+    "hainingba": "ꯍꯥꯏꯅꫫꯡꯕ",
+    "haineengba": "ꯍꯥꯏꯅꯤꯡꯕ",
     "haire": "ꯍꯥꯏꯔꯦ",
-    "hairi": "ꯍꯥꯏꯔꯤ",
+    "hairi": "ꯍꯥꯏꯔꫫ",
+    "hairee": "ꯍꯥꯏꯔꯤ",
     "toure": "ꯇꯧꯔꯦ",
     "touba": "ꯇꯧꯕ",
-    "tourige": "ꯇꯧꯔꯤꯒꯦ",
-    "touri": "ꯇꯧꯔꯤ",
-    "twrige": "ꯇꯧꯔꯤꯒꯦ",
+    "tourige": "ꯇꯧꯔꫫꯒꯦ",
+    "toureege": "ꯇꯧꯔꯤꯒꯦ",
+    "touri": "ꯇꯧꯔꫫ",
+    "touree": "ꯇꯧꯔꯤ",
+    "twrige": "ꯇꯧꯔꫫꯒꯦ",
+    "twreege": "ꯇꯧꯔꯤꯒꯦ",
     "twba": "ꯇꯧꯕ",
-    "twri": "ꯇꯧꯔꯤ",
+    "twri": "ꯇꯧꯔꫫ",
+    "twree": "ꯇꯧꯔꯤ",
     "dwge": "ꯗꯧꯒꯦ",
     "douge": "ꯗꯧꯒꯦ",
     "taibang": "ꯇꯥꯏꯕꯪ",
     "malem": "ꯃꯥꯂꯦꯝ",
-    "punshi": "ꯄꯨꯟꯁꯤ",
+    "punshi": "ꯄꯨꯟꯁꫫ",
+    "punshee": "ꯄꯨꯟꯁꯤ",
     "meeoiba": "ꯃꯤꯑꯣꯏꯕ",
     "meeoi": "ꯃꯤꯑꯣꯏ",
     "shumang": "ꯁꯨꯃꯥꯡ",
     "leela": "ꯂꯤꯂꯥ",
-    "panthoibi": "ꯄꯥꯟꯊꯣꯏꯕꯤ",
+    "panthoibi": "ꯄꯥꯟꯊꯣꯏꯕꫫ",
+    "panthoibee": "ꯄꯥꯟꯊꯣꯏꯕꯤ",
     "oina": "ꯑꯣꯏꯅ",
     "oja": "ꯑꯣꯖꯥ",
     "kangleipak": "ꯀꯪꯂꯩꯄꯥꯛ",
-    "manipur": "ꯃꯅꯤꯄꯨꯔ",
+    "manipur": "ꯃꯅꫫꯄꯨꯔ",
+    "maneepur": "ꯃꯅꯤꯄꯨꯔ",
     "meetei": "ꯃꯤꯇꯩ",
     "meeteilon": "ꯃꯤꯇꯩꯂꯣꯟ",
     "meeteilol": "ꯃꯤꯇꯩꯂꯣꯜ",
@@ -385,17 +406,22 @@ class MeeteiMayekService {
     "puya": "ꯄꯨꯌꯥ",
     "khunung": "ꯈꯨꯅꯨꯡ",
     "khamba": "ꯈꯝꯕ",
-    "thoibi": "ꯊꯣꯢꯕꯤ",
+    "thoibi": "ꯊꯣꯢꯕꫫ",
+    "thoibee": "ꯊꯣꯢꯕꯤ",
     "nongda": "ꯅꯣꯡꯗ",
     "lairen": "ꯂꯥꯢꯔꯦꯟ",
     "pakhangba": "ꯄꯥꯈꯪꯕ",
-    "sanahi": "ꯁꯅꯥꯍꯤ",
-    "sanamahi": "ꯁꯅꯥꯃꯍꯤ",
+    "sanahi": "ꯁꯅꯥꯍꫫ",
+    "sanahee": "ꯁꯅꯥꯍꯤ",
+    "sanamahi": "ꯁꯅꯥꯃꯍꫫ",
+    "sanamahee": "ꯁꯅꯥꯃꯍꯤ",
     "leishemba": "ꯂꯩꯁꯦꯝꯕ",
     "ima": "ꯏꯃꯥ",
     "iba": "ꯏꯕ",
-    "khurumjari": "ꯈꯨꯔꯨꯝꯖꯔꯤ",
-    "thagatchari": "ꯊꯥꯒꯠꯆꯔꯤ",
+    "khurumjari": "ꯈꯨꯔꯨꯝꯖꯔꫫ",
+    "khurumjaree": "ꯈꯨꯔꯨꯝꯖꯔꯤ",
+    "thagatchari": "ꯊꯥꯒꯠꯆꯔꫫ",
+    "thagatcharee": "ꯊꯥꯒꯠꯆꯔꯤ",
   };
 
   static const Map<String, String> greekTransliteration = {
@@ -441,8 +467,6 @@ class MeeteiMayekService {
     for (final entry in greekTransliteration.entries) {
       word = word.replaceAll(entry.key, entry.value);
     }
-    // Capital 'I' or 'EE' phonetically maps to long Ee-nap (ꫫ / Pukok 'I')
-    word = word.replaceAll('I', 'ee');
     word = word.toLowerCase();
 
     // Manipuri phonetic typing rule: consonant + 'w' represents sou-nap (ꯧ /ou/)
@@ -475,13 +499,13 @@ class MeeteiMayekService {
       ["sion", "ꯁꯟ"],
       ["ight", "ꯑꯥꯏꯠ"],
       ["ous", "ꯑꯁ"],
-      ["eeng", "ꫫꯡ"],
-      ["iing", "ꫫꯡ"],
+      ["eeng", "ꯤꯡ"], // Eenap (ꯤ) + ꯡ
+      ["iing", "ꫫꯡ"], // inap (ꫫ) + ꯡ
       ["yeng", "ꯌꯦꯡ"],
       ["yatng", "ꯌꯦꯡ"],
       ["yetng", "ꯌꯦꯡ"],
-      ["eng", "ꯤꯡ"],
-      ["ing", "ꯤꯡ"],
+      ["eng", "ꯤꯡ"], // Eenap (ꯤ) + ꯡ
+      ["ing", "ꫫꯡ"], // inap (ꫫ) + ꯡ
       ["all", "ꯑꯣꯜ"],
       ["ell", "ꯑꯦꯜ"],
       ["ill", "ꯏꯜ"],
@@ -596,7 +620,7 @@ class MeeteiMayekService {
     }
 
     // Dependent vowel signs (Cheitap)
-    // Orthography rule: 'e' -> E-nap (ꯤ / 'i'), 'ee' -> Ee-nap (ꫫ / 'I'), 'ye'/'yat' -> Yat-nap (ꯦ / 'Y')
+    // Orthography rule: Eenap (ꯤ) is 'ee', inap (ꫫ) is 'i', Yat-nap (ꯦ) is 'ye'/'yat'
     const dependentVowels = [
       ["yat", "ꯦ"],
       ["yet", "ꯦ"],
@@ -605,8 +629,8 @@ class MeeteiMayekService {
       ["ai", "ꯥꯏ"],
       ["aai", "ꯥꯏ"],
       ["aa", "ꯥ"],
-      ["ee", "ꫫ"], // Ee-nap (ꫫ / Pukok 'I')
-      ["ii", "ꫫ"], // Ee-nap (ꫫ / Pukok 'I')
+      ["ee", "ꯤ"], // Eenap (ꯤ / 'ee')
+      ["ii", "ꫫ"], // inap (ꫫ / 'ii' fallback)
       ["ei", "ꯩ"], // Chei-nap (ꯩ / Pukok 'C')
       ["oi", "ꯣꯏ"],
       ["ui", "ꯨꯏ"],
@@ -614,8 +638,8 @@ class MeeteiMayekService {
       ["au", "ꯧ"],
       ["oo", "ꯨ"],
       ["a", "ꯥ"],
-      ["e", "ꯤ"], // E-nap (ꯤ / Pukok 'i')
-      ["i", "ꯤ"], // E-nap (ꯤ / Pukok 'i')
+      ["e", "ꯤ"], // Eenap (ꯤ / 'e')
+      ["i", "ꫫ"], // inap (ꫫ / 'i')
       ["u", "ꯨ"],
       ["o", "ꯣ"],
     ];
@@ -892,8 +916,8 @@ class MeeteiMayekService {
 
     // 9 Cheitap-Cheinap Vowel Diacritics (from PDF 2 Page 1 & PDF 1 Page 3)
     'ꯥ': 'J', // Aa-tap
-    'ꯤ': 'i', // E-nap
-    'ꫫ': 'I', // Ee-nap
+    'ꯤ': 'I', // Eenap (ee)
+    'ꫫ': 'i', // inap (i)
     'ꯦ': 'Y', // Yat-nap (sounds like yet-nap)
     'ꯩ': 'C', // Chei-nap
     'ꯧ': 'O', // Shou-nap
@@ -979,8 +1003,8 @@ class MeeteiMayekService {
 
     // 9 Cheitap-Cheinap Vowel Diacritics
     'J': 'ꯥ', // Aa-tap
-    'i': 'ꯤ', // E-nap
-    'I': 'ꫫ', // Ee-nap
+    'i': 'ꫫ', // inap (i)
+    'I': 'ꯤ', // Eenap (ee)
     'Y': 'ꯦ', // Yat-nap
     'C': 'ꯩ', // Chei-nap
     'O': 'ꯧ', // Shou-nap

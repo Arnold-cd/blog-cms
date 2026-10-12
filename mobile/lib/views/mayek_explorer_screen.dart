@@ -25,8 +25,10 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 5, vsync: this);
-    final unicode = MeeteiMayekService.translateToMeeteiMayekWithVocab(_typeController.text);
-    _pukokOutput = MeeteiMayekService.convertUnicodeToPukokFont(unicode);
+    final unicode =
+        MeeteiMayekService.translateToMeeteiMayekWithVocab(_typeController.text);
+    _pukokOutput =
+        MeeteiMayekService.convertUnicodeToPukokFont(unicode);
   }
 
   @override
@@ -231,45 +233,65 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen>
               ),
             ),
 
-            // Tab Bar
+            // Premium Segmented Tab Bar
             Container(
+              height: 44,
               margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              padding: const EdgeInsets.all(4),
+              padding: const EdgeInsets.all(3.5),
               decoration: BoxDecoration(
-                color:
-                    isDark ? const Color(0xFF1E1E26) : const Color(0xFFF1F5F9),
-                borderRadius: BorderRadius.circular(12),
+                color: isDark
+                    ? const Color(0xFF141418)
+                    : const Color(0xFFF1F5F9),
+                borderRadius: BorderRadius.circular(14),
                 border: Border.all(
                   color: isDark
-                      ? Colors.white.withValues(alpha: 0.06)
-                      : Colors.black.withValues(alpha: 0.05),
+                      ? Colors.white.withValues(alpha: 0.08)
+                      : Colors.black.withValues(alpha: 0.06),
                 ),
               ),
               child: TabBar(
                 controller: _tabController,
                 indicatorSize: TabBarIndicatorSize.tab,
                 dividerColor: Colors.transparent,
+                overlayColor: WidgetStateProperty.all(Colors.transparent),
                 indicator: BoxDecoration(
-                  color: isDark ? const Color(0xFF3B82F6) : Colors.white,
-                  borderRadius: BorderRadius.circular(9),
+                  gradient: isDark
+                      ? const LinearGradient(
+                          colors: [Color(0xFF6366F1), Color(0xFF4F46E5)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        )
+                      : null,
+                  color: isDark ? null : Colors.white,
+                  borderRadius: BorderRadius.circular(10.5),
                   boxShadow: [
                     BoxShadow(
-                      color:
-                          Colors.black.withValues(alpha: isDark ? 0.3 : 0.06),
-                      blurRadius: 4,
-                      offset: const Offset(0, 2),
+                      color: isDark
+                          ? const Color(0xFF6366F1).withValues(alpha: 0.35)
+                          : Colors.black.withValues(alpha: 0.08),
+                      blurRadius: isDark ? 8 : 4,
+                      offset: const Offset(0, 1.5),
                     ),
                   ],
                 ),
-                labelColor: isDark ? Colors.white : const Color(0xFF0F172A),
-                unselectedLabelColor:
-                    isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                labelColor:
+                    isDark ? Colors.white : const Color(0xFF0F172A),
+                unselectedLabelColor: isDark
+                    ? const Color(0xFF94A3B8)
+                    : const Color(0xFF64748B),
                 labelStyle: const TextStyle(
-                    fontSize: 11.5, fontWeight: FontWeight.w700),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: -0.2,
+                ),
                 unselectedLabelStyle: const TextStyle(
-                    fontSize: 11.5, fontWeight: FontWeight.w500),
-                labelPadding: EdgeInsets.zero,
-                isScrollable: false,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  letterSpacing: -0.2,
+                ),
+                labelPadding: const EdgeInsets.symmetric(horizontal: 14),
+                isScrollable: true,
+                tabAlignment: TabAlignment.start,
                 tabs: const [
                   Tab(text: "Sandbox"),
                   Tab(text: "Puya"),
@@ -509,12 +531,13 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen>
           runSpacing: 8,
           children: [
             for (final ex in const [
+              "nungairibo",
+              "nungaireebo",
               "Ei nangpu nungshii",
               "kangleipak",
               "sanamahi",
               "wakoklon",
               "puya",
-              "nungaiiribo",
               "kmdwrige",
               "pukninggi warol",
               "meetei",
@@ -1063,7 +1086,7 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen>
       children: [
         _buildSectionHeader(
           "9 CHEITAP-CHENAP VOWEL DIACRITICS (ꯆꯩꯇꯥꯞ ꯹)",
-          "Aa-tap, E-nap, Ee-nap, Yat-nap, Chei-nap, Shou-nap, Ot-nap, Uu-nap, Nung",
+          "Aa-tap, Eenap (ee), inap (i), Yat-nap, Chei-nap, Shou-nap, Ot-nap, Uu-nap, Nung",
         ),
         const SizedBox(height: 12),
 

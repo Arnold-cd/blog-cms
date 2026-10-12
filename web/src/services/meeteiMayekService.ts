@@ -127,8 +127,8 @@ export const ALL_LETTERS_MAIN_AND_LONSUM: MeeteiUnicodeChar[] = [...ALL_27_MAIN_
 // 4. Meetei cheitap-chenap 9 (9 cheitap-cheinap vowel diacritics) - SLLK & Wakambam QWERTY
 export const CHEITAP_9: MeeteiUnicodeChar[] = [
   { codePoint: 'U+ABE5', char: 'ꯥ', name: 'Aa-tap', meaning: 'Downward vowel diacritic -aa (e.g. ꯀꯥ = ka)', category: 'cheitap', ipa: '/a/', latin: 'J', pukokKey: 'J', pukokWord: 'atJP' },
-  { codePoint: 'U+ABE4', char: 'ꯤ', name: 'E-nap', meaning: 'Overhead vowel diacritic -e / -i (e.g. ꯀꯤ = ke / ki)', category: 'cheitap', ipa: '/i/', latin: 'e', pukokKey: 'i', pukokWord: 'enJP' },
-  { codePoint: 'U+AAEB', char: 'ꫫ', name: 'Ee-nap', meaning: 'Long vowel diacritic -ee / -ii (e.g. ꯀꫫ = kee / kii)', category: 'cheitap', ipa: '/iː/', latin: 'ee', pukokKey: 'I', pukokWord: 'eenJP' },
+  { codePoint: 'U+ABE4', char: 'ꯤ', name: 'Eenap', meaning: 'Overhead vowel diacritic -ee (e.g. ꯀꯤ = kee)', category: 'cheitap', ipa: '/iː/', latin: 'ee', pukokKey: 'I', pukokWord: 'eenJP' },
+  { codePoint: 'U+AAEB', char: 'ꫫ', name: 'inap', meaning: 'Vowel diacritic -i (e.g. ꯀꫫ = ki)', category: 'cheitap', ipa: '/i/', latin: 'i', pukokKey: 'i', pukokWord: 'inJP' },
   { codePoint: 'U+ABE6', char: 'ꯦ', name: 'Yat-nap', meaning: 'Vowel diacritic -ye / -yat (sounds like yet-nap, e.g. ꯀꯦ = kye / kyet)', category: 'cheitap', ipa: '/e/', latin: 'ye', pukokKey: 'Y', pukokWord: 'yYTnJP' },
   { codePoint: 'U+ABE9', char: 'ꯩ', name: 'Chei-nap', meaning: 'Vowel diacritic -ei (e.g. ꯀꯩ = kei)', category: 'cheitap', ipa: '/ei/', latin: 'ei', pukokKey: 'C', pukokWord: 'cCnJP' },
   { codePoint: 'U+ABE7', char: 'ꯧ', name: 'Shou-nap', meaning: 'Vowel diacritic -ou (e.g. ꯀꯧ = kou)', category: 'cheitap', ipa: '/ou/', latin: 'ou', pukokKey: 'O', pukokWord: 'sOnJP' },
@@ -352,7 +352,7 @@ const BENGALI_TO_MEETEI_MAP: Record<string, string> = {
   'অ': 'ꯑ', 'আ': 'ꯑꯥ', 'ই': 'ꯏ', 'ঈ': 'ꯏ', 'উ': 'ꯎ', 'ঊ': 'ꯎ',
   'ঋ': 'ꯔꯤ', 'এ': 'ꯑꯦ', 'ঐ': 'ꯑꯩ', 'ও': 'ꯑꯣ', 'ঔ': 'ꯑꯧ',
   // Matras / Vowel signs
-  'া': 'ꯥ', 'ি': 'ꯤ', 'ী': 'ꯤ', 'ু': 'ꯨ', 'ূ': 'ꯨ',
+  'া': 'ꯥ', 'ি': 'ꫫ', 'ী': 'ꯤ', 'ু': 'ꯨ', 'ূ': 'ꯨ',
   'ৃ': 'ꯔꯤ', 'ে': 'ꯦ', 'ৈ': 'ꯩ', 'ো': 'ꯣ', 'ৌ': 'ꯧ',
   'ং': 'ꯪ', 'ঃ': '꯬', '্': '꯭',
   // Punctuation & digits
@@ -631,57 +631,70 @@ const COMMON_PHONETIC_WORDS: Record<string, string> = {
   khangdre: 'ꯈꯡꯗ꯭ꯔꯦ',
   khngba: 'ꯈꯡꯕ',
   khangba: 'ꯈꯡꯕ',
-  khngi: 'ꯈꯡꯉꯤ',
-  khangi: 'ꯈꯡꯉꯤ',
-  khngibo: 'ꯈꯡꯉꯤꯕꯣ',
-  khangibo: 'ꯈꯡꯉꯤꯕꯣ',
+  khngi: 'ꯈꯡꯉꫫ',
+  khangi: 'ꯈꯡꯉꫫ',
+  khngibo: 'ꯈꯡꯉꫫꯕꯣ',
+  khangibo: 'ꯈꯡꯉꫫꯕꯣ',
   khngle: 'ꯈꯡꯂꯦ',
   khangle: 'ꯈꯡꯂꯦ',
   khngledo: 'ꯈꯡꯂꯦꯗꯣ',
   khangledo: 'ꯈꯡꯂꯦꯗꯣ',
-  khngliba: 'ꯈꯡꯂꯤꯕ',
-  khangliba: 'ꯈꯡꯂꯤꯕ',
-  khnglibo: 'ꯈꯡꯂꯤꯕꯣ',
-  khanglibo: 'ꯈꯡꯂꯤꯕꯣ',
-  khngjaribo: 'ꯈꯡꯖꯔꯤꯕꯣ',
-  khangjaribo: 'ꯈꯡꯖꯔꯤꯕꯣ',
+  khngliba: 'ꯈꯡꯂꫫꯕ',
+  khangliba: 'ꯈꯡꯂꫫꯕ',
+  khnglibo: 'ꯈꯡꯂꫫꯕꯣ',
+  khanglibo: 'ꯈꯡꯂꫫꯕꯣ',
+  khngjaribo: 'ꯈꯡꯖꯔꫫꯕꯣ',
+  khangjaribo: 'ꯈꯡꯖꯔꫫꯕꯣ',
   khngjare: 'ꯈꯡꯖꯔꯦ',
   khangjare: 'ꯈꯡꯖꯔꯦ',
   angang: 'ꯑꯉꯥꯡ',
-  kmdwrige: 'ꯀꯃꯗꯧꯔꯤꯒꯦ',
-  kamdwrige: 'ꯀꯃꯗꯧꯔꯤꯒꯦ',
-  kamdourige: 'ꯀꯃꯗꯧꯔꯤꯒꯦ',
-  kmdwri: 'ꯀꯃꯗꯧꯔꯤ',
-  kamdouri: 'ꯀꯃꯗꯧꯔꯤ',
+  kmdwrige: 'ꯀꯃꯗꯧꯔꫫꯒꯦ',
+  kamdwrige: 'ꯀꯃꯗꯧꯔꫫꯒꯦ',
+  kamdourige: 'ꯀꯃꯗꯧꯔꫫꯒꯦ',
+  kmdwri: 'ꯀꯃꯗꯧꯔꫫ',
+  kamdouri: 'ꯀꯃꯗꯧꯔꫫ',
   kmdwre: 'ꯀꯃꯗꯧꯔꯦ',
   kamdoure: 'ꯀꯃꯗꯧꯔꯦ',
   kmdwba: 'ꯀꯃꯗꯧꯕ',
   kamdouba: 'ꯀꯃꯗꯧꯕ',
   kamdwba: 'ꯀꯃꯗꯧꯕ',
-  kmdwribo: 'ꯀꯃꯗꯧꯔꯤꯕꯣ',
-  kamdouribo: 'ꯀꯃꯗꯧꯔꯤꯕꯣ',
+  kmdwribo: 'ꯀꯃꯗꯧꯔꫫꯕꯣ',
+  kamdouribo: 'ꯀꯃꯗꯧꯔꫫꯕꯣ',
   karamba: 'ꯀꯔꯝꯕ',
   karamna: 'ꯀꯔꯝꯅ',
   karmna: 'ꯀꯔꯝꯅ',
-  kari: 'ꯀꯔꯤ',
-  karigi: 'ꯀꯔꯤꯒꯤ',
+  kari: 'ꯀꯔꫫ',
+  karee: 'ꯀꯔꯤ',
+  karigi: 'ꯀꯔꫫꯒꫫ',
+  kareegi: 'ꯀꯔꯤꯒꯤ',
   kanano: 'ꯀꯅꯥꯅꯣ',
   kana: 'ꯀꯅꯥ',
   kadaida: 'ꯀꯗꯥꯏꯗ',
-  nungaiiribo: 'ꯅꯨꯡꯉꯥꯏꯔꯤꯕꯣ',
-  nungairibo: 'ꯅꯨꯡꯉꯥꯏꯔꯤꯕꯣ',
-  nungaijaribo: 'ꯅꯨꯡꯉꯥꯏꯖꯔꯤꯕꯣ',
+  nungaiiribo: 'ꯅꯨꯡꯉꯥꯏꯔꫫꯕꯣ',
+  nungairibo: 'ꯅꯨꯡꯉꯥꯏꯔꫫꯕꯣ',
+  nungairiibo: 'ꯅꯨꯡꯉꯥꯏꯔꫫꯕꯣ',
+  nungaireebo: 'ꯅꯨꯡꯉꯥꯏꯔꯤꯕꯣ',
+  nungaijaribo: 'ꯅꯨꯡꯉꯥꯏꯖꯔꫫꯕꯣ',
+  nungaijareebo: 'ꯅꯨꯡꯉꯥꯏꯖꯔꯤꯕꯣ',
   nungaijare: 'ꯅꯨꯡꯉꯥꯏꯖꯔꯦ',
   nungaire: 'ꯅꯨꯡꯉꯥꯏꯔꯦ',
-  nungairi: 'ꯅꯨꯡꯉꯥꯏꯔꯤ',
-  nungairiba: 'ꯅꯨꯡꯉꯥꯏꯔꯤꯕ',
+  nungairi: 'ꯅꯨꯡꯉꯥꯏꯔꫫ',
+  nungairee: 'ꯅꯨꯡꯉꯥꯏꯔꯤ',
+  nungairiba: 'ꯅꯨꯡꯉꯥꯏꯔꫫꯕ',
+  nungaireeba: 'ꯅꯨꯡꯉꯥꯏꯔꯤꯕ',
   nungai: 'ꯅꯨꯡꯉꯥꯏ',
-  nungshiba: 'ꯅꯨꯡꯁꯤꯕ',
-  nungshi: 'ꯅꯨꯡꯁꯤ',
-  nungshiribi: 'ꯅꯨꯡꯁꯤꯔꯤꯕꯤ',
-  nungshiriba: 'ꯅꯨꯡꯁꯤꯔꯤꯕ',
-  pukning: 'ꯄꯨꯛꯅꯤꯡ',
-  pukninggi: 'ꯄꯨꯛꯅꯤꯡꯒꯤ',
+  nungshiba: 'ꯅꯨꯡꯁꫫꯕ',
+  nungsheeba: 'ꯅꯨꯡꯁꯤꯕ',
+  nungshi: 'ꯅꯨꯡꯁꫫ',
+  nungshee: 'ꯅꯨꯡꯁꯤ',
+  nungshiribi: 'ꯅꯨꯡꯁꫫꯔꫫꯕꫫ',
+  nungsheereebee: 'ꯅꯨꯡꯁꯤꯔꯤꯕꯤ',
+  nungshiriba: 'ꯅꯨꯡꯁꫫꯔꫫꯕ',
+  nungsheereeba: 'ꯅꯨꯡꯁꯤꯔꯤꯕ',
+  pukning: 'ꯄꯨꯛꯅꫫꯡ',
+  pukneeng: 'ꯄꯨꯛꯅꯤꯡ',
+  pukninggi: 'ꯄꯨꯛꯅꫫꯡꯒꫫ',
+  pukneenggi: 'ꯄꯨꯛꯅꯤꯡꯒꯤ',
   warol: 'ꯋꯥꯔꯣꯜ',
   warolshing: 'ꯋꯥꯔꯣꯜꯁꯤꯡ',
   wakhallon: 'ꯋꯥꯈꯜꯂꯣꯟ',
@@ -692,32 +705,42 @@ const COMMON_PHONETIC_WORDS: Record<string, string> = {
   laishang: 'ꯂꯥꯏꯁꯪ',
   leibak: 'ꯂꯩꯕꯥꯛ',
   thabak: 'ꯊꯕꯥꯛ',
-  singtha: 'ꯁꯤꯡꯊ',
+  singtha: 'ꯁꫫꯡꯊ',
+  seengtha: 'ꯁꯤꯡꯊ',
   haiba: 'ꯍꯥꯏꯕ',
-  hainingba: 'ꯍꯥꯏꯅꯤꯡꯕ',
+  hainingba: 'ꯍꯥꯏꯅꫫꯡꯕ',
+  haineengba: 'ꯍꯥꯏꯅꯤꯡꯕ',
   haire: 'ꯍꯥꯏꯔꯦ',
-  hairi: 'ꯍꯥꯏꯔꯤ',
+  hairi: 'ꯍꯥꯏꯔꫫ',
+  hairee: 'ꯍꯥꯏꯔꯤ',
   toure: 'ꯇꯧꯔꯦ',
   touba: 'ꯇꯧꯕ',
-  tourige: 'ꯇꯧꯔꯤꯒꯦ',
-  touri: 'ꯇꯧꯔꯤ',
-  twrige: 'ꯇꯧꯔꯤꯒꯦ',
+  tourige: 'ꯇꯧꯔꫫꯒꯦ',
+  toureege: 'ꯇꯧꯔꯤꯒꯦ',
+  touri: 'ꯇꯧꯔꫫ',
+  touree: 'ꯇꯧꯔꯤ',
+  twrige: 'ꯇꯧꯔꫫꯒꯦ',
+  twreege: 'ꯇꯧꯔꯤꯒꯦ',
   twba: 'ꯇꯧꯕ',
-  twri: 'ꯇꯧꯔꯤ',
+  twri: 'ꯇꯧꯔꫫ',
+  twree: 'ꯇꯧꯔꯤ',
   dwge: 'ꯗꯧꯒꯦ',
   douge: 'ꯗꯧꯒꯦ',
   taibang: 'ꯇꯥꯏꯕꯪ',
   malem: 'ꯃꯥꯂꯦꯝ',
-  punshi: 'ꯄꯨꯟꯁꯤ',
+  punshi: 'ꯄꯨꯟꯁꫫ',
+  punshee: 'ꯄꯨꯟꯁꯤ',
   meeoiba: 'ꯃꯤꯑꯣꯏꯕ',
   meeoi: 'ꯃꯤꯑꯣꯏ',
   shumang: 'ꯁꯨꯃꯥꯡ',
   leela: 'ꯂꯤꯂꯥ',
-  panthoibi: 'ꯄꯥꯟꯊꯣꯏꯕꯤ',
+  panthoibi: 'ꯄꯥꯟꯊꯣꯏꯕꫫ',
+  panthoibee: 'ꯄꯥꯟꯊꯣꯏꯕꯤ',
   oina: 'ꯑꯣꯏꯅ',
   oja: 'ꯑꯣꯖꯥ',
   kangleipak: 'ꯀꯪꯂꯩꯄꯥꯛ',
-  manipur: 'ꯃꯅꯤꯄꯨꯔ',
+  manipur: 'ꯃꯅꫫꯄꯨꯔ',
+  maneepur: 'ꯃꯅꯤꯄꯨꯔ',
   meetei: 'ꯃꯤꯇꯩ',
   meeteilon: 'ꯃꯤꯇꯩꯂꯣꯟ',
   meeteilol: 'ꯃꯤꯇꯩꯂꯣꯜ',
@@ -727,17 +750,22 @@ const COMMON_PHONETIC_WORDS: Record<string, string> = {
   puya: 'ꯄꯨꯌꯥ',
   khunung: 'ꯈꯨꯅꯨꯡ',
   khamba: 'ꯈꯝꯕ',
-  thoibi: 'ꯊꯣꯢꯕꯤ',
+  thoibi: 'ꯊꯣꯢꯕꫫ',
+  thoibee: 'ꯊꯣꯢꯕꯤ',
   nongda: 'ꯅꯣꯡꯗ',
   lairen: 'ꯂꯥꯢꯔꯦꯟ',
   pakhangba: 'ꯄꯥꯈꯪꯕ',
-  sanahi: 'ꯁꯅꯥꯍꯤ',
-  sanamahi: 'ꯁꯅꯥꯃꯍꯤ',
+  sanahi: 'ꯁꯅꯥꯍꫫ',
+  sanahee: 'ꯁꯅꯥꯍꯤ',
+  sanamahi: 'ꯁꯅꯥꯃꯍꫫ',
+  sanamahee: 'ꯁꯅꯥꯃꯍꯤ',
   leishemba: 'ꯂꯩꯁꯦꯝꯕ',
   ima: 'ꯏꯃꯥ',
   iba: 'ꯏꯕ',
-  khurumjari: 'ꯈꯨꯔꯨꯝꯖꯔꯤ',
-  thagatchari: 'ꯊꯥꯒꯠꯆꯔꯤ',
+  khurumjari: 'ꯈꯨꯔꯨꯝꯖꯔꫫ',
+  khurumjaree: 'ꯈꯨꯔꯨꯝꯖꯔꯤ',
+  thagatchari: 'ꯊꯥꯒꯠꯆꯔꫫ',
+  thagatcharee: 'ꯊꯥꯒꯠꯆꯔꯤ',
 };
 
 const GREEK_TRANSLITERATION: Record<string, string> = {
@@ -783,8 +811,6 @@ function transliterateLatinWord(token: string): string {
   for (const [grk, rep] of Object.entries(GREEK_TRANSLITERATION)) {
     word = word.split(grk).join(rep);
   }
-  // Capital 'I' or 'EE' phonetically maps to long Ee-nap (ꫫ / Pukok 'I')
-  word = word.split('I').join('ee');
   word = word.toLowerCase();
 
   // Manipuri phonetic typing rule: consonant + 'w' represents sou-nap (ꯧ /ou/)
@@ -811,13 +837,13 @@ function transliterateLatinWord(token: string): string {
     ['sion', 'ꯁꯟ'],
     ['ight', 'ꯑꯥꯏꯠ'],
     ['ous', 'ꯑꯁ'],
-    ['eeng', 'ꫫꯡ'],
-    ['iing', 'ꫫꯡ'],
+    ['eeng', 'ꯤꯡ'], // Eenap (ꯤ) + ꯡ
+    ['iing', 'ꫫꯡ'], // inap (ꫫ) + ꯡ
     ['yeng', 'ꯌꯦꯡ'],
     ['yatng', 'ꯌꯦꯡ'],
     ['yetng', 'ꯌꯦꯡ'],
-    ['eng', 'ꯤꯡ'],
-    ['ing', 'ꯤꯡ'],
+    ['eng', 'ꯤꯡ'], // Eenap (ꯤ) + ꯡ
+    ['ing', 'ꫫꯡ'], // inap (ꫫ) + ꯡ
     ['all', 'ꯑꯣꯜ'],
     ['ell', 'ꯑꯦꯜ'],
     ['ill', 'ꯏꯜ'],
@@ -908,7 +934,7 @@ function transliterateLatinWord(token: string): string {
   }
 
   // Dependent vowel signs (Cheitap)
-  // Orthography rule: 'e' -> E-nap (ꯤ / 'i'), 'ee' -> Ee-nap (ꫫ / 'I'), 'ye'/'yat' -> Yat-nap (ꯦ / 'Y')
+  // Orthography rule: Eenap (ꯤ) is 'ee', inap (ꫫ) is 'i', Yat-nap (ꯦ) is 'ye'/'yat'
   const dependentVowels: [string, string][] = [
     ['yat', 'ꯦ'],
     ['yet', 'ꯦ'],
@@ -917,8 +943,8 @@ function transliterateLatinWord(token: string): string {
     ['ai', 'ꯥꯏ'],
     ['aai', 'ꯥꯏ'],
     ['aa', 'ꯥ'],
-    ['ee', 'ꫫ'], // Ee-nap (ꫫ / Pukok 'I')
-    ['ii', 'ꫫ'], // Ee-nap (ꫫ / Pukok 'I')
+    ['ee', 'ꯤ'], // Eenap (ꯤ / 'ee')
+    ['ii', 'ꫫ'], // inap (ꫫ / 'ii' fallback)
     ['ei', 'ꯩ'], // Chei-nap (ꯩ / Pukok 'C')
     ['oi', 'ꯣꯏ'],
     ['ui', 'ꯨꯏ'],
@@ -926,8 +952,8 @@ function transliterateLatinWord(token: string): string {
     ['au', 'ꯧ'],
     ['oo', 'ꯨ'],
     ['a', 'ꯥ'],
-    ['e', 'ꯤ'], // E-nap (ꯤ / Pukok 'i')
-    ['i', 'ꯤ'], // E-nap (ꯤ / Pukok 'i')
+    ['e', 'ꯤ'], // Eenap (ꯤ / 'e')
+    ['i', 'ꫫ'], // inap (ꫫ / 'i')
     ['u', 'ꯨ'],
     ['o', 'ꯣ'],
   ];
@@ -1159,8 +1185,8 @@ export const UNICODE_TO_PUKOK_KEYMAP: Record<string, string> = {
 
   // 9 Cheitap-Cheinap Vowel Diacritics (from PDF 2 Page 1 & PDF 1 Page 3)
   'ꯥ': 'J', // Aa-tap
-  'ꯤ': 'i', // E-nap
-  'ꫫ': 'I', // Ee-nap
+  'ꯤ': 'I', // Eenap (ee)
+  'ꫫ': 'i', // inap (i)
   'ꯦ': 'Y', // Yat-nap (sounds like yet-nap)
   'ꯩ': 'C', // Chei-nap
   'ꯧ': 'O', // Shou-nap
@@ -1227,7 +1253,7 @@ export const PUKOK_TO_UNICODE_MAP: Record<string, string> = {
   'T': 'ꯠ', 'Q': 'ꯡ', 'E': 'ꯢ', 'U': 'ꯎ', 'A': 'ꯑ',
 
   // 9 Cheitap-Cheinap Vowel Diacritics
-  'J': 'ꯥ', 'i': 'ꯤ', 'I': 'ꫫ', 'Y': 'ꯦ', 'C': 'ꯩ',
+  'J': 'ꯥ', 'i': 'ꫫ', 'I': 'ꯤ', 'Y': 'ꯦ', 'C': 'ꯩ',
   'O': 'ꯧ', 'o': 'ꯣ', 'F': 'ꯨ', 'H': 'ꯪ',
 
   // 10 Cheishing Digits (0-9)

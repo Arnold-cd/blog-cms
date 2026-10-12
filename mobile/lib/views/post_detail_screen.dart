@@ -5,6 +5,7 @@ import "package:flutter_tts/flutter_tts.dart";
 import "package:intl/intl.dart";
 import "package:share_plus/share_plus.dart";
 import "package:url_launcher/url_launcher.dart";
+import "package:google_mobile_ads/google_mobile_ads.dart";
 import "../models/post.dart";
 import "../providers/app_providers.dart";
 import "../providers/monetization_provider.dart";
@@ -12,6 +13,7 @@ import "../services/ad_service.dart";
 import "../services/api_service.dart";
 import "../services/cache_service.dart";
 import "../services/meetei_mayek_service.dart";
+import "../services/reader_interstitial_manager.dart";
 import "../theme/app_theme.dart";
 import "../widgets/adaptive_image.dart";
 import "../widgets/donation_modal.dart";
@@ -59,12 +61,6 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
   @override
   void dispose() {
     _flutterTts.stop();
-    try {
-      final isAdFree = ref.read(monetizationProvider).isAdFreeActive;
-      if (!isAdFree) {
-        AdService.instance.showInterstitialIfEligible();
-      }
-    } catch (_) {}
     super.dispose();
   }
 
@@ -237,6 +233,17 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
     );
   }
 
+  void _handleExit(BuildContext context, bool isAdFree) {
+    ReaderInterstitialManager.instance.showExitInterstitialIfEligible(
+      isAdFree: isAdFree,
+      onProceed: () {
+        if (context.mounted) {
+          Navigator.of(context).pop();
+        }
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -305,30 +312,36 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
         ? MeeteiMayekService.convertUnicodeToPukokFont(unicodeAuthor)
         : unicodeAuthor;
 
-    return Scaffold(
-      backgroundColor: customBgColor,
-      body: CustomScrollView(
-        physics: const BouncingScrollPhysics(),
-        slivers: [
-          // Collapsible Hero Header
-          SliverAppBar(
-            expandedHeight: widget.post.thumbnailUrl.isNotEmpty ? 260 : 100,
-            pinned: true,
-            leading: IconButton(
-              icon: Container(
-                padding: const EdgeInsets.all(6),
-                decoration: BoxDecoration(
-                  color: isDark ? Colors.black.withValues(alpha: 0.5) : Colors.white.withValues(alpha: 0.85),
-                  shape: BoxShape.circle,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
+        _handleExit(context, isAdFree);
+      },
+      child: Scaffold(
+        backgroundColor: customBgColor,
+        body: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            // Collapsible Hero Header
+            SliverAppBar(
+              expandedHeight: widget.post.thumbnailUrl.isNotEmpty ? 260 : 100,
+              pinned: true,
+              leading: IconButton(
+                icon: Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: isDark ? Colors.black.withValues(alpha: 0.5) : Colors.white.withValues(alpha: 0.85),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.arrow_back_rounded,
+                    color: isDark ? Colors.white : Colors.black,
+                    size: 20,
+                  ),
                 ),
-                child: Icon(
-                  Icons.arrow_back_rounded,
-                  color: isDark ? Colors.white : Colors.black,
-                  size: 20,
-                ),
+                onPressed: () => _handleExit(context, isAdFree),
               ),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
             actions: [
               // Free Ad-Free Pass / Rewarded Ad
               IconButton(
@@ -1052,13 +1065,52 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
               ),
             ),
           ),
+          // Natural Chapter / Article End Inline Banner (Pure Reading Zone)
+          if (!isAdFree)
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: isDark ? const Color(0xFF141418) : Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: isDark
+                          ? Colors.white.withValues(alpha: 0.08)
+                          : Colors.black.withValues(alpha: 0.06),
+                    ),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: Text(
+                          "SPONSORED",
+                          style: TextStyle(
+                            fontSize: 9,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 0.8,
+                            color: isDark ? Colors.white60 : Colors.black54,
+                          ),
+                        ),
+                      ),
+                      const Center(
+                        child: BannerAdWidget(adSize: AdSize.mediumRectangle),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
           const SliverToBoxAdapter(
             child: SizedBox(height: 60),
           ),
         ],
       ),
-      bottomNavigationBar: !isAdFree ? const SafeArea(top: false, child: BannerAdWidget()) : null,
-    );
+      bottomNavigationBar: null,
+    ),
+  );
   }
 
   void _showFontSizeModal(BuildContext context) {

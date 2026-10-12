@@ -3,6 +3,7 @@ import "../widgets/monetization_modal.dart";
 import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:shimmer/shimmer.dart";
+import "package:google_mobile_ads/google_mobile_ads.dart";
 import "../providers/app_providers.dart";
 import "../providers/monetization_provider.dart";
 import "../services/ad_service.dart";
@@ -290,22 +291,80 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   return _buildEmptyState(context, _searchController.text.isNotEmpty);
                 }
 
+                const int adInterval = 6;
+                final bool injectAds = !isAdFree && filteredPosts.length >= adInterval;
+                final int totalCount = injectAds
+                    ? filteredPosts.length + (filteredPosts.length ~/ adInterval)
+                    : filteredPosts.length;
+
                 return ListView.builder(
                   padding: const EdgeInsets.only(top: 6, bottom: 32),
                   physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
-                  itemCount: filteredPosts.length,
+                  itemCount: totalCount,
                   itemBuilder: (context, index) {
-                    final post = filteredPosts[index];
+                    // Sponsored Ad insertion every 6th card (index 6, 12, 18...)
+                    if (injectAds && index > 0 && index % adInterval == 0) {
+                      return Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        decoration: BoxDecoration(
+                          color: isDark ? const Color(0xFF141418) : Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: isDark
+                                ? Colors.white.withValues(alpha: 0.08)
+                                : Colors.black.withValues(alpha: 0.06),
+                          ),
+                        ),
+                        clipBehavior: Clip.antiAlias,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(14, 10, 14, 4),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                    decoration: BoxDecoration(
+                                      color: isDark ? Colors.white12 : Colors.black12,
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                    child: Text(
+                                      "SPONSORED",
+                                      style: TextStyle(
+                                        fontSize: 9,
+                                        fontWeight: FontWeight.w700,
+                                        letterSpacing: 0.8,
+                                        color: isDark ? Colors.white60 : Colors.black54,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const Center(
+                              child: Padding(
+                                padding: EdgeInsets.only(bottom: 8),
+                                child: BannerAdWidget(adSize: AdSize.banner),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+
+                    final dataIndex = injectAds ? index - (index ~/ adInterval) : index;
+                    if (dataIndex >= filteredPosts.length) return const SizedBox.shrink();
+
+                    final post = filteredPosts[dataIndex];
                     // Make the top item featured when not searching
-                    final isFeatured = index == 0 && !_isSearching && selectedCategory == "All";
+                    final isFeatured = dataIndex == 0 && !_isSearching && selectedCategory == "All";
 
                     return PostCard(
                       post: post,
                       isFeatured: isFeatured,
                       onTap: () {
-                        if (!isAdFree) {
-                          AdService.instance.showInterstitialIfEligible();
-                        }
+                        // Instant article entry without disruption (pure reading zone)
                         Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (_) => PostDetailScreen(post: post),

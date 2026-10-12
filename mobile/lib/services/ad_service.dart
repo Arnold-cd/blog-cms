@@ -73,6 +73,8 @@ class AdService {
   // INTERSTITIAL ADS
   // =============================================================
 
+  bool get isInterstitialReady => _interstitialAd != null;
+
   void loadInterstitialAd({bool useFallback = false}) {
     if (_isInterstitialLoading || _interstitialAd != null) return;
     _isInterstitialLoading = true;
