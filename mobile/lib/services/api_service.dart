@@ -35,7 +35,7 @@ class ApiService {
     final uri = Uri.tryParse(rawUrl);
     if (uri == null) return false;
     final host = uri.host.toLowerCase();
-    if (host.isEmpty) return true; // Relative URLs will resolve to baseCdnUrl
+    if (host.isEmpty) return true; // Relative URLs will resolve to baseVercelUrl
     return allowedDomains.contains(host) ||
         host.endsWith(".github.io") ||
         host.endsWith(".vercel.app") ||
@@ -45,14 +45,14 @@ class ApiService {
         host.endsWith(".googleusercontent.com");
   }
 
-  /// Resolves relative paths or GitHub Raw URLs into reliable GitHub Pages CDN URLs
+  /// Resolves relative paths or GitHub Raw URLs into reliable Vercel CDN URLs
   static String resolveUrl(String? raw) {
     if (raw == null || raw.trim().isEmpty) {
       return "";
     }
     final trimmed = raw.trim();
 
-    // If points to GitHub raw for this repo, route to GitHub Pages CDN
+    // If points to GitHub raw for this repo (which fails if repo is private), route to Vercel CDN
     if (trimmed.startsWith("https://raw.githubusercontent.com/Arnold-cd/blog-cms/main/")) {
       return trimmed.replaceFirst(
         "https://raw.githubusercontent.com/Arnold-cd/blog-cms/main",
