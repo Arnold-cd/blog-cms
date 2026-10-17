@@ -96,8 +96,8 @@ jobs:
             echo "No changes to commit."
           else
             echo "Changes detected. Committing..."
-            git commit -m "chore(cms): auto-update manifests and web build"
-            git push origin main
+            git commit -m "chore(cms): auto-update manifests and web build [skip ci]" || true
+            git push origin main || echo "Push failed, continuing deployment..."
           fi
 
       - name: 🌐 Setup GitHub Pages

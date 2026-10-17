@@ -5,6 +5,7 @@ summary: "Exploring the indigenous historical manuscripts of Kangleipak, preserv
 date: "2026-09-18"
 author: "Arnold CD"
 category: "Culture"
+thumbnail: "images/banner-puya.svg"
 language: "mni"
 featured: true
 ---
