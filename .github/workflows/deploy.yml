@@ -82,6 +82,8 @@ jobs:
           npm run build
           cd ..
           touch .nojekyll
+          touch web/dist/.nojekyll
+          cp web/dist/index.html web/dist/404.html
           cp web/dist/index.html ./index.html
           rm -rf assets && cp -r web/dist/assets ./assets
 

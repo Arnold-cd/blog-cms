@@ -6,6 +6,7 @@ import "../models/post.dart";
 import "../models/pdf_document.dart";
 
 class ApiService {
+  static const String baseCdnUrl = "https://arnold-cd.github.io/blog-cms";
   static const String baseVercelUrl = "https://blog-cms-gilt.vercel.app";
   static const String baseRawUrl = "https://raw.githubusercontent.com/Arnold-cd/blog-cms/main";
 
@@ -15,6 +16,7 @@ class ApiService {
 
   /// Strict Domain Allowlist for CDN, Git repository, and Cloud Storage
   static const Set<String> allowedDomains = {
+    "arnold-cd.github.io",
     "blog-cms-gilt.vercel.app",
     "raw.githubusercontent.com",
     "github.com",
@@ -33,8 +35,9 @@ class ApiService {
     final uri = Uri.tryParse(rawUrl);
     if (uri == null) return false;
     final host = uri.host.toLowerCase();
-    if (host.isEmpty) return true; // Relative URLs will resolve to baseVercelUrl
+    if (host.isEmpty) return true; // Relative URLs will resolve to baseCdnUrl
     return allowedDomains.contains(host) ||
+        host.endsWith(".github.io") ||
         host.endsWith(".vercel.app") ||
         host.endsWith(".githubusercontent.com") ||
         host.endsWith(".archive.org") ||
@@ -42,18 +45,18 @@ class ApiService {
         host.endsWith(".googleusercontent.com");
   }
 
-  /// Resolves relative paths or GitHub Raw URLs into reliable Vercel CDN URLs
+  /// Resolves relative paths or GitHub Raw URLs into reliable GitHub Pages CDN URLs
   static String resolveUrl(String? raw) {
     if (raw == null || raw.trim().isEmpty) {
       return "";
     }
     final trimmed = raw.trim();
 
-    // If points to GitHub raw for this repo (which fails if repo is private), route to Vercel CDN
+    // If points to GitHub raw for this repo, route to GitHub Pages CDN
     if (trimmed.startsWith("https://raw.githubusercontent.com/Arnold-cd/blog-cms/main/")) {
       return trimmed.replaceFirst(
         "https://raw.githubusercontent.com/Arnold-cd/blog-cms/main",
-        baseVercelUrl,
+        baseCdnUrl,
       );
     }
 
@@ -61,7 +64,7 @@ class ApiService {
       return trimmed;
     }
     final cleaned = trimmed.replaceFirst(RegExp(r"^\.?/"), "");
-    return "$baseVercelUrl/$cleaned";
+    return "$baseCdnUrl/$cleaned";
   }
 
   /// Securely downloads a file directly to disk using chunked streaming.
@@ -177,10 +180,10 @@ class ApiService {
     }
   }
 
-  /// Fetches latest posts manifest from Vercel CDN with fallback to GitHub
+  /// Fetches latest posts manifest from GitHub Pages CDN with fallback to GitHub
   Future<List<Post>> fetchPosts() async {
     final timestamp = DateTime.now().millisecondsSinceEpoch;
-    final primaryUri = Uri.parse("$baseVercelUrl/posts.json?t=$timestamp");
+    final primaryUri = Uri.parse("$baseCdnUrl/posts.json?t=$timestamp");
     final fallbackUri = Uri.parse("$baseRawUrl/posts.json?t=$timestamp");
     const timeout = Duration(seconds: 15);
 
@@ -237,17 +240,21 @@ class ApiService {
         Uri.parse("$targetUrl?t=$timestamp"),
         headers: {"Accept": "text/plain; charset=utf-8"},
       ).timeout(timeout);
-      if (response.statusCode != 200 && targetUrl.startsWith(baseVercelUrl)) {
-        final fallbackUrl = targetUrl.replaceFirst(baseVercelUrl, baseRawUrl);
+      if (response.statusCode != 200 && (targetUrl.startsWith(baseCdnUrl) || targetUrl.startsWith(baseVercelUrl))) {
+        final fallbackUrl = targetUrl.startsWith(baseCdnUrl)
+            ? targetUrl.replaceFirst(baseCdnUrl, baseRawUrl)
+            : targetUrl.replaceFirst(baseVercelUrl, baseRawUrl);
         response = await _client.get(
           Uri.parse("$fallbackUrl?t=$timestamp"),
           headers: {"Accept": "text/plain; charset=utf-8"},
         ).timeout(timeout);
       }
     } catch (_) {
-      final fallbackUrl = targetUrl.startsWith(baseVercelUrl)
-          ? targetUrl.replaceFirst(baseVercelUrl, baseRawUrl)
-          : targetUrl;
+      final fallbackUrl = targetUrl.startsWith(baseCdnUrl)
+          ? targetUrl.replaceFirst(baseCdnUrl, baseRawUrl)
+          : (targetUrl.startsWith(baseVercelUrl)
+              ? targetUrl.replaceFirst(baseVercelUrl, baseRawUrl)
+              : targetUrl);
       response = await _client.get(
         Uri.parse("$fallbackUrl?t=$timestamp"),
         headers: {"Accept": "text/plain; charset=utf-8"},
@@ -266,10 +273,10 @@ class ApiService {
     }
   }
 
-  /// Fetches latest PDF library manifest from Vercel CDN with fallback to GitHub
+  /// Fetches latest PDF library manifest from GitHub Pages CDN with fallback to GitHub
   Future<List<PdfDocument>> fetchLibraryDocuments() async {
     final timestamp = DateTime.now().millisecondsSinceEpoch;
-    final primaryUri = Uri.parse("$baseVercelUrl/library.json?t=$timestamp");
+    final primaryUri = Uri.parse("$baseCdnUrl/library.json?t=$timestamp");
     final fallbackUri = Uri.parse("$baseRawUrl/library.json?t=$timestamp");
     const timeout = Duration(seconds: 15);
 

@@ -379,11 +379,11 @@ export const ArticleView: React.FC<ArticleViewProps> = ({ post, onBack, onEditDr
               className="reader-hero-img"
               onError={(e) => {
                 const target = e.currentTarget;
-                if (!target.dataset.triedVercel) {
-                  target.dataset.triedVercel = 'true';
+                if (!target.dataset.triedFallback) {
+                  target.dataset.triedFallback = 'true';
                   const filename = target.src.split('/').pop()?.split('?')[0];
                   if (filename) {
-                    target.src = `https://blog-cms-gilt.vercel.app/images/${filename}`;
+                    target.src = `https://raw.githubusercontent.com/Arnold-cd/blog-cms/main/images/${filename}`;
                     return;
                   }
                 }

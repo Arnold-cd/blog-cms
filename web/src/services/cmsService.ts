@@ -1,11 +1,13 @@
 import type { BlogPost } from '../types';
 
 const LOCAL_POSTS_URL = './posts.json';
+const GITHUB_PAGES_POSTS_URL =
+  'https://arnold-cd.github.io/blog-cms/posts.json';
 const GITHUB_RAW_POSTS_URL =
   'https://raw.githubusercontent.com/Arnold-cd/blog-cms/main/posts.json';
 
 /**
- * Resolves an asset URL (image, thumbnail) to relative './images/...' or Vercel CDN,
+ * Resolves an asset URL (image, thumbnail) to relative './images/...' or GitHub Pages CDN,
  * bypassing GitHub raw 404s on private repositories.
  */
 export function resolveAssetUrl(rawUrl: string | undefined): string {
@@ -55,13 +57,13 @@ export async function fetchPosts(): Promise<BlogPost[]> {
     }
   }
 
-  // 2. Try Vercel CDN manifest (cache-busted)
+  // 2. Try local posts.json (bundled static asset on GitHub Pages)
   try {
-    const vercelRes = await fetch(`https://blog-cms-gilt.vercel.app/posts.json?t=${timestamp}`, {
+    const localRes = await fetch(`${LOCAL_POSTS_URL}?t=${timestamp}`, {
       cache: 'no-store',
     });
-    if (vercelRes.ok) {
-      const data = await vercelRes.json();
+    if (localRes.ok) {
+      const data = await localRes.json();
       if (Array.isArray(data)) {
         return data.map((p: BlogPost) => ({
           ...p,
@@ -70,7 +72,25 @@ export async function fetchPosts(): Promise<BlogPost[]> {
       }
     }
   } catch (err) {
-    console.warn('Vercel CDN posts.json fetch failed:', err);
+    console.warn('Local posts.json fetch failed:', err);
+  }
+
+  // 3. Try GitHub Pages CDN manifest (cache-busted)
+  try {
+    const ghPagesRes = await fetch(`${GITHUB_PAGES_POSTS_URL}?t=${timestamp}`, {
+      cache: 'no-store',
+    });
+    if (ghPagesRes.ok) {
+      const data = await ghPagesRes.json();
+      if (Array.isArray(data)) {
+        return data.map((p: BlogPost) => ({
+          ...p,
+          thumbnail_url: resolveAssetUrl(p.thumbnail_url),
+        }));
+      }
+    }
+  } catch (err) {
+    console.warn('GitHub Pages CDN posts.json fetch failed:', err);
   }
 
   // 3. Try GitHub raw manifest

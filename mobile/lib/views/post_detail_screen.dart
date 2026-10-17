@@ -490,7 +490,7 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
                       : Rect.fromLTWH(0, 0, screenW, screenH / 2);
 
                   Share.share(
-                    "${widget.post.title}\n\nRead on SLLK app\nhttps://blog-cms-gilt.vercel.app/",
+                    "${widget.post.title}\n\nRead on SLLK app\nhttps://arnold-cd.github.io/blog-cms/",
                     sharePositionOrigin: origin,
                   );
                 },

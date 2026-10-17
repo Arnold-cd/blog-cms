@@ -2,6 +2,8 @@ import type { PdfDocument, PdfUploadPayload, ExternalPdfPayload } from '../types
 import * as pdfjsLib from 'pdfjs-dist';
 
 const LOCAL_LIBRARY_URL = './library.json';
+const GITHUB_PAGES_LIBRARY_URL =
+  'https://arnold-cd.github.io/blog-cms/library.json';
 const GITHUB_RAW_LIBRARY_URL =
   'https://raw.githubusercontent.com/Arnold-cd/blog-cms/main/library.json';
 
@@ -66,19 +68,34 @@ export async function fetchLibraryDocuments(): Promise<PdfDocument[]> {
     }
   }
 
-  // 2. Try Vercel CDN manifest (cache-busted)
+  // 2. Try local library.json (bundled static asset on GitHub Pages)
   try {
-    const vercelRes = await fetch(`https://blog-cms-gilt.vercel.app/library.json?t=${timestamp}`, {
+    const localRes = await fetch(`${LOCAL_LIBRARY_URL}?t=${timestamp}`, {
       cache: 'no-store',
     });
-    if (vercelRes.ok) {
-      const data = await vercelRes.json();
+    if (localRes.ok) {
+      const data = await localRes.json();
       if (Array.isArray(data)) {
         return data;
       }
     }
   } catch (err) {
-    console.warn('Vercel CDN library.json fetch failed:', err);
+    console.warn('Local library.json fetch failed:', err);
+  }
+
+  // 3. Try GitHub Pages CDN manifest (cache-busted)
+  try {
+    const ghPagesRes = await fetch(`${GITHUB_PAGES_LIBRARY_URL}?t=${timestamp}`, {
+      cache: 'no-store',
+    });
+    if (ghPagesRes.ok) {
+      const data = await ghPagesRes.json();
+      if (Array.isArray(data)) {
+        return data;
+      }
+    }
+  } catch (err) {
+    console.warn('GitHub Pages CDN library.json fetch failed:', err);
   }
 
   // 3. Try GitHub raw manifest
