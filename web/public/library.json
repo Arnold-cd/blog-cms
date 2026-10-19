@@ -1,25 +1,5 @@
 [
   {
-    "id": "mw3",
-    "title": "mw3",
-    "category": "General",
-    "file_name": "mw3.pdf",
-    "description": "",
-    "author": "SLLK",
-    "language": "mni",
-    "published_date": "2026-10-17",
-    "featured": false,
-    "tags": [
-      "Manuscript"
-    ],
-    "file_size_bytes": 25426286,
-    "file_size_formatted": "24.2 MB",
-    "pdf_url": "https://raw.githubusercontent.com/Arnold-cd/blog-cms/main/library/pdfs/mw3.pdf",
-    "cover_name": "mw3-cover.png",
-    "cover_url": "https://raw.githubusercontent.com/Arnold-cd/blog-cms/main/library/covers/mw3-cover.png",
-    "page_count": 1
-  },
-  {
     "id": "gdrive-1zrunsbqfb",
     "title": "DISCOVERY OF KANGLEIPAK PART 3",
     "description": "DISCOVERY OF KANGLEIPAK PART 3",
