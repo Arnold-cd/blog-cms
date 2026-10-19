@@ -1,25 +1,5 @@
 [
   {
-    "id": "bw-compressed",
-    "title": "bw compressed",
-    "category": "General",
-    "file_name": "bw-compressed.pdf",
-    "description": "",
-    "author": "SLLK",
-    "language": "mni",
-    "published_date": "2026-10-17",
-    "featured": false,
-    "tags": [
-      "Manuscript"
-    ],
-    "file_size_bytes": 34038788,
-    "file_size_formatted": "32.5 MB",
-    "pdf_url": "https://raw.githubusercontent.com/Arnold-cd/blog-cms/main/library/pdfs/bw-compressed.pdf",
-    "cover_name": "bw-compressed-cover.png",
-    "cover_url": "https://raw.githubusercontent.com/Arnold-cd/blog-cms/main/library/covers/bw-compressed-cover.png",
-    "page_count": 1
-  },
-  {
     "id": "bw",
     "title": "bw",
     "category": "General",
