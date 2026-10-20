@@ -2,7 +2,7 @@
 id: "new-article"
 title: "New Article"
 summary: "Pukninggi warol"
-date: "2026-09-20"
+date: "2026-10-20"
 author: "Arnold CD"
 category: "Philosophy"
 thumbnail: "images/393483-final-2.png"
