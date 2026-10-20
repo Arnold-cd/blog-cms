@@ -1,18 +1,5 @@
 [
   {
-    "id": "new-article",
-    "title": "New Article",
-    "summary": "Pukninggi warol",
-    "date": "2026-10-20",
-    "author": "test",
-    "category": "Philosophy",
-    "thumbnail_url": "https://raw.githubusercontent.com/Arnold-cd/blog-cms/main/images/393483-final-2.png",
-    "content_url": "https://raw.githubusercontent.com/Arnold-cd/blog-cms/main/posts/new-article.md",
-    "reading_time_min": 1,
-    "language": "en",
-    "featured": false
-  },
-  {
     "id": "puya-fanglakpagee-ningsing-thouram",
     "title": "PUYA FANGLAKPAGEE NINGSING THOURAM",
     "summary": "Group photo",
