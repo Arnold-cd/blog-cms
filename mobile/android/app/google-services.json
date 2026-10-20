@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "677491641275",
+    "project_id": "sllk-app",
+    "storage_bucket": "sllk-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:677491641275:android:8e4e6fdda264338081929e",
+        "android_client_info": {
+          "package_name": "sllk.kangleipak.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAok_dJQF5rWC5bygvtXdSZnaYQNMImvlg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
