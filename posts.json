@@ -2,7 +2,7 @@
   {
     "id": "new-article",
     "title": "New Article",
-    "summary": "Pukninggi warol ",
+    "summary": "Pukninggi warol",
     "date": "2026-10-20",
     "author": "test",
     "category": "Philosophy",
@@ -10,8 +10,7 @@
     "content_url": "https://raw.githubusercontent.com/Arnold-cd/blog-cms/main/posts/new-article.md",
     "reading_time_min": 1,
     "language": "en",
-    "featured": false,
-    "content": "---\nid: \"new-article\"\ntitle: \"New Article\"\nsummary: \"Pukninggi warol\"\ndate: \"2026-10-20\"\nauthor: \"test\"\ncategory: \"Philosophy\"\nthumbnail: \"images/393483-final-2.png\"\nlanguage: \"en\"\nfeatured: false\n---\n\n# kanglei puya gee wari leekhul\n[watch now](https://youtu.be/drINjNy-3K0?si=dRPYo42vOZ80-W95)\n"
+    "featured": false
   },
   {
     "id": "puya-fanglakpagee-ningsing-thouram",
