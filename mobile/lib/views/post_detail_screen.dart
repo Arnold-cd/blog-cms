@@ -18,6 +18,19 @@ import "../theme/app_theme.dart";
 import "../widgets/adaptive_image.dart";
 import "../widgets/donation_modal.dart";
 import "../widgets/monetization_modal.dart";
+import "../widgets/youtube_embed_player.dart";
+
+class _ArticleSegment {
+  final bool isYoutube;
+  final String content;
+  final String? title;
+
+  const _ArticleSegment({
+    required this.isYoutube,
+    required this.content,
+    this.title,
+  });
+}
 
 class PostDetailScreen extends ConsumerStatefulWidget {
   final Post post;
@@ -190,12 +203,90 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
     final clean = _cleanContent(markdown);
     return clean
         .replaceAll(RegExp(r'!\[.*?\]\(.*?\)', dotAll: true), '')
+        .replaceAll(RegExp(r'<iframe.*?<\/iframe>', caseSensitive: false, dotAll: true), '')
+        .replaceAll(RegExp(r'(?:https?:\/\/)?(?:www\.|m\.)?(?:youtube\.com\/(?:watch\?.*?v=|embed\/|shorts\/|v\/)|youtu\.be\/)[a-zA-Z0-9_-]{11}[^\s]*', caseSensitive: false), '')
         .replaceAll(RegExp(r'#+\s*'), '')
         .replaceAll(RegExp(r'(\*\*|__)(.*?)\1'), r'$2')
         .replaceAll(RegExp(r'(\*|_)(.*?)\1'), r'$2')
         .replaceAll(RegExp(r'\[(.*?)\]\(.*?\)'), r'$1')
         .replaceAll(RegExp(r'`{1,3}.*?`{1,3}', dotAll: true), '')
         .replaceAll(RegExp(r'>\s*'), '');
+  }
+
+  /// Parses markdown content into alternating segments of standard Markdown and YouTube embeds.
+  List<_ArticleSegment> _parseArticleSegments(String markdown) {
+    final lines = markdown.split(RegExp(r'\r?\n'));
+    final segments = <_ArticleSegment>[];
+    final currentBuffer = StringBuffer();
+
+    void flushBuffer() {
+      final text = currentBuffer.toString().trim();
+      if (text.isNotEmpty) {
+        segments.add(_ArticleSegment(isYoutube: false, content: text));
+      }
+      currentBuffer.clear();
+    }
+
+    for (final line in lines) {
+      final trimmed = line.trim();
+
+      String? videoId;
+      String? title;
+
+      // 1. Raw standalone YouTube URL
+      if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+        if (!trimmed.contains(' ')) {
+          videoId = YoutubeEmbedPlayer.extractVideoId(trimmed);
+        }
+      }
+
+      // 2. Markdown link [Title](url)
+      if (videoId == null) {
+        final mdMatch = RegExp(
+          r'^\[(.*?)\]\(((?:https?:\/\/)?(?:www\.|m\.)?(?:youtube\.com|youtu\.be)[^\s)]+)\)$',
+          caseSensitive: false,
+        ).firstMatch(trimmed);
+        if (mdMatch != null) {
+          title = mdMatch.group(1);
+          videoId = YoutubeEmbedPlayer.extractVideoId(mdMatch.group(2) ?? '');
+        }
+      }
+
+      // 3. Inverted link syntax [url](https://)
+      if (videoId == null) {
+        final invMatch = RegExp(
+          r'^\[((?:https?:\/\/)?(?:www\.|m\.)?(?:youtube\.com|youtu\.be)[^\s\]]+)\]\((?:https?:\/\/)?\)$',
+          caseSensitive: false,
+        ).firstMatch(trimmed);
+        if (invMatch != null) {
+          videoId = YoutubeEmbedPlayer.extractVideoId(invMatch.group(1) ?? '');
+        }
+      }
+
+      // 4. Iframe embed
+      if (videoId == null) {
+        final iframeMatch = RegExp(
+          r'<iframe.*?src=["\x27](?:https?:)?\/\/(?:www\.)?youtube(?:-nocookie)?\.com\/embed\/([a-zA-Z0-9_-]{11})[^"\x27]*["\x27].*?<\/iframe>',
+          caseSensitive: false,
+        ).firstMatch(trimmed);
+        if (iframeMatch != null) {
+          videoId = iframeMatch.group(1);
+        }
+      }
+
+      if (videoId != null) {
+        flushBuffer();
+        segments.add(_ArticleSegment(isYoutube: true, content: videoId, title: title));
+      } else {
+        currentBuffer.writeln(line);
+      }
+    }
+
+    flushBuffer();
+    if (segments.isEmpty) {
+      segments.add(_ArticleSegment(isYoutube: false, content: markdown));
+    }
+    return segments;
   }
 
   String _formatDate(String rawDate) {
@@ -858,128 +949,143 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
                   final markdownData = _isTranslated
                       ? MeeteiMayekService.translateMarkdownToPukok(cleaned)
                       : cleaned;
+                  final segments = _parseArticleSegments(markdownData);
 
-                  return MarkdownBody(
-                    data: markdownData,
-                    selectable: true,
-                    onTapLink: (text, href, title) {
-                      if (href != null) {
-                        final uri = Uri.tryParse(href);
-                        if (uri != null && (uri.scheme == 'http' || uri.scheme == 'https')) {
-                          launchUrl(uri, mode: LaunchMode.externalApplication);
-                        }
-                      }
-                    },
-                    imageBuilder: (uri, title, alt) {
-                      final resolved = ApiService.resolveUrl(uri.toString());
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        child: GestureDetector(
-                          onTap: () => _openFullScreenImage(context, resolved),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(14),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
-                                  blurRadius: 12,
-                                  offset: const Offset(0, 4),
-                                ),
-                              ],
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(14),
-                              child: AdaptiveImage(
-                                imageUrl: resolved,
-                                width: double.infinity,
-                                fit: BoxFit.fitWidth,
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                    styleSheet: MarkdownStyleSheet(
-                      p: theme.textTheme.bodyLarge?.copyWith(
-                        fontSize: 16 * fontScale,
-                        height: 1.7,
-                        color: customTextColor,
-                        fontFamily: _isTranslated ? "PukokEeyek" : null,
-                        fontFamilyFallback: AppTheme.fontFallbacks,
+                  final markdownStyleSheet = MarkdownStyleSheet(
+                    p: theme.textTheme.bodyLarge?.copyWith(
+                      fontSize: 16 * fontScale,
+                      height: 1.7,
+                      color: customTextColor,
+                      fontFamily: _isTranslated ? "PukokEeyek" : null,
+                      fontFamilyFallback: AppTheme.fontFallbacks,
+                    ),
+                    h1: theme.textTheme.headlineMedium?.copyWith(
+                      fontSize: 24 * fontScale,
+                      fontWeight: _isTranslated ? FontWeight.normal : FontWeight.bold,
+                      color: customTextColor,
+                      fontFamily: _isTranslated ? "PukokEeyek" : null,
+                      fontFamilyFallback: AppTheme.fontFallbacks,
+                    ),
+                    h2: theme.textTheme.titleLarge?.copyWith(
+                      fontSize: 20 * fontScale,
+                      fontWeight: _isTranslated ? FontWeight.normal : FontWeight.w700,
+                      color: customTextColor,
+                      fontFamily: _isTranslated ? "PukokEeyek" : null,
+                      fontFamilyFallback: AppTheme.fontFallbacks,
+                    ),
+                    h3: theme.textTheme.titleMedium?.copyWith(
+                      fontSize: 18 * fontScale,
+                      fontWeight: _isTranslated ? FontWeight.normal : FontWeight.w600,
+                      color: customTextColor,
+                      fontFamily: _isTranslated ? "PukokEeyek" : null,
+                      fontFamilyFallback: AppTheme.fontFallbacks,
+                    ),
+                    blockquote: theme.textTheme.bodyMedium?.copyWith(
+                      fontSize: 15 * fontScale,
+                      fontStyle: FontStyle.italic,
+                      height: 1.6,
+                      color: customSubtitleColor ?? theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8),
+                      fontFamilyFallback: AppTheme.fontFallbacks,
+                    ),
+                    blockquoteDecoration: BoxDecoration(
+                      border: const Border(
+                        left: BorderSide(color: Color(0xFF6366F1), width: 4),
                       ),
-                      h1: theme.textTheme.headlineMedium?.copyWith(
-                        fontSize: 24 * fontScale,
-                        fontWeight: _isTranslated ? FontWeight.normal : FontWeight.bold,
-                        color: customTextColor,
-                        fontFamily: _isTranslated ? "PukokEeyek" : null,
-                        fontFamilyFallback: AppTheme.fontFallbacks,
-                      ),
-                      h2: theme.textTheme.titleLarge?.copyWith(
-                        fontSize: 20 * fontScale,
-                        fontWeight: _isTranslated ? FontWeight.normal : FontWeight.w700,
-                        color: customTextColor,
-                        fontFamily: _isTranslated ? "PukokEeyek" : null,
-                        fontFamilyFallback: AppTheme.fontFallbacks,
-                      ),
-                      h3: theme.textTheme.titleMedium?.copyWith(
-                        fontSize: 18 * fontScale,
-                        fontWeight: _isTranslated ? FontWeight.normal : FontWeight.w600,
-                        color: customTextColor,
-                        fontFamily: _isTranslated ? "PukokEeyek" : null,
-                        fontFamilyFallback: AppTheme.fontFallbacks,
-                      ),
-                      blockquote: theme.textTheme.bodyMedium?.copyWith(
-                        fontSize: 15 * fontScale,
-                        fontStyle: FontStyle.italic,
-                        height: 1.6,
-                        color: customSubtitleColor ?? theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8),
-                        fontFamilyFallback: AppTheme.fontFallbacks,
-                      ),
-                      blockquoteDecoration: BoxDecoration(
-                        border: const Border(
-                          left: BorderSide(color: Color(0xFF6366F1), width: 4),
-                        ),
-                        color: customContainerColor ?? (isDark ? const Color(0xFF1B1B21) : const Color(0xFFF4F4F8)),
-                        borderRadius: const BorderRadius.only(
-                          topRight: Radius.circular(8),
-                          bottomRight: Radius.circular(8),
-                        ),
-                      ),
-                      code: TextStyle(
-                        fontFamily: "monospace",
-                        fontSize: 14 * fontScale,
-                        backgroundColor: isDark ? const Color(0xFF24242D) : const Color(0xFFE9E9F0),
-                        color: isDark ? const Color(0xFF818CF8) : const Color(0xFF4F46E5),
-                      ),
-                      codeblockDecoration: BoxDecoration(
-                        color: customContainerColor ?? (isDark ? const Color(0xFF141418) : const Color(0xFFF3F3F7)),
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(
-                          color: isDark ? Colors.white.withValues(alpha: 0.08) : Colors.black.withValues(alpha: 0.06),
-                        ),
-                      ),
-                      em: TextStyle(
-                        fontStyle: FontStyle.italic,
-                        fontFamily: _isTranslated ? "PukokEeyek" : null,
-                        fontFamilyFallback: AppTheme.fontFallbacks,
-                      ),
-                      strong: TextStyle(
-                        fontWeight: _isTranslated ? FontWeight.normal : FontWeight.bold,
-                        fontFamily: _isTranslated ? "PukokEeyek" : null,
-                        fontFamilyFallback: AppTheme.fontFallbacks,
-                      ),
-                      tableBody: TextStyle(
-                        fontFamily: _isTranslated ? "PukokEeyek" : null,
-                        color: customTextColor,
-                        fontFamilyFallback: AppTheme.fontFallbacks,
-                      ),
-                      listBullet: TextStyle(
-                        fontSize: 16 * fontScale,
-                        color: customTextColor,
-                        fontFamily: _isTranslated ? "PukokEeyek" : null,
-                        fontFamilyFallback: AppTheme.fontFallbacks,
+                      color: customContainerColor ?? (isDark ? const Color(0xFF1B1B21) : const Color(0xFFF4F4F8)),
+                      borderRadius: const BorderRadius.only(
+                        topRight: Radius.circular(8),
+                        bottomRight: Radius.circular(8),
                       ),
                     ),
+                    code: TextStyle(
+                      fontFamily: "monospace",
+                      fontSize: 14 * fontScale,
+                      backgroundColor: isDark ? const Color(0xFF24242D) : const Color(0xFFE9E9F0),
+                      color: isDark ? const Color(0xFF818CF8) : const Color(0xFF4F46E5),
+                    ),
+                    codeblockDecoration: BoxDecoration(
+                      color: customContainerColor ?? (isDark ? const Color(0xFF141418) : const Color(0xFFF3F3F7)),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: isDark ? Colors.white.withValues(alpha: 0.08) : Colors.black.withValues(alpha: 0.06),
+                      ),
+                    ),
+                    em: TextStyle(
+                      fontStyle: FontStyle.italic,
+                      fontFamily: _isTranslated ? "PukokEeyek" : null,
+                      fontFamilyFallback: AppTheme.fontFallbacks,
+                    ),
+                    strong: TextStyle(
+                      fontWeight: _isTranslated ? FontWeight.normal : FontWeight.bold,
+                      fontFamily: _isTranslated ? "PukokEeyek" : null,
+                      fontFamilyFallback: AppTheme.fontFallbacks,
+                    ),
+                    tableBody: TextStyle(
+                      fontFamily: _isTranslated ? "PukokEeyek" : null,
+                      color: customTextColor,
+                      fontFamilyFallback: AppTheme.fontFallbacks,
+                    ),
+                    listBullet: TextStyle(
+                      fontSize: 16 * fontScale,
+                      color: customTextColor,
+                      fontFamily: _isTranslated ? "PukokEeyek" : null,
+                      fontFamilyFallback: AppTheme.fontFallbacks,
+                    ),
+                  );
+
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: segments.map((segment) {
+                      if (segment.isYoutube) {
+                        return YoutubeEmbedPlayer(
+                          key: ValueKey(segment.content),
+                          videoId: segment.content,
+                          videoTitle: segment.title,
+                        );
+                      }
+                      return MarkdownBody(
+                        data: segment.content,
+                        selectable: true,
+                        onTapLink: (text, href, title) {
+                          if (href != null) {
+                            final uri = Uri.tryParse(href);
+                            if (uri != null && (uri.scheme == 'http' || uri.scheme == 'https')) {
+                              launchUrl(uri, mode: LaunchMode.externalApplication);
+                            }
+                          }
+                        },
+                        imageBuilder: (uri, title, alt) {
+                          final resolved = ApiService.resolveUrl(uri.toString());
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            child: GestureDetector(
+                              onTap: () => _openFullScreenImage(context, resolved),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(14),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
+                                      blurRadius: 12,
+                                      offset: const Offset(0, 4),
+                                    ),
+                                  ],
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(14),
+                                  child: AdaptiveImage(
+                                    imageUrl: resolved,
+                                    width: double.infinity,
+                                    fit: BoxFit.fitWidth,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                        styleSheet: markdownStyleSheet,
+                      );
+                    }).toList(),
                   );
                 },
               ),

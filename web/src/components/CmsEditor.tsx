@@ -39,6 +39,7 @@ import { marked } from 'marked';
 import { MeeteiMayekTool } from './MeeteiMayekTool';
 import { CloudAssetModal } from './CloudAssetModal';
 import { translateMarkdownToMeeteiMayek, translateToMeeteiMayekWithVocab } from '../services/meeteiMayekService';
+import { extractYoutubeVideoId, transformMarkdownYoutubeEmbeds } from '../services/youtubeEmbedService';
 
 interface CmsEditorProps {
   onPreviewInFeed: (draftPost: BlogPost) => void;
@@ -228,9 +229,23 @@ Support for **bold**, *italics*, quotes, and tables:
         return defaultImage.call(renderer, token);
       };
 
+      renderer.link = (token) => {
+        const { href, text, title } = token;
+        const videoId = extractYoutubeVideoId(href) || extractYoutubeVideoId(text);
+        if (videoId) {
+          return `
+            <a href="https://www.youtube.com/watch?v=${videoId}" target="_blank" rel="noopener noreferrer" class="youtube-inline-link" title="${title || ''}">
+              <span class="youtube-badge-icon">▶</span> ${text || 'Watch Video on YouTube'}
+            </a>
+          `;
+        }
+        return `<a href="${href}" target="_blank" rel="noopener noreferrer" title="${title || ''}">${text}</a>`;
+      };
+
+      const withYoutube = transformMarkdownYoutubeEmbeds(livePreviewMarkdown);
       const markdownToRender = isPreviewMeetei
-        ? translateMarkdownToMeeteiMayek(livePreviewMarkdown)
-        : livePreviewMarkdown;
+        ? translateMarkdownToMeeteiMayek(withYoutube)
+        : withYoutube;
       return marked.parse(markdownToRender, { gfm: true, breaks: true, renderer }) as string;
     } catch {
       return '<p>Error rendering preview</p>';
@@ -972,6 +987,25 @@ Support for **bold**, *italics*, quotes, and tables:
                 <button type="button" onClick={() => insertMarkdownSyntax('```\n', '\n```')} className="pane-tool-btn" title="Code Block">Block</button>
                 <button type="button" onClick={() => insertMarkdownSyntax('- ')} className="pane-tool-btn" title="Bullet List">&bull; List</button>
                 <button type="button" onClick={() => insertMarkdownSyntax('[', '](https://)')} className="pane-tool-btn" title="Link">Link</button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const url = window.prompt('Paste YouTube video link (e.g. https://youtu.be/... or https://www.youtube.com/watch?v=...):');
+                    if (url && url.trim()) {
+                      const videoId = extractYoutubeVideoId(url);
+                      if (videoId) {
+                        insertMarkdownSyntax(`\n\nhttps://youtu.be/${videoId}\n\n`);
+                      } else {
+                        alert('Could not detect a valid YouTube video ID from that link.');
+                      }
+                    }
+                  }}
+                  className="pane-tool-btn"
+                  title="Insert playable YouTube Video"
+                  style={{ color: '#ff4444', fontWeight: 600 }}
+                >
+                  ▶ Video
+                </button>
                 <button
                   type="button"
                   onClick={() => setIsCloudAssetModalOpen(true)}

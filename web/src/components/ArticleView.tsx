@@ -8,6 +8,7 @@ import {
 } from '../services/meeteiMayekService';
 import { ArrowLeft, Clock, Share2, Check, PenLine, Sparkles, Languages, Trash2, AlertTriangle, Key, Loader2, Download } from 'lucide-react';
 import { marked } from 'marked';
+import { extractYoutubeVideoId, transformMarkdownYoutubeEmbeds } from '../services/youtubeEmbedService';
 
 interface ArticleViewProps {
   post: BlogPost;
@@ -101,8 +102,23 @@ export const ArticleView: React.FC<ArticleViewProps> = ({ post, onBack, onEditDr
           '/images/'
         )
         .replace(/\((?:\.\/)?images\//g, '(/images/');
-      const textToParse = isTranslated ? translateMarkdownToPukok(sanitizedMarkdown) : sanitizedMarkdown;
-      return marked.parse(textToParse, { gfm: true, breaks: true }) as string;
+      const renderer = new marked.Renderer();
+      renderer.link = (token) => {
+        const { href, text, title } = token;
+        const videoId = extractYoutubeVideoId(href) || extractYoutubeVideoId(text);
+        if (videoId) {
+          return `
+            <a href="https://www.youtube.com/watch?v=${videoId}" target="_blank" rel="noopener noreferrer" class="youtube-inline-link" title="${title || ''}">
+              <span class="youtube-badge-icon">▶</span> ${text || 'Watch Video on YouTube'}
+            </a>
+          `;
+        }
+        return `<a href="${href}" target="_blank" rel="noopener noreferrer" title="${title || ''}">${text}</a>`;
+      };
+
+      const withYoutube = transformMarkdownYoutubeEmbeds(sanitizedMarkdown);
+      const textToParse = isTranslated ? translateMarkdownToPukok(withYoutube) : withYoutube;
+      return marked.parse(textToParse, { gfm: true, breaks: true, renderer }) as string;
     } catch (err: any) {
       return `<p>Error rendering article content: ${err.message}</p>`;
     }
