@@ -1,5 +1,27 @@
 [
   {
+    "id": "yawol-khongthang-kangleipak-",
+    "title": "EIKHOI MASEN PUNSINNABAGE MATHOU TARAKPA",
+    "description": "Sanamahee Laining Leechat Kangleipak",
+    "author": "Wangkhemcha Chingtamlen",
+    "category": "Literature",
+    "language": "mni",
+    "published_date": "2026-10-20",
+    "file_name": "yawol-khongthang-kangleipak-.pdf",
+    "pdf_url": "https://drive.google.com/uc?export=download&id=1Pz3fQwhq1WH3VR5XNn-nUlAvqqP5m0Hu&confirm=t",
+    "cover_url": "https://drive.google.com/thumbnail?id=1Pz3fQwhq1WH3VR5XNn-nUlAvqqP5m0Hu&sz=w800",
+    "page_count": 0,
+    "file_size_bytes": 0,
+    "file_size_formatted": "Google Drive Cloud",
+    "featured": false,
+    "tags": [
+      "Puya",
+      "History",
+      "Manuscript"
+    ],
+    "source_type": "gdrive"
+  },
+  {
     "id": "sllk",
     "title": "PUYA FANGKHIBAGEE WARI LEEKHUL",
     "description": "PUYA FANGKHIBAGEE WARI LEEKHUL",
@@ -142,28 +164,6 @@
     "file_name": "sanamahee-laining-lichat-laipao.pdf",
     "pdf_url": "https://drive.google.com/uc?export=download&id=1F80IhBZSsARTgoNcLUdIsGfrd4j5NYbH&confirm=t",
     "cover_url": "https://drive.google.com/thumbnail?id=1nRUCGpvapTEUFlDB5HEq1Namg2T1tp-Y&sz=w800",
-    "page_count": 0,
-    "file_size_bytes": 0,
-    "file_size_formatted": "Google Drive Cloud",
-    "featured": false,
-    "tags": [
-      "Puya",
-      "History",
-      "Manuscript"
-    ],
-    "source_type": "gdrive"
-  },
-  {
-    "id": "yawol-khongthang-kangleipak-",
-    "title": "A SHORT HISTORY OF KANGLEIPAK (MANIPUR)  PART - 2",
-    "description": "A SHORT HISTORY OF KANGLEIPAK (MANIPUR)\n\nPART - 2",
-    "author": "Wangkhemcha Chingtamlen",
-    "category": "Philosophy",
-    "language": "en",
-    "published_date": "2026-09-29",
-    "file_name": "yawol-khongthang-kangleipak-.pdf",
-    "pdf_url": "https://drive.google.com/uc?export=download&id=1z9c0jfDpSdt8U0f2TRgLu-zqhksyjIjI&confirm=t",
-    "cover_url": "https://drive.google.com/thumbnail?id=1xHZDgmM0uoGPaLlWogVvnw-qxkjquTXA&sz=w800",
     "page_count": 0,
     "file_size_bytes": 0,
     "file_size_formatted": "Google Drive Cloud",
