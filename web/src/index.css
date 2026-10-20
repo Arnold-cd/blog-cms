@@ -1133,12 +1133,17 @@ button {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.6rem 0.95rem;
+  padding: 0.5rem 0.85rem;
   background: var(--bg-elevated);
   border-bottom: 1px solid var(--border-subtle);
   font-size: 0.78rem;
   font-weight: 600;
   color: var(--text-secondary);
+  gap: 0.5rem;
+}
+
+.editor-pane-header {
+  flex-wrap: wrap;
 }
 
 .pane-title-row {
@@ -1155,25 +1160,25 @@ button {
   display: flex;
   align-items: center;
   gap: 0.25rem;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
 }
 
 .pane-tool-btn {
-  padding: 0.25rem 0.45rem;
+  padding: 0.2rem 0.45rem;
   border-radius: var(--radius-xs);
-  font-size: 0.75rem;
+  font-size: 0.74rem;
   color: var(--text-muted);
   transition: all var(--transition-fast);
   white-space: nowrap;
   cursor: pointer;
-  background: transparent;
-  border: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-subtle);
 }
 
 .pane-tool-btn:hover {
   color: var(--text-primary);
   background: var(--bg-subtle-hover);
-  border-color: var(--border-subtle);
+  border-color: var(--border-active);
 }
 
 .studio-textarea {
