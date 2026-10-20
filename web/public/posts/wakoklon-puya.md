@@ -5,7 +5,7 @@ summary: "Sllk"
 date: "2026-10-20"
 author: "Yawol Khongthang Kangleipak"
 category: "Philosophy"
-thumbnail: "images/file-00000000ee588210bc79cb1f7f59b931.png"
+thumbnail: "./images/file-00000000ee588210bc79cb1f7f59b931.png"
 language: "en"
 featured: false
 ---
@@ -14,3 +14,4 @@ featured: false
 
 
 https://youtu.be/drINjNy-3K0
+[](https://)https://youtu.be/drINjNy-3K0?si=n_JCZF3SKJt036bx
