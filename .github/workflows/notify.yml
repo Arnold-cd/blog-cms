@@ -1,0 +1,32 @@
+name: Send Push Notifications on Publish
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'posts.json'
+      - 'library.json'
+  workflow_dispatch: # Allows manual trigger from the GitHub Actions tab for testing
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2 # Fetch last 2 commits to detect what changed
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install firebase-admin
+        run: npm install firebase-admin
+
+      - name: Send FCM Notification
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: node .github/scripts/send-fcm-notification.js

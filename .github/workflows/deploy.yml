@@ -113,14 +113,6 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
 
-      # =========================================================================
-      # 🔔 Firebase Cloud Messaging (FCM) Push Notifications
-      # =========================================================================
-      - name: 🔔 Broadcast FCM Mobile Push Notifications
-        env:
-          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-        run: |
-          python scripts/send_push_notification.py --auto
 
       # Optional OneSignal fallback
       - name: 🔔 Send OneSignal Push Notification (Fallback)

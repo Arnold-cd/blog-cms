@@ -3,6 +3,7 @@ import "package:firebase_messaging/firebase_messaging.dart";
 import "package:flutter/material.dart";
 import "api_service.dart";
 import "../views/post_detail_screen.dart";
+import "../views/pdf_viewer_screen.dart";
 
 /// Top-level background message handler for Firebase Messaging
 @pragma("vm:entry-point")
@@ -87,9 +88,36 @@ class NotificationService {
     }
   }
 
-  /// Deep link handler when user taps a push notification
+/// Deep link handler when user taps a push notification
   void _handleMessageTap(RemoteMessage message) async {
+    final type = message.data["type"]?.toString().toLowerCase();
+    final pdfId = message.data["pdfId"] ?? message.data["pdf_id"] ?? message.data["docId"] ?? message.data["doc_id"];
     final postId = message.data["postId"] ?? message.data["post_id"] ?? message.data["id"];
+
+    // Handle PDF / Library document notification tap
+    if (type == "pdf" || type == "library" || (pdfId != null && pdfId.toString().trim().isNotEmpty)) {
+      final targetId = (pdfId ?? postId)?.toString().trim();
+      if (targetId != null && targetId.isNotEmpty) {
+        try {
+          final docs = await ApiService().fetchLibraryDocuments();
+          final doc = docs.firstWhere(
+            (d) => d.id == targetId,
+            orElse: () => docs.first,
+          );
+
+          navigatorKey.currentState?.push(
+            MaterialPageRoute(
+              builder: (_) => PdfViewerScreen(document: doc),
+            ),
+          );
+          return;
+        } catch (e) {
+          debugPrint("Failed to navigate to pdf from notification: $e");
+        }
+      }
+    }
+
+    // Handle Article / Post notification tap
     if (postId == null || postId.toString().trim().isEmpty) return;
 
     try {
