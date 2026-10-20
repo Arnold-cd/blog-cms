@@ -107,7 +107,11 @@ def build_library_index(
 
         # Resolve URLs
         clean_base = base_url.rstrip("/")
-        item["pdf_url"] = f"{clean_base}/library/pdfs/{file_name}"
+        if pdf_file.exists():
+            item["pdf_url"] = f"{clean_base}/library/pdfs/{file_name}"
+        elif not item.get("pdf_url") or not item.get("pdf_url", "").startswith("http"):
+            item["pdf_url"] = f"{clean_base}/library/pdfs/{file_name}"
+        # Otherwise, preserve existing valid external pdf_url (Google Drive / Archive.org)
 
         # Match actual cover image from candidates
         actual_cover = None
