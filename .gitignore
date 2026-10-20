@@ -23,3 +23,8 @@ Thumbs.db
 # Archives
 *.zip
 
+# Firebase & Secrets
+google-services.json
+**/google-services.json
+*-firebase-adminsdk-*.json
+

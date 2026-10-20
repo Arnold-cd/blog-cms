@@ -54,5 +54,9 @@ app.*.map.json
 key.properties
 **/android/key.properties
 
+# Firebase Client Configurations
+google-services.json
+**/android/app/google-services.json
+
 # Widget Preview related
 .widget_preview/
