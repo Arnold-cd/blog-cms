@@ -10,8 +10,22 @@ class AdService {
   static final AdService instance = AdService._();
 
   bool _isInitialized = false;
+  bool _isAdFree = false;
+  bool get isAdFree => _isAdFree;
+
+  /// Global ad-free guard to pause/resume all ads
+  void setAdFree(bool value) {
+    _isAdFree = value;
+    if (_isAdFree) {
+      _interstitialAd?.dispose();
+      _interstitialAd = null;
+      _rewardedAd?.dispose();
+      _rewardedAd = null;
+      debugPrint('[AdService] Ad-Free mode activated. All ads paused and cleared.');
+    }
+  }
+
   InterstitialAd? _interstitialAd;
-  bool _isInterstitialLoading = false;
 
   RewardedAd? _rewardedAd;
   bool _isRewardedLoading = false;
@@ -61,8 +75,14 @@ class AdService {
     if (_isInitialized) return;
     try {
       await MobileAds.instance.initialize();
+      // Enforce family-friendly rating (PG) to block sensitive/mature/suggestive ads
+      await MobileAds.instance.updateRequestConfiguration(
+        RequestConfiguration(
+          maxAdContentRating: MaxAdContentRating.pg,
+        ),
+      );
       _isInitialized = true;
-      loadInterstitialAd();
+      // Preload rewarded video ad for the free 1-hour ad-free pass (Option 2)
       loadRewardedAd();
     } catch (e) {
       debugPrint('[AdService] Initialization error: $e');
@@ -70,102 +90,18 @@ class AdService {
   }
 
   // =============================================================
-  // INTERSTITIAL ADS
+  // INTERSTITIAL ADS (Disabled under Option 2: Zero-Interstitial Model)
   // =============================================================
 
-  bool get isInterstitialReady => _interstitialAd != null;
+  bool get isInterstitialReady => false;
 
   void loadInterstitialAd({bool useFallback = false}) {
-    if (_isInterstitialLoading || _interstitialAd != null) return;
-    _isInterstitialLoading = true;
-
-    final adUnitId = kDebugMode || useFallback
-        ? testInterstitialAdUnitId
-        : productionInterstitialAdUnitId;
-
-    InterstitialAd.load(
-      adUnitId: adUnitId,
-      request: const AdRequest(),
-      adLoadCallback: InterstitialAdLoadCallback(
-        onAdLoaded: (ad) {
-          _interstitialAd = ad;
-          _isInterstitialLoading = false;
-          debugPrint(
-              '[AdService] Interstitial loaded (${useFallback ? "Test Fallback" : "Live"}).');
-          _interstitialAd!.fullScreenContentCallback =
-              FullScreenContentCallback(
-            onAdDismissedFullScreenContent: (ad) {
-              ad.dispose();
-              _interstitialAd = null;
-              loadInterstitialAd(); // Preload next
-            },
-            onAdFailedToShowFullScreenContent: (ad, error) {
-              debugPrint('[AdService] Interstitial failed to show: $error');
-              ad.dispose();
-              _interstitialAd = null;
-              loadInterstitialAd();
-            },
-          );
-        },
-        onAdFailedToLoad: (error) {
-          debugPrint(
-              '[AdService] Interstitial failed to load (Code ${error.code}): ${error.message}');
-          _interstitialAd = null;
-          _isInterstitialLoading = false;
-
-          // If production ad fails with No Fill (Code 3) or error, fallback to test ad so testers aren't blocked
-          if (!useFallback && !kDebugMode) {
-            debugPrint(
-                '[AdService] Production interstitial unavailable. Falling back to test unit for testers...');
-            loadInterstitialAd(useFallback: true);
-          } else {
-            // Auto-retry in 30 seconds
-            Future.delayed(const Duration(seconds: 30), () {
-              if (_interstitialAd == null) {
-                loadInterstitialAd();
-              }
-            });
-          }
-        },
-      ),
-    );
+    // Interstitials disabled to prevent user disruption
   }
 
-  DateTime? _lastInterstitialShownAt;
-  static const int minInterstitialCooldownSeconds = 15; // Smooth 15-second interval between interstitials
-
-  /// Shows interstitial ad on page transitions, reading articles, or switching screens.
-  /// Enforces a 15-second cooldown to respect user experience and AdMob policies.
+  /// Under Option 2, interstitials are bypassed immediately
   void showInterstitialIfEligible({VoidCallback? onDismissed}) {
-    final now = DateTime.now();
-    final cooldownPassed = _lastInterstitialShownAt == null ||
-        now.difference(_lastInterstitialShownAt!).inSeconds >= minInterstitialCooldownSeconds;
-
-    if (cooldownPassed && _interstitialAd != null) {
-      _lastInterstitialShownAt = now;
-      _interstitialAd!.fullScreenContentCallback =
-          FullScreenContentCallback(
-        onAdDismissedFullScreenContent: (ad) {
-          ad.dispose();
-          _interstitialAd = null;
-          loadInterstitialAd();
-          onDismissed?.call();
-        },
-        onAdFailedToShowFullScreenContent: (ad, error) {
-          debugPrint('[AdService] Interstitial failed to show: $error');
-          ad.dispose();
-          _interstitialAd = null;
-          loadInterstitialAd();
-          onDismissed?.call();
-        },
-      );
-      _interstitialAd!.show();
-    } else {
-      if (_interstitialAd == null) {
-        loadInterstitialAd();
-      }
-      onDismissed?.call();
-    }
+    onDismissed?.call();
   }
 
   // =============================================================
@@ -175,7 +111,7 @@ class AdService {
   bool get isRewardedAdReady => _rewardedAd != null;
 
   void loadRewardedAd({bool useFallback = false}) {
-    if (_isRewardedLoading || _rewardedAd != null) return;
+    if (_isAdFree || _isRewardedLoading || _rewardedAd != null) return;
     _isRewardedLoading = true;
 
     final adUnitId = kDebugMode || useFallback
@@ -221,6 +157,12 @@ class AdService {
     required VoidCallback onUserEarnedReward,
     VoidCallback? onAdClosed,
   }) async {
+    if (_isAdFree) {
+      onUserEarnedReward();
+      onAdClosed?.call();
+      return true;
+    }
+
     if (_rewardedAd == null) {
       loadRewardedAd();
       return false;
@@ -279,6 +221,7 @@ class _BannerAdWidgetState extends State<BannerAdWidget> {
   }
 
   void _loadAd({bool useFallback = false}) {
+    if (AdService.instance.isAdFree) return;
     final adUnitId = kDebugMode || useFallback
         ? AdService.testBannerAdUnitId
         : AdService.bannerAdUnitId;
@@ -322,7 +265,7 @@ class _BannerAdWidgetState extends State<BannerAdWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (!_isLoaded || _bannerAd == null) {
+    if (AdService.instance.isAdFree || !_isLoaded || _bannerAd == null) {
       return const SizedBox.shrink();
     }
 

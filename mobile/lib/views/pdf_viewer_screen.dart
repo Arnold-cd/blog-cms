@@ -11,7 +11,6 @@ import "../providers/library_providers.dart";
 import "../providers/monetization_provider.dart";
 import "../services/ad_service.dart";
 import "../services/api_service.dart";
-import "../services/reader_interstitial_manager.dart";
 import "../widgets/monetization_modal.dart";
 
 enum ReadingTheme { normal, sepia, night }
@@ -252,15 +251,10 @@ class _PdfViewerScreenState extends ConsumerState<PdfViewerScreen> {
     });
   }
 
-  void _handleExit(BuildContext context, bool isAdFree) {
-    ReaderInterstitialManager.instance.showExitInterstitialIfEligible(
-      isAdFree: isAdFree,
-      onProceed: () {
-        if (context.mounted) {
-          Navigator.of(context).pop();
-        }
-      },
-    );
+  void _handleExit(BuildContext context) {
+    if (context.mounted) {
+      Navigator.of(context).pop();
+    }
   }
 
   @override
@@ -272,11 +266,7 @@ class _PdfViewerScreenState extends ConsumerState<PdfViewerScreen> {
         ref.watch(downloadedPdfsProvider).containsKey(widget.document.fileName);
 
     return PopScope(
-      canPop: false,
-      onPopInvokedWithResult: (didPop, result) {
-        if (didPop) return;
-        _handleExit(context, isAdFree);
-      },
+      canPop: true,
       child: Scaffold(
         extendBodyBehindAppBar: true,
         appBar: PreferredSize(
@@ -290,7 +280,7 @@ class _PdfViewerScreenState extends ConsumerState<PdfViewerScreen> {
               child: AppBar(
                 leading: IconButton(
                   icon: const Icon(Icons.arrow_back_rounded),
-                  onPressed: () => _handleExit(context, isAdFree),
+                  onPressed: () => _handleExit(context),
                 ),
                 backgroundColor: isDark
                     ? const Color(0xEE121214)

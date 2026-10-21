@@ -1,6 +1,8 @@
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
+import "package:flutter_riverpod/flutter_riverpod.dart";
 import "../models/meetei_character.dart";
+import "../providers/monetization_provider.dart";
 import "../services/meetei_data.dart";
 import "../services/meetei_mayek_service.dart";
 import "../theme/app_theme.dart";
@@ -217,17 +219,24 @@ class _MayekExplorerScreenState extends State<MayekExplorerScreen>
                       ],
                     ),
                   ),
-                  IconButton(
-                    tooltip: "Free Ad-Free Pass (Watch Ad)",
-                    visualDensity: VisualDensity.compact,
-                    padding: const EdgeInsets.all(6),
-                    constraints: const BoxConstraints(),
-                    icon: const Icon(
-                      Icons.stars_rounded,
-                      color: Color(0xFFF59E0B),
-                      size: 22,
-                    ),
-                    onPressed: () => MonetizationModal.show(context),
+                  Consumer(
+                    builder: (context, ref, _) {
+                      final isLifetimeAdFree =
+                          ref.watch(monetizationProvider).isLifetimeAdFree;
+                      if (isLifetimeAdFree) return const SizedBox.shrink();
+                      return IconButton(
+                        tooltip: "Free Ad-Free Pass (Watch Ad)",
+                        visualDensity: VisualDensity.compact,
+                        padding: const EdgeInsets.all(6),
+                        constraints: const BoxConstraints(),
+                        icon: const Icon(
+                          Icons.stars_rounded,
+                          color: Color(0xFFF59E0B),
+                          size: 22,
+                        ),
+                        onPressed: () => MonetizationModal.show(context),
+                      );
+                    },
                   ),
                 ],
               ),

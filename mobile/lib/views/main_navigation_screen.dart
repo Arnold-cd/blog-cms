@@ -46,9 +46,6 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
       drawer: AppDrawer(
         currentIndex: currentIndex,
         onSelectIndex: (index) {
-          if (currentIndex != index && !isAdFree) {
-            AdService.instance.showInterstitialIfEligible();
-          }
           ref.read(selectedNavIndexProvider.notifier).state = index;
           scaffoldKey.currentState?.closeDrawer();
         },
@@ -166,7 +163,6 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
     required bool isDark,
   }) {
     final isSelected = ref.watch(selectedNavIndexProvider) == index;
-    final isAdFree = ref.watch(monetizationProvider).isAdFreeActive;
     final activeColor = isDark ? Colors.white : const Color(0xFF0F172A);
     final inactiveColor = isDark ? const Color(0xFF71717A) : const Color(0xFF94A3B8);
     const accentIndicator = Color(0xFF0284C7);
@@ -175,10 +171,6 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
       child: GestureDetector(
         onTap: () {
           HapticFeedback.selectionClick();
-          final prevIndex = ref.read(selectedNavIndexProvider);
-          if (prevIndex != index && !isAdFree) {
-            AdService.instance.showInterstitialIfEligible();
-          }
           ref.read(selectedNavIndexProvider.notifier).state = index;
         },
         behavior: HitTestBehavior.opaque,

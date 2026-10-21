@@ -46,6 +46,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final selectedCategory = ref.watch(selectedCategoryProvider);
 
     final isAdFree = ref.watch(monetizationProvider).isAdFreeActive;
+    final isLifetimeAdFree = ref.watch(monetizationProvider).isLifetimeAdFree;
 
     return Scaffold(
       body: SafeArea(
@@ -122,20 +123,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            // Watch Ad / Free Pass
-                            IconButton(
-                              tooltip: "Free Ad-Free Pass (Watch Ad)",
-                              visualDensity: VisualDensity.compact,
-                              padding: const EdgeInsets.all(6),
-                              constraints: const BoxConstraints(),
-                              icon: const Icon(
-                                Icons.stars_rounded,
-                                color: Color(0xFFF59E0B),
-                                size: 21,
+                            // Watch Ad / Free Pass (Hidden for Lifetime Pro)
+                            if (!isLifetimeAdFree) ...[
+                              IconButton(
+                                tooltip: "Free Ad-Free Pass (Watch Ad)",
+                                visualDensity: VisualDensity.compact,
+                                padding: const EdgeInsets.all(6),
+                                constraints: const BoxConstraints(),
+                                icon: const Icon(
+                                  Icons.stars_rounded,
+                                  color: Color(0xFFF59E0B),
+                                  size: 21,
+                                ),
+                                onPressed: () => MonetizationModal.show(context),
                               ),
-                              onPressed: () => MonetizationModal.show(context),
-                            ),
-                            const SizedBox(width: 6),
+                              const SizedBox(width: 6),
+                            ],
                             // Donate / Support Button
                             IconButton(
                               tooltip: "Support & Donate",

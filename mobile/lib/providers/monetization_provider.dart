@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../services/ad_service.dart';
 import '../services/purchase_service.dart';
 
 class MonetizationState {
@@ -62,6 +63,7 @@ class MonetizationNotifier extends StateNotifier<MonetizationState> {
         isLifetimeAdFree: isLifetime,
         rewardedAdFreeUntil: rewardedUntil,
       );
+      AdService.instance.setAdFree(state.isAdFreeActive);
     } catch (e) {
       debugPrint('[MonetizationNotifier] Error loading prefs: $e');
     }
@@ -80,6 +82,7 @@ class MonetizationNotifier extends StateNotifier<MonetizationState> {
   /// Set lifetime ad-free status (from IAP purchase or restore)
   Future<void> setLifetimeAdFree(bool value) async {
     state = state.copyWith(isLifetimeAdFree: value);
+    AdService.instance.setAdFree(state.isAdFreeActive);
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_prefLifetimeKey, value);
   }
@@ -88,6 +91,7 @@ class MonetizationNotifier extends StateNotifier<MonetizationState> {
   Future<void> grantRewardedPass({Duration duration = const Duration(hours: 1)}) async {
     final expiry = DateTime.now().add(duration);
     state = state.copyWith(rewardedAdFreeUntil: expiry);
+    AdService.instance.setAdFree(state.isAdFreeActive);
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_prefRewardedUntilKey, expiry.toIso8601String());
   }

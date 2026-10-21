@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'ad_service.dart';
 
 /// MX Player-inspired Ad Immersion & Interstitial Manager
 ///
@@ -29,30 +28,7 @@ class ReaderInterstitialManager {
     required bool isAdFree,
     required VoidCallback onProceed,
   }) {
-    // 1. Direct path for premium/ad-free users
-    if (isAdFree) {
-      onProceed();
-      return;
-    }
-
-    final cooledDown = isCooledDown;
-    final adReady = AdService.instance.isInterstitialReady;
-
-    if (cooledDown && adReady) {
-      _lastAdShownTime = DateTime.now();
-      AdService.instance.showInterstitialIfEligible(
-        onDismissed: () {
-          // Preload next ad immediately in the background
-          AdService.instance.loadInterstitialAd();
-          onProceed();
-        },
-      );
-    } else {
-      // Cooldown active or ad not ready: bypass without interrupting user navigation
-      if (!adReady) {
-        AdService.instance.loadInterstitialAd();
-      }
-      onProceed();
-    }
+    // Interstitials disabled under Option 2
+    onProceed();
   }
 }

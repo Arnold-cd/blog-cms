@@ -5,7 +5,7 @@ import "package:shimmer/shimmer.dart";
 import "../models/pdf_document.dart";
 import "../providers/app_providers.dart";
 import "../providers/library_providers.dart";
-import "../services/ad_service.dart";
+import "../providers/monetization_provider.dart";
 import "../widgets/monetization_modal.dart";
 import "pdf_viewer_screen.dart";
 
@@ -43,6 +43,7 @@ class _PdfLibraryScreenState extends ConsumerState<PdfLibraryScreen> {
     final categories = ref.watch(libraryCategoriesProvider);
     final selectedCategory = ref.watch(libraryCategoryProvider);
     final downloadedMap = ref.watch(downloadedPdfsProvider);
+    final isLifetimeAdFree = ref.watch(monetizationProvider).isLifetimeAdFree;
 
     return Scaffold(
       body: SafeArea(
@@ -126,20 +127,22 @@ class _PdfLibraryScreenState extends ConsumerState<PdfLibraryScreen> {
                           Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              // Free Ad-Free Pass / Rewarded Ad
-                              IconButton(
-                                tooltip: "Free Ad-Free Pass (Watch Ad)",
-                                visualDensity: VisualDensity.compact,
-                                padding: const EdgeInsets.all(6),
-                                constraints: const BoxConstraints(),
-                                icon: const Icon(
-                                  Icons.stars_rounded,
-                                  color: Color(0xFFF59E0B),
-                                  size: 22,
+                              // Free Ad-Free Pass / Rewarded Ad (Hidden for Lifetime Pro)
+                              if (!isLifetimeAdFree) ...[
+                                IconButton(
+                                  tooltip: "Free Ad-Free Pass (Watch Ad)",
+                                  visualDensity: VisualDensity.compact,
+                                  padding: const EdgeInsets.all(6),
+                                  constraints: const BoxConstraints(),
+                                  icon: const Icon(
+                                    Icons.stars_rounded,
+                                    color: Color(0xFFF59E0B),
+                                    size: 22,
+                                  ),
+                                  onPressed: () => MonetizationModal.show(context),
                                 ),
-                                onPressed: () => MonetizationModal.show(context),
-                              ),
-                              const SizedBox(width: 4),
+                                const SizedBox(width: 4),
+                              ],
                               // Search toggle button
                               IconButton(
                                 icon: Icon(_isSearching ? Icons.close_rounded : Icons.search_rounded),
@@ -424,7 +427,6 @@ class _PdfLibraryScreenState extends ConsumerState<PdfLibraryScreen> {
       ),
       child: InkWell(
         onTap: () {
-          AdService.instance.showInterstitialIfEligible();
           Navigator.push(
             context,
             MaterialPageRoute(

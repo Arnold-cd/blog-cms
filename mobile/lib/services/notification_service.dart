@@ -88,7 +88,7 @@ class NotificationService {
     }
   }
 
-/// Deep link handler when user taps a push notification
+  /// Deep link handler when user taps a push notification
   void _handleMessageTap(RemoteMessage message) async {
     final type = message.data["type"]?.toString().toLowerCase();
     final pdfId = message.data["pdfId"] ?? message.data["pdf_id"] ?? message.data["docId"] ?? message.data["doc_id"];

@@ -13,7 +13,6 @@ import "../services/ad_service.dart";
 import "../services/api_service.dart";
 import "../services/cache_service.dart";
 import "../services/meetei_mayek_service.dart";
-import "../services/reader_interstitial_manager.dart";
 import "../theme/app_theme.dart";
 import "../widgets/adaptive_image.dart";
 import "../widgets/donation_modal.dart";
@@ -324,15 +323,10 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
     );
   }
 
-  void _handleExit(BuildContext context, bool isAdFree) {
-    ReaderInterstitialManager.instance.showExitInterstitialIfEligible(
-      isAdFree: isAdFree,
-      onProceed: () {
-        if (context.mounted) {
-          Navigator.of(context).pop();
-        }
-      },
-    );
+  void _handleExit(BuildContext context) {
+    if (context.mounted) {
+      Navigator.of(context).pop();
+    }
   }
 
   @override
@@ -340,6 +334,7 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final isAdFree = ref.watch(monetizationProvider).isAdFreeActive;
+    final isLifetimeAdFree = ref.watch(monetizationProvider).isLifetimeAdFree;
     final bookmarks = ref.watch(bookmarksProvider);
     final isBookmarked = bookmarks.contains(widget.post.id);
     final fontScale = ref.watch(fontSizeProvider);
@@ -404,11 +399,7 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
         : unicodeAuthor;
 
     return PopScope(
-      canPop: false,
-      onPopInvokedWithResult: (didPop, result) {
-        if (didPop) return;
-        _handleExit(context, isAdFree);
-      },
+      canPop: true,
       child: Scaffold(
         backgroundColor: customBgColor,
         body: CustomScrollView(
@@ -431,26 +422,27 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
                     size: 20,
                   ),
                 ),
-                onPressed: () => _handleExit(context, isAdFree),
+                onPressed: () => _handleExit(context),
               ),
             actions: [
-              // Free Ad-Free Pass / Rewarded Ad
-              IconButton(
-                tooltip: "Free Ad-Free Pass (Watch Ad)",
-                icon: Container(
-                  padding: const EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                    color: isDark ? Colors.black.withValues(alpha: 0.5) : Colors.white.withValues(alpha: 0.85),
-                    shape: BoxShape.circle,
+              // Free Ad-Free Pass / Rewarded Ad (Hidden for Lifetime Pro)
+              if (!isLifetimeAdFree)
+                IconButton(
+                  tooltip: "Free Ad-Free Pass (Watch Ad)",
+                  icon: Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      color: isDark ? Colors.black.withValues(alpha: 0.5) : Colors.white.withValues(alpha: 0.85),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.stars_rounded,
+                      color: Color(0xFFF59E0B),
+                      size: 20,
+                    ),
                   ),
-                  child: const Icon(
-                    Icons.stars_rounded,
-                    color: Color(0xFFF59E0B),
-                    size: 20,
-                  ),
+                  onPressed: () => MonetizationModal.show(context),
                 ),
-                onPressed: () => MonetizationModal.show(context),
-              ),
               // Quick Translation Toggle Button in AppBar
               IconButton(
                 tooltip: _isTranslated ? "Switch to English" : "Translate to Meetei Mayek",

@@ -4,7 +4,7 @@ import "package:flutter_riverpod/flutter_riverpod.dart";
 import "../models/pdf_document.dart";
 import "../providers/app_providers.dart";
 import "../providers/library_providers.dart";
-import "../services/ad_service.dart";
+import "../providers/monetization_provider.dart";
 import "../widgets/monetization_modal.dart";
 import "../widgets/post_card.dart";
 import "pdf_viewer_screen.dart";
@@ -20,6 +20,7 @@ class BookmarksScreen extends ConsumerWidget {
     final bookmarks = ref.watch(bookmarksProvider);
     final postsAsync = ref.watch(postsProvider);
     final downloadedDocs = ref.watch(downloadedDocumentsProvider);
+    final isLifetimeAdFree = ref.watch(monetizationProvider).isLifetimeAdFree;
 
     final savedPosts = postsAsync.maybeWhen(
       data: (posts) => posts.where((p) => bookmarks.contains(p.id)).toList(),
@@ -36,19 +37,21 @@ class BookmarksScreen extends ConsumerWidget {
           ),
           elevation: 0,
           actions: [
-            IconButton(
-              tooltip: "Free Ad-Free Pass (Watch Ad)",
-              visualDensity: VisualDensity.compact,
-              padding: const EdgeInsets.all(6),
-              constraints: const BoxConstraints(),
-              icon: const Icon(
-                Icons.stars_rounded,
-                color: Color(0xFFF59E0B),
-                size: 22,
+            if (!isLifetimeAdFree) ...[
+              IconButton(
+                tooltip: "Free Ad-Free Pass (Watch Ad)",
+                visualDensity: VisualDensity.compact,
+                padding: const EdgeInsets.all(6),
+                constraints: const BoxConstraints(),
+                icon: const Icon(
+                  Icons.stars_rounded,
+                  color: Color(0xFFF59E0B),
+                  size: 22,
+                ),
+                onPressed: () => MonetizationModal.show(context),
               ),
-              onPressed: () => MonetizationModal.show(context),
-            ),
-            const SizedBox(width: 8),
+              const SizedBox(width: 8),
+            ],
           ],
           bottom: TabBar(
             indicatorColor: const Color(0xFFD97706),
@@ -192,7 +195,6 @@ class BookmarksScreen extends ConsumerWidget {
               return PostCard(
                 post: post,
                 onTap: () {
-                  AdService.instance.showInterstitialIfEligible();
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (_) => PostDetailScreen(post: post),
@@ -335,7 +337,6 @@ class BookmarksScreen extends ConsumerWidget {
                 ),
                 child: InkWell(
                   onTap: () {
-                    AdService.instance.showInterstitialIfEligible();
                     Navigator.push(
                       context,
                       MaterialPageRoute(
