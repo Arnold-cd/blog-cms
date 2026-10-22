@@ -573,7 +573,7 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
                       : Rect.fromLTWH(0, 0, screenW, screenH / 2);
 
                   Share.share(
-                    "${widget.post.title}\n\nRead on SLLK app\nhttps://arnold-cd.github.io/blog-cms/",
+                    "${widget.post.title}\n\nRead on SLLK app:\nhttps://play.google.com/store/apps/details?id=sllk.kangleipak.app",
                     sharePositionOrigin: origin,
                   );
                 },

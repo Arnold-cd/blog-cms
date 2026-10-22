@@ -261,7 +261,7 @@ class AppDrawer extends ConsumerWidget {
         : Rect.fromLTWH(0, 0, screenW, screenH / 2);
 
     const shareText =
-        "Read indigenous Manipuri Puya manuscripts, literary essays & Meetei Mayek script with SLLK!\nhttps://play.google.com/store/apps/details?id=sllk.kangleipak.app";
+        "Read indigenous Puya manuscripts, literary essays & Meetei Mayek script with SLLK!\nhttps://play.google.com/store/apps/details?id=sllk.kangleipak.app";
 
     try {
       final byteData = await rootBundle.load("assets/images/app_logo.png");

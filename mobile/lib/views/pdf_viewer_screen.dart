@@ -179,7 +179,7 @@ class _PdfViewerScreenState extends ConsumerState<PdfViewerScreen> {
         : Rect.fromLTWH(0, 0, screenW, screenH / 2);
 
     Share.share(
-      "Read \"${widget.document.title}\" by ${widget.document.author}\n${widget.document.pdfUrl}",
+      "Read \"${widget.document.title}\" by ${widget.document.author}\n\nRead on SLLK app:\nhttps://play.google.com/store/apps/details?id=sllk.kangleipak.app",
       subject: widget.document.title,
       sharePositionOrigin: origin,
     );
