@@ -6,7 +6,7 @@ summary: "Discovery of Kangleipak
 date: "2026-10-22"
 author: "Wangkhemcha Chingtamlen"
 category: "Philosophy"
-thumbnail: "images/1000206094-100kb.jpg"
+thumbnail: "./images/1000206094-100kb.jpg"
 language: "en"
 featured: false
 ---
