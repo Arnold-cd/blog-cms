@@ -1,5 +1,27 @@
 [
   {
+    "id": "yawol-khongthang-kangleipak-",
+    "title": "KANGLEI MEETEI MAYEK MAPEE LAIRIK",
+    "description": "KANGLEI MEETEI MAYEK MAPEE LAIRIK",
+    "author": "Mannaba Apunba Marup",
+    "category": "Puya & History",
+    "language": "mni",
+    "published_date": "2026-10-27",
+    "file_name": "yawol-khongthang-kangleipak-.pdf",
+    "pdf_url": "https://archive.org/download/kanglei-meetei-mayek-mapi./kanglei%20meetei%20mayek%20mapi.%20%20lamlai.pdf",
+    "cover_url": "https://archive.org/services/img/kanglei-meetei-mayek-mapi.",
+    "page_count": 0,
+    "file_size_bytes": 74894912,
+    "file_size_formatted": "71.4 MB",
+    "featured": false,
+    "tags": [
+      "Puya",
+      "History",
+      "Manuscript"
+    ],
+    "source_type": "archive"
+  },
+  {
     "id": "kangla-warep-2009",
     "title": "KANGLA WAREP",
     "description": "",
