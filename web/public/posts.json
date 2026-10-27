@@ -13,19 +13,6 @@
     "featured": false
   },
   {
-    "id": "introduction",
-    "title": "Introduction",
-    "summary": "Kanglei Halaopa",
-    "date": "2026-10-23",
-    "author": "Yawol Khongthang Kangleipak",
-    "category": "Philosophy",
-    "thumbnail_url": "https://raw.githubusercontent.com/Arnold-cd/blog-cms/main/images/1000208220-200kb.jpg",
-    "content_url": "https://raw.githubusercontent.com/Arnold-cd/blog-cms/main/posts/introduction.md",
-    "reading_time_min": 2,
-    "language": "en",
-    "featured": false
-  },
-  {
     "id": "the-concept-of-space-time-entity-of-meetei-race-in-kangleipak",
     "title": "The concept of Space-Time Entity of Meetei Race in Kangleipak",
     "summary": "Discovery of Kangleipak - Part 3 -",
