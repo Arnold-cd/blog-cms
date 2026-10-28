@@ -5,12 +5,12 @@ summary: "Yawol Khongthang Kangleipak"
 date: "2026-10-28"
 author: "Wangkhemcha Chingtamlen"
 category: "Philosophy"
-thumbnail: "images/saloi-khangpa-200kb.jpg"
+thumbnail: "./images/saloi-khangpa-200kb.jpg"
 language: "en"
 featured: false
 ---
 
-Karigidamak saloi (Saroi) khangba twribano?
+# Karigidamak saloi (Saroi) khangba twribano?
 
 Lamtagi thangcha ahanba haibasi lamta gi ahanba thangcha haibani. Lamta gi Thangcha ahanba haibasi KANGLEICHA meeteisingi malemda leiriba thouwai panba pumnamak asi gi thouwai Yaipi ( Extra terristrial origin of Life ) Adu Nongmatonda gi lakpani haiba khudam (evidence) ni.
 
@@ -22,7 +22,7 @@ Hwjik na Hindu gi chusunluraba matungda saroi kanglibani haiduna " Hari Nariyon 
 
 Laiharaoba gi thouram da Saroi khangba gi Saruk ama yaoriba adu, Lamtai Thangcha ahanba gi saruk amani.
 
-#Saroi (Saloi).
+# Saroi (Saloi).
 
 Kangleicha meetei eikhoina leiriba lam kangleipak asi mapu mahaki saktamni haiduna lounarmmi lunna  khanarami. Mapu mahakti nungshibadagi nungshibani fajabagi fajabani, achumbagi achumbani. Mahakki mafamda aranba, athiba faoba touba yade. Mapu mahakki aningbani. Meetei kangleicha eikhoigi thajabini.
 
@@ -31,14 +31,14 @@ Asumna mapu mahakna taipangcha eikhoibu semkhre, mahaki mami dagi semkhibani hai
 Asumna meyoibagi masada yaoriba anembagi matik mayai adubu meetei kangleicha singna Saroi (saloi) kou-e.
 Saloi haibadi Sa+loi haibani saga+loi loinaba, meeoibada yaoriba sa gi oiba sarak adubu haibani. English ta hairha Animality haibani.
 
-#Saroi_haibasi_kamaina_oikhibano?
+# Saroi_haibasi_kamaina_oikhibano?
 
 Saroi haibasi epung loinabagi humang mariktagi thokhibani. Humang, hu+ mang hu haibadi meetei na chabada siba nattrga fattaba thokpa potpu khangnei+ mang haibadi mangkhiba haibani. Hakchangdagi thokpa mahi makhal fattababu meeteisingna humang kou- e.
 Karinungi humang kouribano hairabdi hakchangdagi mahi asina hu oiba sarukpu puthokhi manghankhi haibagibu humang koue. Maram asina Saloi (houjik matmgi waheina saroi), haiba kangbu asi mapu mahaki masada yaoba hu oiba fattaba asidagi oikhibani.
 
 Puya gi oiba likhunda hairibadi, meeyoibada yaoriba afaba, fajaba mapu magi manakta nakpa matik mayai sing asibu laiyam koue aduga mee oibagi masada yaoriba fattaba sagi oiba saruk adubu saroi koue. Maram asina laiyambu haibadi afaba fajababu, saloi na haibadi fattaba chumdabana otpa ayetpa piba wahanba haibasi masna tabani. Afababu fattabana chingthanaba hotnaba haibasi taibangi hounabini. masibu laiyamna amasung saloi gi wari oina puthoktuna utpani.
 
-#Nongshapa_cheilak. 
+# Nongshapa_cheilak. 
 
 Nongshapa cheilak haiba waheising asi Wakoklon heelel thilel salai ama elon pukok puya da yamna sengna fajnna yaoba waheising, wakhalolsingni. 
 Nongshapa cheilak haiba asi houjiki matamda hindu singna dandi, english ta punishment haiba wakhalol aduni.
@@ -53,7 +53,7 @@ Koupalu chingdonda leima lai hairiba mee kanglup ahanba asina matam sangna nunga
 
 *khoyum na wayenpapu houlakatapaney achumpa asengpa chatpiyu soitana aphapa oikani sitapa*
 
-#Lainingthou_Nongshapa. 
+# Lainingthou_Nongshapa. 
 
 "Nongshapa,haiba asi epa salailel sitapana malem leisemlakpadge hwna leiraklaba adugumlaba ymna maming leiba minglen amani nongshapa.
 
