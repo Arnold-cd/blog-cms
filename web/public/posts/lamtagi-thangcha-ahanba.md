@@ -1,11 +1,11 @@
 ---
 id: "lamtagi-thangcha-ahanba"
 title: "LAMTAGI THANGCHA AHANBA"
-summary: "Yawol Khongthang Kangleipak"
+summary: "Lamtagi Thangcha Ahanba"
 date: "2026-10-28"
 author: "Wangkhemcha Chingtamlen"
 category: "Philosophy"
-thumbnail: "./images/saloi-khangpa-200kb.jpg"
+thumbnail: "images/saloi-khangpa-200kb.jpg"
 language: "en"
 featured: false
 ---
