@@ -5,12 +5,12 @@ summary: "Kanglei Halaopa"
 date: "2026-10-23"
 author: "Yawol Khongthang Kangleipak"
 category: "Philosophy"
-thumbnail: "./images/1000208220-200kb.jpg"
+thumbnail: "././images/1000208220-200kb.jpg"
 language: "en"
 featured: false
 ---
 
-Lai haraoba haiba thouram asi karino khanglaktaba.
+# Lai haraoba haiba thouram asi karino khanglaktaba.
 
 Adungai Koupru (Koubru) Chingdon da Laiyam singna khunda leitaduna panlamba matamda Tengpalpa Taipangpalpa mapu mahakna Taipang Mee semge haina khanlakle madudagu Mee semba houre ahouba numit adubu Langmaiching kou e mee sembagi Aroiba numit aduna Thangcha kou e.
 
@@ -19,7 +19,7 @@ halaole. Eepungloina Halaole yaifapakee mateekpu laiyamsingna penchale. Aasum To
 
 Matang asidage Lai haraoba haiba thouram asi lakkhibani. 
 
-Lai haraoba gi matangda :
+# Lai haraoba gi matangda :
 
 Lai haraoba haiba asi karino?
 Madudi Meeoiba Eikhoina Pokpadagi siba faoba punsi matek asibu lai haraoba kou e , Haibadi pokpana laihou punsi matek aduna lai haraoba, sibana numitpuna lairoi kou e.
