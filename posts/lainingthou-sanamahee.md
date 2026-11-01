@@ -1,7 +1,7 @@
 ---
 id: "lainingthou-sanamahee"
 title: "LAININGTHOU SANAMAHEE"
-summary: "Sanamahee Laining Leechat Kangleipak"
+summary: "Mami Saktam Asina Kari Hairibano"
 date: "2026-11-01"
 author: "Wangkhemcha Chingtamlen"
 category: "Philosophy"
