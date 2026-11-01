@@ -5,12 +5,12 @@ summary: "Mami Saktam Asina Kari Hairibano"
 date: "2026-11-01"
 author: "Wangkhemcha Chingtamlen"
 category: "Philosophy"
-thumbnail: "images/logo-white-200kb.jpg"
+thumbnail: "./images/logo-white-200kb.jpg"
 language: "en"
 featured: false
 ---
 
-Sanamahee Lainingthou haiba wahei ani asigi houfam wahouthok thiba tarabadi, taipang malemda leiriba achat, chata lengli palliba pumnamk asibu oinaba, semba ngmba lai pumnamki ningthou oiba haibani.
+# Sanamahee Lainingthou haiba wahei ani asigi houfam wahouthok thiba tarabadi, taipang malemda leiriba achat, chata lengli palliba pumnamk asibu oinaba, semba ngmba lai pumnamki ningthou oiba haibani.
 
 Kampi mei, Laicha esing, Malangpa nungshit asinachingba pumnamk asina leitalingei, pumnamk talang malang ( haibadi karigumba khradi lei haibadi khangba, potsak oina utpadi yadba maong adubu) kwe. Eikhoi kangleicha nongpok ki wangulondi talang malang ni, Phun dagi hou-e, Zero dagi houde, nongchup ka pumkhet khetnei. Asigumba tingpalpagi ehou houbagi maong ( Beagining of the universe) asibu kanglei wangulol na talang, malang kwe, masigi mapu, tingpalpagi ahouba mapu amata ngaiba mapu mahakpu, epung loinapa apakpa kwe. mahaksi sak su leite, areppa oina kananasu khangba, haiba yade. Mahak asi zero natte, mahak talang epung aduni, talnag epung adugi mapuni.
 
@@ -31,19 +31,19 @@ Matang asida ,sanaki masak malpa nouwa ꯱• ( ama) oina leilamke, haina tingpa
 
 Ekon konbagi puyadagi louthokpa (quotation) aduda hairibana " epa" magi laipao gi matung enna salailel sitapagi  esaiphu elon-nungta (masada) saktam (symbol) ꯱• oina ulakley. ꯱• asi kangleicha meetei gi singtha cheising amani. Amata oiba mapu magi masakni.
 
-#Ama ꯱• asi karino.
+# Ama ꯱• asi karino.
 
 Tingpalpa mapu epung loinapa apakpa mahakna taipang palpa semba pirakpada mapu mahaki masak asi ꯱• (ama) oina utlakpani amasung nupa gi saktam louriba lainingthou salailel sitapada mahak haibadi mahaki mahutsinba saktam ꯱• asibu nacha makni yoklo haina paotak pirakpani. masigi matungda lainingthou salailel sitpa na mahaki masada yaoriba sanaki masak manpa nouwa ꯱• (ama) adubu sanamhi mingthol piduna ema leimalel sitapi da pisillaga ema leimalel sitapina louraga konsinbada  pali ahanpa konchen tulei sengpa, sanamahi lainingthou oirakpani. 
 
 Puya gi wafam pumnamk asina houjik eikhoina yumgi sanamhi kachinda latliba, khurumliba lai asi sanamhi lainingthouni haibadi tingpalpa mapu mask leitaba, epung loinapa apakpa mahakni. Masktam (symbol) na ꯱• asini, eikhoina lainingthou sanamhi haina khurumbani.
 
-#Saktam ꯱• (symbol) si karino?
+# Saktam ꯱• (symbol) si karino?
 
 Eikhoina hanna khangkhre madudi tingpalpagi mapu epung loinapa apakpa mahakti talang ee (ꯏ꯬) pung gi mapu ni haibasi. Talang ee pung haibadi ee (blood) ngaktana talang oina leiba haibani. Maram asina saktam ꯱• asina taklibadi tingpalpa mapu epungloi apakpa aduna taipangpalpa meeyoibana chingba uli, wali, sa, uchek pumnamk puthoknaba semnaba taipang ki mapa mahakna saktam ꯱• asi oina taipangda thouwai panba pumnamk semnaba taipang malemda ahanba oina khongdarakpani.
 
 Sanamahi Lainingthou gi saktam (symbol) di ꯱• asini. Mamangei thainadei houna sanamhi kachinda epa epu singna latlamba saktamni.
 
-#Science_Ki_mityengda_Sanamahi.
+# Science_Ki_mityengda_Sanamahi.
 
 Uli, wali, pikkhraba thouwaipanbadagi mee, Saa pumnamk chaoraba samu faoba thouwai panba achat, chat ta pumnamki Gene (DNA) asi amatani.
 
@@ -51,7 +51,7 @@ Gene (DNA) amakhaktadagi semgatlakpni meetei gi thainagi science ki mtung enna
 Amata oiba Gene (DNA) adudi meetei ningsingba ngmadraba matmdagi latlakliba Sanamhi Lainingthou aduni.
 Saktam ꯱• asini.
 
-#Atoppa_science_ki_wafam_amana.
+# Atoppa_science_ki_wafam_amana.
 
 Tingpalpa mapu epungloinapa apakpana, mahak taipang palpa semba laklage, numit humni suba nouwa ꯱• (ama) oina leilamke, haina talang laipao piramliba asina takpadi, malemda taipangda pallipa, thouwaipalpa pumnamki thouwai sing asi nongmaton thaktagi lakpani, Extra- terrestrial orgin of life ki mapung faba lousingni, kangleicha meeteisingna malemgi mee pumnamktagi scientific fact asi hanna khang ee haibasini.
 
