@@ -5,7 +5,7 @@ summary: "WAKCHING DA KUM HOURE CHEIHI HOURE TAKPA LAIRIK SING"
 date: "2026-10-02"
 author: "Yawol Khongthang Kangleipak"
 category: "Philosophy"
-thumbnail: "images/1000198180-200kb.jpg"
+thumbnail: "./images/1000198180-200kb.jpg"
 language: "en"
 featured: false
 ---
@@ -78,7 +78,8 @@ La : 9(sachifu cheiraoba singsatpagi maong) meitingu nongta lailel pakhangpaki m
 
 Mathakki warol asina hairibadi laigidi mamei taibang meegi pukok epu athouba pakhangba gi poknafam kanglada wakching thada leithong phatlammi. Mamei thangda meetei gi kumsing ariba maliyapham palcha kumsing toktuna sakakda kumsingda onthokhre. Wakching thada chahi hourambabu beishnap ka channanaba sajibu thada chahi houhanduna onnana pangthok khre haiba takli. Maliyapham palcha kumsinggi wakching cheichat amada cheihi houringeidagi kangada leithong phatlam mi, kumsing amasung tha hongduna onnana cheihi houkhibadagi kanglada leithong phat handaduna kongbada leithong phthankh haina mayek sengna lairik asina eri.
 
-## 9. Kang sanaba gi matang da Meeteigi masana kang sanabada kangkhut anidu mangsok amasung phamenda famduna pal-oinei. Mangsok (awang) da famba kangkhutna hanna kang kappa hou-e. Phamen (makha) lomda famba kangkhutna kappa loiraga pal (maikei) onthoklaga mangsok lomda famba, kangkhutna phamen lomda famlasu amuk hanna kang kappa hou-e. Masina taklibadi numitna awang laiyum (uttrayan) da kaba matam da cheihi hougani haina takli.
+## 9. Kang sanaba gi matang:
+Kang sanaba gi matang da Meeteigi masana kang sanabada kangkhut anidu mangsok amasung phamenda famduna pal-oinei. Mangsok (awang) da famba kangkhutna hanna kang kappa hou-e. Phamen (makha) lomda famba kangkhutna kappa loiraga pal (maikei) onthoklaga mangsok lomda famba, kangkhutna phamen lomda famlasu amuk hanna kang kappa hou-e. Masina taklibadi numitna awang laiyum (uttrayan) da kaba matam da cheihi hougani haina takli.
 
 ## 10. Meetei epu epa singna hairamlaba 
 
