@@ -1,5 +1,27 @@
 [
   {
+    "id": "sllk",
+    "title": "KANGLEΙΡΑΚ  THE CRADLE OF MAN",
+    "description": "KANGLEΙΡΑΚ\n\nTHE CRADLE OF MAN",
+    "author": "Wangkhemcha Chingtamlen",
+    "category": "Philosophy",
+    "language": "en",
+    "published_date": "2026-11-02",
+    "file_name": "sllk.pdf",
+    "pdf_url": "https://drive.google.com/uc?export=download&id=1FvpJXeaUCu2Q8ofAk05qMnnIiOIoe3L5&confirm=t",
+    "cover_url": "https://drive.google.com/thumbnail?id=1FvpJXeaUCu2Q8ofAk05qMnnIiOIoe3L5&sz=w800",
+    "page_count": 0,
+    "file_size_bytes": 0,
+    "file_size_formatted": "Google Drive Cloud",
+    "featured": false,
+    "tags": [
+      "Puya",
+      "History",
+      "Manuscript"
+    ],
+    "source_type": "gdrive"
+  },
+  {
     "id": "the-brain-washing-the-washing-of-the-brain-of-the-meetei-race-of-kangleipak",
     "title": "THE BRAIN WASHING",
     "description": "THE BRAIN WASHING(The washing of the brain of the Meetei Race of Kangleipak)",
@@ -120,28 +142,6 @@
     "file_name": "a-short-history-of-kangleipak--manipur---part---i.pdf",
     "pdf_url": "https://drive.google.com/uc?export=download&id=1g1rJOnFgrR2LT-kUiUykchRRf7v3uaxB&confirm=t",
     "cover_url": "https://drive.google.com/thumbnail?id=1g1rJOnFgrR2LT-kUiUykchRRf7v3uaxB&sz=w800",
-    "page_count": 0,
-    "file_size_bytes": 0,
-    "file_size_formatted": "Google Drive Cloud",
-    "featured": false,
-    "tags": [
-      "Puya",
-      "History",
-      "Manuscript"
-    ],
-    "source_type": "gdrive"
-  },
-  {
-    "id": "sllk",
-    "title": "PUYA FANGKHIBAGEE WARI LEEKHUL",
-    "description": "PUYA FANGKHIBAGEE WARI LEEKHUL",
-    "author": "Mangangcha Keisam Ibomcha Meetei",
-    "category": "Puya & History",
-    "language": "en",
-    "published_date": "2026-10-20",
-    "file_name": "sllk.pdf",
-    "pdf_url": "https://drive.google.com/uc?export=download&id=1Anl_i_MBGkLaOzM4cO1h7eClaHl24ZvL&confirm=t",
-    "cover_url": "https://drive.google.com/thumbnail?id=1Anl_i_MBGkLaOzM4cO1h7eClaHl24ZvL&sz=w800",
     "page_count": 0,
     "file_size_bytes": 0,
     "file_size_formatted": "Google Drive Cloud",
