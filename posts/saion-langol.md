@@ -5,7 +5,7 @@ summary: "KANGLEI WAHEI"
 date: "2026-11-03"
 author: "Yawol Khongthang Kangleipak"
 category: "Philosophy"
-thumbnail: "./images/84db05773860d7f8cdc79f2cc715a7b0.jpg"
+thumbnail: "././images/84db05773860d7f8cdc79f2cc715a7b0.jpg"
 language: "en"
 featured: false
 ---
