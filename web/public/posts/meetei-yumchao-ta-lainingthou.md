@@ -5,12 +5,12 @@ summary: "Meetei Yumchao Ta Lainingthou Sanamahee"
 date: "2026-09-26"
 author: "Sanamahee Laining Leechat Kangleipak"
 category: "Philosophy"
-thumbnail: "./images/article-thumbnail-200kb.jpg"
+thumbnail: "././images/article-thumbnail-200kb.jpg"
 language: "en"
 featured: false
 ---
 
-#![article-thumbnail-200kb.jpg](images/article-thumbnail-200kb.jpg)
+![article-thumbnail-200kb.jpg](images/article-thumbnail-200kb.jpg)
 # MEETEI YUMCHAO TA LAININGTHOU 
 
 Kangleicha meetei eikhoigi thainagi 'meetei yumchao' haina khangnaba leinaba 
@@ -34,7 +34,7 @@ Eikhoina houjik sijinnariba wahei 'Emung' hairiba wahei asigi
 wahanthok ti 'Ee manung' haibani. Taipang semnaba ee(blood) 
 adubu yao e haibani.
 
-EPUNGLOINAPA APAKPA GI SAKTAM(SYMBOL) ꯱•(AMA) ASI KARINO?
+# EPUNGLOINAPA APAKPA GI SAKTAM(SYMBOL) ꯱•(AMA) ASI KARINO?
 
 Tingpalpa mapu epungloinapa apakpa mahakna taipangpalpa semba pirakpada mapu 
 mahakki masak asi "꯱•" (ama) oina utlakpani amasung nupagi saktam louriba 'lainingthou 
@@ -49,7 +49,7 @@ latliba, khurumliba lai asi 'sanamahee lainingthou' ni haibadi tingpalpa mapu ma
 epungloinapa apakpa mahakni. Saktam(symbol) na saktam ꯱• asini. Eikhoina sanamahee 
 lainingthou haiba mamingda khurumbani.
 
-Saktam(symbol) asi karino? 
+# Saktam(symbol) asi karino? 
 
 Eikhoina hanna khangkhare madudi tingpalpa gi mapu, epungloinapa apakpa mahakti 
 'talang epung' gi mapu ni haibani. 'Talang epung' haibadi ee(blood) ngaktana talang tarang 
