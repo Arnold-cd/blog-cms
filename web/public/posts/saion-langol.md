@@ -5,12 +5,13 @@ summary: "KANGLEI WAHEI"
 date: "2026-11-03"
 author: "Yawol Khongthang Kangleipak"
 category: "Philosophy"
-thumbnail: "././images/84db05773860d7f8cdc79f2cc715a7b0.jpg"
+thumbnail: "images/moonlit-spirit-over-rainy-meadow.png"
 language: "en"
 featured: false
 ---
 
 # *'Saion'* nattraga *'Langol'* haiba wahei Animak si amatani ꯫
+![moonlit-spirit-over-rainy-meadow.png](images/moonlit-spirit-over-rainy-meadow.png)
 
 > Wahei anisina fongdokliba asi amatani potsak amtani ꯫ 
 
@@ -43,3 +44,5 @@ Mathang mit pa na  ꯃ ꯄ ꯅ ....mapung faba meeoiba gi hakchang semlak e ꯫
 
 Mapu mana ahanba leiba meeoiba semnaba houkhiba mafam adu meeoiba gi Laipak ni  houba numit adubu  Langmaiching kou e, 7 ni changna meeoiba amagi hakchang sembana Thangcha numit ta pumloi loi ꯫
 Matou asumna mapu magi wakhalda gi meeoiba ama mapung fana semba adubu langol ba ( langol) kou e ꯫
+
+![moonlit-spirit-over-rainy-meadow](images/moonlit-spirit-over-rainy-meadow.png)
