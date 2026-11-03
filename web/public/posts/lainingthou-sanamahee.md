@@ -5,7 +5,7 @@ summary: "Mami Saktam Asina Kari Hairibano"
 date: "2026-11-01"
 author: "Wangkhemcha Chingtamlen"
 category: "Philosophy"
-thumbnail: "./images/logo-white-200kb.jpg"
+thumbnail: "images/logo-white-200kb.jpg"
 language: "en"
 featured: false
 ---
