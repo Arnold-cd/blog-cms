@@ -5,16 +5,17 @@ summary: "KANGLEI WAHEI"
 date: "2026-11-02"
 author: "Wangkhemcha Chingtamlen"
 category: "Philosophy"
-thumbnail: "./images/converted-200kb.jpg"
+thumbnail: "images/golden-hour-flower-field-portrait.png"
 language: "en"
 featured: false
 ---
 
-' CHANU AMADI 'NINGOL
+# *CHANU* AMADI *NINGOL*
+![golden-hour-flower-field-portrait.png](images/golden-hour-flower-field-portrait.png)
 
 > Chanu nattraga Ningol hairiba wahei ani Asige khetnaba
 
-Ningol nattraga Ningon (Tasengba hourakpham waheidi Ning-On nattraga Ningol) haibani. 
+*****Ningol nattraga Ningon (Tasengba hourakpham waheidi Ning-On nattraga Ningol) haibani.*****
 Echam chamna wahei asige wahanthoksi ayamba meenadi khangdabasu yaori. 
 
 Nupi amana mama mapa gi mayumda poklaga, chaoba sangba mapung faraktuna mayum panba yarabasu pandaduna leiba matam asibu Ning-on   Ningol, hairaga khangnei. 
