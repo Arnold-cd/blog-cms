@@ -27,19 +27,6 @@
     "featured": false
   },
   {
-    "id": "chanu-amdi-ningol",
-    "title": "CHANU amdi NINGOL",
-    "summary": "KANGLEI WAHEI",
-    "date": "2026-11-02",
-    "author": "Wangkhemcha Chingtamlen",
-    "category": "Philosophy",
-    "thumbnail_url": "https://raw.githubusercontent.com/Arnold-cd/blog-cms/main/./images/converted-200kb.jpg",
-    "content_url": "https://raw.githubusercontent.com/Arnold-cd/blog-cms/main/posts/chanu-amdi-ningol.md",
-    "reading_time_min": 2,
-    "language": "en",
-    "featured": false
-  },
-  {
     "id": "lainingthou-sanamahee",
     "title": "LAININGTHOU SANAMAHEE",
     "summary": "Mami Saktam Asina Kari Hairibano",
