@@ -5,12 +5,12 @@ summary: "Sllk"
 date: "2026-09-29"
 author: "Wangkhemcha Chingtamlen"
 category: "Philosophy"
-thumbnail: "images/black-hole-200kb.jpg"
+thumbnail: "./images/black-hole-200kb.jpg"
 language: "en"
 featured: false
 ---
 
-## KHUMAN
+## *KHUMAN*
 
 Kanglei meetei epa epu singi puya wakoklon heelel Thilel Salai Ama-elon pukok puya asi, kangleipak ki epa,epu singna hanna khnglamba, malemgi mee atei kanglup na houjikta khangba houriba science ki wafam na pik thalli. Masi nongma nongmagi mayek senglakpagum touri.
 
@@ -34,12 +34,12 @@ Mathakki puya dagi louthokpa asida yaoriba, Khuna, Mampa, Mupa hairiba sida #Khu
 
 Maram asina KHUMAN na pokpa matam koilou mamina khuna mampa mupa khonglei matamta Hairibasi matamgi khonglei da numit (koilou numit) numit na BLACK HOLE amagi mathakta mapada chap yungna chatpa / lanba matamda, taipang malemda pokpani haiba nattana atei Karisu natte. Atei wahanthok ama piningai leite. matang asida aebana haijaribadi kangleicha meetei gi salai ahum suriba KHUMAN patriack asi numit ki mangalbu BLACK HoLe da chingsinkhiba matam da magal leitaba matamda pokpani haibani. Matamgi Science ki maramda khangba meesingna masidagi henna hainingai leite khlli. Khuman gi makha da salai patriack mari leihouri. Leihouriba mari asisu, Mangang, Luwang gumba numit mangal machugi gi manungda pokpani. Maram asina makhoigisu machu Lei, puya adum sengna eri.
 
-#Wafam_Amana :- 
+# Wafam Amana :- 
 
 Numit (Sun) , Atingaa(space) amasung Malem (Earth) ahum asigi mari leinaba,
 Malemgi Khonglei matam da atingaa (Space) gi manungda machu 7 lotuna lei haibasimadi puya kanglei Scripture da eriba asina arepa oina taklaga (written Evidence Oiraga) malemda masibu ahanba oina haikhiba mee kanglupti kangleipak ki meetei kanglup ni haibasimadi malem da kananasu yetpa ngamgani haibasi thajade. Black hole haiba asi physics ki Science na puthokpa wafam, Tingpalpa gi thoudok asi ehan hanna khangba malem gi mee kanglup asi kangleipak ki Meetei kanglup ni haina chaothokna Laothokli. 
 
-Adubu masidagi kari hena haiba ngambage hairabadi haiba ngmde. Masigi maramdi puya pumnamk mei thakhibadagini. 18 suba chahi chada mayang (meeyan) ningthousing na thadokhraba, Meetei epa epu singna pairammi hairiba, Mthakta panjakhiba puya aduda eriba puya anigi maming:-
+Adubu masidagi kari hena haiba ngambage hairabadi haiba ngmde. Masigi maramdi puya pumnamk mei thakhibadagini. 18 suba chahi chada mayang (meeyan) ningthousing na thadokhraba, Meetei epa epu singna pairammi hairiba, `Mthakta panjakhiba puya aduda eriba puya anigi maming:-`
 1. Koilou Numit Khenchanglon. 
 2. Thouwaimichak Khenchanglon
 puya ani asida soidana BLACK HOLE gi matang yaormgani.
