@@ -5,7 +5,7 @@ summary: "Sanamahee Laining Leechat Kangleipak"
 date: "2026-10-22"
 author: "Wangkhemcha Chingtamlen"
 category: "Philosophy"
-thumbnail: "images/image-200kb-3.jpg"
+thumbnail: "images/tattered-rainbow-banner-warrior-at-sunset.png"
 language: "en"
 featured: false
 ---
@@ -35,4 +35,4 @@ Kangla ki sangkuplei makhongta pothaduna famlaga puya gi wari tariba Kanglei Nin
 
 
 
-![image-200kb-3](images/image-200kb-3.jpg)
+![tattered-rainbow-banner-warrior-at-sunset](images/tattered-rainbow-banner-warrior-at-sunset.png)
