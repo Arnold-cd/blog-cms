@@ -2,10 +2,10 @@
 id: "lai-haraoba-wakonlo-laoba"
 title: "LAI HARAOBA WAKONLO LAOBA"
 summary: "Sanamahee Laining Leechat Kangleipak"
-date: "2026-11-03"
+date: "2026-11-04"
 author: "Yumnam Tamphachao Meetei"
 category: "Philosophy"
-thumbnail: "././images/ceremony-photo-200kb.jpg"
+thumbnail: "./././images/ceremony-photo-200kb.jpg"
 language: "en"
 featured: false
 ---
@@ -14,7 +14,7 @@ featured: false
 
 
 
-- LAI HARAOBA GI WANGULOL 
+# LAI HARAOBA GI WANGULOL 
 
 
 
