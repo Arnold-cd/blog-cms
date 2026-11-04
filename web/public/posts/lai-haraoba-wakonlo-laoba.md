@@ -5,16 +5,21 @@ summary: "Sanamahee Laining Leechat Kangleipak"
 date: "2026-11-03"
 author: "Yumnam Tamphachao Meetei"
 category: "Philosophy"
-thumbnail: "./images/ceremony-photo-200kb.jpg"
+thumbnail: "././images/ceremony-photo-200kb.jpg"
 language: "en"
 featured: false
 ---
 
 ![ceremony-photo-200kb](images/ceremony-photo-200kb.jpg)
 
-# LAI HARAOBA GI WANGULOL
+
+
+- LAI HARAOBA GI WANGULOL 
+
+
 
 > Lai Haraoba gi Wakonlo Laoba Asige Nunge Oiba Wangulon 
+
 
 
 Chingda gi wakon na tamda tage mahaiba Tam gi wakon na chingda tage mahaiba  Wakon na fase Lifase Wakon Tanoi Noi
