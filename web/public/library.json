@@ -1,5 +1,27 @@
 [
   {
+    "id": "yawol-khongthang-kangleipak-",
+    "title": "Wakoklon Heelel Thilel Salai Ama-ilon Pukok",
+    "description": "Original Script Meetei Mayek 18",
+    "author": "ANGOM CHAOPA MAICHOU",
+    "category": "Puya & History",
+    "language": "mni",
+    "published_date": "2026-11-06",
+    "file_name": "yawol-khongthang-kangleipak-.pdf",
+    "pdf_url": "https://drive.google.com/uc?export=download&id=1RABD0k_wvSMTDahShm1LQSUJycC-UkNF&confirm=t",
+    "cover_url": "https://drive.google.com/thumbnail?id=1RABD0k_wvSMTDahShm1LQSUJycC-UkNF&sz=w800",
+    "page_count": 0,
+    "file_size_bytes": 0,
+    "file_size_formatted": "Google Drive Cloud",
+    "featured": false,
+    "tags": [
+      "Puya",
+      "History",
+      "Manuscript"
+    ],
+    "source_type": "gdrive"
+  },
+  {
     "id": "kangleik-the-cradle-of-man-3rd-edition",
     "title": "KANGLEIΡΑK  THE CRADLE OF MAN  3rd Edition",
     "description": "KANGLEIΡΑK THE CRADLE OF MAN 3rd Edition",
@@ -20,28 +42,6 @@
       "Manuscript"
     ],
     "source_type": "archive"
-  },
-  {
-    "id": "yawol-khongthang-kangleipak-",
-    "title": "MEETEI MAYEK 18 GE KANGLON AMSUNG WANGULON",
-    "description": "(PHILOSOPHY & SCIENCE ON MEETEI ALPHABETS)",
-    "author": "Yumnam Tamphachao Meetei",
-    "category": "Philosophy",
-    "language": "mni",
-    "published_date": "2026-11-05",
-    "file_name": "yawol-khongthang-kangleipak-.pdf",
-    "pdf_url": "https://drive.google.com/uc?export=download&id=14BF1OMburcchnsqi08I6MzeWCOEsYQGy&confirm=t",
-    "cover_url": "https://drive.google.com/thumbnail?id=14BF1OMburcchnsqi08I6MzeWCOEsYQGy&sz=w800",
-    "page_count": 0,
-    "file_size_bytes": 0,
-    "file_size_formatted": "Google Drive Cloud",
-    "featured": false,
-    "tags": [
-      "Puya",
-      "History",
-      "Manuscript"
-    ],
-    "source_type": "gdrive"
   },
   {
     "id": "sllk",
