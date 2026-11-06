@@ -5,7 +5,7 @@ summary: "Discovery of Kangleipak :: Part 37"
 date: "2026-11-06"
 author: "Wangkhemcha Chingtamlen"
 category: "Philosophy"
-thumbnail: "images/puya-20111004.jpg"
+thumbnail: "./images/puya-20111004.jpg"
 language: "en"
 featured: false
 ---
@@ -14,7 +14,7 @@ featured: false
 
 Discovery of Kangleipak Part 37 
 
-## Wangkhemcha Chingtamlen 
+
 
 ![puya-20111004](images/puya-20111004.jpg)
 Ancient writings (puyas) found in Kangleipak (Manipur
