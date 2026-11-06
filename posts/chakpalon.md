@@ -5,7 +5,7 @@ summary: "Palem Panthou gi Wangulon"
 date: "2026-11-06"
 author: "Wangkhemcha Chingtamlen"
 category: "Philosophy"
-thumbnail: "images/converted-hd-200kb.jpg"
+thumbnail: "./images/converted-hd-200kb.jpg"
 language: "en"
 featured: false
 ---
@@ -46,7 +46,7 @@ ngasaigi ee haibadi thouwai oigadouriba machak aduna panthouda thabung ani leira
 
 
 
-| KOILOU | NUMIT |
+| EENUNGLON | KHUNNUNGLOL |
 | --- | --- |
 | PANTHOU | EPA |
 | PALEM | EMA|
