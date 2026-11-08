@@ -97,4 +97,4 @@ The Kanglei Creation theory has the common beginning of the creation of the Univ
 
 To conclude this short discourse, the writer earnestly feels that the esteemed readers may feel better than the writer himself after reading the Puya Page xeroxed above.
 
-If any reader has the Inquisitiveness to know more about the above written Evidence, Puya etc. Please contact the writer through email at chingtamlen(at)gmail(dot)com
+If any reader has the Inquisitiveness to know more about the above written Evidence, Puya etc. Please contact the writer through email at sanamaheelainingleechatkanglei@gmail.com
