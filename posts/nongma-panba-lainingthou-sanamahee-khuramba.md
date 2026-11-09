@@ -5,7 +5,7 @@ summary: "Lai Khulumpa gi Kanglon"
 date: "2026-11-09"
 author: "Yawol Khongthang Kangleipak"
 category: "Philosophy"
-thumbnail: "././images/sllk-hd-image-200kb.jpg"
+thumbnail: "./././images/sllk-hd-image-200kb.jpg"
 language: "en"
 featured: false
 ---
@@ -45,6 +45,7 @@ mashibu "Laina meechaba kouee" Thasi numita Laingthou Sanamahi da ATHENPOT katla
  > Lanjare haibagi Mawongda  khutsa tara lonlaga khuramba adu Nattaba. khoidou khada khut lonnaraga Khuramgani Thounigani. 
 
 4.pukham gumba ama sijinnaraga katpa matamda makhada la machet ama thagani aduga meira amadi meinam katpa matamda meira na Esagi yet ta thamgani.
+
 5.laphoi katpa matamda Longlaga Makok aduna Lai da onsinlaga Katkani. 
 
 
