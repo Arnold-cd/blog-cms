@@ -91,19 +91,6 @@
     "featured": false
   },
   {
-    "id": "saion-langol",
-    "title": "SAION LANGOL",
-    "summary": "KANGLEI WAHEI",
-    "date": "2026-11-03",
-    "author": "Yawol Khongthang Kangleipak",
-    "category": "Philosophy",
-    "thumbnail_url": "https://raw.githubusercontent.com/Arnold-cd/blog-cms/main/images/moonlit-spirit-over-rainy-meadow.png",
-    "content_url": "https://raw.githubusercontent.com/Arnold-cd/blog-cms/main/posts/saion-langol.md",
-    "reading_time_min": 3,
-    "language": "en",
-    "featured": false
-  },
-  {
     "id": "sai-on-lang-on",
     "title": "SAI-ON LANG-ON",
     "summary": "KANGLEI WAHEI",
