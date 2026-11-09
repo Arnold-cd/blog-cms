@@ -5,7 +5,7 @@ summary: "Lai Khulumpa gi Kanglon"
 date: "2026-11-09"
 author: "Yawol Khongthang Kangleipak"
 category: "Philosophy"
-thumbnail: "./././images/sllk-hd-image-200kb.jpg"
+thumbnail: "././././images/sllk-hd-image-200kb.jpg"
 language: "en"
 featured: false
 ---
@@ -34,8 +34,7 @@ featured: false
 
 1. Lainingthou Sanamahi da Nongma panbada (1,11,21-panba meeteithapan) ashida ATHENPOT  Hei-lei kattuna Angamba Kattuna Thounigani. 
 
- Adubu Hindu laining changba kaya na Thasi numit 30 ni panba ashida ATHENPOT katkadabani haiduna kat-hanlam me houjiksu katnaba yaori. 
-
+ >Adubu Hindu laining changba kaya na Thasi numit 30 ni panba ashida ATHENPOT katkadabani haiduna kat-hanlam me houjiksu katnaba yaori. 
 Mashibu "Laina meechaba kouee" Thasi numita Laingthou Sanamahi da ATHENPOT katlabadi imung adu mahi langgani leina tina chelakani awa ana tagani.
 
 2. Lainingthou Sanamahi da hei lei angamba katpada Heibu masung taraga natraga machete katpa yade –mapum ngakta (mapum) katkadabani
