@@ -5,14 +5,14 @@ summary: "Lai Khulumpa gi Kanglon"
 date: "2026-11-09"
 author: "Yawol Khongthang Kangleipak"
 category: "Philosophy"
-thumbnail: "././images/sllk-hd-image-200kb.jpg"
+thumbnail: "./images/sllk-hd-image-200kb.jpg"
 language: "en"
 featured: false
 ---
 
 ![sllk-hd-image-200kb.jpg](images/sllk-hd-image-200kb.jpg)
 
-> Wakchingi Nongma Panba Chahi houba Numit ta Lainingthou Sanamahi da Katkadaba Potlamsing
+> Wakchingi Nongma Panba Chahi houba Numit ta Lainingthou Sanamahee da Katkadaba Potlamsing
 
 
 - 1. Lainingthou Sanamahi da athenpot ama kabiyu.
@@ -32,13 +32,13 @@ featured: false
 
 ## Lainingthou Sanamahee Khurumbagi Kanglon
 
-Lainingthou Sanamahi da Nongma panbada (1,11,21-panba meeteithapan) ashida ATHENPOT  Hei-lei kattuna Angamba Kattuna Thounigani. 
+1.Lainingthou Sanamahee da Nongma panbada (1,11,21-panba meeteithapan) ashida ATHENPOT  Hei-lei kattuna Angamba Kattuna Thounigani. 
 
- adubu Hindu laining changba kaya na Thasi numit 30 ni panba ashida ATHENPOT katkadabani haiduna kat-hanlam me houjiksu katnaba yaori. 
+adubu Hindu laining changba kaya na Thasi numit 30 ni panba ashida ATHENPOT katkadabani haiduna kat-hanlam me houjiksu katnaba yaori. 
 
 mashibu "Laina meechaba kouee" Thasi numita Laingthou Sanamahi da ATHENPOT katlabadi imung adu mahi langgani leina tina chelakani awa ana tagani.
 
-2.Lainingthou Sanamahi da hei lei angamba katpada Heibu masung taraga natraga machete katpa yade –mapum ngakta (mapum) katkadabani
+2.Lainingthou Sanamahee da hei lei angamba katpada Heibu masung taraga natraga machete katpa yade –mapum ngakta (mapum) katkadabani
 
 3.katpagi maongdi esana pukchel khara sengna thajana katpiyu – Meira ama thalani, Hei lei mapum angamba khara. La da natraga achamba lai gi damak sijinaba amada haplaga katkani mei changba pottsu katnade--aduga KHURUMBA matamda khut lonaraga Khuramnade  khut anina Nijagadabani.
 
