@@ -1,11 +1,11 @@
 ---
 id: "nongma-panna-lainingthou-sanamahee-khuramba"
 title: "NONGMA PANNA LAININGTHOU SANAMAHEE KHURAMBA"
-summary: "Lai Khulupba gi Kanglon"
+summary: "Lai Khulumpa gi Kanglon"
 date: "2026-11-09"
 author: "Yawol Khongthang Kangleipak"
 category: "Philosophy"
-thumbnail: "images/sllk-hd-image-200kb.jpg"
+thumbnail: "./images/sllk-hd-image-200kb.jpg"
 language: "en"
 featured: false
 ---
