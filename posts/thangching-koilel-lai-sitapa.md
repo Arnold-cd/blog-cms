@@ -5,7 +5,7 @@ summary: "Laipungthou Thangching Koilel Lai Sitapa"
 date: "2026-11-13"
 author: "Wangkhemcha Chingtamlen"
 category: "Philosophy"
-thumbnail: "images/ibudhou-thangjing-day-20140602-2-11.jpg"
+thumbnail: "./images/ibudhou-thangjing-day-20140602-2-11.jpg"
 language: "en"
 featured: false
 ---
@@ -19,7 +19,7 @@ Thangching amasung thangching koilel lai sitapa haibasi khngminasi.
 
 Pabiriba singgi mafamda ahanbda Aebana ningsingjaninbadi eikhoina moirang gi hindu matmgi mamang gi oiba esei, penana chingba taba matamda, eputhou thangching koilel lai, haina etat tattana aseibasing gi machundagi, aebasing gi khorjeidagi taba uba fang e. makhoina sakliba sonliba waheising asi tasengna puya da yaormliba waheising aduni. Matang asida eikhoina khanglibadi #Thangching haina eikhoina uriba chingchao asi tasengna schamba ching amadi natte, ching asigi maming matou karamna tengpalpa, tingpalpa semba mapu mahakna leinaramliba, karigidamak kloilel lai sitapa, kouramlibano haibasini. 
 
-Puya pumnamk ki makok pukok oiriba #Wakoklon_heelel_thilel_salai_amaElon_pukok_puya, asi eba hourakpa matamda puya asida asumna eri 'Epung Loinapa Mapu Na Nungpung Wakhaltaki Malem Leisapu Enung Pungtaki Fukhat Chingkhat Thangkatlakpa Matamta Nungpung Wakhaltaki Thokkhipa. 
+Puya pumnamk ki makok pukok oiriba Wakoklon heelel thilel salai ama Elon pukok puya, asi eba hourakpa matamda puya asida asumna eri > 'Epung Loinapa Mapu Na Nungpung Wakhaltaki Malem Leisapu Enung Pungtaki Fukhat Chingkhat Thangkatlakpa Matamta Nungpung Wakhaltaki Thokkhipa. 
 
 Mathaki puya dagi louthokpa wahei pareng sing asi munna pabiyu, mathang amuk puya da sumna eri, ꯱• Hailipa Mapu Na Talang Malang Oina Haina Humna leilingeita, Mapu Sitapa ki Nungpung Wakhal Na Enung Pungta Lupkhituna Malem Leisapu Fukhat, Chingkhat Thangkatlakpa Matamta Enung pungki Saion na, Kampi, Laicha, Malangpa Chongthokley. 
 
@@ -42,4 +42,4 @@ Mahakna ahanba chingkhatlakpa laisa (leisa) adu malem leipak haina koue. Masi hi
 
 Malem asi ahanbada epung loinapa apakpana masagi epung elon nungdagi chingkahtlakpa matmta mahaki masamak ni (eikhoi pumanmakpu semba lai mahaki masani haibadagi puyana) laisa hain koue. Laisa haibasi eikhoi pumnamkna uriba, sokliba malem leisa asini. Puya na takpa matung enna malem sembada yaorakpa lapungthou taret ki manungda ahum subani, thangching koilel lai sitapa" koue. 
 
-#Thangching_chingchao asi mapu magi masana oiba laisa malembu mapu magi masamakni epungdagi chingkhatlkpa matamda ahumsuba oiriba awangba atongba oiba marmna mapu mahakmakni haiduna kangleicha meetei singna, Thangching koilel lai sitapa, haina mingkounei. Koilel lai sitapa haibadi nongthou Atingaa buni. Nongthou atingaa asi epung loinapa apakpa amahakki saion ni.
+Thangching chingchao asi mapu magi masana oiba laisa malembu mapu magi masamakni epungdagi chingkhatlkpa matamda ahumsuba oiriba awangba atongba oiba marmna mapu mahakmakni haiduna kangleicha meetei singna, Thangching koilel lai sitapa, haina mingkounei. Koilel lai sitapa haibadi nongthou Atingaa buni. Nongthou atingaa asi epung loinapa apakpa amahakki saion ni.
