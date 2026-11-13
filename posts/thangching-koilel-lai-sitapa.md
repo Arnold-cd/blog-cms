@@ -42,6 +42,4 @@ Mahakna ahanba chingkhatlakpa laisa (leisa) adu malem leipak haina koue. Masi hi
 
 Malem asi ahanbada epung loinapa apakpana masagi epung elon nungdagi chingkahtlakpa matmta mahaki masamak ni (eikhoi pumanmakpu semba lai mahaki masani haibadagi puyana) laisa hain koue. Laisa haibasi eikhoi pumnamkna uriba, sokliba malem leisa asini. Puya na takpa matung enna malem sembada yaorakpa lapungthou taret ki manungda ahum subani, thangching koilel lai sitapa" koue. 
 
-#Thangching_chingchao asi mapu magi masana oiba laisa malembu mapu magi masamakni epungdagi chingkhatlkpa matamda ahumsuba oiriba awangba atongba oiba marmna mapu mahakmakni haiduna kangleicha meetei singna, Thangching koilel lai sitapa, haina mingkounei. Koilel lai sitapa haibadi nongthou Atingaa buni. Nongthou atingaa asi epung loinapa apakpa amahakki saion ni. 
-
-![ibudhou-thangjing-day-20140602-2-11](images/ibudhou-thangjing-day-20140602-2-11.jpg)
+#Thangching_chingchao asi mapu magi masana oiba laisa malembu mapu magi masamakni epungdagi chingkhatlkpa matamda ahumsuba oiriba awangba atongba oiba marmna mapu mahakmakni haiduna kangleicha meetei singna, Thangching koilel lai sitapa, haina mingkounei. Koilel lai sitapa haibadi nongthou Atingaa buni. Nongthou atingaa asi epung loinapa apakpa amahakki saion ni.
