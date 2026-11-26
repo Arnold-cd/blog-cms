@@ -1,12 +1,11 @@
 ---
 id: "discovery-of-kangleipak-5"
 title: "DISCOVERY OF KANGLEIPAK (5)"
-summary: "Pakhangba , a Snake as the progenitor of Kangleicha Meetei Race. 
-(It is an improper concept, created and born during Hindu Rule in Kangleipak)"
+summary: "Pakhangba , a Snake as the progenitor of Kangleicha Meetei Race. (It is an improper concept, created and born during Hindu Rule in Kangleipak)"
 date: "2026-11-26"
 author: "Wangkhemcha Chingtamlen"
 category: "Philosophy"
-thumbnail: "images/fb-img-1795668570806.jpg"
+thumbnail: "./images/fb-img-1795668570806.jpg"
 language: "en"
 featured: false
 ---
@@ -196,11 +195,3 @@ or a snake, or a python in place of the solemn concepts of Lailel Pakhangba to t
 of indigenous Kanglei masses.
 These machinations and indoctrinations with threat of physical injuries were at zenith 
 during the reign of Pamheiba Garivaniwaz and Bhagyachandra.
-
-
-
-
-![fb-img-1795668570806](images/fb-img-1795668570806.jpg)
-
-
-![screenshot-2026-11-26-09-50-10-427-com.google.android.apps.docs-edit](images/screenshot-2026-11-26-09-50-10-427-com.google.android.apps.docs-edit.jpg)
